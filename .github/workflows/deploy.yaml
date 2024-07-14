@@ -25,12 +25,12 @@ jobs:
 
       - name: Create env file
         run: |
-          touch .secret/.env
+          touch ./.secret/.env
           echo ${{ secrets.ENV }} >> .secret/.env
 
       - name: Create firebase-config.ts
         run: |
-          touch .secret/firebase-config.ts
+          touch ./.secret/firebase-config.ts
           echo "export const firebaseConfig = ${{ secrets.FIREBASE_CONFIG }};" >> .secret/firebase-config.ts
 
       - name: Debug
