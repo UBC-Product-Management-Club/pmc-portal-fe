@@ -27,6 +27,8 @@ COPY --from=build /app/package-lock.json ./
 # Install only production dependencies
 COPY --from=build /app/node_modules ./node_modules
 
+COPY --from=build /app/.secret ./.secret
+
 # Install serve to serve the built application
 RUN npm install -g serve
 
