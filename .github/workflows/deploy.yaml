@@ -33,6 +33,10 @@ jobs:
           touch .secret/firebase-config.ts
           echo "export const firebaseConfig = ${{ secrets.FIREBASE_CONFIG }};" >> .secret/firebase-config.ts
 
+      - name: Debug
+        run: |
+          ls
+
       - name: Log into Google Cloud
         uses: "google-github-actions/auth@v1"
         with:
