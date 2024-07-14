@@ -11,6 +11,8 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+RUN ls
+
 # Build the TypeScript code
 RUN npm run build
 
@@ -26,8 +28,6 @@ COPY --from=build /app/package-lock.json ./
 
 # Install only production dependencies
 COPY --from=build /app/node_modules ./node_modules
-
-COPY --from=build /app/.secret ./.secret
 
 # Install serve to serve the built application
 RUN npm install -g serve
