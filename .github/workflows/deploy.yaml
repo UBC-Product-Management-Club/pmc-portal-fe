@@ -31,7 +31,7 @@ jobs:
       - name: Create firebase-config.ts
         run: |
           touch .secret/firebase-config.ts
-          echo ${{ secrets.FIREBASE_CONFIG }} >> .secret/firebase-config.ts
+          echo "${{ secrets.FIREBASE_CONFIG }}" >> .secret/firebase-config.ts
 
       - name: Log into Google Cloud
         uses: "google-github-actions/auth@v1"
