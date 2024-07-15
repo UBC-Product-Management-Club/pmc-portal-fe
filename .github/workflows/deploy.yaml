@@ -28,15 +28,13 @@ jobs:
           touch .secret/.env
           echo ${{ secrets.ENV }} >> .secret/.env
 
-      - name: Create firebase-config.ts
-        run: |
-          touch .secret/firebase-config.ts
-          echo "export const firebaseConfig = ${{ secrets.FIREBASE_CONFIG }};" >> .secret/firebase-config.ts
-
-      - name: Debug
-        run: |
-          pwd
-          cat ./.secret/firebase-config.ts
+      - name: Create Credential JSON
+        id: create-json-1
+        uses: jsdaniell/create-json@v1.2.2
+        with:
+          name: "firebase-config.json"
+          json: ${{ secrets.FIREBASE_CONFIG }}
+          dir: ".secret/"
 
       - name: Log into Google Cloud
         uses: "google-github-actions/auth@v1"
