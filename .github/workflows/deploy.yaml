@@ -35,7 +35,8 @@ jobs:
 
       - name: Debug
         run: |
-          cat .secret/firebase-config.ts
+          pwd
+          cat ./.secret/firebase-config.ts
 
       - name: Log into Google Cloud
         uses: "google-github-actions/auth@v1"
