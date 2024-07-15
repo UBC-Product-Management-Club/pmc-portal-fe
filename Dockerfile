@@ -9,6 +9,7 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 # Copy the rest of the application code
+RUN cat ./.secret/firebase-config.ts
 COPY . .
 
 # Build the TypeScript code
