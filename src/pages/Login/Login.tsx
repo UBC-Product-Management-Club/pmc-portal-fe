@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import OnboardingForm from '../../components/OnboardingForm/OnboardingForm';
 import { loginBody } from '../../types/api';
+import GoogleLogo from "../../assets/google.svg"
 
 export default function Login() {
   const [onboarding, setOnboarding] = useState<boolean>(false)
@@ -48,10 +49,19 @@ export default function Login() {
   }
 
   return (
-    <>
-      <h1>Welcome to PMC</h1>
-      {onboarding && <OnboardingForm user={user!} creds={loginCreds!} />}
-      {!onboarding && <button onClick={googleLogin}>login with Google</button>}
-    </>
+    <div className="login-container">
+      <div className="login-content">
+        {onboarding && <OnboardingForm user={user!} creds={loginCreds!} />}
+        {!onboarding && 
+          <>
+            <h1 className="login-header">PMC Membership Portal</h1> 
+            <div className="login-button-container">
+                <button className="login-googlesso" onClick={googleLogin}><img src={GoogleLogo} className="googleLogo" width={14} height={14}/>Continue with Google</button>
+                <button className="login-continue" onClick={() => console.log("continue as non-member")}>Continue as a non-member</button>
+            </div>
+          </>
+        }
+      </div>
+    </div>
   )
 }
