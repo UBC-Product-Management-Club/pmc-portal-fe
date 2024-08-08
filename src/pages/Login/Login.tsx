@@ -49,19 +49,18 @@ export default function Login() {
   }
 
   return (
-    <div className="login-container">
-      <div className="login-content">
-        {onboarding && <OnboardingForm user={user!} creds={loginCreds!} />}
-        {!onboarding && 
-          <>
-            <h1 className="login-header">PMC Membership Portal</h1> 
-            <div className="login-button-container">
-                <button className="login-googlesso" onClick={googleLogin}><img src={GoogleLogo} className="googleLogo" width={14} height={14}/>Continue with Google</button>
-                <button className="login-continue" onClick={() => console.log("continue as non-member")}>Continue as a non-member</button>
+    <>
+      {onboarding ? 
+        <OnboardingForm user={user!} creds={loginCreds!}/> :
+          <div className="login-container">
+            <div className="login-content">
+              <h1 className="login-header">PMC Membership Portal</h1> 
+              <div className="login-button-container">
+                  <button className="login-googlesso" onClick={googleLogin}><img src={GoogleLogo} className="googleLogo" width={14} height={14}/>Continue with Google</button>
+                  <button className="login-continue" onClick={() => console.log("continue as non-member")}>Continue as a non-member</button>
+              </div>
             </div>
-          </>
-        }
-      </div>
-    </div>
+          </div>}
+    </>
   )
 }
