@@ -5,31 +5,51 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
 }
 
 .onboarding-content {
-  width: 50%;
-  height: 50%;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-  padding: 2rem;
-  border-radius: 1rem;
+    width: 40rem;
+    height: 35rem;
+    display: flex;
+    flex-direction: column;
+    padding-top: 2rem;
+    padding-left: 5rem;
+    padding-right: 5rem;
+    border-radius: 1rem;
+    position: relative;
+} 
+
+.onboarding-form {
+    width: 100%;
+    flex: 0 1 auto;
 }
 
 .onboarding-content-header {
-
     font-size: x-large;
+    margin: 2rem 0;
+}
+
+.onboarding-content--logo {
+    width: 4rem;
+    height: 4rem;
 }
 
 .onboarding-form-content {
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
     gap: 1rem;
+}
+
+.onboarding-form-content--row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .onboarding-form-select--container {
@@ -51,13 +71,15 @@ select {
 
 
 .submit-button {
-    width: 15vw;
-    margin-top: 2rem;
+    width: 10rem;
     border: none;
     border-radius: 100rem;
     padding: 0.5rem 1rem;
     float: right;
     cursor: pointer;
+    position: absolute;
+    right: 10%;
+    bottom: 10%;
 }
 
 @media (prefers-color-scheme: light) {

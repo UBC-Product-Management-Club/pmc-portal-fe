@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"
 import { type User } from "firebase/auth"
 import { loginBody } from "../../types/api"
 import { useEffect } from "react"
+import PMCLogo from "../../assets/pmclogo.svg"
 
 
 const UserZodObj = z.object({
@@ -134,25 +135,28 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
     return (
         <div className="onboarding-container">
             <div className="onboarding-content">
+                <img className="onboarding-content--logo" src={PMCLogo}/>
+                <h1 className="onboarding-content-header">Create your account</h1>
                 <form autoComplete="off" className="onboarding-form" onSubmit={handleSubmit(onSubmit)}>
-                    <h1 className="onboarding-content-header">Create your account</h1>
                     <div className="onboarding-form-content">
-                        <FormInput
-                            type="text"
-                            name="first_name"
-                            placeholder="First name"
-                            register={register}
-                            error={errors.first_name}
-                        />
-                        <FormInput
-                            type="text"
-                            name="last_name"
-                            placeholder="Last name"
-                            register={register}
-                            error={errors.last_name}
-                        />
+                        <div className="onboarding-form-content--row">
+                            <FormInput
+                                type="text"
+                                name="first_name"
+                                placeholder="First name"
+                                register={register}
+                                error={errors.first_name}
+                            />
+                            <FormInput
+                                type="text"
+                                name="last_name"
+                                placeholder="Last name"
+                                register={register}
+                                error={errors.last_name}
+                            />
+                        </div>
 
-                        <div className="onboarding-form-select--container" style={{"gridColumn": "span 2"}}>
+                        <div className="onboarding-form-select--container">
                             <select required className="select-ubcstudent" {...register("ubc_student",{required: "please select a value"})}>
                                 <option value="" hidden>Are you a UBC student?</option>
                                 <option value={"yes"}>Yes, I'm a UBC student.</option>
@@ -163,9 +167,7 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
                         </div>
 
                         {student_status === "yes" && 
-                            <div style={{
-                                "gridColumn": "span 2"
-                            }}>
+                            <div className="onboarding-form-content--row">
                                 <FormInput
                                     type="text"
                                     placeholder="Student number"
@@ -178,9 +180,9 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
                         }
 
                         {student_status !== "no, other" && 
-                            <>
+                            <div className="onboarding-form-content--row">
                                 <div className="onboarding-form-select--container">
-                                    <select required {...register("year",{required: "please select a value"})}>
+                                    <select style={{"width": "7rem"}} required {...register("year",{required: "please select a value"})}>
                                         <option value="" hidden>Year</option>
                                         <option value={"1"}>1</option>
                                         <option value={"2"}>2</option>
@@ -205,7 +207,7 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
                                     register={register}
                                     error={errors.major}
                                 />
-                            </>
+                            </div>
                         }       
                         <div className="onboarding-form-select--container">
                             <select required {...register("returning_member",{required: "Please select a value."})}>
@@ -215,9 +217,8 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
                             </select>
                             {errors.returning_member && <span>{errors.returning_member.message}</span>}
                         </div>
-                        <div style={{
-                            "gridColumn": "span 2"
-                        }}>
+
+                        <div className="onboarding-form-content--row">
                             <FormInput
                                 type="text"
                                 placeholder="Why Product Management?"
