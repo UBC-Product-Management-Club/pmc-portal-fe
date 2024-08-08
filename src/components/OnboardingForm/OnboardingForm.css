@@ -1,8 +1,23 @@
 
+.onboarding-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
 .onboarding-content {
-    width: 45vw;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
+  width: 50%;
+  height: 50%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  padding: 2rem;
+  border-radius: 1rem;
 }
 
 .onboarding-content-header {
@@ -34,10 +49,6 @@ select {
     width: 100%;
 }
 
-select:valid {
-    background-color: rgb(196, 113, 199);
-    color: white;
-}
 
 .submit-button {
     width: 15vw;
@@ -49,21 +60,45 @@ select:valid {
     cursor: pointer;
 }
 
+@media (prefers-color-scheme: light) {
+    .onboarding-content {
+        background-color: #fefefe;
+    }
+
+    select {
+        background-color:rgb(202, 202, 202);
+    }
+
+    .submit-button {
+        background-color: #383482;
+        color: white;
+    }
+
+}
+
 @media (prefers-color-scheme: dark) {
+    .onboarding-content {
+        background-color: #242424;
+    }
+
     .onboarding-content-header {
         background-image: linear-gradient(#a883ff, #c677d4, #f66ea2);
         color: transparent;
         background-clip: text;
     }
 
+
     select {
         background-color: white;
+    }
+
+    select:valid {
+        background-color: rgb(196, 113, 199);
+        color: white;
     }
 
     .submit-button {
         background-image: linear-gradient(#a883ff, #c677d4, #f66ea2);
         color: white;
-        /* background-clip: text; */
     }
-    
 }

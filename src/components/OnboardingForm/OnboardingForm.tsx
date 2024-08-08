@@ -132,102 +132,104 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
     const navigateTo = useNavigate()
 
     return (
-        <div className="onboarding-content">
-            <h1 className="onboarding-content-header">Create your account</h1>
-            <form autoComplete="off" className="onboarding-form" onSubmit={handleSubmit(onSubmit)}>
-                <div className="onboarding-form-content">
-                    <FormInput
-                        type="text"
-                        name="first_name"
-                        placeholder="First name"
-                        register={register}
-                        error={errors.first_name}
-                    />
-                    <FormInput
-                        type="text"
-                        name="last_name"
-                        placeholder="Last name"
-                        register={register}
-                        error={errors.last_name}
-                    />
+        <div className="onboarding-container">
+            <div className="onboarding-content">
+                <form autoComplete="off" className="onboarding-form" onSubmit={handleSubmit(onSubmit)}>
+                    <h1 className="onboarding-content-header">Create your account</h1>
+                    <div className="onboarding-form-content">
+                        <FormInput
+                            type="text"
+                            name="first_name"
+                            placeholder="First name"
+                            register={register}
+                            error={errors.first_name}
+                        />
+                        <FormInput
+                            type="text"
+                            name="last_name"
+                            placeholder="Last name"
+                            register={register}
+                            error={errors.last_name}
+                        />
 
-                    <div className="onboarding-form-select--container" style={{"gridColumn": "span 2"}}>
-                        <select required className="select-ubcstudent" {...register("ubc_student",{required: "please select a value"})}>
-                            <option value="" hidden>Are you a UBC student?</option>
-                            <option value={"yes"}>Yes, I'm a UBC student.</option>
-                            <option value={"no, other uni"}>No, I'm from another university.</option>
-                            <option value={"no, other"}>No, I'm not a university student.</option>
-                        </select>
-                        {errors.ubc_student && <span>{errors.ubc_student.message}</span>}
-                    </div>
+                        <div className="onboarding-form-select--container" style={{"gridColumn": "span 2"}}>
+                            <select required className="select-ubcstudent" {...register("ubc_student",{required: "please select a value"})}>
+                                <option value="" hidden>Are you a UBC student?</option>
+                                <option value={"yes"}>Yes, I'm a UBC student.</option>
+                                <option value={"no, other uni"}>No, I'm from another university.</option>
+                                <option value={"no, other"}>No, I'm not a university student.</option>
+                            </select>
+                            {errors.ubc_student && <span>{errors.ubc_student.message}</span>}
+                        </div>
 
-                    {student_status === "yes" && 
+                        {student_status === "yes" && 
+                            <div style={{
+                                "gridColumn": "span 2"
+                            }}>
+                                <FormInput
+                                    type="text"
+                                    placeholder="Student number"
+                                    name="student_id"
+                                    register={register}
+                                    error={errors.student_id}
+                                />
+                            </div>
+
+                        }
+
+                        {student_status !== "no, other" && 
+                            <>
+                                <div className="onboarding-form-select--container">
+                                    <select required {...register("year",{required: "please select a value"})}>
+                                        <option value="" hidden>Year</option>
+                                        <option value={"1"}>1</option>
+                                        <option value={"2"}>2</option>
+                                        <option value={"3"}>3</option>
+                                        <option value={"4"}>4</option>
+                                        <option value={"4+"}>4+</option>
+                                    </select>
+                                    {errors.year && <span>{errors.year.message}</span>}
+                                </div>
+
+                                <FormInput
+                                    type="text"
+                                    placeholder="Faculty"
+                                    name="faculty"
+                                    register={register}
+                                    error={errors.faculty}
+                                />
+                                <FormInput
+                                    type="text"
+                                    placeholder="Major"
+                                    name="major"
+                                    register={register}
+                                    error={errors.major}
+                                />
+                            </>
+                        }       
+                        <div className="onboarding-form-select--container">
+                            <select required {...register("returning_member",{required: "Please select a value."})}>
+                                <option value="" hidden>Are you a returning member?</option>
+                                <option value="yes">Yes, I'm a returning PMC member.</option>
+                                <option value="no">No, I'm new to PMC.</option>
+                            </select>
+                            {errors.returning_member && <span>{errors.returning_member.message}</span>}
+                        </div>
                         <div style={{
                             "gridColumn": "span 2"
                         }}>
                             <FormInput
                                 type="text"
-                                placeholder="Student number"
-                                name="student_id"
-                                register={register}
-                                error={errors.student_id}
-                            />
-                        </div>
-
-                    }
-
-                    {student_status !== "no, other" && 
-                        <>
-                            <div className="onboarding-form-select--container">
-                                <select required {...register("year",{required: "please select a value"})}>
-                                    <option value="" hidden>Year</option>
-                                    <option value={"1"}>1</option>
-                                    <option value={"2"}>2</option>
-                                    <option value={"3"}>3</option>
-                                    <option value={"4"}>4</option>
-                                    <option value={"4+"}>4+</option>
-                                </select>
-                                {errors.year && <span>{errors.year.message}</span>}
-                            </div>
-
-                            <FormInput
-                                type="text"
-                                placeholder="Faculty"
-                                name="faculty"
-                                register={register}
-                                error={errors.faculty}
-                            />
-                            <FormInput
-                                type="text"
-                                placeholder="Major"
-                                name="major"
+                                placeholder="Why Product Management?"
+                                name="why_pm"
                                 register={register}
                                 error={errors.major}
                             />
-                        </>
-                    }       
-                    <div className="onboarding-form-select--container">
-                        <select required {...register("returning_member",{required: "Please select a value."})}>
-                            <option value="" hidden>Are you a returning member?</option>
-                            <option value="yes">Yes, I'm a returning PMC member.</option>
-                            <option value="no">No, I'm new to PMC.</option>
-                        </select>
-                        {errors.returning_member && <span>{errors.returning_member.message}</span>}
+                        </div>
                     </div>
-                    <div style={{
-                        "gridColumn": "span 2"
-                    }}>
-                        <FormInput
-                            type="text"
-                            placeholder="Why Product Management?"
-                            name="why_pm"
-                            register={register}
-                            error={errors.major}
-                        />
-                    </div>
-                </div>
-                <button className="submit-button" type="submit">Continue</button>
-            </form>
+                    <button className="submit-button" type="submit">Continue</button>
+                </form>
+            </div>
         </div>
     )
 }

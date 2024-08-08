@@ -13,14 +13,16 @@ input {
     padding: 0.5rem 0.75rem;
 }
 
-input:valid {
-    background-color: rgb(196, 113, 199);
-    color: white;
-}
-
 span {
     font-size: small;
     margin-left: 0.5rem;
+}
+
+@media (prefers-color-scheme: light) {
+    input {
+        background-color: rgb(202, 202, 202);
+        color: rgb(104, 72, 120);
+    }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,5 +30,10 @@ span {
     input {
         color: black;
         background-color: white;
+    }
+
+    input:valid {
+        background-color: rgb(196, 113, 199);
+        color: white;
     }
 }
