@@ -104,7 +104,8 @@ select {
     }
 
     .onboarding-content-header {
-        background-image: linear-gradient(#a883ff, #c677d4, #f66ea2);
+        background: rgb(141,155,235);
+        background: linear-gradient(93deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
         color: transparent;
         background-clip: text;
     }
@@ -115,12 +116,12 @@ select {
     }
 
     select:valid {
-        background-color: rgb(196, 113, 199);
+        background-color: var(--pmc-purple);
         color: white;
     }
 
     .submit-button {
-        background-image: linear-gradient(#a883ff, #c677d4, #f66ea2);
-        color: white;
+        background: rgb(141,155,235);
+        background: linear-gradient(101deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
     }
 }

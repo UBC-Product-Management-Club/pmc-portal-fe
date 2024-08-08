@@ -136,7 +136,7 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
         <div className="onboarding-container">
             <div className="onboarding-content">
                 <img className="onboarding-content--logo" src={PMCLogo}/>
-                <h1 className="onboarding-content-header">Create your account</h1>
+                <h1 className="onboarding-content-header pmc-gradient-text">Create your account</h1>
                 <form autoComplete="off" className="onboarding-form" onSubmit={handleSubmit(onSubmit)}>
                     <div className="onboarding-form-content">
                         <div className="onboarding-form-content--row">
@@ -228,7 +228,7 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
                             />
                         </div>
                     </div>
-                    <button className="submit-button" type="submit">Continue</button>
+                    <button className="submit-button pmc-gradient-background" type="submit">Continue</button>
                 </form>
             </div>
         </div>
