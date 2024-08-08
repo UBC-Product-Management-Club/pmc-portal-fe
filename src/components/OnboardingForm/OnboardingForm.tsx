@@ -26,13 +26,13 @@ const UserZodObj = z.object({
         coerce: true
     })
     .int({
-      message: "Student IDs must not have decimal points!",
+        message: "Student IDs must not have decimal points!"
     })
     .gte(10000000, {
-      message: "Please enter a valid 8-digit student ID.",
+        message: "Please enter a valid 8-digit student ID."
     })
     .lte(99999999, {
-      message: "Please enter a valid 8-digit student ID.",
+        message: "Please enter a valid 8-digit student ID."
     })
     .optional(),
 
@@ -59,37 +59,31 @@ const UserZodObj = z.object({
     })
 })
 
-type UserSchema = z.infer<typeof UserZodObj>;
+type UserSchema = z.infer<typeof UserZodObj>
 
 /**
- *
+ * 
  * @param user
- * The currently logged in user via Google SSO that needs to be onboarded
- *
+ * The currently logged in user via Google SSO that needs to be onboarded 
+ * 
  * @param creds
- * Login credentials such as userUID and idToken needed to exchange for session cookie.
- * These credentials are needed as the login method is called after onboarding.
+ * Login credentials such as userUID and idToken needed to exchange for session cookie. 
+ * These credentials are needed as the login method is called after onboarding. 
  * This will log the user in after onboarding.
- *
+ * 
  */
-export default function OnboardingForm({
-  user,
-  creds,
-}: {
-  user: User;
-  creds: loginBody;
-}) {
-  const {
-    register,
-    unregister,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<UserSchema>({
-    resolver: zodResolver(UserZodObj),
-  });
+export default function OnboardingForm({ user, creds }: { user: User, creds: loginBody }) {
+    const {
+        register,
+        unregister,
+        handleSubmit,
+        watch,
+        formState: { errors },
+      } = useForm<UserSchema>({
+        resolver: zodResolver(UserZodObj)
+      })
 
-  const student_status = watch("ubc_student");
+    const student_status = watch("ubc_student")
 
     useEffect(() => {
         if (student_status === "no, other uni") {
@@ -107,38 +101,36 @@ export default function OnboardingForm({
     useEffect(() => {
     },[])
 
-  const onSubmit = async (data: UserSchema) => {
-    // fetch onboarding endpoint
-    const onboarding = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          creds: creds,
-          userDoc: {
-            displayName: user.displayName,
-            email: user.email,
-            pfp: user.photoURL,
-            ...data,
-          },
-        }),
-      }
-    );
+    const onSubmit = async (data: UserSchema) => {
+        // fetch onboarding endpoint
+        const onboarding = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`,{
+            method: "POST",
+            credentials: "include",
+            headers: {
+              'Content-type': 'application/json',
+            },
+            body: JSON.stringify({
+                creds: creds,
+                userDoc: {
+                    displayName: user.displayName,
+                    email: user.email,
+                    pfp: user.photoURL,
+                    ... data
+                }
+            })
+        })
+        
+        if (onboarding.ok) {
+            navigateTo("/dashboard")
+        } else {
+            // show error component
+            const jsonresp = await onboarding.json()
+            console.log(jsonresp)
 
-    if (onboarding.ok) {
-      navigateTo("/dashboard");
-    } else {
-      // show error component
-      const jsonresp = await onboarding.json();
-      console.log(jsonresp);
+        }
     }
-  };
 
-  const navigateTo = useNavigate();
+    const navigateTo = useNavigate()
 
     return (
         <div className="onboarding-container">
