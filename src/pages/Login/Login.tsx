@@ -6,6 +6,7 @@ import { useState } from 'react';
 import OnboardingForm from '../../components/OnboardingForm/OnboardingForm';
 import { loginBody } from '../../types/api';
 import GoogleLogo from "../../assets/google.svg"
+import PMCLogo from "../../assets/pmclogo.svg"
 
 export default function Login() {
   const [onboarding, setOnboarding] = useState<boolean>(false)
@@ -54,13 +55,14 @@ export default function Login() {
         <OnboardingForm user={user!} creds={loginCreds!}/> :
           <div className="login-container">
             <div className="login-content">
-              <h1 className="login-header">PMC Membership Portal</h1> 
-              <div className="login-button-container">
+              <img className="login-content--logo"src={PMCLogo}/>
+              <h1 className="login-content--header">PMC Membership Portal</h1> 
+              <div className="login-content--button-container">
                   <button className="login-googlesso" onClick={googleLogin}><img src={GoogleLogo} className="googleLogo" width={14} height={14}/>Continue with Google</button>
                   <button className="login-continue" onClick={() => navigateTo("/dashboard")}>Continue as a non-member</button>
               </div>
             </div>
-          </div>}
+          </div>} 
     </>
   )
 }

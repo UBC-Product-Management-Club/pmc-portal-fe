@@ -9,8 +9,8 @@
 }
 
 .login-content {
-  width: 50%;
-  height: 50%;
+  width: 40rem;
+  height: 30rem;
   margin: auto;
   padding: 2rem;
   display: flex;
@@ -20,18 +20,23 @@
   border-radius: 1rem;
 }
 
-.login-header {
+.login-content--logo {
+  width: 10rem;
+  height: 10rem;
+}
+
+.login-content--header {
   text-align: center;
   font-family: Helvetica;
   line-height: 1.5;
 }
 
-.login-button-container {
+.login-content--button-container {
   display: flex;
   flex-direction: column;
 }
 
-.login-button-container > button {
+.login-content--button-container > button {
   width: 300px;
   padding: 0.75rem 0 0.75rem 0;
   margin-top: 0.5rem;
@@ -42,11 +47,12 @@
 
 .login-googlesso {
   font-weight: 400;
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: medium;
+  color: #1c1c1c;
 }
 
 .googleLogo {
@@ -67,11 +73,11 @@
 @media (prefers-color-scheme: light) {
   .login-content {
     /* Generate the gradient online lol */
-    background: rgb(168,131,255);
-    background: linear-gradient(152deg, #a883ff 7%, #c677d4 30%, #f66ea2 53%);
+    background: rgb(141,155,235);
+    background: linear-gradient(96deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
   }
 
-  .login-header {
+  .login-content-header {
     color: white;
   }
 
@@ -83,11 +89,12 @@
 @media (prefers-color-scheme: dark) {
 
   .login-content {
-    background-color: #242424;
+    background-color: #1F2A37;
   }
 
-  .login-header {
-    background-image: linear-gradient(#a883ff, #c677d4, #f66ea2);
+  .login-content--header {
+    background: rgb(141,155,235);
+    background: linear-gradient(96deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
     color: transparent;
     background-clip: text;
   }
