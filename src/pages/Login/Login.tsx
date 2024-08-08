@@ -57,7 +57,7 @@ export default function Login() {
               <h1 className="login-header">PMC Membership Portal</h1> 
               <div className="login-button-container">
                   <button className="login-googlesso" onClick={googleLogin}><img src={GoogleLogo} className="googleLogo" width={14} height={14}/>Continue with Google</button>
-                  <button className="login-continue" onClick={() => console.log("continue as non-member")}>Continue as a non-member</button>
+                  <button className="login-continue" onClick={() => navigateTo("/dashboard")}>Continue as a non-member</button>
               </div>
             </div>
           </div>}
