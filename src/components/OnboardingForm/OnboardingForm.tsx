@@ -1,4 +1,5 @@
-import { coerce, z } from "zod"
+import "./OnboardingForm.css"
+import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import FormInput from "../FormInput/FormInput"
@@ -10,17 +11,16 @@ import { useEffect } from "react"
 
 const UserZodObj = z.object({
     first_name: z.string().min(1,{
-        message: "Please enter a first name"
+        message: "Please enter a first name."
     }),
 
     last_name: z.string().min(1,{
-        message: "Please enter a last name"
+        message: "Please enter a last name."
     }),
 
-    ubc_student: z.string().min(1,{
-        message: "Please select an option."
+    ubc_student: z.enum(["yes","no, other uni","no, other"],{
+        message: "Please select a value."
     }),
-
     student_id: z.number({
         coerce: true
     })
@@ -35,26 +35,26 @@ const UserZodObj = z.object({
     })
     .optional(),
 
-    year: z.string().min(1,{
-        message: "Please select a year"
+    year: z.enum(["1","2","3","4","4+"], {
+        message: "Please select a value."
     }).optional(),
 
     faculty: z.string().min(1,{
-        message: "Please enter a valid faculty"
+        message: "Please enter a valid faculty."
     }).optional(),
 
     major: z.string().min(1,{
-        message: "Please enter a valid major"
+        message: "Please enter a valid major."
     }).optional(),
 
     why_pm: z.string().min(1,{
         message: "Why would you like to join PMC?"
     }).max(300, {
-        message: "Maximum 300 characters"
+        message: "Maximum 300 characters."
     }),
 
-    returning_member: z.boolean({
-        required_error: "Are you a returning member?"
+    returning_member: z.enum(["yes","no"],{
+        message: "Please select a value."
     })
 })
 
@@ -97,6 +97,9 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
         }
     },[student_status])
 
+    useEffect(() => {
+    },[])
+
     const onSubmit = async (data: UserSchema) => {
         // fetch onboarding endpoint
         const onboarding = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`,{
@@ -129,88 +132,101 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
     const navigateTo = useNavigate()
 
     return (
-        <div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <FormInput
-                    label="First name"
-                    type="text"
-                    name="first_name"
-                    placeholder="Steve"
-                    register={register}
-                    error={errors.first_name}
-                />
-                <FormInput
-                    label="Last name"
-                    type="text"
-                    name="last_name"
-                    placeholder="Jobs"
-                    register={register}
-                    error={errors.last_name}
-                />
-                <label>Are you a UBC student?</label>
-                <select defaultValue="Please select a value" {...register("ubc_student",{required: "please select a value"})}>
-                    <option value={"yes"}>Yes</option>
-                    <option value={"no, other uni"}>No, I'm from another university.</option>
-                    <option value={"no, other"}>No, other</option>
-                </select>
-
-                {student_status === "yes" && 
+        <div className="onboarding-content">
+            <h1 className="onboarding-content-header">Create your account</h1>
+            <form autoComplete="off" className="onboarding-form" onSubmit={handleSubmit(onSubmit)}>
+                <div className="onboarding-form-content">
                     <FormInput
-                        label="Student ID"
                         type="text"
-                        placeholder="12345678"
-                        name="student_id"
+                        name="first_name"
+                        placeholder="First name"
                         register={register}
-                        error={errors.student_id}
+                        error={errors.first_name}
                     />
-                }
+                    <FormInput
+                        type="text"
+                        name="last_name"
+                        placeholder="Last name"
+                        register={register}
+                        error={errors.last_name}
+                    />
 
-                {student_status !== "no, other" && 
-                    <>
-                    <label>Year</label>
-                    <select defaultValue="Please select a value" {...register("year",{required: "please select a value"})}>
-                        <option value={"1"}>1</option>
-                        <option value={"2"}>2</option>
-                        <option value={"3"}>3</option>
-                        <option value={"4"}>4</option>
-                        <option value={"4+"}>4+</option>
-                    </select>
+                    <div className="onboarding-form-select--container" style={{"gridColumn": "span 2"}}>
+                        <select required className="select-ubcstudent" {...register("ubc_student",{required: "please select a value"})}>
+                            <option value="" hidden>Are you a UBC student?</option>
+                            <option value={"yes"}>Yes, I'm a UBC student.</option>
+                            <option value={"no, other uni"}>No, I'm from another university.</option>
+                            <option value={"no, other"}>No, I'm not a university student.</option>
+                        </select>
+                        {errors.ubc_student && <span>{errors.ubc_student.message}</span>}
+                    </div>
+
+                    {student_status === "yes" && 
+                        <div style={{
+                            "gridColumn": "span 2"
+                        }}>
+                            <FormInput
+                                type="text"
+                                placeholder="Student number"
+                                name="student_id"
+                                register={register}
+                                error={errors.student_id}
+                            />
+                        </div>
+
+                    }
+
+                    {student_status !== "no, other" && 
+                        <>
+                            <div className="onboarding-form-select--container">
+                                <select required {...register("year",{required: "please select a value"})}>
+                                    <option value="" hidden>Year</option>
+                                    <option value={"1"}>1</option>
+                                    <option value={"2"}>2</option>
+                                    <option value={"3"}>3</option>
+                                    <option value={"4"}>4</option>
+                                    <option value={"4+"}>4+</option>
+                                </select>
+                                {errors.year && <span>{errors.year.message}</span>}
+                            </div>
+
+                            <FormInput
+                                type="text"
+                                placeholder="Faculty"
+                                name="faculty"
+                                register={register}
+                                error={errors.faculty}
+                            />
+                            <FormInput
+                                type="text"
+                                placeholder="Major"
+                                name="major"
+                                register={register}
+                                error={errors.major}
+                            />
+                        </>
+                    }       
+                    <div className="onboarding-form-select--container">
+                        <select required {...register("returning_member",{required: "Please select a value."})}>
+                            <option value="" hidden>Are you a returning member?</option>
+                            <option value="yes">Yes, I'm a returning PMC member.</option>
+                            <option value="no">No, I'm new to PMC.</option>
+                        </select>
+                        {errors.returning_member && <span>{errors.returning_member.message}</span>}
+                    </div>
+                    <div style={{
+                        "gridColumn": "span 2"
+                    }}>
                         <FormInput
-                            label="Faculty"
                             type="text"
-                            placeholder="Science"
-                            name="faculty"
-                            register={register}
-                            error={errors.faculty}
-                        />
-                        <FormInput
-                            label="Major"
-                            type="text"
-                            placeholder="Computer Science"
-                            name="major"
+                            placeholder="Why Product Management?"
+                            name="why_pm"
                             register={register}
                             error={errors.major}
                         />
-                    </>
-                }       
-                
-                <FormInput
-                    label="Why product management?"
-                    type="text"
-                    placeholder="Products go brr"
-                    name="why_pm"
-                    register={register}
-                    error={errors.major}
-                />
-                <FormInput
-                    label="Are you a returning PMC member?"
-                    placeholder=""
-                    type="checkbox"
-                    name="returning_member"
-                    register={register}
-                    error={errors.returning_member}
-                />
-                <button type="submit">Continue to dashboard</button>
+                    </div>
+                </div>
+                <button className="submit-button" type="submit">Continue</button>
             </form>
         </div>
     )
