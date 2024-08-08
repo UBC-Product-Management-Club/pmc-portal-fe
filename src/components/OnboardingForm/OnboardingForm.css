@@ -1,0 +1,127 @@
+
+.onboarding-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.onboarding-content {
+    width: 40rem;
+    height: 35rem;
+    display: flex;
+    flex-direction: column;
+    padding-top: 2rem;
+    padding-left: 5rem;
+    padding-right: 5rem;
+    border-radius: 1rem;
+    position: relative;
+} 
+
+.onboarding-form {
+    width: 100%;
+    flex: 0 1 auto;
+}
+
+.onboarding-content-header {
+    font-size: x-large;
+    margin: 2rem 0;
+}
+
+.onboarding-content--logo {
+    width: 4rem;
+    height: 4rem;
+}
+
+.onboarding-form-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 1rem;
+}
+
+.onboarding-form-content--row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.onboarding-form-select--container {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+
+select {
+    box-sizing: border-box;
+    border-radius: 100rem;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-right: 0.5rem solid transparent;
+    color: black;
+    width: 100%;
+}
+
+
+.submit-button {
+    width: 10rem;
+    border: none;
+    border-radius: 100rem;
+    padding: 0.5rem 1rem;
+    float: right;
+    cursor: pointer;
+    position: absolute;
+    right: 10%;
+    bottom: 10%;
+}
+
+@media (prefers-color-scheme: light) {
+    .onboarding-content {
+        background-color: #fefefe;
+    }
+
+    select {
+        background-color:rgb(202, 202, 202);
+    }
+
+    .submit-button {
+        background-color: #383482;
+        color: white;
+    }
+
+}
+
+@media (prefers-color-scheme: dark) {
+    .onboarding-content {
+        background-color: #242424;
+    }
+
+    .onboarding-content-header {
+        background: rgb(141,155,235);
+        background: linear-gradient(93deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
+        color: transparent;
+        background-clip: text;
+    }
+
+
+    select {
+        background-color: white;
+    }
+
+    select:valid {
+        background-color: var(--pmc-purple);
+        color: white;
+    }
+
+    .submit-button {
+        background: rgb(141,155,235);
+        background: linear-gradient(101deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
+    }
+}
