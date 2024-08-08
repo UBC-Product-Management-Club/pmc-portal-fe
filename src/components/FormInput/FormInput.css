@@ -1,0 +1,32 @@
+
+.onboarding-form-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+input {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 999rem;
+    border: none;
+    padding: 0.5rem 0.75rem;
+}
+
+input:valid {
+    background-color: rgb(196, 113, 199);
+    color: white;
+}
+
+span {
+    font-size: small;
+    margin-left: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+
+    input {
+        color: black;
+        background-color: white;
+    }
+}
