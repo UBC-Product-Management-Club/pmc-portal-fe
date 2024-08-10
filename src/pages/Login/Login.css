@@ -18,6 +18,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 1rem;
+  background-color: #1F2A37;
 }
 
 .login-content--logo {
@@ -29,6 +30,10 @@
   text-align: center;
   font-family: Helvetica;
   line-height: 1.5;
+  background: rgb(141,155,235);
+  background: linear-gradient(96deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
+  color: transparent;
+  background-clip: text;
 }
 
 .login-content--button-container {
@@ -53,6 +58,8 @@
   justify-content: center;
   font-size: medium;
   color: #1c1c1c;
+  background-color: white;
+  border: 0;
 }
 
 .googleLogo {
@@ -68,40 +75,3 @@
   font-size: medium;
 }
 
-/* Deal with color below */
-
-@media (prefers-color-scheme: light) {
-  .login-content {
-    /* Generate the gradient online lol */
-    background: rgb(141,155,235);
-    background: linear-gradient(96deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
-  }
-
-  .login-content-header {
-    color: white;
-  }
-
-  .login-googlesso {
-    border: 0;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-
-  .login-content {
-    background-color: #1F2A37;
-  }
-
-  .login-content--header {
-    background: rgb(141,155,235);
-    background: linear-gradient(96deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
-    color: transparent;
-    background-clip: text;
-  }
-
-  .login-googlesso {
-    background-color: white;
-    border: 0;
-    color: black;
-  }
-}

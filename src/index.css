@@ -2,7 +2,6 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
 
-  color-scheme: light dark;
   background-color: #3D4043;
 
   font-synthesis: none;
@@ -16,18 +15,4 @@
   --pmc-black: #2E2E2E;
   --pmc-dark-purple: #445088;
   --pmc-light-grey: #DEDFE2;
-}
-
-
-@media (prefers-color-scheme: light) {
-  :root {
-    /* color: #213547; */
-    background-color: #e2ccff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }

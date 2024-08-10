@@ -18,6 +18,7 @@
     padding-right: 5rem;
     border-radius: 1rem;
     position: relative;
+    background-color: #1f2a37;
 } 
 
 .onboarding-form {
@@ -28,6 +29,9 @@
 .onboarding-content-header {
     font-size: x-large;
     margin: 2rem 0;
+    background: linear-gradient(94deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
+    color: transparent;
+    background-clip: text;
 }
 
 .onboarding-content--logo {
@@ -67,6 +71,16 @@ select {
     border-right: 0.5rem solid transparent;
     color: black;
     width: 100%;
+    background-color: white;
+}
+
+select:valid {
+    background-color: var(--pmc-purple);
+    color: white;
+}
+
+span {
+    color: white;
 }
 
 
@@ -80,48 +94,7 @@ select {
     position: absolute;
     right: 10%;
     bottom: 10%;
-}
-
-@media (prefers-color-scheme: light) {
-    .onboarding-content {
-        background-color: #fefefe;
-    }
-
-    select {
-        background-color:rgb(202, 202, 202);
-    }
-
-    .submit-button {
-        background-color: #383482;
-        color: white;
-    }
-
-}
-
-@media (prefers-color-scheme: dark) {
-    .onboarding-content {
-        background-color: #242424;
-    }
-
-    .onboarding-content-header {
-        background: rgb(141,155,235);
-        background: linear-gradient(93deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
-        color: transparent;
-        background-clip: text;
-    }
-
-
-    select {
-        background-color: white;
-    }
-
-    select:valid {
-        background-color: var(--pmc-purple);
-        color: white;
-    }
-
-    .submit-button {
-        background: rgb(141,155,235);
-        background: linear-gradient(101deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
-    }
+    background: rgb(141,155,235);
+    background: linear-gradient(101deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
+    color: white;
 }
