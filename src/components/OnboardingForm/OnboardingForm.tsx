@@ -98,9 +98,6 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
         }
     },[student_status])
 
-    useEffect(() => {
-    },[])
-
     const onSubmit = async (data: UserSchema) => {
         // fetch onboarding endpoint
         const onboarding = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`,{
