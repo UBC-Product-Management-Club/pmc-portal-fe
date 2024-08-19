@@ -37,11 +37,13 @@ export default function Login() {
         if (login.ok) {
           // User exists so go to /dashboard
           navigateTo("/dashboard")
-        } else {
+        } else if (login.status === 302) {
           // Currently logged in user that needs to be onboarded
           setUser(user)
           setLoginCreds({ userUID: user.uid, idToken: idToken })
           setOnboarding(true) 
+        } else {
+          // error fetching endpoint
         }
     } catch (error) {
       // Show some sort of error component
