@@ -22,5 +22,5 @@ export type FormInputProps = {
 };
   
 
-export type ValidFieldNames = "first_name" | "last_name" | "student_id" | "year" | 
-                              "faculty" | "major" | "why_pm" | "returning_member";
+export type ValidFieldNames = "first_name" | "last_name" | "pronouns" | "student_id" | "university" |
+                              "year" | "faculty" | "major" | "why_pm" | "returning_member";
