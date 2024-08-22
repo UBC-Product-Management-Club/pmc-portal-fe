@@ -1,0 +1,239 @@
+/* .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    width: 100%;
+} */
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.background-event {
+    background-color: #1F2A37;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    align-items: center;
+}
+
+
+/* Header */
+
+.background-event .logo {
+    height: 30px;
+    width: 100px;
+}
+
+.background-event .header {
+    display: flex;
+    justify-content: space-between;
+    top: 20px;
+    height: 50px;
+    width: 800px;
+    padding: 20px;
+    border: 1px solid #ffffff;
+    border-radius: 50px;
+    box-sizing: border-box;
+    margin-top: 30px;
+}
+
+.background-event .header-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+}
+
+.background-event .header-nav {
+    display: flex;
+    align-items: center;
+}
+
+.background-event .header-link {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: 0.5s;
+    margin-right: 20px;
+}
+
+.background-event .header-link:hover {
+    background-image: linear-gradient(to right, rgba(144, 155, 235), rgba(175, 113, 170), rgba(227, 49, 72));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+}
+
+.background-event .header-link:hover:after {
+    content: '';
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(to right, rgba(175, 113, 170), rgba(227, 49, 72));
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+/* Event Card */
+
+/* .card {
+    margin-top: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 5px;
+
+} */
+
+.event-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.event-title {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 5px;
+    margin-left: 280px;
+    font-size: 32px;
+}
+
+.event-details-container {
+    /* width: 100%; */
+    display: flex;
+    justify-content: center;
+}
+
+.event-details {
+    display: flex;
+    padding: 30px;
+    border: 1px solid #A9A9A9;
+    border-radius: 12px;
+    text-align: left;
+    margin-top: 10px;
+    margin-left: 400px;
+    margin-bottom: 10px;
+    width: 280px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    color: white;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 20px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.icon-text {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.icon-text div {
+    display: flex;
+    flex-direction: column;
+}
+
+.text-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+}
+
+.text-container h3 {
+    margin: 0;
+    margin-top: -5px;
+    color: inherit;
+    font-weight: bold;
+    font-size: normal;
+}
+
+.text-container h4 {
+    margin: 0;
+    line-height: 1.2;
+    color: grey;
+    font-size: smaller;
+    font-weight: normal;
+    padding-top: 2px;
+}
+
+.event-photo {
+    margin-left: 50px;
+    margin-top: -10px;
+
+    border-radius: 8px;
+    width: 350px;
+    height: 350px;
+    position: relative;
+    float: right;
+    right: 250px;
+    bottom: 350px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.event-desc {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.event-desc h3 {
+    margin-top: -300px;
+    color: #ffffff;
+    flex-direction: column;
+    margin-right: 640px;
+}
+
+.event-desc p {
+    color: #ffffff;
+}
+
+
+.bottom-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.signup-button {
+    border-radius: 20px;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background: #f0f0f0;
+    margin-top: -5px;
+    margin-left: 400px;
+    width: 350px;
+    height: 45px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: border-color 0.5s;
+}
+
+.signup-button:hover {
+    border-color: #ffffff;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
+}
+
+.signup-button:focus,
+.signup-button:focus-visible {
+    outline: 1px auto -webkit-focus-ring-color;
+}
