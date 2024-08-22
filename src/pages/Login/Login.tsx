@@ -36,19 +36,24 @@ export default function Login() {
           idToken: idToken
         })
       })
+
+
       if (login.ok) {
         // User exists so go to /dashboard
         localStorage.setItem('member_id', user.uid);
         localStorage.setItem('member_name', displayName || "guest");
         navigateTo("/dashboard")
-      } else {
+      } else if (login.status === 302) {
         // Currently logged in user that needs to be onboarded
         setUser(user)
         setLoginCreds({ userUID: user.uid, idToken: idToken })
         setOnboarding(true)
         localStorage.setItem('member_id', user.uid);
         localStorage.setItem('member_name', displayName || "guest");
+      } else {
+        throw Error("An error occurred logging in")
       }
+
     } catch (error) {
       // Show some sort of error component
       console.log(error);
