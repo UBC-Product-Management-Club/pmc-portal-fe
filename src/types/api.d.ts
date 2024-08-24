@@ -55,5 +55,9 @@ type attendeeType = {
     dietary: string
 }
 
+type paymentIntentResponse = {
+    payment_secret: string
+}
+
 
 
