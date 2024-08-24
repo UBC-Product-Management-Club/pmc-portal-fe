@@ -3,9 +3,9 @@ import PMCLogo from "../../assets/pmclogo.svg"
 import OnboardingForm from "./OnboardingForm"
 import { UserSchema } from "./types"
 import { useEffect, useState } from "react"
-import PaymentForm from "../PaymentForm/Payment"
+import PaymentForm from "../Payment/Payment"
 import { Elements } from "@stripe/react-stripe-js"
-import Payment from "../PaymentForm/Payment"
+import Payment from "../Payment/Payment"
 
 
 /**
@@ -38,6 +38,7 @@ export default function Onboarding() {
             setIsPaying(true)
             // user has filled in information, show payment form
         } 
+        console.log(userInfo)
 
     },[userInfo])
 
