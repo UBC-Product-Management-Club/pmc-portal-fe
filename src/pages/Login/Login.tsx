@@ -3,10 +3,10 @@ import { GoogleAuthProvider, inMemoryPersistence, setPersistence, signInWithPopu
 import { auth } from "../../../firebase"
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import OnboardingForm from '../../components/OnboardingForm/OnboardingForm';
 import { loginBody } from '../../types/api';
 import GoogleLogo from "../../assets/google.svg"
 import PMCLogo from "../../assets/pmclogo.svg"
+import Onboarding from "../../components/OnboardingForm/Onboarding";
 
 export default function Login() {
   const [onboarding, setOnboarding] = useState<boolean>(false)
@@ -62,8 +62,9 @@ export default function Login() {
 
   return (
     <>
-      {onboarding ?
-        <OnboardingForm user={user!} creds={loginCreds!} /> :
+      <Onboarding />
+      {/* {onboarding ?
+        <Onboarding /> :
         <div className="login-container">
           <div className="login-content">
             <img className="login-content--logo" src={PMCLogo} />
@@ -73,7 +74,7 @@ export default function Login() {
               <button className="login-continue" onClick={() => navigateTo("/dashboard")}>Continue as a non-member</button>
             </div>
           </div>
-        </div>}
+        </div>} */}
     </>
   )
 }
