@@ -5,7 +5,7 @@ export type FormData = {
     last_name: string
     ubc_student: "yes" | "no, other uni" | "no, other"
     student_id?: number
-    year?: "1" | "2" | "3" | "4" | "4+" 
+    year?: "1" | "2" | "3" | "4" | "5+"
     faculty?: string
     major?: string
     why_pm: string
