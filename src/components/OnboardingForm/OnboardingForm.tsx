@@ -44,7 +44,7 @@ const UserZodObj = z.object({
         message: "Please enter the name of the university you go to."
     }),
 
-    year: z.enum(["1","2","3","4","4+"], {
+    year: z.enum(["1","2","3","4","5+"], {
         message: "Please select a value."
     }).optional(),
 
