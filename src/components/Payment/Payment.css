@@ -7,8 +7,10 @@
 }
 
 .Payment-text {
-    color: #DEDFE2;
+    color: var(--pmc-light-grey);
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+    margin-left: 0;
+    margin-right: 0;
     font-size: medium;
 }

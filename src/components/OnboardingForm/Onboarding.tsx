@@ -1,11 +1,13 @@
 import "./Onboarding.css"
 import PMCLogo from "../../assets/pmclogo.svg"
 import OnboardingForm from "./OnboardingForm"
-import { UserSchema } from "./types"
 import { useEffect, useState } from "react"
-import PaymentForm from "../Payment/Payment"
-import { Elements } from "@stripe/react-stripe-js"
 import Payment from "../Payment/Payment"
+import { OnboardingProvider } from "./Context"
+import { auth } from "../../../firebase"
+import { User } from "firebase/auth"
+import { addTransactionBody, loginBody, onboardingBody, paymentInfo, userDocument } from "../../types/api"
+import { Timestamp } from "firebase/firestore"
 
 
 /**
@@ -20,46 +22,83 @@ import Payment from "../Payment/Payment"
  * 
  */
 export default function Onboarding() {
-    const [userInfo, setUserInfo] = useState<UserSchema | undefined>(undefined)
-    const [paid, setPaid] = useState<boolean>(false)
-    const [isPaying, setIsPaying] = useState<boolean>(false) // user needs to input their data first then pay.
+    const [userInfo, setUserInfo] = useState<userDocument | undefined>(undefined)
+    const [currPage, setCurrPage] = useState<"userInfo" | "payment" | "paymentSuccess">("userInfo")
+    const [payment, setPayment]= useState<paymentInfo | undefined>()
 
     useEffect(() => {
-        // When user navigates back and userInfo is defined
-        // Restart -> setUserInfo(undefined) so they can submit again
-        if (!paid && userInfo) {
-            setUserInfo(undefined)
+        const addUser = async () => {
+            const user: User | null = auth.currentUser 
+            if (!user) {
+                // If for some reason the user isn't signed-in at this point, throw some error
+                return 
+            }
+
+            const idToken = await user.getIdToken()
+            const creds: loginBody = {
+                userUID: user.uid,
+                idToken: idToken
+            }
+
+            try {
+                // Add user to the database
+                const onboardBody: onboardingBody = {
+                        creds: creds, // Must be user's UID and idToken 
+                        userDoc: {
+                            displayName: user.displayName!,
+                            email: user.email!,
+                            pfp: user.photoURL!,
+                            ...userInfo!
+                        } 
+                }
+                const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        'Content-type': 'application/json',
+                    },
+                    body: JSON.stringify(onboardBody)
+                })
+                if (!onboardUser.ok) {
+                    throw Error("Failed adding user to database")
+                }
+
+                const transaction: addTransactionBody = {
+                    type: "membership",
+                    member_id: user.uid,
+                    payment: {
+                        ... payment!,
+                        created: new Timestamp(payment!.created,0)
+                    }
+                }
+                const addTransaction = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/payments/add-transaction`, {
+                    method: "POST",
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify(transaction)
+                })
+                if (!addTransaction.ok) {
+                    throw Error("Failed adding transaction to database")
+                }
+
+                setCurrPage("paymentSuccess")
+            } catch (error) {
+                console.log(error)
+                return
+            }
         }
-    }, [paid])
+        if (payment) {
+            // add user to db
+            console.log("Adding user to db")
+            console.log(`Welcome to PMC ${userInfo?.first_name}`)
+            addUser()
+        }
+    }, [payment])
 
-    useEffect(() => {
-        if (userInfo) {
-            console.log("user info set")
-            setIsPaying(true)
-            // user has filled in information, show payment form
-        } 
-        console.log(userInfo)
-
-    },[userInfo])
 
 
     // ADDS USER TO DATABASE (DO THIS AFTER PAYMENT)
-    // const onboarding = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
-    //     method: "POST",
-    //     credentials: "include",
-    //     headers: {
-    //         'Content-type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //         creds: creds, userID and idToken both accessible from user object...
-    //         userDoc: {
-    //             displayName: user.displayName,
-    //             email: user.email,
-    //             pfp: user.photoURL,
-    //             ...data
-    //         }
-    //     })
-    // })
     
     return (
         <div className="onboarding-container">
@@ -67,11 +106,17 @@ export default function Onboarding() {
                 <img className="onboarding-content--logo" src={PMCLogo} />
                 <h1 className="onboarding-content-header pmc-gradient-text">Become a member</h1>
                 {/* Toggle between onboardingform/paymentform */}
-                {isPaying ? 
-                    <Payment /> 
-                : 
-                    <OnboardingForm setUserInfo={setUserInfo}/>
-                }
+                {/* Use Context to keep track of current state */}
+                <OnboardingProvider setters={{ setUserInfo, setPayment, setCurrPage }} >
+                    {currPage == "payment" ? 
+                        <Payment /> 
+                    : currPage == "paymentSuccess" ? 
+                        // TODO: FINISH PAYMENT SUCCESS PAGE
+                        <h1>Payment success</h1>
+                    :
+                        <OnboardingForm />
+                    }
+                </OnboardingProvider>
             </div>
         </div>
     )

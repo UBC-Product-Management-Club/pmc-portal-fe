@@ -1,11 +1,12 @@
 import "./Payment.css"
 import { Appearance, loadStripe, StripeElementsOptions } from "@stripe/stripe-js"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { paymentIntentResponse } from "../../types/api";
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentForm from "./PaymentForm";
+import { OnboardingContext } from "../OnboardingForm/Context";
 
-console.log("stripe key " + import.meta.env.VITE_STRIPE_KEY)
+// console.log("stripe key " + import.meta.env.VITE_STRIPE_KEY)
 const stripe_key = loadStripe(import.meta.env.VITE_STRIPE_KEY)
 
 export default function Payment() {
@@ -13,18 +14,19 @@ export default function Payment() {
     // - Needs a "back" butjon
     
     const [paymentSecret, setPaymentSecret] = useState<string>("")
+    const { setCurrPage } = useContext(OnboardingContext)
 
     useEffect(() => {
         // Create PaymentIntent as soon as the page loads
         const fetchPaymentIntent = async () => {
             try {
-                console.log("fetching payment intent")
+                // console.log("fetching payment intent")
                 const paymentIntent = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/payments/membership`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                 })
                 const res: paymentIntentResponse = await paymentIntent.json();
-                console.log("secret: " + res.payment_secret);
+                // console.log("secret: " + res.payment_secret);
                 setPaymentSecret(res.payment_secret)
             } catch (error) {
                 console.log("Error creating payment intent.")
@@ -37,7 +39,6 @@ export default function Payment() {
         theme: 'stripe',
         variables: {
             fontWeightNormal: '500',
-            // borderRadius: '2px',
             colorPrimary: '#AF71AA',
             colorText: '#DEDFE2',
             tabIconSelectedColor: '#fff',
@@ -75,16 +76,22 @@ export default function Payment() {
         appearance
     };
 
+    function goBack() {
+      // goes back to userInfo page
+      setCurrPage("userInfo")
+      
+    }
     
 
     return (
         <div className="Payment-container">
-            <span className="Payment-text --pmc-light-grey">To become a PMC member for the 2024/2025 academic year, a $10 membership fee is required.</span>
+            <span className="Payment-text ">To become a PMC member for the 2024/2025 academic year, a $10 membership fee is required.</span>
             {paymentSecret && 
                 <Elements options={options} stripe={stripe_key}>
                     <PaymentForm />
                 </Elements>
             }
+            {/* <button onClick={goBack}>Back</button> */}
         </div>
     )
 }
