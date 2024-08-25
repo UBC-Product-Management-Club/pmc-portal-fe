@@ -1,18 +1,18 @@
 // STORE API REQUEST/RESPONSE TYPES HERE
 
-import { User } from "firebase/auth"
-
 type userDocument = {
-    first_name: string
-    last_name: string
-    email: string // from google
-    displayName: string // from Google
-    student_id: number
-    year: string // "5+"
-    faculty: string
-    major: string
-    why_PM: string
-    returning_member: boolean
+    displayName?: string
+    email?: string
+    pfp?: string
+    first_name: string;
+    last_name: string;
+    ubc_student: "yes" | "no, other uni" | "no, other";
+    why_pm: string;
+    returning_member: "yes" | "no";
+    student_id?: number | undefined;
+    year?: "1" | "2" | "3" | "4" | "4+" | undefined;
+    faculty?: string | undefined;
+    major?: string | undefined;
 }
 
 type loginBody = {
@@ -59,5 +59,18 @@ type paymentIntentResponse = {
     payment_secret: string
 }
 
+type paymentInfo = {
+    id: string
+    amount: number
+    status: string
+    created: Timestamp
+}
 
+type addTransactionBody = {
+    type: "membership" | "event"
+    member_id?: string
+    attendee_id?: string
+    payment: paymentInfo
+}
 
+export { userDocument, loginBody, onboardingBody, eventType, attendeeType, paymentIntentResponse, addTransactionBody, paymentInfo }

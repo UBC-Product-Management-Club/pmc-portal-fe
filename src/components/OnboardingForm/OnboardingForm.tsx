@@ -1,23 +1,24 @@
 import "./OnboardingForm.css"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import FormInput from "../FormInput/FormInput"
-import { UserSchema, UserZodObj } from "./types"
+import { OnboardingFormSchema, UserZodObj } from "./types"
+import { OnboardingContext } from "./Context"
 
-
-export default function OnboardingForm({ setUserInfo }: { setUserInfo: React.Dispatch<React.SetStateAction<UserSchema | undefined>>}) {
+export default function OnboardingForm() {
     const {
         register,
         unregister,
         handleSubmit,
         watch,
         formState: { errors },
-    } = useForm<UserSchema>({
+    } = useForm<OnboardingFormSchema>({
         resolver: zodResolver(UserZodObj)
     })
 
     const student_status = watch("ubc_student")
+    const { setUserInfo, setCurrPage } = useContext(OnboardingContext)
 
     useEffect(() => {
         if (student_status === "no, other uni") {
@@ -32,10 +33,11 @@ export default function OnboardingForm({ setUserInfo }: { setUserInfo: React.Dis
         }
     }, [student_status])
 
-    const onSubmit = async (data: UserSchema) => {
+    const onSubmit = async (data: OnboardingFormSchema) => {
         // update parent state to save user input
-        setUserInfo(data)
 
+        setUserInfo(data)
+        setCurrPage("payment")
         // fetch onboarding endpoint
         // save state of current user info
         // const onboarding = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {

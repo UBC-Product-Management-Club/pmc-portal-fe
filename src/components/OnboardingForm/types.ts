@@ -49,6 +49,6 @@ const UserZodObj = z.object({
     })
 })
 
-type UserSchema = z.infer<typeof UserZodObj>
+type OnboardingFormSchema = z.infer<typeof UserZodObj>
 
-export { UserZodObj, type UserSchema }
+export { UserZodObj, type OnboardingFormSchema }
