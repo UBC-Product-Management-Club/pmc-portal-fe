@@ -32,7 +32,7 @@ const UserZodObj = z.object({
 
     university: z.string().min(1,{
         message: "Please enter the name of the university you go to."
-    }),
+    }).optional(),
 
     year: z.enum(["1", "2", "3", "4", "5+"], {
         message: "Please select a value."

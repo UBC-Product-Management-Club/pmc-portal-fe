@@ -33,9 +33,9 @@ export default function OnboardingForm() {
         }
     }, [student_status])
 
-    const onSubmit = async (data: OnboardingFormSchema) => {
+    const submit = async (data: OnboardingFormSchema) => {
         // update parent state to save user input
-
+        console.log()
         setUserInfo(data)
         setCurrPage("payment")
         // fetch onboarding endpoint
@@ -73,7 +73,7 @@ export default function OnboardingForm() {
     // const navigateTo = useNavigate()
 
     return (
-        <form autoComplete="off" className="onboarding-form" onSubmit={handleSubmit(onSubmit)}>
+        <form autoComplete="off" className="onboarding-form" onSubmit={handleSubmit(submit)}>
             <div className="onboarding-form-content">
                 <div className="onboarding-form-content--row">
                     <FormInput
