@@ -8,6 +8,7 @@ import { auth } from "../../../firebase"
 import { User } from "firebase/auth"
 import { addTransactionBody, loginBody, onboardingBody, paymentInfo, userDocument } from "../../types/api"
 import { Timestamp } from "firebase/firestore"
+import PaymentSuccess from "../Payment/PaymentSuccess"
 
 
 /**
@@ -104,7 +105,10 @@ export default function Onboarding() {
         <div className="onboarding-container">
             <div className="onboarding-content">
                 <img className="onboarding-content--logo" src={PMCLogo} />
-                <h1 className="onboarding-content-header pmc-gradient-text">Become a member</h1>
+                { currPage == "paymentSuccess" ? 
+                    <h1 className="onboarding-content-header pmc-gradient-text">Welcome to PMC {userInfo?.first_name}! <span style={{fontSize: 'x-large'}}>🥳</span></h1> 
+                : 
+                    <h1 className="onboarding-content-header pmc-gradient-text">Become a member</h1>}
                 {/* Toggle between onboardingform/paymentform */}
                 {/* Use Context to keep track of current state */}
                 <OnboardingProvider setters={{ setUserInfo, setPayment, setCurrPage }} >
@@ -112,7 +116,7 @@ export default function Onboarding() {
                         <Payment /> 
                     : currPage == "paymentSuccess" ? 
                         // TODO: FINISH PAYMENT SUCCESS PAGE
-                        <h1>Payment success</h1>
+                        <PaymentSuccess />
                     :
                         <OnboardingForm />
                     }

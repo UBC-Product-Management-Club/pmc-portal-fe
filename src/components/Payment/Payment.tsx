@@ -14,7 +14,7 @@ export default function Payment() {
     // - Needs a "back" butjon
     
     const [paymentSecret, setPaymentSecret] = useState<string>("")
-    const { setCurrPage } = useContext(OnboardingContext)
+    // const { setCurrPage } = useContext(OnboardingContext)
 
     useEffect(() => {
         // Create PaymentIntent as soon as the page loads
@@ -76,11 +76,12 @@ export default function Payment() {
         appearance
     };
 
-    function goBack() {
-      // goes back to userInfo page
-      setCurrPage("userInfo")
+    // Might need this in the future but it resets the form.
+    // function goBack() {
+    //   // goes back to userInfo page
+    //   setCurrPage("userInfo")
       
-    }
+    // }
     
 
     return (
