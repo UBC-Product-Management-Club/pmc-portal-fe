@@ -94,16 +94,11 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
     const student_status = watch("ubc_student")
 
     useEffect(() => {
-        if (student_status === "yes") {
-            // UBC student
-            unregister("university")
-        }
         if (student_status === "no, other uni") {
             // Other university student
             unregister("student_id")
         } else {
             // Not a university student
-            unregister("university")
             unregister("student_id")
             unregister("year")
             unregister("faculty")
@@ -195,7 +190,7 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
                             />
                         }
 
-                        {student_status === "yes" && 
+                        {student_status === "yes" &&
                             <div className="onboarding-form-content--row">
                                 <FormInput
                                     type="text"
