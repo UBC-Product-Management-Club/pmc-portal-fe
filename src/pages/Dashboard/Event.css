@@ -77,6 +77,27 @@ body {
     background: linear-gradient(to right, rgba(175, 113, 170), rgba(227, 49, 72));
 }
 
+.background-event .header-button {
+    color: white;
+    border-radius: 25px;
+    background-color: #333;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-size: 16px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.5s;
+    margin-right: 20px;
+}
+
+.background-event .header-button:hover {
+    background-color: #444;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -130,6 +151,7 @@ html {
     color: white;
     flex-direction: column;
     gap: 5px;
+    justify-content: space-between;
 }
 
 .icon {
@@ -180,17 +202,18 @@ html {
     margin-top: -10px;
 
     border-radius: 8px;
-    width: 350px;
-    height: 350px;
+    width: 360px;
+    height: 530px;
     position: relative;
     float: right;
-    right: 250px;
-    bottom: 350px;
+
+    right: 240px;
+    bottom: 519px;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .event-desc {
-    margin-top: 20px;
+    margin-top: -150px;
     text-align: left;
 }
 
@@ -202,7 +225,7 @@ html {
 }
 
 .event-desc p {
-    color: #ffffff;
+    color: rgba(169, 169, 169, 1);
 }
 
 
