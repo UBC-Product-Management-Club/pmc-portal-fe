@@ -9,6 +9,10 @@ const UserZodObj = z.object({
         message: "Please enter a last name."
     }),
 
+    pronouns: z.string().min(1,{
+        message: "Please enter your pronouns."
+    }),
+
     ubc_student: z.enum(["yes", "no, other uni", "no, other"], {
         message: "Please select a value."
     }),
@@ -26,7 +30,11 @@ const UserZodObj = z.object({
         })
         .optional(),
 
-    year: z.enum(["1", "2", "3", "4", "4+"], {
+    university: z.string().min(1,{
+        message: "Please enter the name of the university you go to."
+    }),
+
+    year: z.enum(["1", "2", "3", "4", "5+"], {
         message: "Please select a value."
     }).optional(),
 
