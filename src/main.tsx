@@ -4,7 +4,7 @@ import Login from './pages/Login/Login.tsx'
 import './index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import Dashboard from './pages/Dashboard/Dashboard.tsx'
-import Event from "./pages/Event/Event";
+import EventPage from "./pages/Event/EventPage";
 // import Onboarding from './pages/Onboarding.tsx'
 
 const router = createBrowserRouter([
@@ -22,7 +22,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/event/:eventId", //passes a params object to element containing :id
-    element: <Event />
+    element: <EventPage />
   },
   {
     path: "/profile/:profileId",
