@@ -3,7 +3,9 @@ import { FieldError, UseFormRegister } from "react-hook-form";
 export type FormData = {
     first_name: string
     last_name: string
+    pronouns?: string
     ubc_student: "yes" | "no, other uni" | "no, other"
+    university?: string
     student_id?: number
     year?: "1" | "2" | "3" | "4" | "5+"
     faculty?: string

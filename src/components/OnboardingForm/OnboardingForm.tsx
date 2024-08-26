@@ -21,7 +21,7 @@ const UserZodObj = z.object({
 
     pronouns: z.string().min(1,{
         message: "Please enter your pronouns."
-    }),
+    }).optional(),
 
     ubc_student: z.enum(["yes","no, other uni","no, other"],{
         message: "Please select a value."
@@ -42,7 +42,7 @@ const UserZodObj = z.object({
 
     university: z.string().min(1,{
         message: "Please enter the name of the university you go to."
-    }),
+    }).optional(),
 
     year: z.enum(["1","2","3","4","5+"], {
         message: "Please select a value."
@@ -94,11 +94,16 @@ export default function OnboardingForm({ user, creds }: { user: User, creds: log
     const student_status = watch("ubc_student")
 
     useEffect(() => {
+        if (student_status === "yes") {
+            // UBC student
+            unregister("university")
+        }
         if (student_status === "no, other uni") {
             // Other university student
             unregister("student_id")
         } else {
             // Not a university student
+            unregister("university")
             unregister("student_id")
             unregister("year")
             unregister("faculty")
