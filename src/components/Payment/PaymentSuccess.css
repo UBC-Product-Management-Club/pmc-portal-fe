@@ -36,6 +36,6 @@
     padding: 1rem 2rem;
     cursor: pointer;
     border: 0;
-    color: var(--pmc-light-grey);
-    font-weight: 500;
+    color: #333d6c;
+    font-weight: 600;
 }
