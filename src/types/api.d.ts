@@ -1,18 +1,19 @@
 // STORE API REQUEST/RESPONSE TYPES HERE
 
 type userDocument = {
-    displayName?: string
-    email?: string
-    pfp?: string
-    first_name: string;
-    last_name: string;
-    ubc_student: "yes" | "no, other uni" | "no, other";
-    why_pm: string;
-    returning_member: "yes" | "no";
-    student_id?: number | undefined;
-    year?: "1" | "2" | "3" | "4" | "4+" | undefined;
-    faculty?: string | undefined;
-    major?: string | undefined;
+    first_name: string
+    last_name: string
+    pronouns: string
+    email: string // from google
+    pfp: string // from google
+    displayName: string // from Google
+    university?: string
+    student_id?: number
+    year?: string // "5+"
+    faculty?: string
+    major?: string
+    why_pm: string
+    returning_member: string
 }
 
 type loginBody = {

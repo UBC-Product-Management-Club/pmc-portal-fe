@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { eventType } from '../../types/api';
 import { auth } from "../../../firebase"
+import { signOut } from "firebase/auth";
 
 export default function Dashboard() {
     // Check if logged in or continued as non-member
@@ -34,6 +35,27 @@ export default function Dashboard() {
         }
     }
 
+    async function logout() {
+        try {
+            if (auth.currentUser) {
+                const uid = auth.currentUser.uid;
+                const displayName = auth.currentUser.displayName;
+
+                await signOut(auth);
+
+                if (uid) {
+                    localStorage.removeItem(uid);
+                }
+                if (displayName) {
+                    localStorage.removeItem(displayName);
+                }
+                navigateTo("/");
+            }
+        } catch (error) {
+            console.error("Error signing out: ", error);
+        }
+    }
+
     useEffect(() => {
         dashboardComponents();
     }, []);
@@ -56,7 +78,7 @@ export default function Dashboard() {
                         </div>
                         <div>
                             {auth.currentUser != null ? (
-                                <a className="header-button">Sign out</a>
+                                <button onClick={logout} className="header-button">Sign out</button>
                             ) : (
                                 <a href="/" className="header-button">Sign in</a>
                             )}

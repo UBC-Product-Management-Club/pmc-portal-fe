@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { eventType } from '../../types/api';
 import { auth } from "../../../firebase"
+import { signOut } from 'firebase/auth';
 import "./Event.css"
 import "./Dashboard.css"
 
@@ -11,6 +12,7 @@ const Event: React.FC = () => {
     const [event, setEvent] = useState<eventType | null>(null);
     const { event_id } = useParams<{ event_id: string }>();
     const [loading, setLoading] = useState(true);
+    const navigateTo = useNavigate();
 
     async function fetchEvent() {
         try {
@@ -34,6 +36,27 @@ const Event: React.FC = () => {
             console.error('Error fetching event:', error);
         } finally {
             setLoading(false);
+        }
+    }
+
+    async function logout() {
+        try {
+            if (auth.currentUser) {
+                const uid = auth.currentUser.uid;
+                const displayName = auth.currentUser.displayName;
+
+                await signOut(auth);
+
+                if (uid) {
+                    localStorage.removeItem(uid);
+                }
+                if (displayName) {
+                    localStorage.removeItem(displayName);
+                }
+                navigateTo("/");
+            }
+        } catch (error) {
+            console.error("Error signing out: ", error);
         }
     }
 
@@ -61,9 +84,9 @@ const Event: React.FC = () => {
                     </div>
                     <div>
                         {auth.currentUser != null ? (
-                            <a className="header-link">Sign out</a>
+                            <button onClick={logout} className="header-button">Sign out</button>
                         ) : (
-                            <a className="header-link">Sign in</a>
+                            <a href="/" className="header-button">Sign in</a>
                         )}
                     </div>
                 </nav>
