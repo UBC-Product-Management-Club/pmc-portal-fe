@@ -62,8 +62,7 @@ export default function Login() {
 
   return (
     <>
-      <Onboarding />
-      {/* {onboarding ?
+      {onboarding ?
         <Onboarding /> :
         <div className="login-container">
           <div className="login-content">
@@ -74,7 +73,7 @@ export default function Login() {
               <button className="login-continue" onClick={() => navigateTo("/dashboard")}>Continue as a non-member</button>
             </div>
           </div>
-        </div>} */}
+        </div>}
     </>
   )
 }
