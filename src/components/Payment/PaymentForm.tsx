@@ -10,7 +10,7 @@ export default function PaymentForm() {
     
     const [paymentError, setPaymentError] = useState<string>("")
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const { setPayment } = useContext(OnboardingContext)
+    const { setPayment, setCurrPage } = useContext(OnboardingContext)
 
     useEffect(() => {
         if (!stripe) {
@@ -62,11 +62,6 @@ export default function PaymentForm() {
 
         const { error, paymentIntent } = await stripe.confirmPayment({
           elements,
-          confirmParams: {
-            // Make sure to change this to your payment completion page
-            return_url: "http://localhost:5173/dashboard", // make a payment success page
-
-          },
           redirect: "if_required"
         });
     
@@ -85,7 +80,7 @@ export default function PaymentForm() {
               created: paymentIntent.created,
               status: paymentIntent.status
             })
-            // setCurrPage("paymentSuccess")
+            setCurrPage("paymentSuccess")
         }
     
         setIsLoading(false);
