@@ -1,16 +1,19 @@
 import { FieldError, UseFormRegister } from "react-hook-form";
 
 // Types defined for the onboarding form.
+// Possible inputs for the Onboarding Form
+// Needs to match OnboardingFormSchema. Some fields are optional since
+// they depend on previous answers. E.g. Not uni student -> no year/faculty
 export type FormData = {
     first_name: string
     last_name: string
     pronouns: string
     ubc_student: "yes" | "no, other uni" | "no, other"
-    university: string
-    student_id: number
-    year?: "1" | "2" | "3" | "4" | "5+"
-    faculty: string
-    major: string
+    student_id?: number | undefined
+    university?: string | undefined
+    year?: "1" | "2" | "3" | "4" | "5+" | undefined
+    faculty?: string | undefined
+    major?: string | undefined
     why_pm: string
     returning_member: "yes" | "no"
 };

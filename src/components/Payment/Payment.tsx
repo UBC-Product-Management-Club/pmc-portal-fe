@@ -1,10 +1,9 @@
 import "./Payment.css"
 import { Appearance, loadStripe, StripeElementsOptions } from "@stripe/stripe-js"
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { paymentIntentResponse } from "../../types/api";
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentForm from "./PaymentForm";
-import { OnboardingContext } from "../OnboardingForm/Context";
 
 // console.log("stripe key " + import.meta.env.VITE_STRIPE_KEY)
 const stripe_key = loadStripe(import.meta.env.VITE_STRIPE_KEY)
