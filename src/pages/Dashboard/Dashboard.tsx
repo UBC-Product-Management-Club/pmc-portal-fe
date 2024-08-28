@@ -2,12 +2,11 @@ import "./Dashboard.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { eventType } from "../../types/api";
-import { auth } from "../../../firebase";
-import { signOut } from "firebase/auth";
 import PMCLogo from "../../assets/pmclogo.svg";
+import { useAuth } from "../../providers/Auth/AuthProvider";
 
 export default function Dashboard() {
-  // Check if logged in or continued as non-member
+  const { currentUser, logout } = useAuth();
   const [allEvents, setAllEvents] = useState<eventType[]>([]);
   const navigateTo = useNavigate();
   const [welcomeMessage, setWelcomeMessage] = useState<string>("Welcome guest");
@@ -31,8 +30,8 @@ export default function Dashboard() {
       const allEvents = await response.json();
       setAllEvents(allEvents);
       const message =
-        auth.currentUser != null
-          ? `Welcome ${auth.currentUser.displayName}`
+        currentUser != null
+          ? `Welcome ${currentUser.displayName}`
           : "Welcome guest";
       setWelcomeMessage(message);
     } catch (error) {
@@ -42,11 +41,11 @@ export default function Dashboard() {
 
   async function authButtonHandler() {
     try {
-      if (auth.currentUser) {
-        const uid = auth.currentUser.uid;
-        const displayName = auth.currentUser.displayName;
+      if (currentUser) {
+        const uid = currentUser.uid;
+        const displayName = currentUser.displayName;
 
-        await signOut(auth);
+        await logout();
 
         if (uid) {
           localStorage.removeItem(uid);
@@ -79,7 +78,7 @@ export default function Dashboard() {
               Events
             </a>
             <div>
-              {auth.currentUser != null ? (
+              {currentUser != null ? (
                 <a href="/profile" className="header-link">
                   Profile
                 </a>
@@ -91,7 +90,7 @@ export default function Dashboard() {
             </div>
             <div className="header-button">
               <div onClick={authButtonHandler}>
-                {auth.currentUser ? "Sign out" : "Sign in"}
+                {currentUser ? "Sign out" : "Sign in"}
               </div>
             </div>
           </nav>
@@ -121,17 +120,10 @@ export default function Dashboard() {
               <div
                 key={event.event_Id}
                 className={`card ${
-                  !auth.currentUser && !event.non_member_price
-                    ? "disabled-card"
-                    : ""
+                  !currentUser && !event.non_member_price ? "disabled-card" : ""
                 }`}
                 onClick={() => {
-                  if (auth.currentUser || event.non_member_price) {
-                    // if member, then go to event page
-                    navigateTo(`/events/${event.event_Id}`);
-                  } else if (auth.currentUser && !event.non_member_price) {
-                    navigateTo(`/events/${event.event_Id}`);
-                  }
+                  navigateTo(`/events/${event.event_Id}`);
                 }}
               >
                 <div className="event-date">
@@ -154,7 +146,7 @@ export default function Dashboard() {
                   >
                     Register
                   </button>
-                  {!event.non_member_price && !auth.currentUser && (
+                  {!event.non_member_price && !currentUser && (
                     <div className="overlay">
                       <p className="disabled-comment">
                         Please sign in to your PMC account to view the details

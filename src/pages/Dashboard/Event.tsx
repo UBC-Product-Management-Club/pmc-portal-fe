@@ -2,13 +2,13 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { eventType } from "../../types/api";
-import { auth } from "../../../firebase";
-import { signOut } from "firebase/auth";
 import "./Event.css";
 import "./Dashboard.css";
 import PMCLogo from "../../assets/pmclogo.svg";
+import { useAuth } from "../../providers/Auth/AuthProvider";
 
 const Event: React.FC = () => {
+  const { currentUser, logout } = useAuth();
   const [event, setEvent] = useState<eventType | null>(null);
   const { event_id } = useParams<{ event_id: string }>();
   const [loading, setLoading] = useState(true);
@@ -43,11 +43,11 @@ const Event: React.FC = () => {
 
   async function authButtonHandler() {
     try {
-      if (auth.currentUser) {
-        const uid = auth.currentUser.uid;
-        const displayName = auth.currentUser.displayName;
+      if (currentUser) {
+        const uid = currentUser.uid;
+        const displayName = currentUser.displayName;
 
-        await signOut(auth);
+        await logout();
 
         if (uid) {
           localStorage.removeItem(uid);
@@ -84,7 +84,7 @@ const Event: React.FC = () => {
             Events
           </a>
           <div>
-            {auth.currentUser != null ? (
+            {currentUser != null ? (
               <a href="/profile" className="header-link">
                 Profile
               </a>
@@ -96,7 +96,7 @@ const Event: React.FC = () => {
           </div>
           <div className="header-button">
             <div onClick={authButtonHandler}>
-              {auth.currentUser ? "Sign out" : "Sign in"}
+              {currentUser ? "Sign out" : "Sign in"}
             </div>
           </div>
         </nav>
@@ -154,7 +154,7 @@ const Event: React.FC = () => {
                 className="text-container"
                 style={{ flexDirection: "column" }}
               >
-                {auth.currentUser != null ? (
+                {currentUser != null ? (
                   <>
                     <h3>Event Pricing</h3>
                     <h4>
