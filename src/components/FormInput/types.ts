@@ -1,15 +1,16 @@
 import { FieldError, UseFormRegister } from "react-hook-form";
 
+// Types defined for the onboarding form.
 export type FormData = {
     first_name: string
     last_name: string
     pronouns: string
     ubc_student: "yes" | "no, other uni" | "no, other"
-    university?: string 
-    student_id?: number
+    university: string
+    student_id: number
     year?: "1" | "2" | "3" | "4" | "5+"
-    faculty?: string
-    major?: string
+    faculty: string
+    major: string
     why_pm: string
     returning_member: "yes" | "no"
 };
