@@ -3,15 +3,12 @@ import { GoogleAuthProvider, inMemoryPersistence, setPersistence, signInWithPopu
 import { auth } from "../../../firebase"
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { loginBody } from '../../types/api';
 import GoogleLogo from "../../assets/google.svg"
 import PMCLogo from "../../assets/pmclogo.svg"
 import Onboarding from "../../components/OnboardingForm/Onboarding";
 
 export default function Login() {
   const [onboarding, setOnboarding] = useState<boolean>(false)
-  const [user, setUser] = useState<User | undefined>()
-  const [loginCreds, setLoginCreds] = useState<loginBody | undefined>()
   const navigateTo = useNavigate()
 
   async function googleLogin() {
@@ -21,8 +18,6 @@ export default function Login() {
       const signInResult = await signInWithPopup(auth, authProvider)
       const user: User = signInResult.user;
       const idToken = await user.getIdToken()
-
-      const displayName = user.displayName ?? "User";
 
       // fetch login endpoint
       const login = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/login`, {
@@ -37,19 +32,10 @@ export default function Login() {
         })
       })
 
-
       if (login.ok) {
-        // User exists so go to /dashboard
-        localStorage.setItem('member_id', user.uid);
-        localStorage.setItem('member_name', displayName || "guest");
         navigateTo("/dashboard")
       } else if (login.status === 302) {
-        // Currently logged in user that needs to be onboarded
-        setUser(user)
-        setLoginCreds({ userUID: user.uid, idToken: idToken })
         setOnboarding(true)
-        localStorage.setItem('member_id', user.uid);
-        localStorage.setItem('member_name', displayName || "guest");
       } else {
         throw Error("An error occurred logging in")
       }
