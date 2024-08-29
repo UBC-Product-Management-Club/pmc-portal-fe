@@ -6,6 +6,7 @@ import "./Event.css";
 import "./Dashboard.css";
 import PMCLogo from "../../assets/pmclogo.svg";
 import { useAuth } from "../../providers/Auth/AuthProvider";
+import {EventRegistrationModal} from "../../components/Event/EventRegistrationModal";
 
 const Event: React.FC = () => {
   const { currentUser, logout } = useAuth();
@@ -13,6 +14,7 @@ const Event: React.FC = () => {
   const { event_id } = useParams<{ event_id: string }>();
   const [loading, setLoading] = useState(true);
   const navigateTo = useNavigate();
+  const [isSignUpFormOpen, setIsSignUpFormOpen] = useState(false);
 
   async function fetchEvent() {
     try {
@@ -185,7 +187,9 @@ const Event: React.FC = () => {
         </div>
       </div>
 
-      <button className="signup-button">Sign up</button>
+      <button className="signup-button" onClick={() => setIsSignUpFormOpen(true)}>Sign up</button>
+      <EventRegistrationModal isModalOpen={isSignUpFormOpen} setIsModalOpen={setIsSignUpFormOpen}/>
+      
       <img src={event.media[0]} alt="Event" className="event-photo"></img>
       <div className="event-desc">
         <h3>About the event</h3>
