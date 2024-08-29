@@ -7,6 +7,7 @@ interface PaymentContextType {
     setPaid: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+// Options for the Stripe Payment form
 interface PaymentFormOptions {
     prompt: string
     type: "membership" | "event"
@@ -15,6 +16,7 @@ interface PaymentFormOptions {
     onSuccess: (paymentIntent: PaymentIntent) => void
 }
 
+// Options for the Payment success component
 interface PaymentSuccessOptions {
     subheading: string
     continueBtnText: string

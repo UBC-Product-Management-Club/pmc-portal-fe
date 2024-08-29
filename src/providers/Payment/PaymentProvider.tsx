@@ -15,8 +15,10 @@ const usePayment = () => {
     }
     return context;
 }
-
-
+/*
+    FormOptions: Options for Stripe Payment Form
+    SuccessOptions: Options for Payment success component
+*/
 const PaymentProvider = ({ FormOptions, SuccessOptions, children } : PaymentProviderProps): React.ReactNode => {
     const [paid, setPaid] = useState<boolean>(false)
     

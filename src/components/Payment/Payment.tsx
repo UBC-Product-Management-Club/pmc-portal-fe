@@ -12,10 +12,7 @@ import PaymentSuccess from "./PaymentSuccess";
 const stripe_key = loadStripe(import.meta.env.VITE_STRIPE_KEY)
 
 /*
-  prompt: Prompt for users that displays price and reason for payment
-  type: Either "membership" for membership payments of "event" for event reg payments
-  eventId?: Optional. eventId if type is "event"
-  onPaymentSuccess: Successful payment handler. Can consume a paymentIntent to retrieve payment information
+  MUST BE USED INSIDE A PAYMENTCONTEXT
 */
 export default function Payment() {
     // TODO:

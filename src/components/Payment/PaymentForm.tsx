@@ -106,8 +106,8 @@ export default function PaymentForm() {
         } else if (paymentIntent && paymentIntent.status === "succeeded" ) {
           addTransaction(paymentIntent) // Add transaction to firestore
           onSuccess(paymentIntent) // call onSuccess handler
-          setPaid(true)
-        }
+          setPaid(true) // show PaymentSuccess component
+        } 
     
         setIsLoading(false);
       };
