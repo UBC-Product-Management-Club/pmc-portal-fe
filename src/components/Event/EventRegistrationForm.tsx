@@ -1,26 +1,23 @@
 import '../component-theme.css';
 import {useForm} from "react-hook-form";
-import {OnboardingFormSchema, UserZodObj} from "../OnboardingForm/types";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {EventRegFormSchema, EventRegZodObj} from "../FormInput/EventRegFormUtils";
 import EventRegistrationFormInput from "../FormInput/EventRegFormInput";
 export default function EventRegistrationForm() {
     const {
         register,
-        unregister,
         handleSubmit,
-        watch,
         formState: { errors },
     } = useForm<EventRegFormSchema>({
         resolver: zodResolver(EventRegZodObj)
     });
 
-    function submit() {
-
+    function submit(data: EventRegFormSchema) {
+        console.log(data);
     }
 
     return (
-        <form className={"form-content"} autoComplete="off" onSubmit={() => handleSubmit()}>
+        <form className={"form-content"} autoComplete="off" onSubmit={() => handleSubmit(submit)}>
             <select className={"form-select form-select-dark-blue"} required>
                 <option value={""} hidden>How familiar are you with product management?</option>
                 <option value={"beginner"}>Beginner; little to no knowledge</option>
@@ -51,7 +48,7 @@ export default function EventRegistrationForm() {
                 name={"expectation"}
                 register={register}
                 error={errors.expectation}/>
-            <button className="pmc-button pmc-button-white" type="submit">Sign Up</button>
+            <button className="pmc-button pmc-button-white" type="submit">Sign up</button>
         </form>
     )
 }

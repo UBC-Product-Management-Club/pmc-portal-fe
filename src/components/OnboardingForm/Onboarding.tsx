@@ -9,7 +9,7 @@ import { User } from "firebase/auth"
 import { addTransactionBody, loginBody, onboardingBody, paymentInfo } from "../../types/api"
 import { Timestamp } from "firebase/firestore"
 import PaymentSuccess from "../Payment/PaymentSuccess"
-import { OnboardingFormSchema } from "./types"
+import { UserSchema } from "./types"
 
 
 /**
@@ -25,7 +25,7 @@ import { OnboardingFormSchema } from "./types"
  */
 export default function Onboarding() {
     // a lot of type duplication for userInfo. Improve this in the future
-    const [userInfo, setUserInfo] = useState<OnboardingFormSchema | undefined>(undefined) 
+    const [userInfo, setUserInfo] = useState<UserSchema | undefined>(undefined)
     const [currPage, setCurrPage] = useState<"userInfo" | "payment" | "paymentSuccess">("userInfo")
     const [payment, setPayment]= useState<paymentInfo | undefined>()
 

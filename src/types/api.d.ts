@@ -12,8 +12,8 @@ type userDocument = {
   year?: string; // "5+"
   faculty?: string;
   major?: string;
-  why_pm: string;
-  returning_member: string;
+  why_pm?: string;
+  returning_member?: string;
 };
 
 type loginBody = {
