@@ -1,0 +1,28 @@
+.PaymentForm-content {
+    width: 100%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    justify-items: center;
+}
+
+.PaymentForm-content--submit {
+    width: 10rem;
+    margin-top: 2rem;
+    align-self: center;
+    border: none;
+    border-radius: 100rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    background: rgb(141,155,235);
+    background: linear-gradient(101deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
+    color: white;
+}
+
+.PaymentForm-content--error {
+    margin-top: 1rem;
+    font-size: medium;
+    align-self: center;
+}

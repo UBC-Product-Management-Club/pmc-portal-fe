@@ -1,42 +1,7 @@
 
-.onboarding-container {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-}
-
-.onboarding-content {
-    width: 40rem;
-    height: 35rem;
-    display: flex;
-    flex-direction: column;
-    padding-top: 2rem;
-    padding-left: 5rem;
-    padding-right: 5rem;
-    border-radius: 1rem;
-    position: relative;
-    background-color: #1f2a37;
-} 
-
 .onboarding-form {
     width: 100%;
     flex: 0 1 auto;
-}
-
-.onboarding-content-header {
-    font-size: x-large;
-    margin: 2rem 0;
-    background: linear-gradient(94deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
-    color: transparent;
-    background-clip: text;
-}
-
-.onboarding-content--logo {
-    width: 4rem;
-    height: 4rem;
 }
 
 .onboarding-form-content {

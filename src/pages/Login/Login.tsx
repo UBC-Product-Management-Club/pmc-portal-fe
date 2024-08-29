@@ -9,15 +9,12 @@ import {
 import { auth } from "../../../firebase";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import OnboardingForm from "../../components/OnboardingForm/OnboardingForm";
-import { loginBody } from "../../types/api";
 import GoogleLogo from "../../assets/google.svg";
 import PMCLogo from "../../assets/pmclogo.svg";
+import Onboarding from "../../components/OnboardingForm/Onboarding";
 
 export default function Login() {
   const [onboarding, setOnboarding] = useState<boolean>(false);
-  const [user, setUser] = useState<User | undefined>();
-  const [loginCreds, setLoginCreds] = useState<loginBody | undefined>();
   const navigateTo = useNavigate();
 
   async function googleLogin() {
@@ -27,8 +24,6 @@ export default function Login() {
       const signInResult = await signInWithPopup(auth, authProvider);
       const user: User = signInResult.user;
       const idToken = await user.getIdToken();
-
-      const displayName = user.displayName ?? "User";
 
       // fetch login endpoint
       const login = await fetch(
@@ -45,18 +40,13 @@ export default function Login() {
           }),
         }
       );
+
       if (login.ok) {
-        // User exists so go to /dashboard
-        localStorage.setItem("member_id", user.uid);
-        localStorage.setItem("member_name", displayName || "guest");
         navigateTo("/dashboard");
-      } else {
-        // Currently logged in user that needs to be onboarded
-        setUser(user);
-        setLoginCreds({ userUID: user.uid, idToken: idToken });
+      } else if (login.status === 302) {
         setOnboarding(true);
-        localStorage.setItem("member_id", user.uid);
-        localStorage.setItem("member_name", displayName || "guest");
+      } else {
+        throw Error("An error occurred logging in");
       }
     } catch (error) {
       // Show some sort of error component
@@ -67,7 +57,7 @@ export default function Login() {
   return (
     <>
       {onboarding ? (
-        <OnboardingForm user={user!} creds={loginCreds!} />
+        <Onboarding />
       ) : (
         <div className="login-container">
           <div className="login-content">
