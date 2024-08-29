@@ -1,15 +1,13 @@
 import "./Onboarding.css"
 import PMCLogo from "../../assets/pmclogo.svg"
 import OnboardingForm from "./OnboardingForm"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Payment from "../Payment/Payment"
 import { OnboardingProvider } from "./Context"
-import { auth } from "../../../firebase"
-import { User } from "firebase/auth"
-import { addTransactionBody, loginBody, onboardingBody, paymentInfo } from "../../types/api"
-import { Timestamp } from "firebase/firestore"
-import PaymentSuccess from "../Payment/PaymentSuccess"
+import { loginBody, onboardingBody } from "../../types/api"
 import { OnboardingFormSchema } from "./types"
+import { useAuth } from "../../providers/Auth/AuthProvider"
+import { PaymentProvider } from "../../providers/Payment/PaymentProvider"
 
 
 /**
@@ -27,98 +25,84 @@ export default function Onboarding() {
     // a lot of type duplication for userInfo. Improve this in the future
     const [userInfo, setUserInfo] = useState<OnboardingFormSchema | undefined>(undefined) 
     const [currPage, setCurrPage] = useState<"userInfo" | "payment" | "paymentSuccess">("userInfo")
-    const [payment, setPayment]= useState<paymentInfo | undefined>()
+    const [paid, setPaid] = useState<boolean>(false)
+    const { currentUser } = useAuth()
 
-    useEffect(() => {
-        const addUser = async () => {
-            const user: User | null = auth.currentUser 
-            if (!user) {
-                // If for some reason the user isn't signed-in at this point, throw some error
-                return 
-            }
-
-            const idToken = await user.getIdToken()
-            const creds: loginBody = {
-                userUID: user.uid,
-                idToken: idToken
-            }
-
-            try {
-                // Add user to the database
-                const onboardBody: onboardingBody = {
-                        creds: creds, // Must be user's UID and idToken 
-                        userDoc: {
-                            ...userInfo!,
-                            displayName: user.displayName!,
-                            email: user.email!,
-                            pfp: user.photoURL!,
-                        } 
-                }
-                const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        'Content-type': 'application/json',
-                    },
-                    body: JSON.stringify(onboardBody)
-                })
-                if (!onboardUser.ok) {
-                    throw Error("Failed adding user to database")
-                }
-
-                const transaction: addTransactionBody = {
-                    type: "membership",
-                    member_id: user.uid,
-                    payment: {
-                        ... payment!,
-                        created: new Timestamp(payment!.created,0)
-                    }
-                }
-                const addTransaction = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/payments/add-transaction`, {
-                    method: "POST",
-                    headers: {
-                        'Content-type': 'application/json'
-                    },
-                    body: JSON.stringify(transaction)
-                })
-                if (!addTransaction.ok) {
-                    throw Error("Failed adding transaction to database")
-                }
-
-                setCurrPage("paymentSuccess")
-            } catch (error) {
-                console.log(error)
-                return
-            }
+    const addUser = async () => {
+        if (!currentUser) {
+            // If for some reason the user isn't signed-in at this point, throw some error
+            return 
         }
-        if (payment) {
-            // add user to db
-            console.log("Adding user to db")
-            console.log(`Welcome to PMC ${userInfo?.first_name}`)
-            addUser()
+
+        const idToken = await currentUser.getIdToken()
+        const creds: loginBody = {
+            userUID: currentUser.uid,
+            idToken: idToken
         }
-    }, [payment])
+
+        try {
+            // Add user to the database
+            const onboardBody: onboardingBody = {
+                    creds: creds, // Must be user's UID and idToken 
+                    userDoc: {
+                        ...userInfo!,
+                        displayName: currentUser.displayName!,
+                        email: currentUser.email!,
+                        pfp: currentUser.photoURL!,
+                    } 
+            }
+            const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify(onboardBody)
+            })
+            if (!onboardUser.ok) {
+                throw Error("Failed adding user to database")
+            }
 
 
+            setCurrPage("paymentSuccess")
+        } catch (error) {
+            console.log(error)
+            return
+        }
+    }
 
-    // ADDS USER TO DATABASE (DO THIS AFTER PAYMENT)
-    
+    // Do stuff on successful payment
+    const onPaymentSuccess = () => {
+        addUser()
+        setPaid(true)
+        setCurrPage("paymentSuccess")
+    }
+
     return (
         <div className="onboarding-container">
             <div className="onboarding-content">
                 <img className="onboarding-content--logo" src={PMCLogo} />
-                { currPage == "paymentSuccess" ? 
+                {paid ? 
                     <h1 className="onboarding-content-header pmc-gradient-text">Welcome to PMC {userInfo?.first_name}! <span style={{fontSize: 'x-large'}}>🥳</span></h1> 
                 : 
                     <h1 className="onboarding-content-header pmc-gradient-text">Become a member</h1>}
                 {/* Toggle between onboardingform/paymentform */}
                 {/* Use Context to keep track of current state */}
-                <OnboardingProvider setters={{ setUserInfo, setPayment, setCurrPage }} >
+                <OnboardingProvider setters={{ setUserInfo, setCurrPage }} >
                     {currPage == "payment" ? 
-                        <Payment /> 
-                    : currPage == "paymentSuccess" ? 
-                        // TODO: FINISH PAYMENT SUCCESS PAGE
-                        <PaymentSuccess />
+                        <PaymentProvider 
+                            FormOptions={{
+                                prompt:"To become a PMC member for the 2024/2025 academic year, a $10 membership fee is required.",
+                                type: "membership",
+                                amt: 1000,
+                                onSuccess: onPaymentSuccess
+                            }} SuccessOptions={{
+                                subheading: "We've processed your $10 charge.",
+                                continueBtnText: "Continue to dashboard"
+                            }}  
+                        >
+                            <Payment />
+                        </PaymentProvider>
                     :
                         <OnboardingForm />
                     }
