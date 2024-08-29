@@ -9,7 +9,7 @@ const UserZodObj = z.object({
         message: "Please enter a last name."
     }),
 
-    pronouns: z.string().min(1,{
+    pronouns: z.string().min(1, {
         message: "Please enter your pronouns."
     }),
 
@@ -18,7 +18,7 @@ const UserZodObj = z.object({
     ubc_student: z.enum(["yes", "no, other uni", "no, other"], {
         message: "Please select a value."
     }),
-    
+
     student_id: z.number({
         coerce: true
     })
@@ -33,7 +33,7 @@ const UserZodObj = z.object({
         })
         .optional(),
 
-    university: z.string().min(1,{
+    university: z.string().min(1, {
         message: "Please enter the name of the university you go to."
     }).optional(),
 
@@ -57,6 +57,10 @@ const UserZodObj = z.object({
 
     returning_member: z.enum(["yes", "no"], {
         message: "Please select a value."
+    }),
+
+    checkbox: z.boolean().refine(value => value === true, {
+        message: "Please fill in the waiver form."
     })
 })
 

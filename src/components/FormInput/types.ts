@@ -17,6 +17,7 @@ export type FormData = {
     major?: string | undefined
     why_pm: string
     returning_member: "yes" | "no"
+    checkbox: boolean
 };
 
 export type FormInputProps = {
@@ -27,7 +28,7 @@ export type FormInputProps = {
     error: FieldError | undefined
     valueAsNumber?: boolean
 };
-  
+
 
 export type ValidFieldNames = "first_name" | "last_name" | "pronouns" | "email" | "student_id" | "university" |
-                              "year" | "faculty" | "major" | "why_pm" | "returning_member";
+    "year" | "faculty" | "major" | "why_pm" | "returning_member" | "checkbox";

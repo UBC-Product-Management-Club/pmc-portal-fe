@@ -1,4 +1,3 @@
-
 .onboarding-form {
     width: 100%;
     flex: 0 1 auto;
@@ -27,6 +26,56 @@
     align-items: start;
 }
 
+.onboarding-form-waiver--row {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    font-size: small;
+    font-weight: normal;
+    color: white;
+}
+
+.waiver-link {
+    color: white;
+    font-weight: normal;
+    text-decoration: none;
+}
+
+.waiver-link:hover {
+    text-decoration: underline;
+}
+
+.onboarding-form-waiver--column {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    font-size: small;
+    font-weight: normal;
+    color: white;
+}
+
+.waiver-check-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.waiver-text {
+    margin: 0;
+    color: white;
+    font-weight: normal;
+    padding: 5px;
+}
+
+.waiver-checkbox {
+    width: 20px;
+    height: 14px;
+}
+
+.error-message {
+    color: rgba(227, 49, 72, 1);
+    margin-left: 5px;
+}
 
 select {
     box-sizing: border-box;
@@ -56,7 +105,10 @@ span {
     padding: 0.5rem 1rem;
     margin-left: auto;
     cursor: pointer;
-    background: rgb(141,155,235);
-    background: linear-gradient(101deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
+    position: absolute;
+    right: 10%;
+    bottom: 10%;
+    background: rgb(141, 155, 235);
+    background: linear-gradient(101deg, rgba(141, 155, 235, 1) 20%, rgba(175, 113, 170, 1) 52%, rgba(227, 49, 72, 1) 100%);
     color: white;
 }
