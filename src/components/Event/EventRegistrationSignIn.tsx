@@ -1,3 +1,4 @@
+import '../component-theme.css';
 import Modal from 'react-modal';
 // Set the root element for the modal
 Modal.setAppElement('#root');
@@ -21,13 +22,13 @@ export default function EventRegistrationSignIn(
                 <h2>Are you a member?</h2>
                 <div className="event-registration-form-buttons">
                     <button
-                        className="event-registration-button member-button"
+                        className="pmc-button pmc-button-white"
                         onClick={onSignInOrCreateAccount}
                     >
                         Sign in / Create an account
                     </button>
                     <button
-                        className="event-registration-button guest-button"
+                        className="pmc-button pmc-button-transparent"
                         onClick={onContinueAsGuest}
                     >
                         Continue as Guest Instead

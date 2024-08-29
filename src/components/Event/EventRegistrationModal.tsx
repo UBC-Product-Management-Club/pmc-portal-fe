@@ -3,6 +3,8 @@ import EventRegistrationSignIn from "./EventRegistrationSignIn";
 import Modal from "react-modal";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../../providers/Auth/AuthProvider";
+import {useState} from "react";
+import EventRegistrationForm from "./EventRegistrationForm";
 
 export function EventRegistrationModal(props:
     {
@@ -12,6 +14,16 @@ export function EventRegistrationModal(props:
     const {currentUser} = useAuth();
     const navigateTo = useNavigate();
 
+    const [step, setStep] = useState(currentUser ? 1 : 0);
+    const stepComponents = [
+        <EventRegistrationSignIn
+            isOpen={props.isModalOpen}
+            onRequestClose={() => props.setIsModalOpen(false)}
+            onSignInOrCreateAccount={() => navigateTo("/")}
+            onContinueAsGuest={() => setStep(1)}/>,
+        <EventRegistrationForm/>
+    ]
+
     return (
         <Modal
             isOpen={props.isModalOpen}
@@ -19,12 +31,7 @@ export function EventRegistrationModal(props:
             className="event-registration-modal"
             overlayClassName="event-registration-modal-overlay"
         >
-            {currentUser == null &&
-                <EventRegistrationSignIn
-                    isOpen={props.isModalOpen}
-                    onRequestClose={() => props.setIsModalOpen(false)}
-                    onSignInOrCreateAccount={() => navigateTo("/")}
-                    onContinueAsGuest={() => {}}/>}
+            {stepComponents[step]}
         </Modal>
     )
 }
