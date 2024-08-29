@@ -1,3 +1,17 @@
+/* Background and Text Color */
+
+.bg-white {
+    color: black;
+    background-color: white;
+}
+
+.bg-dark-blue {
+    background-color: #2E3556;
+    color: white;
+}
+
+/* Buttons */
+
 .pmc-button {
     border-color: transparent;
     min-width: 10rem;
@@ -6,19 +20,66 @@
     font-weight: 600;
     font-size: 0.9rem;
     cursor: pointer;
+    border-radius: 100rem;
 }
 
 .pmc-button-white {
     background-color: #ffffff;
-    border-radius: 50px;
     color: #333D6C;
 }
 
 .pmc-button-transparent {
     background-color: transparent;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
     color: #ffffff;
+}
+
+/* Forms */
+
+.form-content {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 1rem;
+}
+
+.form-input {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 999rem;
+    border: none;
+    padding: 0.5rem 0.75rem;
+}
+
+.form-input:valid {
+    background-color: var(--pmc-purple);
+    color: white;
+}
+
+.form-input:invalid {
+    border: 0.25rem red;
+}
+
+.form-select {
+    box-sizing: border-box;
+    width: 100%;
+    border-radius: 100rem;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-right: 0.5rem solid transparent;
+}
+
+.form-select-white {
+    background-color: white;
+    color: black;
+}
+
+.form-select-dark-blue {
+    background-color: #2E3556;
+    color: white;
+}
+
+.form-select:valid {
+    background-color: var(--pmc-purple);
+    color: white;
 }

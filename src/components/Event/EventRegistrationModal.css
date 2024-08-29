@@ -42,26 +42,3 @@
     width: 70%;
     gap: 0.5rem;
 }
-
-.event-registration-button {
-    border-color: transparent;
-    padding: 0.75rem;
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 0.8rem;
-    cursor: pointer;
-}
-
-.member-button {
-    border-radius: 50px;
-    color: #333D6C;
-}
-
-.guest-button {
-    background-color: transparent;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-    color: #ffffff;
-    width: 100%;
-}
