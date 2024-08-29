@@ -1,0 +1,41 @@
+
+.PaymentSuccess-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.PaymentSuccess-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.PaymentSuccess-content--checkmark {
+    margin: 0.5rem;
+}
+
+.PaymentSuccess-content--heading {
+    margin: 0.5rem;
+    font-size: larger;
+    font-weight: 600;
+    color: white;
+}
+
+.PaymentSuccess-content--subheading{
+    font-size: medium;
+    font-weight: 400;
+    color: var(--pmc-light-grey)
+}
+
+.PaymentSuccess-continue {
+    margin: 1rem;
+    margin-top: 2rem;
+    border-radius: 99rem;
+    padding: 1rem 2rem;
+    cursor: pointer;
+    border: 0;
+    color: #333d6c;
+    font-weight: 600;
+}

@@ -1,37 +1,40 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import Login from './pages/Login/Login.tsx'
-import './index.css'
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import Dashboard from './pages/Dashboard/Dashboard.tsx'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Login from "./pages/Login/Login.tsx";
+import "./index.css";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Dashboard from "./pages/Dashboard/Dashboard.tsx";
+import Event from "./pages/Dashboard/Event.tsx";
+import { AuthProvider } from "./providers/Auth/AuthProvider.tsx";
 // import Onboarding from './pages/Onboarding.tsx'
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />
+    element: <Login />,
   },
   {
-    path:"/dashboard",
-    element: <Dashboard /> 
+    path: "/dashboard",
+    element: <Dashboard />,
   },
   {
-    path: "/events",
-    element: <h1>Events go here</h1>
+    path: "/events/:event_id",
+    element: <Event />,
   },
-  {
-    path: "/event/:blob", //passes a params object to element containing :id
-    element: <></>
-  },
+  // {
+  //   path: "/events/:event_id", //passes a params object to element containing :id
+  //   element: <EventDetails />
+  // },
   {
     path: "/profile/:profileId",
-    element: <></>
-  }
-])
+    element: <></>,
+  },
+]);
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    {/* <App /> */}
-    <RouterProvider router={router}/>
-  </React.StrictMode>,
-)
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  </React.StrictMode>
+);
