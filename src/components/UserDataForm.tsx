@@ -20,7 +20,7 @@ export function UserDataForm({onSubmit, excludeReturningAndWhyPM}: UserDataFormP
         defaultValues: {
             why_pm: "-",
             returning_member: "no"
-        },
+            },
         resolver: zodResolver(UserZodObj)
     })
 
@@ -37,15 +37,6 @@ export function UserDataForm({onSubmit, excludeReturningAndWhyPM}: UserDataFormP
             unregister("major")
         }
     }, [student_status])
-
-    useEffect(() => {
-        if (excludeReturningAndWhyPM) {
-            unregister("returning_member")
-            unregister("why_pm")
-        } else {
-            console.log("nah")
-        }
-    }, [excludeReturningAndWhyPM])
 
     return (
         <form autoComplete="off" className="onboarding-form" onSubmit={handleSubmit(onSubmit)}>
