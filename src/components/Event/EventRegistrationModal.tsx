@@ -37,7 +37,6 @@ export function EventRegistrationModal(props:
         setStep(2);
     }
 
-    // TODO: post proper form content
     const handleSubmitEventForm = async (data: EventRegFormSchema) => {
         const eventFormBody = JSON.stringify({
             "is_member": !isGuest,
