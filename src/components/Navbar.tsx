@@ -1,4 +1,4 @@
-import "./component-theme.css"
+import "./Navbar.css"
 import {useAuth} from "../providers/Auth/AuthProvider";
 import PMCLogo from "../assets/pmclogo.svg";
 import {useNavigate} from "react-router-dom";
@@ -31,7 +31,7 @@ export function Navbar() {
     return <div className="navbar">
         <div className="navbar-icon">
             <a href="/">
-                <img src={PMCLogo} className="logo"/>
+                <img src={PMCLogo} className="logo" alt={"PMC Logo"}/>
             </a>
         </div>
         <nav className="navbar-nav">

@@ -26,3 +26,7 @@
     width: 65vw;
   }
 }
+
+.container {
+  padding: 3rem 0 3rem 0;
+}
