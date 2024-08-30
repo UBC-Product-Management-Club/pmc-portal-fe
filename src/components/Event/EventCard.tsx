@@ -2,12 +2,14 @@ import {User} from "firebase/auth";
 import {eventType} from "../../types/api";
 import {MouseEventHandler} from "react";
 
-export function EventCard(props: {
-  currentUser: User | null,
-  event: eventType,
-  onClick: () => void,
-  onRegister: MouseEventHandler<HTMLButtonElement>}
-) {
+type EventCardProps = {
+    currentUser: User | null,
+    event: eventType,
+    onClick: () => void,
+    onRegister?: MouseEventHandler<HTMLButtonElement>
+}
+
+export function EventCard(props: EventCardProps) {
     return <div className={`card ${
         !props.currentUser && !props.event.non_member_price ? "disabled-card" : ""
     }`}
@@ -27,12 +29,13 @@ export function EventCard(props: {
                 alt="Event"
                 className="event-image"
             ></img>
+            {props.onRegister &&
             <button
                 className="event-button"
                 onClick={props.onRegister}
             >
                 Register
-            </button>
+            </button>}
             {!props.event.non_member_price && !props.currentUser && (
                 <div className="overlay">
                     <p className="disabled-comment">

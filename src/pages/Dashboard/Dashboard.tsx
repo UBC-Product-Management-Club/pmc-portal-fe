@@ -118,9 +118,13 @@ export default function Dashboard() {
         <div>
           {allEvents.length > 0 ? (
             allEvents.map((event) => (
-              <EventCard key={event.event_Id} currentUser={currentUser} event={event} onClick={() => {
-                navigateTo(`/events/${event.event_Id}`);
-              }} onRegister={(e) => e.stopPropagation()}/>
+              <EventCard
+                  key={event.event_Id}
+                  currentUser={currentUser}
+                  event={event}
+                  onClick={() => {navigateTo(`/events/${event.event_Id}`);}}
+                  onRegister={(e) => e.stopPropagation()}
+              />
             ))
           ) : (
             <p style={{ color: "white" }}>No events found.</p>

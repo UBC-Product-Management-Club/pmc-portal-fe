@@ -6,6 +6,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Dashboard from "./pages/Dashboard/Dashboard.tsx";
 import Event from "./pages/Dashboard/Event.tsx";
 import { AuthProvider } from "./providers/Auth/AuthProvider.tsx";
+import {Profile} from "./pages/Profile/Profile";
 // import Onboarding from './pages/Onboarding.tsx'
 
 const router = createBrowserRouter([
@@ -26,8 +27,8 @@ const router = createBrowserRouter([
   //   element: <EventDetails />
   // },
   {
-    path: "/profile/:profileId",
-    element: <></>,
+    path: "/profile",
+    element: <Profile />,
   },
 ]);
 
