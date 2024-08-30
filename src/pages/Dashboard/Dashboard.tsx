@@ -44,22 +44,18 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="background-dashboard">
-      <div id="upcoming-events">
-        <h2 className="upcoming-events">Upcoming Events</h2>
-      </div>
-
-      <div id="description">
-        <h3 className="description">
-          Every week, we feature some of our favorite events in cities like New
-          York and London. You can also check out some great calendars from the
-          community.
-        </h3>
-      </div>
-
-      <div className="welcome-message">
-        <h3>{welcomeMessage}</h3>
-      </div>
+    <div className="dashboard">
+        <div>
+            <div className="dashboard-header">
+                <h2>Upcoming Events</h2>
+                <h4 className={"welcome-message"}>{welcomeMessage}</h4>
+            </div>
+            <p>
+              Every week, we feature some of our favorite events in cities like New
+              York and London. You can also check out some great calendars from the
+              community.
+            </p>
+        </div>
 
       <div className="events-container">
         <div>

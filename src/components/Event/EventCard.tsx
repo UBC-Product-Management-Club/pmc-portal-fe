@@ -1,3 +1,4 @@
+import "./EventCard.css";
 import {User} from "firebase/auth";
 import {eventType} from "../../types/api";
 import {MouseEventHandler} from "react";
