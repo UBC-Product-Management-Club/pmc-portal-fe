@@ -140,13 +140,13 @@ export default function Dashboard() {
                                         className="event-image"
                                     ></img>
                                     <a href="/testpage" className="event-link-button"><button
-                                        className={`event-button ${event.maxAttendee !== null && event.attendees?.length >= event.maxAttendee ? 'disabled-button' : ''}`}
+                                        className={`event-button ${event.maxAttendee !== null && event.attendee_Ids?.length >= event.maxAttendee ? 'disabled-button' : ''}`}
                                         onClick={(e) => e.stopPropagation()}
-                                        disabled={event.maxAttendee !== null && event.attendees?.length >= event.maxAttendee}
+                                        disabled={event.maxAttendee !== null && event.attendee_Ids?.length >= event.maxAttendee}
                                     >
                                         Register
                                     </button></a>
-                                    {event.maxAttendee !== null && event.maxAttendee - event.attendees?.length == 0 && (
+                                    {event.maxAttendee !== null && event.maxAttendee - event.attendee_Ids?.length <= 0 && (
                                         <p className="error-message">You cannot register because the event is full.</p>
                                     )}
                                     {!event.non_member_price && !currentUser && (
