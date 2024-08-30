@@ -13,6 +13,8 @@ const UserZodObj = z.object({
         message: "Please enter your pronouns."
     }),
 
+    email: z.string().email().optional(),
+
     ubc_student: z.enum(["yes", "no, other uni", "no, other"], {
         message: "Please select a value."
     }),

@@ -7,9 +7,10 @@ import FormInput from "./FormInput/FormInput";
 type UserDataFormProps = {
     onSubmit: (data: UserSchema) => Promise<void>
     excludeReturningAndWhyPM?: boolean
+    includeEmail?: boolean
 }
 
-export function UserDataForm({onSubmit, excludeReturningAndWhyPM}: UserDataFormProps) {
+export function UserDataForm({onSubmit, excludeReturningAndWhyPM, includeEmail}: UserDataFormProps) {
     const {
         register,
         unregister,
@@ -68,6 +69,13 @@ export function UserDataForm({onSubmit, excludeReturningAndWhyPM}: UserDataFormP
                         />
                     </div>
                 </div>
+
+                {includeEmail && <FormInput
+                    type={"text"}
+                    placeholder={"Email"}
+                    name={"email"}
+                    register={register}
+                    error={errors.email}/>}
 
                 <div className="form-select">
                     <select required className="select-ubcstudent" {...register("ubc_student",{required: "please select a value"})}>

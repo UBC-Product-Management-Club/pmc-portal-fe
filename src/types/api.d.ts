@@ -48,7 +48,7 @@ type attendeeType = {
   last_name: string;
   student_num: number;
   email: string;
-  year_level: number;
+  year: number;
   major: string;
   faculty: string;
   familiarity: "beginner" | "intermediate" | "advanced" | "mentor";

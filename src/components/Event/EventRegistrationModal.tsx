@@ -9,6 +9,7 @@ import {UserSchema} from "../OnboardingForm/types";
 import {UserDataForm} from "../UserDataForm";
 import {EventRegFormSchema} from "../FormInput/EventRegFormUtils";
 
+// TODO: if alr signed up, don't make button visible
 export function EventRegistrationModal(props:
     {
         eventId: string,
@@ -75,7 +76,7 @@ export function EventRegistrationModal(props:
             onRequestClose={() => props.setIsModalOpen(false)}
             onSignInOrCreateAccount={() => navigateTo("/")}
             onContinueAsGuest={handleContinueAsGuest}/>,
-        <UserDataForm onSubmit={handleSubmitGuest} excludeReturningAndWhyPM={true}/>,
+        <UserDataForm onSubmit={handleSubmitGuest} excludeReturningAndWhyPM={true} includeEmail={true}/>,
         <EventRegistrationForm onSubmit={handleSubmitEventForm}/>,
         <h2>You have successfully registered for the event!</h2>
     ];
@@ -84,7 +85,7 @@ export function EventRegistrationModal(props:
         if (isGuest) {
             setIsGuest(false);
         }
-        setStep(0);
+        setStep(currentUser ? 2 : 0);
         props.setIsModalOpen(false)
     }
 
