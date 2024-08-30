@@ -35,7 +35,7 @@ type eventType = {
   media: string[];
   member_price: number;
   non_member_price: number;
-  attendees: AttendeeType[];
+  attendee_Ids: AttendeeType[];
   member_only: boolean;
 };
 
