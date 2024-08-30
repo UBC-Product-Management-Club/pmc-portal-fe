@@ -14,7 +14,9 @@ const Layout = () => {
   return (
       <div className={"width-fit"}>
         <Navbar />
-        <Outlet /> {/* This renders the child routes */}
+          <div className={"container"}>
+              <Outlet />
+          </div>
       </div>
   );
 };
