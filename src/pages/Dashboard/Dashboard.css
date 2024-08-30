@@ -14,6 +14,10 @@ body {
   gap: 2rem;
 }
 
+.dashboard-container {
+  width: 100%;
+}
+
 html {
   scroll-behavior: smooth;
 }
