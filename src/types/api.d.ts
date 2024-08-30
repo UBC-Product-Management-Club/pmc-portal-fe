@@ -38,6 +38,7 @@ type eventType = {
   non_member_price: number;
   attendee_Ids: AttendeeType[];
   member_only: boolean;
+  maxAttendee: number;
 };
 
 type attendeeType = {
