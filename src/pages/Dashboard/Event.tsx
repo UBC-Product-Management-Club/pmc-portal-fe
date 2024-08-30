@@ -125,10 +125,19 @@ const Event: React.FC = () => {
                         <div className="icon-text">
                             <div className="icon">👥</div>
                             <div className="text-container">
-                                {event.attendee_Ids ? (
+                                <div>
+                                    <h3>{event.maxAttendee - event.attendee_Ids?.length}/{event.maxAttendee} spots left</h3>
+                                    {event.attendee_Ids?.length >= 0 ? (
+                                        <h4>Register now!</h4>
+                                    ) : (
+                                        <h4>Be the first to sign up!</h4>
+                                    )}
+                                </div>
+                                {/* {event.attendees ? (
                                     <div>
-                                        <h3>{50 - event.attendee_Ids.length}/50 spots left</h3>
-                                        {event.attendee_Ids.length >= 0 ? (
+
+                                        <h3>{event.maxAttendee - event.attendees.length}/{event.maxAttendee} spots left</h3>
+                                        {event.attendees.length >= 0 ? (
                                             <h4>Register now!</h4>
                                         ) : (
                                             <h4>Be the first to sign up!</h4>
@@ -136,7 +145,7 @@ const Event: React.FC = () => {
                                     </div>
                                 ) : (
                                     <h3>Be the first to sign up!</h3>
-                                )}
+                                )} */}
                             </div>
                         </div>
                         <div className="icon-text">
