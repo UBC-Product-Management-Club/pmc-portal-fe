@@ -2,8 +2,6 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
 
-  background-color: #3D4043;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -21,4 +19,10 @@
   flex-direction: column;
   min-height: 100vh;
   align-items: center;
+}
+
+@media only screen and (min-width: 992px) {
+  .width-fit {
+    width: 65vw;
+  }
 }

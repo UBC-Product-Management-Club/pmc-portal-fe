@@ -12,10 +12,10 @@ import { Outlet } from 'react-router-dom';
 
 const Layout = () => {
   return (
-      <>
+      <div className={"width-fit"}>
         <Navbar />
         <Outlet /> {/* This renders the child routes */}
-      </>
+      </div>
   );
 };
 
