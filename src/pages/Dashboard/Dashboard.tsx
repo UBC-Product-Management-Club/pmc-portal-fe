@@ -2,12 +2,11 @@ import "./Dashboard.css";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {eventType} from "../../types/api";
-import PMCLogo from "../../assets/pmclogo.svg";
 import {useAuth} from "../../providers/Auth/AuthProvider";
 import {EventCard} from "../../components/Event/EventCard";
 
 export default function Dashboard() {
-  const { currentUser, logout } = useAuth();
+  const { currentUser } = useAuth();
   const [allEvents, setAllEvents] = useState<eventType[]>([]);
   const navigateTo = useNavigate();
   const [welcomeMessage, setWelcomeMessage] = useState<string>("Welcome guest");
@@ -40,64 +39,12 @@ export default function Dashboard() {
     }
   }
 
-  async function authButtonHandler() {
-    try {
-      if (currentUser) {
-        const uid = currentUser.uid;
-        const displayName = currentUser.displayName;
-
-        await logout();
-
-        if (uid) {
-          localStorage.removeItem(uid);
-        }
-        if (displayName) {
-          localStorage.removeItem(displayName);
-        }
-      }
-      navigateTo("/");
-    } catch (error) {
-      console.error("Error signing out: ", error);
-    }
-  }
-
   useEffect(() => {
     dashboardComponents();
   }, []);
 
   return (
     <div className="background-dashboard">
-      <div>
-        <div className="header">
-          <div className="header-icon">
-            <a href="/">
-              <img src={PMCLogo} className="logo" />
-            </a>
-          </div>
-          <nav className="header-nav">
-            <a href="/dashboard" className="header-link">
-              Events
-            </a>
-            <div>
-              {currentUser != null ? (
-                <a href="/profile" className="header-link">
-                  Profile
-                </a>
-              ) : (
-                <a href="/" className="header-link">
-                  Profile
-                </a>
-              )}
-            </div>
-            <div className="header-button">
-              <div onClick={authButtonHandler}>
-                {currentUser ? "Sign out" : "Sign in"}
-              </div>
-            </div>
-          </nav>
-        </div>
-      </div>
-
       <div id="upcoming-events">
         <h2 className="upcoming-events">Upcoming Events</h2>
       </div>
@@ -117,17 +64,19 @@ export default function Dashboard() {
       <div className="events-container">
         <div>
           {allEvents.length > 0 ? (
-            allEvents.map((event) => (
-              <EventCard
-                  key={event.event_Id}
-                  currentUser={currentUser}
-                  event={event}
-                  onClick={() => {navigateTo(`/events/${event.event_Id}`);}}
-                  onRegister={(e) => e.stopPropagation()}
-              />
-            ))
+              allEvents.map((event) => (
+                  <EventCard
+                      key={event.event_Id}
+                      currentUser={currentUser}
+                      event={event}
+                      onClick={() => {
+                        navigateTo(`/events/${event.event_Id}`);
+                      }}
+                      onRegister={(e) => e.stopPropagation()}
+                  />
+              ))
           ) : (
-            <p style={{ color: "white" }}>No events found.</p>
+              <p style={{color: "white"}}>No events found.</p>
           )}
         </div>
       </div>

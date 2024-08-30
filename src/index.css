@@ -15,4 +15,10 @@
   --pmc-black: #2E2E2E;
   --pmc-dark-purple: #445088;
   --pmc-light-grey: #DEDFE2;
+
+  background-color: #1f2a37;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  align-items: center;
 }
