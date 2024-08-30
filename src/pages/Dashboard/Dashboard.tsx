@@ -1,9 +1,10 @@
 import "./Dashboard.css";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { eventType } from "../../types/api";
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {eventType} from "../../types/api";
 import PMCLogo from "../../assets/pmclogo.svg";
-import { useAuth } from "../../providers/Auth/AuthProvider";
+import {useAuth} from "../../providers/Auth/AuthProvider";
+import {EventCard} from "../../components/Event/EventCard";
 
 export default function Dashboard() {
   const { currentUser, logout } = useAuth();
@@ -117,45 +118,9 @@ export default function Dashboard() {
         <div>
           {allEvents.length > 0 ? (
             allEvents.map((event) => (
-              <div
-                key={event.event_Id}
-                className={`card ${
-                  !currentUser && !event.non_member_price ? "disabled-card" : ""
-                }`}
-                onClick={() => {
-                  navigateTo(`/events/${event.event_Id}`);
-                }}
-              >
-                <div className="event-date">
-                  <h2>{new Date(event.date).toDateString()}</h2>
-                </div>
-
-                <div className="event">
-                  <p className="event-time-loc">7:00 PM | {event.location}</p>
-                  <h2>{event.name}</h2>
-                  <p className="event-description">{event.description}</p>
-
-                  <img
-                    src={event.media[0]}
-                    alt="Event"
-                    className="event-image"
-                  ></img>
-                  <button
-                    className="event-button"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    Register
-                  </button>
-                  {!event.non_member_price && !currentUser && (
-                    <div className="overlay">
-                      <p className="disabled-comment">
-                        Please sign in to your PMC account to view the details
-                        for this event.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
+              <EventCard key={event.event_Id} currentUser={currentUser} event={event} onClick={() => {
+                navigateTo(`/events/${event.event_Id}`);
+              }} onRegister={(e) => e.stopPropagation()}/>
             ))
           ) : (
             <p style={{ color: "white" }}>No events found.</p>
