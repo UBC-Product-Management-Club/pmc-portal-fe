@@ -9,11 +9,11 @@ type userDocument = {
   displayName: string; // from Google
   university?: string;
   student_id?: number;
-  year?: string; // "5+"
+  year?: "1" | "2" | "3" | "4" | "5+"; // "5+"
   faculty?: string;
   major?: string;
   why_pm?: string;
-  returning_member?: string;
+  returning_member?: "yes" | "no";
 };
 
 type loginBody = {

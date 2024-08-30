@@ -3,7 +3,7 @@ import EventRegistrationSignIn from "./EventRegistrationSignIn";
 import Modal from "react-modal";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../../providers/Auth/AuthProvider";
-import {Dispatch, SetStateAction, useState} from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import EventRegistrationForm from "./EventRegistrationForm";
 import {UserSchema} from "../OnboardingForm/types";
 import {UserDataForm} from "../UserDataForm";
@@ -15,16 +15,24 @@ export function EventRegistrationModal(props:
         isModalOpen: boolean,
         setIsModalOpen: Dispatch<SetStateAction <boolean>>
     }) {
-    const {currentUser} = useAuth();
+    const {currentUser, userData} = useAuth();
     const [isGuest, setIsGuest] = useState(false);
-    // TODO: if existing user, fetch user data
-    const [userData, setUserData] = useState<UserSchema>();
+    const defaultUserInfo: UserSchema = {
+        first_name: "-",
+        last_name: "-",
+        pronouns: "-",
+        ubc_student: "no, other",
+        why_pm: "-",
+        returning_member: "no",
+        ...userData
+    }
+    const [userInfo, setUserInfo] = useState<UserSchema>(defaultUserInfo);
     const navigateTo = useNavigate();
 
     const handleContinueAsGuest = () => setStep(1);
     const handleSubmitGuest = async (data: UserSchema) => {
         setIsGuest(true);
-        setUserData(data);
+        setUserInfo(data);
         setStep(2);
     }
 
@@ -33,8 +41,8 @@ export function EventRegistrationModal(props:
         const eventFormBody = JSON.stringify({
             "is_member": !isGuest,
             "event_Id": props.eventId,
-            "email": "lol@gmail.com",
-            ...userData,
+            "email": currentUser?.email,
+            ...userInfo,
             ...data
         });
         try {
@@ -56,10 +64,9 @@ export function EventRegistrationModal(props:
         }
     }
 
-    function handleClose() {
-        if (isGuest)
-        props.setIsModalOpen(false)
-    }
+    useEffect(() => {
+        setUserInfo({...userInfo, ...userData})
+    }, [userData, userInfo]);
 
     const [step, setStep] = useState(currentUser ? 2 : 0);
     const stepComponents = [
@@ -72,6 +79,14 @@ export function EventRegistrationModal(props:
         <EventRegistrationForm onSubmit={handleSubmitEventForm}/>,
         <h2>You have successfully registered for the event!</h2>
     ];
+
+    function handleClose() {
+        if (isGuest) {
+            setIsGuest(false);
+        }
+        setStep(0);
+        props.setIsModalOpen(false)
+    }
 
     return (
         <Modal

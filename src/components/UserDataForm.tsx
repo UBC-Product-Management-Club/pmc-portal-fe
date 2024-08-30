@@ -17,10 +17,12 @@ export function UserDataForm({onSubmit, excludeReturningAndWhyPM}: UserDataFormP
         watch,
         formState: { errors },
     } = useForm<UserSchema>({
-        defaultValues: {
-            why_pm: "-",
-            returning_member: "no"
-            },
+        defaultValues: excludeReturningAndWhyPM
+            ? {
+                why_pm: "-",
+                returning_member: "no"
+            }
+            : {},
         resolver: zodResolver(UserZodObj)
     })
 

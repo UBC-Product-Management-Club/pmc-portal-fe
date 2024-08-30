@@ -1,7 +1,4 @@
 import '../component-theme.css';
-import Modal from 'react-modal';
-// Set the root element for the modal
-Modal.setAppElement('#root');
 
 // TODO: add PMC logo
 // TODO: make sure reroute to the opened event page after user logs in
