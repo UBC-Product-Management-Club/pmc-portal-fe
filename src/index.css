@@ -30,3 +30,20 @@
 .container {
   padding: 3rem 0 3rem 0;
 }
+
+button {
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #ffffff;
+  background-color: var(--pmc-dark-purple);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--pmc-light-blue); /* Change background color on hover */
+}
