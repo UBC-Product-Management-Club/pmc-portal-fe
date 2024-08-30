@@ -1,4 +1,4 @@
-import '../component-theme.css';
+import '../styles/component-theme.css';
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {EventRegFormSchema, EventRegZodObj} from "../FormInput/EventRegFormUtils";

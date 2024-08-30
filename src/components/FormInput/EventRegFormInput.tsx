@@ -1,4 +1,4 @@
-import "../component-theme.css"
+import "../styles/component-theme.css"
 import { useEffect, useState } from "react";
 import {EventRegFormInputProps} from "./EventRegFormUtils";
 

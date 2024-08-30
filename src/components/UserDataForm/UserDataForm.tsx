@@ -1,8 +1,8 @@
-import {UserSchema, UserZodObj} from "./OnboardingForm/types";
+import {UserSchema, UserZodObj} from "../OnboardingForm/types";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useEffect} from "react";
-import FormInput from "./FormInput/FormInput";
+import FormInput from "../FormInput/FormInput";
 
 type UserDataFormProps = {
     onSubmit: (data: UserSchema) => Promise<void>

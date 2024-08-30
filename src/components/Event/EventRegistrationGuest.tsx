@@ -1,4 +1,4 @@
-import {UserDataForm} from "../UserDataForm";
+import {UserDataForm} from "../UserDataForm/UserDataForm";
 import {UserSchema} from "../OnboardingForm/types";
 
 export default function EventRegistrationGuest({onSubmit}: {onSubmit: (data: UserSchema) => Promise<void>}) {

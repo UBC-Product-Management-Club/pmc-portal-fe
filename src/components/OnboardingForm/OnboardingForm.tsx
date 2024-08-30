@@ -2,7 +2,7 @@ import "./OnboardingForm.css"
 import { useContext } from "react"
 import { UserSchema } from "./types"
 import { OnboardingContext } from "./Context"
-import {UserDataForm} from "../UserDataForm";
+import {UserDataForm} from "../UserDataForm/UserDataForm";
 
 export default function OnboardingForm() {
     const { setUserInfo, setCurrPage } = useContext(OnboardingContext)

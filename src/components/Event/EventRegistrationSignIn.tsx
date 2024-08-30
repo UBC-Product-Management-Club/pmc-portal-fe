@@ -1,4 +1,4 @@
-import '../component-theme.css';
+import '../styles/component-theme.css';
 
 // TODO: add PMC logo
 // TODO: make sure reroute to the opened event page after user logs in
