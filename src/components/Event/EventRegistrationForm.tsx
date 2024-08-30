@@ -14,8 +14,8 @@ export default function EventRegistrationForm({onSubmit}: {onSubmit: (data: Even
     });
 
     return (
-        <form className={"form-content"} autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-            <select className={"form-select form-select-dark-blue"} required
+        <form className={"form-content form-bg-dark-blue"} autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+            <select className={"form-select"} required
                     {...register("familiarity",{required: "please select a value"})}>
                 <option value={""} hidden>How familiar are you with product management?</option>
                 <option value={"beginner"}>Beginner; little to no knowledge</option>
@@ -23,7 +23,7 @@ export default function EventRegistrationForm({onSubmit}: {onSubmit: (data: Even
                 <option value={"advanced"}>Advanced; had formal experience, familiar with frameworks & applications</option>
                 <option value={"mentor"}>Mentor; have mentored before</option>
             </select>
-            <select className={"form-select form-select-dark-blue"} required
+            <select className={"form-select"} required
                     {...register("found_out",{required: "please select a value"})}>
                 <option value={""} hidden>How did you find out about this event?</option>
                 <option value="instagram">Instagram</option>

@@ -43,6 +43,11 @@
     gap: 1rem;
 }
 
+.form-bg-dark-blue {
+    --form-bg-color: #2E3556;
+    --form-color: white;
+}
+
 .form-group {
     width: 100%;
     display: flex;
@@ -59,11 +64,13 @@
     gap: 0.75rem;
 }
 
-.form-group .form-group-sm {
+.form-multi-cols .form-group-sm {
     width: 16rem;
 }
 
 .form-input {
+    background-color: var(--form-bg-color, white);
+    color: var(--form-color, black);
     width: 100%;
     box-sizing: border-box;
     border-radius: 100rem;
@@ -84,6 +91,8 @@
     display: flex;
     flex-direction: column;
     align-items: start;
+    background-color: var(--form-bg-color, white);
+    color: var(--form-color, black)
     /*box-sizing: border-box;*/
     /*width: 100%;*/
     /*border-radius: 100rem;*/
@@ -91,15 +100,6 @@
     /*border-right: 0.5rem solid transparent;*/
 }
 
-.form-select-white {
-    background-color: white;
-    color: black;
-}
-
-.form-select-dark-blue {
-    background-color: #2E3556;
-    color: white;
-}
 
 .form-select:valid {
     background-color: var(--pmc-purple);

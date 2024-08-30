@@ -6,8 +6,8 @@ import {useAuth} from "../../providers/Auth/AuthProvider";
 import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import EventRegistrationForm from "./EventRegistrationForm";
 import {UserSchema} from "../OnboardingForm/types";
-import {UserDataForm} from "../UserDataForm";
 import {EventRegFormSchema} from "../FormInput/EventRegFormUtils";
+import EventRegistrationGuest from "./EventRegistrationGuest";
 
 // TODO: if alr signed up, don't make button visible
 export function EventRegistrationModal(props:
@@ -76,7 +76,7 @@ export function EventRegistrationModal(props:
             onRequestClose={() => props.setIsModalOpen(false)}
             onSignInOrCreateAccount={() => navigateTo("/")}
             onContinueAsGuest={handleContinueAsGuest}/>,
-        <UserDataForm onSubmit={handleSubmitGuest} excludeReturningAndWhyPM={true} includeEmail={true}/>,
+        <EventRegistrationGuest onSubmit={handleSubmitGuest}/>,
         <EventRegistrationForm onSubmit={handleSubmitEventForm}/>,
         <h2>You have successfully registered for the event!</h2>
     ];

@@ -77,8 +77,8 @@ export function UserDataForm({onSubmit, excludeReturningAndWhyPM, includeEmail}:
                     register={register}
                     error={errors.email}/>}
 
-                <div className="form-select">
-                    <select required className="select-ubcstudent" {...register("ubc_student",{required: "please select a value"})}>
+                <div>
+                    <select required className="form-select select-ubcstudent" {...register("ubc_student",{required: "please select a value"})}>
                         <option value="" hidden>Are you a UBC student?</option>
                         <option value={"yes"}>Yes, I'm a UBC student.</option>
                         <option value={"no, other uni"}>No, I'm from another university.</option>
@@ -112,8 +112,8 @@ export function UserDataForm({onSubmit, excludeReturningAndWhyPM, includeEmail}:
 
                 {student_status !== "no, other" &&
                     <div className="form-group">
-                        <div className="form-select form-group-sm">
-                            <select required {...register("year",{required: "please select a value"})}>
+                        <div className="form-group-sm">
+                            <select className={"form-select"} required {...register("year",{required: "please select a value"})}>
                                 <option value="" hidden>Year</option>
                                 <option value={"1"}>1</option>
                                 <option value={"2"}>2</option>
@@ -143,8 +143,9 @@ export function UserDataForm({onSubmit, excludeReturningAndWhyPM, includeEmail}:
 
                 {!excludeReturningAndWhyPM &&
                     <>
-                    <div className="form-select">
+                    <div>
                         <select
+                            className={"form-select"}
                             required
                             {...register("returning_member",
                                 { required: "Please select a value." })}>
@@ -166,8 +167,8 @@ export function UserDataForm({onSubmit, excludeReturningAndWhyPM, includeEmail}:
                     </div>
                     </>
                 }
+                <button className="submit-button pmc-gradient-background" type="submit">Continue</button>
             </div>
-            <button className="submit-button pmc-gradient-background" type="submit">Continue</button>
         </form>
     )
 }
