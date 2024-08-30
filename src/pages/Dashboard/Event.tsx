@@ -188,7 +188,10 @@ const Event: React.FC = () => {
       </div>
 
       <button className="signup-button" onClick={() => setIsSignUpFormOpen(true)}>Sign up</button>
-      <EventRegistrationModal isModalOpen={isSignUpFormOpen} setIsModalOpen={setIsSignUpFormOpen}/>
+      <EventRegistrationModal
+          isModalOpen={isSignUpFormOpen}
+          setIsModalOpen={setIsSignUpFormOpen}
+          eventId={event_id ?? ""}/>
       
       <img src={event.media[0]} alt="Event" className="event-photo"></img>
       <div className="event-desc">
