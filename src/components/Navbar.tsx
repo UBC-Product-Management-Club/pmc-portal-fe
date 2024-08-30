@@ -35,7 +35,7 @@ export function Navbar() {
             </a>
         </div>
         <nav className="navbar-nav">
-            <a href="/Dashboard/Dashboard" className="navbar-link">
+            <a href="/dashboard" className="navbar-link">
                 Events
             </a>
             <div>
