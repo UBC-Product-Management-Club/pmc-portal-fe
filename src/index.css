@@ -21,6 +21,10 @@
   align-items: center;
 }
 
+.width-fit {
+  width: 90vw;
+}
+
 @media only screen and (min-width: 992px) {
   .width-fit {
     width: 65vw;

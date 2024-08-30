@@ -45,7 +45,7 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
-        <div>
+        <div className={"dashboard-container"}>
             <div className="dashboard-header">
                 <h2>Upcoming Events</h2>
                 <h4 className={"welcome-message"}>{welcomeMessage}</h4>
@@ -57,25 +57,25 @@ export default function Dashboard() {
             </p>
         </div>
 
-      <div className="events-container">
-        <div>
-          {allEvents.length > 0 ? (
-              allEvents.map((event) => (
-                  <EventCard
-                      key={event.event_Id}
-                      currentUser={currentUser}
-                      event={event}
-                      onClick={() => {
-                        navigateTo(`/events/${event.event_Id}`);
-                      }}
-                      onRegister={(e) => e.stopPropagation()}
-                  />
-              ))
-          ) : (
-              <p style={{color: "white"}}>No events found.</p>
-          )}
+        <div className={"dashboard-container"}>
+            <div>
+              {allEvents.length > 0 ? (
+                  allEvents.map((event) => (
+                      <EventCard
+                          key={event.event_Id}
+                          currentUser={currentUser}
+                          event={event}
+                          onClick={() => {
+                            navigateTo(`/events/${event.event_Id}`);
+                          }}
+                          onRegister={(e) => e.stopPropagation()}
+                      />
+                  ))
+              ) : (
+                  <p style={{color: "white"}}>No events found.</p>
+              )}
+            </div>
         </div>
-      </div>
     </div>
   );
 }
