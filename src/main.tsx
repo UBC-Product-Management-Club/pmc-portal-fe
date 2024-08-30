@@ -8,17 +8,28 @@ import Event from "./pages/Dashboard/Event.tsx";
 import { AuthProvider } from "./providers/Auth/AuthProvider.tsx";
 import {Profile} from "./pages/Profile/Profile";
 import {Navbar} from "./components/Navbar";
+import { Outlet } from 'react-router-dom';
+
+const Layout = () => {
+  return (
+      <>
+        <Navbar />
+        <Outlet /> {/* This renders the child routes */}
+      </>
+  );
+};
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Router>
       <AuthProvider>
-        <Navbar/>
         <Routes>
           <Route path={"/"} element={<Login/>}/>
-          <Route path={"/dashboard"} element={<Dashboard/>}/>
-          <Route path={"/events/:event_id"} element={<Event/>}/>
-          <Route path={"/profile"} element={<Profile/>}/>
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/events/:event_id" element={<Event />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </Router>
