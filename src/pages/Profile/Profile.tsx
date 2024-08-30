@@ -18,7 +18,7 @@ function ProfileWhyPM(props: { text: string, setText: Dispatch<SetStateAction<st
     return <div>
         <div className={"profile-space-between"}>
             <h3>Why Product Management?</h3>
-            <button onClick={() => setIsEditing(!isEditing)} className={"profile-pill"}>
+            <button onClick={() => setIsEditing(!isEditing)} className={"button-dark-purple profile-pill"}>
                 <p>{isEditing ? 'Save' : 'Edit'}</p>
                 <MdOutlineEdit/>
             </button>

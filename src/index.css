@@ -35,7 +35,7 @@
   padding: 3rem 0 3rem 0;
 }
 
-button {
+.button-dark-purple {
   font-family: inherit;
   font-size: 1rem;
   line-height: 1.5;
@@ -48,6 +48,6 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button:hover {
+.button-dark-purple:hover {
   background-color: var(--pmc-light-blue); /* Change background color on hover */
 }

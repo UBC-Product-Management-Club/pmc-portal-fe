@@ -107,7 +107,6 @@ html {
   margin-top: -5px;
   color: inherit;
   font-weight: bold;
-  font-size: normal;
 }
 
 .text-container h4 {
@@ -158,6 +157,7 @@ html {
 }
 
 .signup-button {
+  color: #1c1c1c;
   border-radius: 20px;
   font-size: 1em;
   font-weight: 500;
