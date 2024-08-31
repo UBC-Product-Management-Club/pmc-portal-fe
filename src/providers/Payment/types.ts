@@ -12,7 +12,7 @@ interface PaymentFormOptions {
     prompt: string
     type: "membership" | "event"
     eventId?: string
-    amt: number
+    amt?: number
     onSuccess: (paymentIntent: PaymentIntent) => void
 }
 
