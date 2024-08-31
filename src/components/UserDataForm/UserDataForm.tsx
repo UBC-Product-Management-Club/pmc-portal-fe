@@ -1,16 +1,18 @@
-import {UserSchema, UserZodObj} from "../OnboardingForm/types";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {useEffect} from "react";
+import { UserSchema, UserZodObj } from "../OnboardingForm/types";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
 import FormInput from "../FormInput/FormInput";
+import "./UserDataForm.css";
 
 type UserDataFormProps = {
     onSubmit: (data: UserSchema) => Promise<void>
     excludeReturningAndWhyPM?: boolean
     includeEmail?: boolean
+    hasWaiver?: boolean
 }
 
-export function UserDataForm({onSubmit, excludeReturningAndWhyPM, includeEmail}: UserDataFormProps) {
+export function UserDataForm({ onSubmit, excludeReturningAndWhyPM, includeEmail, hasWaiver }: UserDataFormProps) {
     const {
         register,
         unregister,
@@ -41,8 +43,27 @@ export function UserDataForm({onSubmit, excludeReturningAndWhyPM, includeEmail}:
         }
     }, [student_status])
 
+    const [isChecked, setIsChecked] = useState(false);
+    const [showError, setShowError] = useState(false);
+
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setIsChecked(e.target.checked);
+        if (e.target.checked) {
+            setShowError(false);
+        }
+    };
+
+    const handleFormSubmit = (data: UserSchema) => {
+        if (hasWaiver && !isChecked) {
+            setShowError(true);
+            return;
+        }
+        onSubmit(data);
+    };
+
+
     return (
-        <form autoComplete="off" className="onboarding-form" onSubmit={handleSubmit(onSubmit)}>
+        <form autoComplete="off" className="onboarding-form" onSubmit={handleSubmit(handleFormSubmit)}>
             <div className="form-content">
                 <div className="form-group">
                     <FormInput
@@ -75,10 +96,10 @@ export function UserDataForm({onSubmit, excludeReturningAndWhyPM, includeEmail}:
                     placeholder={"Email"}
                     name={"email"}
                     register={register}
-                    error={errors.email}/>}
+                    error={errors.email} />}
 
                 <div>
-                    <select required className="form-select select-ubcstudent" {...register("ubc_student",{required: "please select a value"})}>
+                    <select required className="form-select select-ubcstudent" {...register("ubc_student", { required: "please select a value" })}>
                         <option value="" hidden>Are you a UBC student?</option>
                         <option value={"yes"}>Yes, I'm a UBC student.</option>
                         <option value={"no, other uni"}>No, I'm from another university.</option>
@@ -113,7 +134,7 @@ export function UserDataForm({onSubmit, excludeReturningAndWhyPM, includeEmail}:
                 {student_status !== "no, other" &&
                     <div className="form-group">
                         <div className="form-group-sm">
-                            <select className={"form-select"} required {...register("year",{required: "please select a value"})}>
+                            <select className={"form-select"} required {...register("year", { required: "please select a value" })}>
                                 <option value="" hidden>Year</option>
                                 <option value={"1"}>1</option>
                                 <option value={"2"}>2</option>
@@ -143,30 +164,47 @@ export function UserDataForm({onSubmit, excludeReturningAndWhyPM, includeEmail}:
 
                 {!excludeReturningAndWhyPM &&
                     <>
-                    <div>
-                        <select
-                            className={"form-select"}
-                            required
-                            {...register("returning_member",
-                                { required: "Please select a value." })}>
-                            <option value="" hidden>Are you a returning member?</option>
-                            <option value="yes">Yes, I'm a returning PMC member.</option>
-                            <option value="no">No, I'm new to PMC.</option>
-                        </select>
-                        {errors.returning_member && <span>{errors.returning_member.message}</span>}
-                    </div>
+                        <div>
+                            <select
+                                className={"form-select"}
+                                required
+                                {...register("returning_member",
+                                    { required: "Please select a value." })}>
+                                <option value="" hidden>Are you a returning member?</option>
+                                <option value="yes">Yes, I'm a returning PMC member.</option>
+                                <option value="no">No, I'm new to PMC.</option>
+                            </select>
+                            {errors.returning_member && <span>{errors.returning_member.message}</span>}
+                        </div>
 
-                    <div className="form-group">
-                        <FormInput
-                            type="text"
-                            placeholder="Why Product Management?"
-                            name="why_pm"
-                            register={register}
-                            error={errors.major}
-                        />
-                    </div>
+                        <div className="form-group">
+                            <FormInput
+                                type="text"
+                                placeholder="Why Product Management?"
+                                name="why_pm"
+                                register={register}
+                                error={errors.major}
+                            />
+                        </div>
                     </>
                 }
+
+                {hasWaiver &&
+                    <div className="onboarding-waiver">
+                        <h3>Please sign the following form:
+                            <a href="https://www.ams.ubc.ca/student-life/clubs/operating-a-club/club-constituency-general-membership-waiver/" target="_blank" className="onboarding-waiver-link"> Insurance/Liability Waiver.</a>
+                        </h3>
+
+                        <div className="waiver-checkbox-row">
+                            <h3>I have signed the Insurance/Liability Waiver form.</h3>
+                            <input type="checkbox" className="onboarding-waiver-checkbox" onChange={handleCheckboxChange} />
+                            {showError && <p className="error-message">Please sign the waiver form to proceed.</p>}
+
+                        </div>
+
+                    </div>
+                }
+
                 <button className="submit-button pmc-gradient-background" type="submit">Continue</button>
             </div>
         </form>

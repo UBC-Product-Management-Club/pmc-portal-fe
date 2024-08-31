@@ -2,7 +2,7 @@ import "./OnboardingForm.css"
 import { useContext } from "react"
 import { UserSchema } from "./types"
 import { OnboardingContext } from "./Context"
-import {UserDataForm} from "../UserDataForm/UserDataForm";
+import { UserDataForm } from "../UserDataForm/UserDataForm";
 
 export default function OnboardingForm() {
     const { setUserInfo, setCurrPage } = useContext(OnboardingContext)
@@ -45,7 +45,7 @@ export default function OnboardingForm() {
 
     return (
         <div className={"form-multi-cols"}>
-            <UserDataForm onSubmit={submit}/>
+            <UserDataForm onSubmit={submit} hasWaiver />
         </div>
     )
 }
