@@ -75,7 +75,6 @@ export default function ProfileEvents() {
                         onClick={() => {
                             navigateTo(`/events/${event.event_Id}`);
                         }}
-                        onRegister={(e) => e.stopPropagation()}
                     />
                 ))
             ) : (
