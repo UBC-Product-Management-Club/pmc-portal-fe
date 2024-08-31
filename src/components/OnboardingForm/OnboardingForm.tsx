@@ -9,6 +9,8 @@ export default function OnboardingForm() {
     const submit = async (data: UserSchema) => {
         // update parent state to save user input
         console.log()
+        if (data.ubc_student == "yes")
+            data.university = "University of British Columbia";
         setUserInfo(data)
         setCurrPage("payment")
         // fetch onboarding endpoint
