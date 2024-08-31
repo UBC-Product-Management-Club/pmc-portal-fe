@@ -1,13 +1,12 @@
 import {useAuth} from "../../providers/Auth/AuthProvider";
-import {ChangeEvent, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import {MdOutlineEdit} from "react-icons/md";
 
 export function ProfileWhyPM() {
+    const [isLoading, setIsLoading] = useState(true);
     const {userData, setUserData} = useAuth();
     const [isEditing, setIsEditing] = useState(false);
-    const [text, setText] = useState(userData
-        ? userData.why_pm
-        : "Why are you interested in Product Management…")
+    const [text, setText] = useState("Why are you interested in Product Management…")
 
     function handleChange(event: ChangeEvent<HTMLTextAreaElement>) {
         setText(event.target.value);
@@ -19,6 +18,14 @@ export function ProfileWhyPM() {
         }
         setIsEditing(!isEditing);
     }
+
+    useEffect(() => {
+        if (!isLoading) return;
+        if (userData && userData.why_pm) {
+            setText(userData.why_pm);
+            setIsLoading(false);
+        }
+    }, [userData])
 
     return <div>
         <div className={"profile-space-between"}>

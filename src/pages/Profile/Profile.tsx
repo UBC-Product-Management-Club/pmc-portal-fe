@@ -18,7 +18,7 @@ export function Profile() {
             <div className={"profile-space-around"}>
                 <div className={"profile-picture-wrapper w-50"}>
                     <img className={"profile-picture"}
-                         src={"https://i.natgeofe.com/n/23a85f5b-32be-4bc1-af13-3e1a403b8557/mountain-gorilla_thumb_square.jpg"}
+                         src={userData?.pfp}
                          alt={"Profile Picture"}/>
                 </div>
                 <div className={"w-50"}>
