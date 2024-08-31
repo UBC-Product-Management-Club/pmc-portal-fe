@@ -1,17 +1,12 @@
 import "./Profile.css"
 import {useAuth} from "../../providers/Auth/AuthProvider";
-import {useState} from "react";
-import {EventCard} from "../../components/Event/EventCard";
-import {eventType} from "../../types/api";
-import {useNavigate} from "react-router-dom";
 import {FiBook} from "react-icons/fi";
 import {TbSchool} from "react-icons/tb";
 import {ProfileWhyPM} from "../../components/Profile/ProfileWhyPM";
+import ProfileEvents from "../../components/Profile/ProfileEvents";
 
 export function Profile() {
-    const {currentUser, userData} = useAuth();
-    const navigateTo = useNavigate();
-    const [events] = useState<eventType[]>([]);
+    const {userData} = useAuth();
 
     return (
         <div className={"profile"}>
@@ -38,27 +33,8 @@ export function Profile() {
                     </div>
                 </div>
             </div>
-
             <ProfileWhyPM/>
-
-            <div>
-                <h3>Events Registered</h3>
-                {events.length > 0 ? (
-                    events.map((event) => (
-                        <EventCard
-                            key={event.event_Id}
-                            currentUser={currentUser}
-                            event={event}
-                            onClick={() => {
-                                navigateTo(`/events/${event.event_Id}`);
-                            }}
-                            onRegister={(e) => e.stopPropagation()}
-                        />
-                    ))
-                ) : (
-                    <p style={{color: "white"}}>No events found.</p>
-                )}
-            </div>
+            <ProfileEvents/>
         </div>
     )
 }
