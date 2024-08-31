@@ -191,7 +191,10 @@ const Event: React.FC = () => {
       <EventRegistrationModal
           isModalOpen={isSignUpFormOpen}
           setIsModalOpen={setIsSignUpFormOpen}
-          eventId={event_id ?? ""}/>
+          eventId={event_id ?? ""}
+          memberPrice={event.member_price}
+          nonMemberPrice={event.non_member_price}
+      />
       
       <img src={event.media[0]} alt="Event" className="event-photo"></img>
       <div className="event-desc">

@@ -8,11 +8,16 @@ import EventRegistrationForm from "./EventRegistrationForm";
 import {UserSchema} from "../OnboardingForm/types";
 import {EventRegFormSchema} from "../FormInput/EventRegFormUtils";
 import EventRegistrationGuest from "./EventRegistrationGuest";
+import {EventPayment} from "./EventPayment";
+import PaymentSuccess from "../Payment/PaymentSuccess";
+Modal.setAppElement("#root");
 
 // TODO: if alr signed up, don't make button visible
 export function EventRegistrationModal(props:
     {
         eventId: string,
+        memberPrice: number
+        nonMemberPrice: number
         isModalOpen: boolean,
         setIsModalOpen: Dispatch<SetStateAction <boolean>>
     }) {
@@ -28,6 +33,7 @@ export function EventRegistrationModal(props:
         ...userData
     }
     const [userInfo, setUserInfo] = useState<UserSchema>(defaultUserInfo);
+    const [eventRegInfo, setEventRegInfo] = useState<EventRegFormSchema>();
     const navigateTo = useNavigate();
 
     const handleContinueAsGuest = () => setStep(1);
@@ -36,14 +42,17 @@ export function EventRegistrationModal(props:
         setUserInfo(data);
         setStep(2);
     }
-
-    const handleSubmitEventForm = async (data: EventRegFormSchema) => {
+    const handleSubmitEventRegInfo = async (data: EventRegFormSchema) => {
+        setEventRegInfo(data);
+        setStep(3);
+    }
+    const handlePaymentSuccess = async () => {
         const eventFormBody = JSON.stringify({
             "is_member": !isGuest,
             "event_Id": props.eventId,
             "email": currentUser?.email,
             ...userInfo,
-            ...data
+            ...eventRegInfo
         });
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/attendee/addAttendee`, {
@@ -55,7 +64,7 @@ export function EventRegistrationModal(props:
                 body: eventFormBody
             })
             if (response.ok) {
-                setStep(3);
+                setStep(4);
             } else {
                 throw Error("Failed to register attendee")
             }
@@ -66,7 +75,7 @@ export function EventRegistrationModal(props:
 
     useEffect(() => {
         setUserInfo({...userInfo, ...userData})
-    }, [userData, userInfo]);
+    }, [props.isModalOpen]);
 
     const [step, setStep] = useState(currentUser ? 2 : 0);
     const stepComponents = [
@@ -76,8 +85,11 @@ export function EventRegistrationModal(props:
             onSignInOrCreateAccount={() => navigateTo("/")}
             onContinueAsGuest={handleContinueAsGuest}/>,
         <EventRegistrationGuest onSubmit={handleSubmitGuest}/>,
-        <EventRegistrationForm onSubmit={handleSubmitEventForm}/>,
-        <h2>You have successfully registered for the event!</h2>
+        <EventRegistrationForm onSubmit={handleSubmitEventRegInfo}/>,
+        <EventPayment
+            onPaymentSuccess={handlePaymentSuccess} isGuest={isGuest} eventId={props.eventId}
+            nonMemberPrice={props.nonMemberPrice} memberPrice={props.memberPrice}/>,
+        <PaymentSuccess/>
     ];
 
     function handleClose() {
