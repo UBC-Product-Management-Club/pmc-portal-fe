@@ -21,7 +21,6 @@ export function EventPayment(props: EventPaymentProps) {
                 prompt: prompt,
                 type: "event",
                 eventId: props.eventId,
-                amt: fee,
                 onSuccess: props.onPaymentSuccess
             }} SuccessOptions={{
             subheading: `We've processed your $${fee} charge.`,
