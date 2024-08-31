@@ -1,14 +1,14 @@
 import "./EventRegistrationModal.css";
 import EventRegistrationSignIn from "./EventRegistrationSignIn";
 import Modal from "react-modal";
-import {useNavigate} from "react-router-dom";
-import {useAuth} from "../../providers/Auth/AuthProvider";
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../providers/Auth/AuthProvider";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import EventRegistrationForm from "./EventRegistrationForm";
-import {UserSchema} from "../OnboardingForm/types";
-import {EventRegFormSchema} from "../FormInput/EventRegFormUtils";
+import { UserSchema } from "../OnboardingForm/types";
+import { EventRegFormSchema } from "../FormInput/EventRegFormUtils";
 import EventRegistrationGuest from "./EventRegistrationGuest";
-import {EventPayment} from "./EventPayment";
+import { EventPayment } from "./EventPayment";
 Modal.setAppElement("#root");
 
 // TODO: if alr signed up, don't make button visible
@@ -18,9 +18,9 @@ export function EventRegistrationModal(props:
         memberPrice: number
         nonMemberPrice: number
         isModalOpen: boolean,
-        setIsModalOpen: Dispatch<SetStateAction <boolean>>
+        setIsModalOpen: Dispatch<SetStateAction<boolean>>
     }) {
-    const {currentUser, userData} = useAuth();
+    const { currentUser, userData } = useAuth();
     const [isGuest, setIsGuest] = useState(false);
     const defaultUserInfo: UserSchema = {
         first_name: "-",
@@ -29,6 +29,7 @@ export function EventRegistrationModal(props:
         ubc_student: "no, other",
         why_pm: "-",
         returning_member: "no",
+        checkbox: false,
         ...userData
     }
     const [userInfo, setUserInfo] = useState<UserSchema>(defaultUserInfo);
@@ -71,7 +72,7 @@ export function EventRegistrationModal(props:
     }
 
     useEffect(() => {
-        setUserInfo({...userInfo, ...userData})
+        setUserInfo({ ...userInfo, ...userData })
     }, [props.isModalOpen]);
 
     const [step, setStep] = useState(currentUser ? 2 : 0);
@@ -80,12 +81,12 @@ export function EventRegistrationModal(props:
             isOpen={props.isModalOpen}
             onRequestClose={() => props.setIsModalOpen(false)}
             onSignInOrCreateAccount={() => navigateTo("/")}
-            onContinueAsGuest={handleContinueAsGuest}/>,
-        <EventRegistrationGuest onSubmit={handleSubmitGuest}/>,
-        <EventRegistrationForm onSubmit={handleSubmitEventRegInfo}/>,
+            onContinueAsGuest={handleContinueAsGuest} />,
+        <EventRegistrationGuest onSubmit={handleSubmitGuest} />,
+        <EventRegistrationForm onSubmit={handleSubmitEventRegInfo} />,
         <EventPayment
             onPaymentSuccess={handlePaymentSuccess} isGuest={isGuest} eventId={props.eventId}
-            nonMemberPrice={props.nonMemberPrice} memberPrice={props.memberPrice}/>
+            nonMemberPrice={props.nonMemberPrice} memberPrice={props.memberPrice} />
     ];
 
     function handleClose() {
