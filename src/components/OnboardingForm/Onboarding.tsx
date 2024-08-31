@@ -75,7 +75,6 @@ export default function Onboarding() {
         addUser()
         setUserData({...userData!, ...userInfo})
         setPaid(true)
-        setCurrPage("paymentSuccess")
     }
 
     return (
