@@ -21,123 +21,6 @@ body {
   align-items: center;
 }
 
-/* Header */
-
-.logo {
-  height: 30px;
-  width: 100px;
-}
-
-.background-event .header {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 32px;
-  width: 800px;
-  height: 61px;
-  left: 320px;
-  margin-top: 30px;
-  border: 1px solid #ffffff;
-  border-radius: 50px;
-}
-
-.background-event .header-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 3px;
-  width: 30px;
-}
-
-.background-event .header-nav {
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-}
-
-.background-event .header-link {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-  transition: 0.5s;
-  margin-right: 20px;
-}
-
-.background-event .header-link:hover {
-  background-image: linear-gradient(
-    134.02deg,
-    #8d9beb 29.24%,
-    #af71aa 57.54%,
-    #e33148 100%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-
-.background-event .header-link:hover:after {
-  content: "";
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(
-    134.02deg,
-    #8d9beb 29.24%,
-    #af71aa 57.54%,
-    #e33148 100%
-  );
-}
-
-.header-button {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 12px;
-  gap: 10px;
-  width: auto;
-  min-width: 70px;
-  height: auto;
-  min-height: 20px;
-  background: #f1f1f1;
-  border-radius: 50px;
-  flex: none;
-  order: 2;
-  flex-grow: 0;
-  text-decoration: none;
-  font-size: medium;
-  font-weight: bold;
-  color: inherit;
-  border: none;
-  outline: none;
-  white-space: nowrap;
-}
-
-.header-button:hover {
-  background: linear-gradient(
-    134.02deg,
-    #8d9beb 29.24%,
-    #af71aa 57.54%,
-    #e33148 100%
-  );
-  color: white;
-  cursor: pointer;
-}
-
-.header-button:active,
-.header-button:focus {
-  background: linear-gradient(
-    134.02deg,
-    #8d9beb 29.24%,
-    #af71aa 57.54%,
-    #e33148 100%
-  );
-  color: white;
-  box-shadow: none;
-}
-
 html {
   scroll-behavior: smooth;
 }
@@ -224,7 +107,6 @@ html {
   margin-top: -5px;
   color: inherit;
   font-weight: bold;
-  font-size: normal;
 }
 
 .text-container h4 {
@@ -275,6 +157,7 @@ html {
 }
 
 .signup-button {
+  color: #1c1c1c;
   border-radius: 20px;
   font-size: 1em;
   font-weight: 500;

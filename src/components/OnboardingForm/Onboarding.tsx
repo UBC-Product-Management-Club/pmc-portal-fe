@@ -25,7 +25,7 @@ export default function Onboarding() {
     const [userInfo, setUserInfo] = useState<UserSchema | undefined>(undefined)
     const [currPage, setCurrPage] = useState<"userInfo" | "payment" | "paymentSuccess">("userInfo")
     const [paid, setPaid] = useState<boolean>(false)
-    const { currentUser } = useAuth()
+    const { currentUser, userData, setUserData } = useAuth()
 
     const addUser = async () => {
         if (!currentUser) {
@@ -61,9 +61,6 @@ export default function Onboarding() {
             if (!onboardUser.ok) {
                 throw Error("Failed adding user to database")
             }
-
-
-            setCurrPage("paymentSuccess")
         } catch (error) {
             console.log(error)
             return
@@ -73,8 +70,8 @@ export default function Onboarding() {
     // Do stuff on successful payment
     const onPaymentSuccess = () => {
         addUser()
+        setUserData({...userData!, ...userInfo})
         setPaid(true)
-        setCurrPage("paymentSuccess")
     }
 
     return (

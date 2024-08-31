@@ -2,8 +2,6 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
 
-  background-color: #3D4043;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -15,4 +13,41 @@
   --pmc-black: #2E2E2E;
   --pmc-dark-purple: #445088;
   --pmc-light-grey: #DEDFE2;
+
+  background-color: #1f2a37;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  align-items: center;
+}
+
+.width-fit {
+  width: 90vw;
+}
+
+@media only screen and (min-width: 992px) {
+  .width-fit {
+    width: 65vw;
+  }
+}
+
+.container {
+  padding: 3rem 0 3rem 0;
+}
+
+.button-dark-purple {
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #ffffff;
+  background-color: var(--pmc-dark-purple);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-dark-purple:hover {
+  background-color: var(--pmc-light-blue); /* Change background color on hover */
 }

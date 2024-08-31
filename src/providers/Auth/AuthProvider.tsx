@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { auth } from "../../../firebase";
 import { User, browserLocalPersistence, setPersistence } from "firebase/auth";
 import { AuthContextType, AuthProviderProps } from "./types";
-import { userDocument } from "../../types/api";
+import {userDocument} from "../../types/api";
 import AuthContext from "./AuthContext";
 
 export const useAuth = (): AuthContextType => {
@@ -32,8 +32,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     setAuthPersistence();
 
+    const fetchUserData = async (user: User) => {
+      const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/v1/profile/${user.uid}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+      const data: userDocument = await response.json();
+      setUserData(data);
+    }
+
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
+      if (user) {
+        try {
+          fetchUserData(user);
+        } catch (e) {
+          console.error("Failed to fetch user data: ", e);
+        }
+      }
       setIsLoading(false);
     });
 

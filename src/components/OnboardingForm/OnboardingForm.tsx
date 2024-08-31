@@ -3,13 +3,18 @@ import { useContext } from "react"
 import { UserSchema } from "./types"
 import { OnboardingContext } from "./Context"
 import {UserDataForm} from "../UserDataForm/UserDataForm";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 
 export default function OnboardingForm() {
+    const { userData, setUserData } = useAuth();
     const { setUserInfo, setCurrPage } = useContext(OnboardingContext)
     const submit = async (data: UserSchema) => {
         // update parent state to save user input
         console.log()
+        if (data.ubc_student == "yes")
+            data.university = "University of British Columbia";
         setUserInfo(data)
+        setUserData({...userData!, ...data})
         setCurrPage("payment")
         // fetch onboarding endpoint
         // save state of current user info

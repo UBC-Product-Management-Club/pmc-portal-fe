@@ -1,0 +1,144 @@
+.event-date {
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    font-size: 12px;
+    margin-right: 650px;
+}
+
+.card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
+    flex-direction: column;
+    flex: 1;
+}
+
+.card-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.event {
+    display: flex;
+    background-color: #445088;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    padding: 2rem;
+    border-radius: 0.7rem;
+    text-align: left;
+    align-items: start;
+    color: #ffffff;
+
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.event-col {
+    width: 50%
+}
+
+.event:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.event-image {
+    margin-left: 10px;
+    border-radius: 13px;
+    height: 100%;
+    aspect-ratio: 1;
+    float: right;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.event-time-loc {
+    height: 19px;
+    font-style: normal;
+    font-weight: 510;
+    font-size: 16px;
+    line-height: 19px;
+    color: #ffffff;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+.event-description {
+    height: 4.5rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-clamp: 3;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+}
+
+.event-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 152px;
+    height: 51px;
+    background: linear-gradient(
+            134.02deg,
+            #8d9beb 29.24%,
+            #af71aa 57.54%,
+            #e33148 100%
+    );
+    border-radius: 50px;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    color: #ffffff;
+    font-size: large;
+    font-weight: 500;
+    font-family: inherit;
+    border: none;
+    margin-top: 60px;
+    align-self: flex-start;
+}
+
+.event-button:hover {
+    border-color: #ffffff;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
+}
+
+.event-button:focus,
+.event-button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+}
+
+.disabled-card {
+    pointer-events: none;
+}
+
+.disabled-card .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 800px;
+    height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    background: rgba(42, 50, 86, 0.86);
+    z-index: 2;
+}
+
+.disabled-comment {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 3;
+}

@@ -1,19 +1,17 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { eventType } from "../../types/api";
 import "./Event.css";
 import "./Dashboard.css";
-import PMCLogo from "../../assets/pmclogo.svg";
 import { useAuth } from "../../providers/Auth/AuthProvider";
 import {EventRegistrationModal} from "../../components/Event/EventRegistrationModal";
 
 const Event: React.FC = () => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser } = useAuth();
   const [event, setEvent] = useState<eventType | null>(null);
   const { event_id } = useParams<{ event_id: string }>();
   const [loading, setLoading] = useState(true);
-  const navigateTo = useNavigate();
   const [isSignUpFormOpen, setIsSignUpFormOpen] = useState(false);
 
   async function fetchEvent() {
@@ -43,28 +41,6 @@ const Event: React.FC = () => {
     }
   }
 
-  async function authButtonHandler() {
-    try {
-      if (currentUser) {
-        const uid = currentUser.uid;
-        const displayName = currentUser.displayName;
-
-        await logout();
-
-        if (uid) {
-          localStorage.removeItem(uid);
-        }
-        if (displayName) {
-          localStorage.removeItem(displayName);
-        }
-      }
-
-      navigateTo("/");
-    } catch (error) {
-      console.error("Error signing out: ", error);
-    }
-  }
-
   useEffect(() => {
     fetchEvent();
   }, [event_id]);
@@ -75,35 +51,6 @@ const Event: React.FC = () => {
 
   return (
     <div className="background-event">
-      <div className="header">
-        <div className="header-icon">
-          <a href="/">
-            <img src={PMCLogo} className="logo" />
-          </a>
-        </div>
-        <nav className="header-nav">
-          <a href="/dashboard" className="header-link">
-            Events
-          </a>
-          <div>
-            {currentUser != null ? (
-              <a href="/profile" className="header-link">
-                Profile
-              </a>
-            ) : (
-              <a href="/" className="header-link">
-                Profile
-              </a>
-            )}
-          </div>
-          <div className="header-button">
-            <div onClick={authButtonHandler}>
-              {currentUser ? "Sign out" : "Sign in"}
-            </div>
-          </div>
-        </nav>
-      </div>
-
       <div className="event-container">
         <h2 className="event-title">{event.name}</h2>
         <div className="event-details-container">
