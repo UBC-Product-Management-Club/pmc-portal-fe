@@ -1,6 +1,6 @@
 import "./Profile.css"
 import {useAuth} from "../../providers/Auth/AuthProvider";
-import {ChangeEvent, Dispatch, SetStateAction, useState} from "react";
+import {ChangeEvent, useState} from "react";
 import {EventCard} from "../../components/Event/EventCard";
 import {eventType} from "../../types/api";
 import {useNavigate} from "react-router-dom";
@@ -8,23 +8,32 @@ import {FiBook} from "react-icons/fi";
 import {MdOutlineEdit} from "react-icons/md";
 import {TbSchool} from "react-icons/tb";
 
-function ProfileWhyPM(props: { text: string, setText: Dispatch<SetStateAction<string>> }) {
+function ProfileWhyPM() {
+    const {userData, setUserData} = useAuth();
     const [isEditing, setIsEditing] = useState(false);
+    const [text, setText] = useState("Why are you interested in Product Management…")
 
     function handleChange(event: ChangeEvent<HTMLTextAreaElement>) {
-        props.setText(event.target.value);
+        setText(event.target.value);
+    }
+
+    function handleEditButton() {
+        if (isEditing) {
+            setUserData({...userData!, why_pm: text});
+        }
+        setIsEditing(!isEditing);
     }
 
     return <div>
         <div className={"profile-space-between"}>
             <h3>Why Product Management?</h3>
-            <button onClick={() => setIsEditing(!isEditing)} className={"button-dark-purple profile-pill"}>
+            <button onClick={handleEditButton} className={"button-dark-purple profile-pill"}>
                 <p>{isEditing ? 'Save' : 'Edit'}</p>
                 <MdOutlineEdit/>
             </button>
         </div>
         <textarea className={"profile-why-pm"}
-            value={props.text}
+            value={text}
             onChange={handleChange}
             readOnly={!isEditing}
             rows={4}
@@ -34,10 +43,9 @@ function ProfileWhyPM(props: { text: string, setText: Dispatch<SetStateAction<st
 }
 
 export function Profile() {
-    const {currentUser} = useAuth();
+    const {currentUser, userData} = useAuth();
     const navigateTo = useNavigate();
     const [events] = useState<eventType[]>([]);
-    const [whyPM, setWhyPM] = useState("Why are you interested in Product Management…");
 
     return (
         <div className={"profile"}>
@@ -49,21 +57,23 @@ export function Profile() {
                 </div>
                 <div className={"w-50"}>
                     <div className={"profile-name-pronouns"}>
-                        <h2>Name</h2>
-                        <p>(pronouns)</p>
+                        <h2>{userData?.first_name} {userData?.last_name}</h2>
+                        <p>{userData?.pronouns}</p>
                     </div>
-                    <div className={"profile-pill"}>
+                    {userData?.university &&
+                        <div className={"profile-pill"}>
                             <TbSchool/>
-                            <p>University</p>
+                            <p>{userData?.university}</p>
                         </div>
+                    }
                     <div className={"profile-pill"}>
                         <FiBook/>
-                        <p>Year, Faculty, Major</p>
+                        <p>Year {userData?.year}, {userData?.faculty}, {userData?.major}</p>
                     </div>
                 </div>
             </div>
 
-            <ProfileWhyPM text={whyPM} setText={setWhyPM}/>
+            <ProfileWhyPM/>
 
             <div>
                 <h3>Events Registered</h3>
