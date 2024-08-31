@@ -50,6 +50,7 @@ export function EventRegistrationModal(props:
             "is_member": !isGuest,
             "event_Id": props.eventId,
             "email": currentUser?.email,
+            "member_Id": currentUser?.uid,
             ...userInfo,
             ...eventRegInfo
         });
