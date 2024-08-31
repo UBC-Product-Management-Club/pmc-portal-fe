@@ -1,46 +1,12 @@
 import "./Profile.css"
 import {useAuth} from "../../providers/Auth/AuthProvider";
-import {ChangeEvent, useState} from "react";
+import {useState} from "react";
 import {EventCard} from "../../components/Event/EventCard";
 import {eventType} from "../../types/api";
 import {useNavigate} from "react-router-dom";
 import {FiBook} from "react-icons/fi";
-import {MdOutlineEdit} from "react-icons/md";
 import {TbSchool} from "react-icons/tb";
-
-function ProfileWhyPM() {
-    const {userData, setUserData} = useAuth();
-    const [isEditing, setIsEditing] = useState(false);
-    const [text, setText] = useState("Why are you interested in Product Management…")
-
-    function handleChange(event: ChangeEvent<HTMLTextAreaElement>) {
-        setText(event.target.value);
-    }
-
-    function handleEditButton() {
-        if (isEditing) {
-            setUserData({...userData!, why_pm: text});
-        }
-        setIsEditing(!isEditing);
-    }
-
-    return <div>
-        <div className={"profile-space-between"}>
-            <h3>Why Product Management?</h3>
-            <button onClick={handleEditButton} className={"button-dark-purple profile-pill"}>
-                <p>{isEditing ? 'Save' : 'Edit'}</p>
-                <MdOutlineEdit/>
-            </button>
-        </div>
-        <textarea className={"profile-why-pm"}
-            value={text}
-            onChange={handleChange}
-            readOnly={!isEditing}
-            rows={4}
-            cols={50}
-        />
-    </div>;
-}
+import {ProfileWhyPM} from "../../components/Profile/ProfileWhyPM";
 
 export function Profile() {
     const {currentUser, userData} = useAuth();
