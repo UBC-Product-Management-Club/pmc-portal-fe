@@ -9,7 +9,6 @@ import {UserSchema} from "../OnboardingForm/types";
 import {EventRegFormSchema} from "../FormInput/EventRegFormUtils";
 import EventRegistrationGuest from "./EventRegistrationGuest";
 import {EventPayment} from "./EventPayment";
-import PaymentSuccess from "../Payment/PaymentSuccess";
 Modal.setAppElement("#root");
 
 // TODO: if alr signed up, don't make button visible
@@ -63,9 +62,7 @@ export function EventRegistrationModal(props:
                 },
                 body: eventFormBody
             })
-            if (response.ok) {
-                setStep(4);
-            } else {
+            if (!response.ok) {
                 throw Error("Failed to register attendee")
             }
         } catch (e) {
@@ -88,8 +85,7 @@ export function EventRegistrationModal(props:
         <EventRegistrationForm onSubmit={handleSubmitEventRegInfo}/>,
         <EventPayment
             onPaymentSuccess={handlePaymentSuccess} isGuest={isGuest} eventId={props.eventId}
-            nonMemberPrice={props.nonMemberPrice} memberPrice={props.memberPrice}/>,
-        <PaymentSuccess/>
+            nonMemberPrice={props.nonMemberPrice} memberPrice={props.memberPrice}/>
     ];
 
     function handleClose() {
