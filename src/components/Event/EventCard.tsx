@@ -12,7 +12,6 @@ type EventCardProps = {
 }
 
 export function EventCard(props: EventCardProps) {
-    const [registered] = useState(props.event?.attendee_Ids?.includes(props.currentUser?.uid));
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     function handleRegister(e: React.MouseEvent<HTMLButtonElement>) {
@@ -37,9 +36,8 @@ export function EventCard(props: EventCardProps) {
                             <button
                                 className="event-button"
                                 onClick={handleRegister}
-                                disabled={registered}
                             >
-                                {registered ? "Registered" : "Register"}
+                                Register
                             </button>}
                         <EventRegistrationModal
                             eventId={props.event?.event_Id}
