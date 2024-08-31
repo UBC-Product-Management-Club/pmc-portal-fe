@@ -5,10 +5,9 @@ import { useState } from "react"
 import Payment from "../Payment/Payment"
 import { OnboardingProvider } from "./Context"
 import { loginBody, onboardingBody } from "../../types/api"
-import { OnboardingFormSchema } from "./types"
-import { useAuth } from "../../providers/Auth/AuthProvider"
+import { UserSchema } from "./types"
+import { useAuth } from "../../providers/Auth/AuthProvider";
 import { PaymentProvider } from "../../providers/Payment/PaymentProvider"
-
 
 /**
  * 
@@ -23,7 +22,7 @@ import { PaymentProvider } from "../../providers/Payment/PaymentProvider"
  */
 export default function Onboarding() {
     // a lot of type duplication for userInfo. Improve this in the future
-    const [userInfo, setUserInfo] = useState<OnboardingFormSchema | undefined>(undefined) 
+    const [userInfo, setUserInfo] = useState<UserSchema | undefined>(undefined)
     const [currPage, setCurrPage] = useState<"userInfo" | "payment" | "paymentSuccess">("userInfo")
     const [paid, setPaid] = useState<boolean>(false)
     const { currentUser } = useAuth()
@@ -31,7 +30,7 @@ export default function Onboarding() {
     const addUser = async () => {
         if (!currentUser) {
             // If for some reason the user isn't signed-in at this point, throw some error
-            return 
+            return
         }
 
         const idToken = await currentUser.getIdToken()
@@ -43,13 +42,13 @@ export default function Onboarding() {
         try {
             // Add user to the database
             const onboardBody: onboardingBody = {
-                    creds: creds, // Must be user's UID and idToken 
+                    creds: creds, // Must be user's UID and idToken
                     userDoc: {
                         ...userInfo!,
                         displayName: currentUser.displayName!,
                         email: currentUser.email!,
                         pfp: currentUser.photoURL!,
-                    } 
+                    }
             }
             const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
                 method: "POST",
@@ -82,7 +81,7 @@ export default function Onboarding() {
         <div className="onboarding-container">
             <div className="onboarding-content">
                 <img className="onboarding-content--logo" src={PMCLogo} />
-                {paid ? 
+                {paid ?
                     <h1 className="onboarding-content-header pmc-gradient-text">Welcome to PMC {userInfo?.first_name}! <span style={{fontSize: 'x-large'}}>🥳</span></h1> 
                 : 
                     <h1 className="onboarding-content-header pmc-gradient-text">Become a member</h1>}
@@ -90,7 +89,7 @@ export default function Onboarding() {
                 {/* Use Context to keep track of current state */}
                 <OnboardingProvider setters={{ setUserInfo, setCurrPage }} >
                     {currPage == "payment" ? 
-                        <PaymentProvider 
+                        <PaymentProvider
                             FormOptions={{
                                 prompt:"To become a PMC member for the 2024/2025 academic year, a $10 membership fee is required.",
                                 type: "membership",
@@ -99,7 +98,7 @@ export default function Onboarding() {
                             }} SuccessOptions={{
                                 subheading: "We've processed your $10 charge.",
                                 continueBtnText: "Continue to dashboard"
-                            }}  
+                            }}
                         >
                             <Payment />
                         </PaymentProvider>

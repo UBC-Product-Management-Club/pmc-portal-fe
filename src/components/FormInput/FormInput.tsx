@@ -14,7 +14,7 @@ export default function FormInput({ type, placeholder, name, register, error, va
     },[error])
     return (
         <div className="onboarding-form-input-container">
-            <input style={errorState ? 
+            <input className={"form-input"} style={errorState ?
                 {
                     "border" : "0.25rem",
                     "borderColor" : "red"

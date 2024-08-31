@@ -1,0 +1,44 @@
+/* Modal Styles */
+.event-registration-modal {
+    background-color: #1d233f;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2rem;
+    width: 350px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    outline: none;
+    text-align: center;
+}
+
+.event-registration-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+/* Form Content */
+.event-registration-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: #ffffff;
+}
+
+/* Buttons */
+.event-registration-form-buttons {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    gap: 0.5rem;
+}

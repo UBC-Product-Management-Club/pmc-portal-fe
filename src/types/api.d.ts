@@ -9,11 +9,11 @@ type userDocument = {
   displayName: string; // from Google
   university?: string;
   student_id?: number;
-  year?: string; // "5+"
+  year?: "1" | "2" | "3" | "4" | "5+"; // "5+"
   faculty?: string;
   major?: string;
-  why_pm: string;
-  returning_member: string;
+  why_pm?: string;
+  returning_member?: "yes" | "no";
 };
 
 type loginBody = {
@@ -35,7 +35,7 @@ type eventType = {
   media: string[];
   member_price: number;
   non_member_price: number;
-  attendees: AttendeeType[];
+  attendee_Ids: AttendeeType[];
   member_only: boolean;
 };
 
@@ -48,7 +48,7 @@ type attendeeType = {
   last_name: string;
   student_num: number;
   email: string;
-  year_level: number;
+  year: number;
   major: string;
   faculty: string;
   familiarity: "beginner" | "intermediate" | "advanced" | "mentor";

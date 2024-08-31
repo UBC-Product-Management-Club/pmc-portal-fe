@@ -8,6 +8,7 @@ export type FormData = {
     first_name: string
     last_name: string
     pronouns: string
+    email?: string
     ubc_student: "yes" | "no, other uni" | "no, other"
     student_id?: number | undefined
     university?: string | undefined
@@ -28,5 +29,5 @@ export type FormInputProps = {
 };
   
 
-export type ValidFieldNames = "first_name" | "last_name" | "pronouns" | "student_id" | "university" |
+export type ValidFieldNames = "first_name" | "last_name" | "pronouns" | "email" | "student_id" | "university" |
                               "year" | "faculty" | "major" | "why_pm" | "returning_member";

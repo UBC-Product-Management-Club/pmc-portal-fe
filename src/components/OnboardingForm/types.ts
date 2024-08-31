@@ -13,6 +13,8 @@ const UserZodObj = z.object({
         message: "Please enter your pronouns."
     }),
 
+    email: z.string().email().optional(),
+
     ubc_student: z.enum(["yes", "no, other uni", "no, other"], {
         message: "Please select a value."
     }),
@@ -58,6 +60,6 @@ const UserZodObj = z.object({
     })
 })
 
-type OnboardingFormSchema = z.infer<typeof UserZodObj>
+type UserSchema = z.infer<typeof UserZodObj>
 
-export { UserZodObj, type OnboardingFormSchema }
+export { UserZodObj, type UserSchema }

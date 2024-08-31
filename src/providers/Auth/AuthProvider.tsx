@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { auth } from "../../../firebase";
 import { User, browserLocalPersistence, setPersistence } from "firebase/auth";
 import { AuthContextType, AuthProviderProps } from "./types";
+import { userDocument } from "../../types/api";
 import AuthContext from "./AuthContext";
 
 export const useAuth = (): AuthContextType => {
@@ -14,6 +15,7 @@ export const useAuth = (): AuthContextType => {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [userData, setUserData] = useState<userDocument | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -44,6 +46,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const value: AuthContextType = {
     currentUser,
+    userData,
+    setUserData,
     logout,
   };
 

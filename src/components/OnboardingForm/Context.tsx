@@ -1,18 +1,18 @@
 import { SetStateAction } from "react";
 import { createContext } from "react";
-import { OnboardingFormSchema } from "./types";
+import { UserSchema } from "./types";
 
 
 type pages = "userInfo" | "payment" | "paymentSuccess"
 type OnboardingData = {
     setCurrPage: React.Dispatch<SetStateAction<pages>>
-    setUserInfo: React.Dispatch<SetStateAction<OnboardingFormSchema| undefined>>
+    setUserInfo: React.Dispatch<SetStateAction<UserSchema| undefined>>
 }
 
 interface OnboardingProps {
     setters: { 
         setCurrPage: React.Dispatch<SetStateAction<pages>>, 
-        setUserInfo: React.Dispatch<SetStateAction<OnboardingFormSchema | undefined>>
+        setUserInfo: React.Dispatch<SetStateAction<UserSchema | undefined>>
     }, 
     children: React.ReactNode 
 }
