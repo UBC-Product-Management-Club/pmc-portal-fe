@@ -68,7 +68,7 @@ export default function Dashboard() {
                           onClick={() => {
                             navigateTo(`/events/${event.event_Id}`);
                           }}
-                          onRegister={(e) => e.stopPropagation()}
+                          showRegister={true}
                       />
                   ))
               ) : (

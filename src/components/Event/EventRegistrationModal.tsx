@@ -3,7 +3,7 @@ import EventRegistrationSignIn from "./EventRegistrationSignIn";
 import Modal from "react-modal";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../../providers/Auth/AuthProvider";
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import EventRegistrationForm from "./EventRegistrationForm";
 import {UserSchema} from "../OnboardingForm/types";
 import {EventRegFormSchema} from "../FormInput/EventRegFormUtils";
@@ -89,6 +89,10 @@ export function EventRegistrationModal(props:
             nonMemberPrice={props.nonMemberPrice} memberPrice={props.memberPrice}/>
     ];
 
+    function handleClick(event: React.MouseEvent<HTMLDivElement>) {
+        event.stopPropagation();
+    }
+
     function handleClose() {
         if (isGuest) {
             setIsGuest(false);
@@ -104,7 +108,9 @@ export function EventRegistrationModal(props:
             className="event-registration-modal"
             overlayClassName="event-registration-modal-overlay"
         >
-            {stepComponents[step]}
+            <div className={"event-registration-modal-content"} onClick={handleClick}>
+                {stepComponents[step]}
+            </div>
         </Modal>
     )
 }

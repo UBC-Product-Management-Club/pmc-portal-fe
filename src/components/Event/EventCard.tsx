@@ -1,16 +1,25 @@
 import "./EventCard.css";
 import {User} from "firebase/auth";
 import {eventType} from "../../types/api";
-import {MouseEventHandler} from "react";
+import React, {useState} from "react";
+import {EventRegistrationModal} from "./EventRegistrationModal";
 
 type EventCardProps = {
     currentUser: User | null,
     event: eventType,
     onClick: () => void,
-    onRegister?: MouseEventHandler<HTMLButtonElement>
+    showRegister?: boolean
 }
 
 export function EventCard(props: EventCardProps) {
+    const [registered] = useState(props.event?.attendee_Ids?.includes(props.currentUser?.uid));
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    function handleRegister(e: React.MouseEvent<HTMLButtonElement>) {
+        e.stopPropagation();
+        setIsModalOpen(true);
+    }
+
     return (
         <div>
             <h2>{new Date(props.event.date).toDateString()}</h2>
@@ -24,13 +33,20 @@ export function EventCard(props: EventCardProps) {
                         <p className="event-time-loc">7:00 PM | {props.event.location}</p>
                         <h2>{props.event.name}</h2>
                         <p className="event-description">{props.event.description}</p>
-                        {props.onRegister &&
+                        {props.showRegister &&
                             <button
                                 className="event-button"
-                                onClick={props.onRegister}
+                                onClick={handleRegister}
+                                disabled={registered}
                             >
-                                Register
+                                {registered ? "Registered" : "Register"}
                             </button>}
+                        <EventRegistrationModal
+                            eventId={props.event?.event_Id}
+                            memberPrice={props.event?.member_price}
+                            nonMemberPrice={props.event?.non_member_price}
+                            isModalOpen={isModalOpen}
+                            setIsModalOpen={setIsModalOpen}/>
                         {!props.event.non_member_price && !props.currentUser && (
                             <div className="overlay">
                                 <p className="disabled-comment">
@@ -39,7 +55,6 @@ export function EventCard(props: EventCardProps) {
                                 </p>
                             </div>
                         )}
-                        {/*</div>*/}
                     </div>
                     <div className={"event-col"}>
                         <img
