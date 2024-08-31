@@ -15,7 +15,7 @@ export default function OnboardingForm() {
         if (data.ubc_student == "yes")
             data.university = "University of British Columbia";
         setUserInfo(data)
-        setUserData({...userData!, ...data})
+        setUserData({ ...userData!, ...data })
         setCurrPage("payment")
         // fetch onboarding endpoint
         // save state of current user info
