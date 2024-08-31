@@ -22,15 +22,17 @@ export function Profile() {
                         <p>{userData?.pronouns}</p>
                     </div>
                     {userData?.university &&
-                        <div className={"profile-pill"}>
-                            <TbSchool/>
-                            <p>{userData?.university}</p>
+                        <div>
+                            <div className={"profile-pill"}>
+                                <TbSchool/>
+                                <p>{userData?.university}</p>
+                            </div>
+                            <div className={"profile-pill"}>
+                                <FiBook/>
+                                <p>Year {userData?.year}, {userData?.faculty}, {userData?.major}</p>
+                            </div>
                         </div>
                     }
-                    <div className={"profile-pill"}>
-                        <FiBook/>
-                        <p>Year {userData?.year}, {userData?.faculty}, {userData?.major}</p>
-                    </div>
                 </div>
             </div>
             <ProfileWhyPM/>
