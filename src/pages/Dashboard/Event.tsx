@@ -142,7 +142,7 @@ const Event: React.FC = () => {
           memberPrice={event.member_price}
           nonMemberPrice={event.non_member_price}
       />
-
+      
       <img src={event.media[0]} alt="Event" className="event-photo"></img>
       <div className="event-desc">
         <h3>About the event</h3>
