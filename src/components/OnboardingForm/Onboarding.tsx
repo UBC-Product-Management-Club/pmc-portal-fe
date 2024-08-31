@@ -61,9 +61,6 @@ export default function Onboarding() {
             if (!onboardUser.ok) {
                 throw Error("Failed adding user to database")
             }
-
-
-            setCurrPage("paymentSuccess")
         } catch (error) {
             console.log(error)
             return
