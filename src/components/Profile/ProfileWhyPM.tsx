@@ -1,23 +1,26 @@
 import {useAuth} from "../../providers/Auth/AuthProvider";
 import {ChangeEvent, useEffect, useState} from "react";
-import {MdOutlineEdit} from "react-icons/md";
+// import {MdOutlineEdit} from "react-icons/md";
 
 export function ProfileWhyPM() {
     const [isLoading, setIsLoading] = useState(true);
-    const {userData, setUserData} = useAuth();
-    const [isEditing, setIsEditing] = useState(false);
+    // const {userData, setUserData} = useAuth();
+    // const [isEditing, setIsEditing] = useState(false);
+
+    const {userData} = useAuth();
+    const [isEditing] = useState(false);
     const [text, setText] = useState("Why are you interested in Product Management…")
 
     function handleChange(event: ChangeEvent<HTMLTextAreaElement>) {
         setText(event.target.value);
     }
 
-    function handleEditButton() {
-        if (isEditing) {
-            setUserData({...userData!, why_pm: text});
-        }
-        setIsEditing(!isEditing);
-    }
+    // function handleEditButton() {
+    //     if (isEditing) {
+    //         setUserData({...userData!, why_pm: text});
+    //     }
+    //     setIsEditing(!isEditing);
+    // }
 
     useEffect(() => {
         if (!isLoading) return;
@@ -25,7 +28,7 @@ export function ProfileWhyPM() {
             setText(userData.why_pm);
             setIsLoading(false);
         }
-    }, [userData])
+    }, [userData, isLoading])
 
     return <div>
         <div className={"profile-space-between"}>
