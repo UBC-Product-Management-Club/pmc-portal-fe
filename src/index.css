@@ -13,8 +13,10 @@
   --pmc-black: #2E2E2E;
   --pmc-dark-purple: #445088;
   --pmc-light-grey: #DEDFE2;
+  --pmc-blue: #333D6C;
+  --pmc-dark-blue: #1D233F;
 
-  background-color: #1f2a37;
+  background-color: var(--pmc-dark-blue);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -49,5 +51,6 @@
 }
 
 .button-dark-purple:hover {
-  background-color: var(--pmc-light-blue); /* Change background color on hover */
+  background-color: var(--pmc-light-blue);
+  /* Change background color on hover */
 }
