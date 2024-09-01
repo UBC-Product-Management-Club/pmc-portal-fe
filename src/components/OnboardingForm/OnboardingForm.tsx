@@ -2,8 +2,9 @@ import "./OnboardingForm.css"
 import { useContext } from "react"
 import { UserSchema } from "./types"
 import { OnboardingContext } from "./Context"
-import {UserDataForm} from "../UserDataForm/UserDataForm";
-import {useAuth} from "../../providers/Auth/AuthProvider";
+import { UserDataForm } from "../UserDataForm/UserDataForm";
+import { useAuth } from "../../providers/Auth/AuthProvider";
+
 
 export default function OnboardingForm() {
     const { userData, setUserData } = useAuth();
@@ -50,7 +51,7 @@ export default function OnboardingForm() {
 
     return (
         <div className={"form-multi-cols"}>
-            <UserDataForm onSubmit={submit}/>
+            <UserDataForm onSubmit={submit} hasWaiver />
         </div>
     )
 }
