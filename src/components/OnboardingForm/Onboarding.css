@@ -33,3 +33,36 @@
     width: 4rem;
     height: 4rem;
 }
+
+@media screen and (max-width: 768px) {
+    .onboarding-container {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .onboarding-content {
+        width: 20rem;
+        height: 40rem;
+        border-radius: 1rem;
+        padding: 0;
+        justify-content: center; 
+        position: relative;
+        background-color: #1f2a37;
+    } 
+
+    .onboarding-content-header {
+        font-size: x-large;
+        margin: 2rem 0;
+        background: linear-gradient(94deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
+        color: transparent;
+        background-clip: text;
+    }
+
+    .onboarding-content--logo {
+        width: 4rem;
+        height: 4rem;
+    }
+
+}
