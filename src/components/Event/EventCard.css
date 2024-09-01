@@ -14,6 +14,7 @@
     display: flex;
     flex-direction: row;
     gap: 1rem;
+    align-items: stretch;
 }
 
 .event {
@@ -33,7 +34,11 @@
 }
 
 .event-col {
-    width: 50%
+    width: 50%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .event:hover {
@@ -96,11 +101,12 @@
     margin-top: 60px;
     align-self: flex-start;
     cursor: pointer;
+    order: 1;
 }
 
 .event-button:disabled {
-    background: gray;
-    color: white;
+    background: #6C757D;
+    color: lightgray;
     cursor: not-allowed;
 }
 
@@ -110,9 +116,10 @@
 }
 
 .error-message {
-    color: white;
+    color: lightgray;
     margin: 0;
     margin-top: 10px;
+    order: 2;
 }
 
 
