@@ -6,6 +6,7 @@
   justify-content: space-around;
   width: 100vw;
   height: 100vh;
+  background-color: #3D4043;
 }
 
 .login-content {
@@ -75,3 +76,44 @@
   font-size: medium;
 }
 
+@media screen and (max-width: 768px) {
+  .login-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .login-content {
+    width: 100%;
+    height: 100%;
+    border-radius: 0rem;
+
+  }
+
+  .login-content--logo {
+    width: 8rem;
+    height: 8rem;
+  }
+
+  .login-content--header {
+    text-align: center;
+    font-size: x-large;
+    font-family: Helvetica;
+    line-height: 1.5;
+    background: rgb(141,155,235);
+    background: linear-gradient(96deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
+    color: transparent;
+    background-clip: text;
+  }
+
+  .login-content--button-container > button {
+    width: 15rem;
+    padding: 0.75rem 0 0.75rem 0;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 999rem;
+    cursor: pointer;
+  }
+}
