@@ -1,0 +1,36 @@
+.onboarding-waiver {
+    position: relative;
+}
+
+.onboarding-waiver h3 {
+    font-size: small;
+    font-weight: normal;
+    color: white;
+    margin: 0.5%;
+}
+
+.onboarding-waiver-link {
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+}
+
+.waiver-checkbox-row {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 0.5%;
+    position: relative;
+}
+
+.error-message {
+    color: rgba(175, 113, 170, 1);
+    font-size: small;
+    margin: 0.5%;
+    margin-left: 2.5rem;
+}
+
+.onboarding-waiver-checkbox {
+    cursor: pointer;
+    position: absolute;
+}

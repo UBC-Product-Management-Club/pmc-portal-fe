@@ -1,4 +1,3 @@
-
 .onboarding-form {
     width: 100%;
     flex: 0 1 auto;
@@ -56,7 +55,7 @@ span {
     padding: 0.5rem 1rem;
     margin-left: auto;
     cursor: pointer;
-    background: rgb(141,155,235);
-    background: linear-gradient(101deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
+    background: rgb(141, 155, 235);
+    background: linear-gradient(101deg, rgba(141, 155, 235, 1) 20%, rgba(175, 113, 170, 1) 52%, rgba(227, 49, 72, 1) 100%);
     color: white;
 }
