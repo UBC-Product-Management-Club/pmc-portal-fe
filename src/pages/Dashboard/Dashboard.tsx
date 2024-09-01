@@ -1,9 +1,9 @@
 import "./Dashboard.css";
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {eventType} from "../../types/api";
-import {useAuth} from "../../providers/Auth/AuthProvider";
-import {EventCard} from "../../components/Event/EventCard";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { eventType } from "../../types/api";
+import { useAuth } from "../../providers/Auth/AuthProvider";
+import { EventCard } from "../../components/Event/EventCard";
 
 export default function Dashboard() {
   const { currentUser } = useAuth();
@@ -45,37 +45,37 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
-        <div className={"dashboard-container"}>
-            <div className="dashboard-header">
-                <h2>Upcoming Events</h2>
-                <h4 className={"welcome-message"}>{welcomeMessage}</h4>
-            </div>
-            <p>
-              Every week, we feature some of our favorite events in cities like New
-              York and London. You can also check out some great calendars from the
-              community.
-            </p>
+      <div className={"dashboard-container"}>
+        <div className="dashboard-header">
+          <h2>Upcoming Events</h2>
+          <h4 className={"welcome-message"}>{welcomeMessage}</h4>
         </div>
+        <p>
+          Every week, we feature some of our favorite events in cities like New
+          York and London. You can also check out some great calendars from the
+          community.
+        </p>
+      </div>
 
-        <div className={"dashboard-container"}>
-            <div>
-              {allEvents.length > 0 ? (
-                  allEvents.map((event) => (
-                      <EventCard
-                          key={event.event_Id}
-                          currentUser={currentUser}
-                          event={event}
-                          onClick={() => {
-                            navigateTo(`/events/${event.event_Id}`);
-                          }}
-                          showRegister={true}
-                      />
-                  ))
-              ) : (
-                  <p style={{color: "white"}}>No events found.</p>
-              )}
-            </div>
+      <div className={"dashboard-container"}>
+        <div>
+          {allEvents.length > 0 ? (
+            allEvents.map((event) => (
+              <EventCard
+                key={event.event_Id}
+                currentUser={currentUser}
+                event={event}
+                onClick={() => {
+                  navigateTo(`/events/${event.event_Id}`);
+                }}
+                showRegister={true}
+              />
+            ))
+          ) : (
+            <p style={{ color: "white" }}>No events found.</p>
+          )}
         </div>
+      </div>
     </div>
   );
 }

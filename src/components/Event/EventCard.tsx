@@ -5,20 +5,20 @@ import React, { useState } from "react";
 import { EventRegistrationModal } from "./EventRegistrationModal";
 
 type EventCardProps = {
-    currentUser: User | null,
-    event: eventType,
-    onClick: () => void,
-    showRegister?: boolean
-}
+  currentUser: User | null;
+  event: eventType;
+  onClick: () => void;
+  showRegister?: boolean;
+};
 
 export function EventCard(props: EventCardProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const isEventFull = props.event.maxAttendee !== null && props.event.attendee_Ids?.length >= props.event.maxAttendee;
 
-    function handleRegister(e: React.MouseEvent<HTMLButtonElement>) {
-        e.stopPropagation();
-        setIsModalOpen(true);
-    }
+  function handleRegister(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
+    setIsModalOpen(true);
+  }
 
     return (
         <div>
@@ -72,5 +72,7 @@ export function EventCard(props: EventCardProps) {
                 </div>
             </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }

@@ -1,10 +1,9 @@
-import "./OnboardingForm.css"
-import { useContext } from "react"
-import { UserSchema } from "./types"
-import { OnboardingContext } from "./Context"
+import "./OnboardingForm.css";
+import { useContext } from "react";
+import { UserSchema } from "./types";
+import { OnboardingContext } from "./Context";
 import { UserDataForm } from "../UserDataForm/UserDataForm";
 import { useAuth } from "../../providers/Auth/AuthProvider";
-
 
 export default function OnboardingForm() {
     const { userData, setUserData } = useAuth();
@@ -36,22 +35,21 @@ export default function OnboardingForm() {
         //     })
         // })
 
+    // if (onboarding.ok) {
+    //     // continue to payment
+    //     // navigateTo("/dashboard")
+    //     console.log("Go to PaymentForm")
+    // } else {
+    //     // show error component
+    //     const jsonresp = await onboarding.json()
+    //     console.log(jsonresp)
 
-        // if (onboarding.ok) {
-        //     // continue to payment
-        //     // navigateTo("/dashboard")
-        //     console.log("Go to PaymentForm")
-        // } else {
-        //     // show error component
-        //     const jsonresp = await onboarding.json()
-        //     console.log(jsonresp)
+    // }
+  };
 
-        // }
-    }
-
-    return (
-        <div className={"form-multi-cols"}>
-            <UserDataForm onSubmit={submit} hasWaiver />
-        </div>
-    )
+  return (
+    <div className={"form-multi-cols"}>
+      <UserDataForm onSubmit={submit} hasWaiver />
+    </div>
+  );
 }
