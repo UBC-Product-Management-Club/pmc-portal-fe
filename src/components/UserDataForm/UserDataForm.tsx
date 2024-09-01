@@ -1,18 +1,23 @@
 import { UserSchema, UserZodObj } from "../OnboardingForm/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import FormInput from "../FormInput/FormInput";
 import "./UserDataForm.css";
 
 type UserDataFormProps = {
-  onSubmit: (data: UserSchema) => Promise<void>
-  excludeReturningAndWhyPM?: boolean
-  includeEmail?: boolean
-  hasWaiver?: boolean
-}
+  onSubmit: (data: UserSchema) => Promise<void>;
+  excludeReturningAndWhyPM?: boolean;
+  includeEmail?: boolean;
+  hasWaiver?: boolean;
+};
 
-export function UserDataForm({ onSubmit, excludeReturningAndWhyPM, includeEmail, hasWaiver }: UserDataFormProps) {
+export function UserDataForm({
+  onSubmit,
+  excludeReturningAndWhyPM,
+  includeEmail,
+  hasWaiver,
+}: UserDataFormProps) {
   const {
     register,
     unregister,
@@ -22,35 +27,37 @@ export function UserDataForm({ onSubmit, excludeReturningAndWhyPM, includeEmail,
   } = useForm<UserSchema>({
     defaultValues: excludeReturningAndWhyPM
       ? {
-        why_pm: "-",
-        returning_member: "no"
-      }
+          why_pm: "-",
+          returning_member: "no",
+        }
       : {},
-    resolver: zodResolver(UserZodObj)
-  })
+    resolver: zodResolver(UserZodObj),
+  });
 
-  const student_status = watch("ubc_student")
+  const student_status = watch("ubc_student");
   useEffect(() => {
     if (student_status === "no, other uni") {
       // Other university student
-      unregister("student_id")
+      unregister("student_id");
     } else {
       // Not a university student
-      unregister("student_id")
-      unregister("year")
-      unregister("faculty")
-      unregister("major")
+      unregister("student_id");
+      unregister("year");
+      unregister("faculty");
+      unregister("major");
     }
-  }, [student_status])
-
+  }, [student_status]);
 
   const handleFormSubmit = (data: UserSchema) => {
     onSubmit(data);
   };
 
-
   return (
-    <form autoComplete="off" className="onboarding-form" onSubmit={handleSubmit(handleFormSubmit)}>
+    <form
+      autoComplete="off"
+      className="onboarding-form"
+      onSubmit={handleSubmit(handleFormSubmit)}
+    >
       <div className="form-content">
         <div className="form-group">
           <FormInput
@@ -78,19 +85,32 @@ export function UserDataForm({ onSubmit, excludeReturningAndWhyPM, includeEmail,
           </div>
         </div>
 
-        {includeEmail && <FormInput
-          type={"text"}
-          placeholder={"Email"}
-          name={"email"}
-          register={register}
-          error={errors.email} />}
+        {includeEmail && (
+          <FormInput
+            type={"text"}
+            placeholder={"Email"}
+            name={"email"}
+            register={register}
+            error={errors.email}
+          />
+        )}
 
         <div>
-          <select required className="form-select select-ubcstudent" {...register("ubc_student", { required: "please select a value" })}>
-            <option value="" hidden>Are you a UBC student?</option>
+          <select
+            required
+            className="form-select select-ubcstudent"
+            {...register("ubc_student", { required: "please select a value" })}
+          >
+            <option value="" hidden>
+              Are you a UBC student?
+            </option>
             <option value={"yes"}>Yes, I'm a UBC student.</option>
-            <option value={"no, other uni"}>No, I'm from another university.</option>
-            <option value={"no, other"}>No, I'm not a university student.</option>
+            <option value={"no, other uni"}>
+              No, I'm from another university.
+            </option>
+            <option value={"no, other"}>
+              No, I'm not a university student.
+            </option>
           </select>
           {errors.ubc_student && <span>{errors.ubc_student.message}</span>}
         </div>
@@ -117,13 +137,17 @@ export function UserDataForm({ onSubmit, excludeReturningAndWhyPM, includeEmail,
           </div>
         )}
 
-
-
-        {student_status !== "no, other" &&
+        {student_status !== "no, other" && (
           <div className="form-group">
             <div className="form-group-sm">
-              <select className={"form-select"} required {...register("year", { required: "please select a value" })}>
-                <option value="" hidden>Year</option>
+              <select
+                className={"form-select"}
+                required
+                {...register("year", { required: "please select a value" })}
+              >
+                <option value="" hidden>
+                  Year
+                </option>
                 <option value={"1"}>1</option>
                 <option value={"2"}>2</option>
                 <option value={"3"}>3</option>
@@ -148,21 +172,27 @@ export function UserDataForm({ onSubmit, excludeReturningAndWhyPM, includeEmail,
               error={errors.major}
             />
           </div>
-        }
+        )}
 
-        {!excludeReturningAndWhyPM &&
+        {!excludeReturningAndWhyPM && (
           <>
             <div>
               <select
                 className={"form-select"}
                 required
-                {...register("returning_member",
-                  { required: "Please select a value." })}>
-                <option value="" hidden>Are you a returning member?</option>
+                {...register("returning_member", {
+                  required: "Please select a value.",
+                })}
+              >
+                <option value="" hidden>
+                  Are you a returning member?
+                </option>
                 <option value="yes">Yes, I'm a returning PMC member.</option>
                 <option value="no">No, I'm new to PMC.</option>
               </select>
-              {errors.returning_member && <span>{errors.returning_member.message}</span>}
+              {errors.returning_member && (
+                <span>{errors.returning_member.message}</span>
+              )}
             </div>
 
             <div className="form-group">
@@ -175,7 +205,7 @@ export function UserDataForm({ onSubmit, excludeReturningAndWhyPM, includeEmail,
               />
             </div>
           </>
-        }
+        )}
 
         {hasWaiver && student_status == "yes" && (
           <div className="onboarding-waiver">
