@@ -17,11 +17,11 @@
 }
 
 .card-container {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    align-items: stretch;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: stretch;
 }
 
 .event {
@@ -42,11 +42,11 @@
 }
 
 .event-col {
-    width: 50%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  width: 50%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .event:hover {
@@ -86,36 +86,38 @@
 }
 
 .event-button {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    width: 152px;
-    height: 51px;
-    background: linear-gradient(134.02deg,
-            #8d9beb 29.24%,
-            #af71aa 57.54%,
-            #e33148 100%);
-    border-radius: 50px;
-    flex: none;
-    order: 1;
-    flex-grow: 0;
-    color: #ffffff;
-    font-size: large;
-    font-weight: 500;
-    font-family: inherit;
-    border: none;
-    margin-top: 60px;
-    align-self: flex-start;
-    cursor: pointer;
-    order: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 152px;
+  height: 51px;
+  background: linear-gradient(
+    134.02deg,
+    #8d9beb 29.24%,
+    #af71aa 57.54%,
+    #e33148 100%
+  );
+  border-radius: 50px;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  color: #ffffff;
+  font-size: large;
+  font-weight: 500;
+  font-family: inherit;
+  border: none;
+  margin-top: 60px;
+  align-self: flex-start;
+  cursor: pointer;
+  order: 1;
 }
 
 .event-button:disabled {
-    background: #6C757D;
-    color: lightgray;
-    cursor: not-allowed;
+  background: #6c757d;
+  color: lightgray;
+  cursor: not-allowed;
 }
 
 .event-button:hover {
@@ -124,12 +126,11 @@
 }
 
 .error-message {
-    color: lightgray;
-    margin: 0;
-    margin-top: 10px;
-    order: 2;
+  color: lightgray;
+  margin: 0;
+  margin-top: 10px;
+  order: 2;
 }
-
 
 .event-button:focus,
 .event-button:focus-visible {
@@ -144,8 +145,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 800px;
-  height: 350px;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
