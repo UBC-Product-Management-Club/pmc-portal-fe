@@ -74,18 +74,16 @@
 
 .event-button {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 10px;
     width: 152px;
     height: 51px;
-    background: linear-gradient(
-            134.02deg,
+    background: linear-gradient(134.02deg,
             #8d9beb 29.24%,
             #af71aa 57.54%,
-            #e33148 100%
-    );
+            #e33148 100%);
     border-radius: 50px;
     flex: none;
     order: 1;
@@ -101,14 +99,22 @@
 }
 
 .event-button:disabled {
-    background-color: lightgray;
-    color: gray;
+    background: gray;
+    color: white;
+    cursor: not-allowed;
 }
 
 .event-button:hover {
     border-color: #ffffff;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
 }
+
+.error-message {
+    color: white;
+    margin: 0;
+    margin-top: 10px;
+}
+
 
 .event-button:focus,
 .event-button:focus-visible {

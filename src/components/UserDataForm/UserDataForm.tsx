@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import FormInput from "../FormInput/FormInput";
 import "./UserDataForm.css";
-import "./UserDataForm.css";
 
 type UserDataFormProps = {
   onSubmit: (data: UserSchema) => Promise<void>
@@ -44,21 +43,8 @@ export function UserDataForm({ onSubmit, excludeReturningAndWhyPM, includeEmail,
     }
   }, [student_status])
 
-  const [isChecked, setIsChecked] = useState(false);
-  const [showError, setShowError] = useState(false);
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsChecked(e.target.checked);
-    if (e.target.checked) {
-      setShowError(false);
-    }
-  };
 
   const handleFormSubmit = (data: UserSchema) => {
-    if (hasWaiver && !isChecked) {
-      setShowError(true);
-      return;
-    }
     onSubmit(data);
   };
 
