@@ -4,9 +4,12 @@ import { UserSchema } from "./types";
 import { OnboardingContext } from "./Context";
 import { UserDataForm } from "../UserDataForm/UserDataForm";
 import { useAuth } from "../../providers/Auth/AuthProvider";
+import FF from "../../../feature-flag.json";
+import { addUser } from "./Onboarding";
+
 
 export default function OnboardingForm() {
-    const { userData, setUserData } = useAuth();
+    const { currentUser, userData, setUserData } = useAuth();
     const { setUserInfo, setCurrPage } = useContext(OnboardingContext)
     const submit = async (data: UserSchema) => {
         // update parent state to save user input
@@ -15,7 +18,12 @@ export default function OnboardingForm() {
             data.university = "University of British Columbia";
         setUserInfo(data)
         setUserData({ ...userData!, ...data })
-        setCurrPage("payment")
+        if (!FF.stripePayment) {
+          addUser(currentUser, data)
+        }
+        const currPage = !FF.stripePayment ? "paymentSuccess" : "payment"
+        setCurrPage(currPage)
+
         // fetch onboarding endpoint
         // save state of current user info
         // const onboarding = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
