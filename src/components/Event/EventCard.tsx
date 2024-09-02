@@ -13,24 +13,23 @@ type EventCardProps = {
 
 export function EventCard(props: EventCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const isEventFull =
-    props.event.maxAttendee !== null &&
-    props.event.attendee_Ids?.length >= props.event.maxAttendee;
+  // const isEventFull =
+  //   props.event.maxAttendee !== null &&
+  //   props.event.attendee_Ids?.length >= props.event.maxAttendee;
 
-  function handleRegister(e: React.MouseEvent<HTMLButtonElement>) {
-    e.stopPropagation();
-    setIsModalOpen(true);
-  }
+  // function handleRegister(e: React.MouseEvent<HTMLButtonElement>) {
+  //   e.stopPropagation();
+  //   setIsModalOpen(true);
+  // }
 
   return (
     <div>
       <h2>{new Date(props.event.date).toDateString()}</h2>
       <div
-        className={`event ${
-          !props.currentUser && !props.event.non_member_price
-            ? "disabled-card"
-            : ""
-        }`}
+        className={`event ${!props.currentUser && !props.event.non_member_price
+          ? "disabled-card"
+          : ""
+          }`}
         onClick={props.onClick}
       >
         <div className={"card-container"}>
@@ -41,25 +40,24 @@ export function EventCard(props: EventCardProps) {
 
             {props.showRegister && (
               <button
-                className={`event-button ${
-                  props.event.maxAttendee !== null &&
+                className={`event-button ${props.event.maxAttendee !== null &&
                   props.event.attendee_Ids?.length >= props.event.maxAttendee
-                    ? "disabled-button"
-                    : ""
-                }`}
-                onClick={handleRegister}
-                disabled={
-                  props.event.maxAttendee !== null &&
-                  props.event.attendee_Ids?.length >= props.event.maxAttendee
-                }
+                  ? "disabled-button"
+                  : ""
+                  }`}
+                onClick={props.onClick}
+              // disabled={
+              //   props.event.maxAttendee !== null &&
+              //   props.event.attendee_Ids?.length >= props.event.maxAttendee
+              // }
               >
-                Register
+                see more
               </button>
             )}
 
-            {isEventFull && (
+            {/* {isEventFull && (
               <p className="error-message">sorry, this event is full...</p>
-            )}
+            )} */}
 
             <EventRegistrationModal
               eventId={props.event?.event_Id}

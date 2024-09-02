@@ -136,8 +136,14 @@ html {
 }
 
 .signup-button:hover {
-  border-color: #ffffff;
+  border-color: black;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
+}
+
+.signup-button:disabled {
+  background: #6c757d;
+  color: lightgray;
+  cursor: not-allowed;
 }
 
 .signup-button:focus,
