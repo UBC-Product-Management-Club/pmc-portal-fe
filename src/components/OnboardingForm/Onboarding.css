@@ -5,6 +5,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
+    background-color: var(--pmc-blue);
 }
 
 .onboarding-content {
