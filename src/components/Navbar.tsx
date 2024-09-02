@@ -4,7 +4,7 @@ import PMCLogo from "../assets/pmclogo.svg";
 import {useNavigate} from "react-router-dom";
 
 export function Navbar() {
-    const {currentUser, logout} = useAuth();
+    const {currentUser, logout, isSignedIn} = useAuth();
     const navigateTo = useNavigate();
 
     async function authButtonHandler() {
@@ -37,7 +37,7 @@ export function Navbar() {
                 Events
             </a>
             <div>
-                {currentUser != null ? (
+                {isSignedIn ? (
                     <a href="/profile" className="navbar-link">
                         Profile
                     </a>
@@ -49,7 +49,7 @@ export function Navbar() {
             </div>
             <div className="navbar-button">
                 <div onClick={authButtonHandler}>
-                    {currentUser ? "Sign out" : "Sign in"}
+                    {isSignedIn ? "Sign out" : "Sign in"}
                 </div>
             </div>
         </nav>
