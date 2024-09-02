@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { eventType } from "../../types/api";
 import "./Event.css";
-import "./Dashboard.css";
 import { useAuth } from "../../providers/Auth/AuthProvider";
 import { EventRegistrationModal } from "../../components/Event/EventRegistrationModal";
 import { CiCalendar, CiLocationOn } from "react-icons/ci";
@@ -58,94 +57,94 @@ const Event: React.FC = () => {
     return (
         <div className="background-event">
             <div className="event-container">
-                <h2 className="event-title">{event.name}</h2>
-                <div className="event-details-container">
-                    <div className="event-details">
-                        <div className="icon-text">
-                            <div className="icon"><CiCalendar /></div>
-                            <div className="text-container">
-                                <h3>{event.date.toDateString()}</h3>
-                                <h4>No time available yet</h4>
+                <img src={event.media[0]} alt="Event" className="event-photo"></img>
+                <div className="event-details-column">
+                    <p className="event-title">{event.name}</p>
+                    <div className="event-details-container">
+                        <div className="event-details">
+                            <div className="icon-text">
+                                <div className="icon"><CiCalendar /></div>
+                                <div className="text-container">
+                                    <h3>{event.date.toDateString()}</h3>
+                                    <h4>No time available yet</h4>
+                                </div>
+                            </div>
+                            <div className="icon-text">
+                                <div className="icon"><CiLocationOn /></div>
+                                <div className="text-container">
+                                    <h3>{event.location}</h3>
+                                    <h4>Get directions</h4>
+                                </div>
+                            </div>
+                            <div className="icon-text">
+                                <div className="icon"><MdOutlinePeopleAlt /></div>
+                                <div className="text-container">
+                                    <div>
+                                        <h3>{event.maxAttendee - event.attendee_Ids.length}/{event.maxAttendee} spots left</h3>
+                                        {event.attendee_Ids.length >= 0 ? (
+                                            <h4>Register now!</h4>
+                                        ) : (
+                                            <h4>Be the first to sign up!</h4>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="icon-text">
+                                <div className="icon"><PiLinkSimpleLight /></div>
+                                <div className="text-container">
+                                    <h3>{event.name} Page</h3>
+                                    <h4>www.{event.name}.com</h4>
+                                </div>
                             </div>
                         </div>
-                        <div className="icon-text">
-                            <div className="icon"><CiLocationOn /></div>
-                            <div className="text-container">
-                                <h3>{event.location}</h3>
-                                <h4>Get directions</h4>
-                            </div>
-                        </div>
-                        <div className="icon-text">
-                            <div className="icon"><MdOutlinePeopleAlt /></div>
-                            <div className="text-container">
-                                <div>
-                                    <h3>{event.maxAttendee - event.attendee_Ids.length}/{event.maxAttendee} spots left</h3>
-                                    {event.attendee_Ids.length >= 0 ? (
-                                        <h4>Register now!</h4>
+                    </div>
+                    <div className="event-details-container">
+                        <div className="event-details">
+                            <div className="icon-text">
+                                <div className="icon"><FaDollarSign /></div>
+                                <div
+                                    className="text-container"
+                                    style={{ flexDirection: "column" }}
+                                >
+                                    {currentUser != null ? (
+                                        <>
+                                            <h3>Event Pricing</h3>
+                                            <h4>
+                                                Member: $
+                                                {event.member_price !== undefined
+                                                    ? event.member_price.toFixed(2)
+                                                    : "N/A"}
+                                            </h4>
+                                        </>
                                     ) : (
-                                        <h4>Be the first to sign up!</h4>
+                                        <>
+                                            <h3>Event Pricing</h3>
+                                            <h4>
+                                                Member: $
+                                                {event.member_price !== undefined
+                                                    ? event.member_price.toFixed(2)
+                                                    : "N/A"}
+                                                , Non-member: $
+                                                {event.non_member_price !== undefined
+                                                    ? event.non_member_price.toFixed(2)
+                                                    : "N/A"}
+                                            </h4>
+                                        </>
                                     )}
                                 </div>
                             </div>
                         </div>
-                        <div className="icon-text">
-                            <div className="icon"><PiLinkSimpleLight /></div>
-                            <div className="text-container">
-                                <h3>{event.name} Page</h3>
-                                <h4>www.{event.name}.com</h4>
-                            </div>
-                        </div>
                     </div>
-                </div>
-                <div className="event-details-container">
-                    <div className="event-details">
-                        <div className="icon-text">
-                            <div className="icon"><FaDollarSign /></div>
-                            <div
-                                className="text-container"
-                                style={{ flexDirection: "column" }}
-                            >
-                                {currentUser != null ? (
-                                    <>
-                                        <h3>Event Pricing</h3>
-                                        <h4>
-                                            Member: $
-                                            {event.member_price !== undefined
-                                                ? event.member_price.toFixed(2)
-                                                : "N/A"}
-                                        </h4>
-                                    </>
-                                ) : (
-                                    <>
-                                        <h3>Event Pricing</h3>
-                                        <h4>
-                                            Member: $
-                                            {event.member_price !== undefined
-                                                ? event.member_price.toFixed(2)
-                                                : "N/A"}
-                                            , Non-member: $
-                                            {event.non_member_price !== undefined
-                                                ? event.non_member_price.toFixed(2)
-                                                : "N/A"}
-                                        </h4>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+                    <button className="signup-button" onClick={() => setIsSignUpFormOpen(true)}>Sign up</button>
+                    <EventRegistrationModal
+                        isModalOpen={isSignUpFormOpen}
+                        setIsModalOpen={setIsSignUpFormOpen}
+                        eventId={event_id ?? ""}
+                        memberPrice={event.member_price}
+                        nonMemberPrice={event.non_member_price}
+                    />
                 </div>
             </div>
-
-            <button className="signup-button" onClick={() => setIsSignUpFormOpen(true)}>Sign up</button>
-            <EventRegistrationModal
-                isModalOpen={isSignUpFormOpen}
-                setIsModalOpen={setIsSignUpFormOpen}
-                eventId={event_id ?? ""}
-                memberPrice={event.member_price}
-                nonMemberPrice={event.non_member_price}
-            />
-
-            <img src={event.media[0]} alt="Event" className="event-photo"></img>
             <div className="event-desc">
                 <h3>About the event</h3>
                 <p>{event.description}</p>

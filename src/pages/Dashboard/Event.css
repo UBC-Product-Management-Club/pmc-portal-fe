@@ -1,24 +1,4 @@
-/* .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    width: 100%;
-} */
 
-html,
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.background-event {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  align-items: center;
-}
 
 html {
   scroll-behavior: smooth;
@@ -38,35 +18,30 @@ html {
 
 .event-container {
   display: flex;
+  flex-direction: row;
+  /* align-items: center; */
+  justify-content: space-between;
+}
+
+.event-details-column {
+  display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 20px;
+  gap: 1rem;
+  width: 20rem;
 }
 
 .event-title {
   color: #ffffff;
-  text-align: center;
-  margin-bottom: 5px;
-  margin-left: 280px;
-  font-size: 32px;
-}
-
-.event-details-container {
-  /* width: 100%; */
-  display: flex;
-  justify-content: center;
+  font-size: xx-large;
+  font-weight: bold;
 }
 
 .event-details {
   display: flex;
-  padding: 30px;
+  padding: 1.5rem;
   border: 1px solid #a9a9a9;
   border-radius: 12px;
   text-align: left;
-  margin-top: 10px;
-  margin-left: 400px;
-  margin-bottom: 10px;
-  width: 280px;
   align-items: flex-start;
   flex-wrap: wrap;
   color: white;
@@ -118,30 +93,21 @@ html {
 }
 
 .event-photo {
-  margin-left: 50px;
-  margin-top: -10px;
-
   border-radius: 8px;
-  width: 360px;
-  height: 530px;
-  position: relative;
-  float: right;
-
-  right: 240px;
-  bottom: 519px;
+  width: 60%;
+  padding: 1rem;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .event-desc {
-  margin-top: -150px;
+  padding: 1rem;
   text-align: left;
 }
 
 .event-desc h3 {
-  margin-top: -300px;
+  font-size: x-large;
   color: #ffffff;
   flex-direction: column;
-  margin-right: 640px;
 }
 
 .event-desc p {
@@ -158,14 +124,12 @@ html {
 .signup-button {
   color: #1c1c1c;
   border-radius: 20px;
-  font-size: 1em;
   font-weight: 500;
   font-family: inherit;
   background: #f0f0f0;
-  margin-top: -5px;
-  margin-left: 400px;
-  width: 350px;
-  height: 45px;
+  width: 100%;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   border: 1px solid rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: border-color 0.5s;
@@ -179,4 +143,22 @@ html {
 .signup-button:focus,
 .signup-button:focus-visible {
   outline: 1px auto -webkit-focus-ring-color;
+}
+
+@media screen and (max-width: 1350px) {
+  .event-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .event-photo {
+    width: 100%;
+  }
+
+  .event-details-column {
+    width: 100%;
+  }
+
 }
