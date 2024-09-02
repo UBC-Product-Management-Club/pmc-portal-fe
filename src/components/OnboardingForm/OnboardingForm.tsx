@@ -21,8 +21,7 @@ export default function OnboardingForm() {
         if (!FF.stripePayment) {
           addUser(currentUser, data)
         }
-        const currPage = !FF.stripePayment ? "paymentSuccess" : "payment"
-        setCurrPage(currPage)
+        setCurrPage("payment")
 
         // fetch onboarding endpoint
         // save state of current user info

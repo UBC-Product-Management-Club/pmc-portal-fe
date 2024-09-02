@@ -18,6 +18,7 @@ interface PaymentFormOptions {
 
 // Options for the Payment success component
 interface PaymentSuccessOptions {
+    heading: string
     subheading: string
     continueBtnText: string
 }

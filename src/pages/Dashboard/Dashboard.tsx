@@ -3,13 +3,10 @@ import { useEffect, useState } from "react";
 import { eventType } from "../../types/api";
 import { useAuth } from "../../providers/Auth/AuthProvider";
 import { EventCard } from "../../components/Event/EventCard";
-import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
-    const { currentUser, isSignedIn } = useAuth();
-    const [allEvents, setAllEvents] = useState<eventType[]>([]);
-    const navigateTo = useNavigate();
-    const [welcomeMessage, setWelcomeMessage] = useState<string>("Welcome guest");
+  const { currentUser, isSignedIn } = useAuth();
+  const [allEvents, setAllEvents] = useState<eventType[]>([]);
 
     async function dashboardComponents() {
         try {
@@ -29,11 +26,6 @@ export default function Dashboard() {
 
             const allEvents = await response.json();
             setAllEvents(allEvents);
-            const message =
-                currentUser != null
-                    ? `Welcome ${currentUser.displayName}`
-                    : "Welcome guest";
-            setWelcomeMessage(message);
         } catch (error) {
             console.error("Error fetching events: ", error);
         }
@@ -43,14 +35,18 @@ export default function Dashboard() {
         dashboardComponents();
     }, []);
 
-    return (
-        <div className="dashboard">
-            <div className={"dashboard-container"}>
-                <div className="dashboard-header">
-                    <h2>Upcoming Events</h2>
-                    <h4 className={"welcome-message"}>{welcomeMessage}</h4>
-                </div>
-                <p>
+  return (
+    <div className="dashboard">
+      <div className={"dashboard-container"}>
+        <div className="dashboard-header">
+          <h2>Upcoming Events</h2>
+          <h4 className={"welcome-message"}>
+            {isSignedIn
+              ? `Welcome ${currentUser!.displayName}`
+              : "Welcome guest"}
+          </h4>
+        </div>
+        <p>
           Every week, we feature some of our favorite events in cities like New
           York and London. You can also check out some great calendars from the
           community.
@@ -65,9 +61,6 @@ export default function Dashboard() {
                 key={event.event_Id}
                 isSignedIn={isSignedIn}
                 event={event}
-                onClick={() => {
-                  navigateTo(`/events/${event.event_Id}`);
-                }}
                 showRegister={true}
               />
             ))

@@ -10,6 +10,7 @@ import { useAuth } from "../../providers/Auth/AuthProvider";
 import { PaymentProvider } from "../../providers/Payment/PaymentProvider"
 import { User } from "firebase/auth"
 import FF from "../../../feature-flag.json"
+import PaymentSuccess from "../Payment/PaymentSuccess"
 
 /**
  * 
@@ -45,6 +46,9 @@ export const addUser = async (currentUser: User | null, userInfo: UserSchema | u
                     email: currentUser.email!,
                     pfp: currentUser.photoURL!,
                 }
+        }
+        if (!FF.stripePayment) {
+            onboardBody["userDoc"]["paymentVerified"] = false;
         }
         const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
             method: "POST",
@@ -96,11 +100,12 @@ export default function Onboarding() {
                                 amt: 1000,
                                 onSuccess: onPaymentSuccess
                             }} SuccessOptions={{
+                                heading: `${!FF.stripePayment ? "Information recorded" : "Payment successful"}`,
                                 subheading: `${!FF.stripePayment ? "We've recorded your information. We will email you once we've verified your payment." : "We've processed your $10 charge."}`,
                                 continueBtnText: `${!FF.stripePayment ? "Continue to dashboard as a guest" : "Continue to dashboard"}`
                             }}
                         >
-                            <Payment />
+                            {!FF.stripePayment ? <PaymentSuccess /> : <Payment />}
                         </PaymentProvider>
                     :
                         <OnboardingForm />

@@ -4,6 +4,7 @@ import { User, browserLocalPersistence, setPersistence } from "firebase/auth";
 import { AuthContextType, AuthProviderProps } from "./types";
 import { userDocument } from "../../types/api";
 import AuthContext from "./AuthContext";
+import FF from "../../../feature-flag.json";
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
@@ -61,13 +62,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       }
       setIsLoading(false);
-      setIsSignedIn(!!currentUser && !!userData);
     });
-
-    setIsSignedIn(!!currentUser && !!userData);
 
     return () => unsubscribe();
   }, [auth]);
+
+  useEffect(() => {
+    if (!FF.stripePayment) {
+      setIsSignedIn(!!currentUser && !!userData && userData.paymentVerified!);
+    } else {
+      setIsSignedIn(!!currentUser && !!userData);
+    }
+  }, [currentUser, userData]);
 
   const logout = () => {
     setIsSignedIn(false);

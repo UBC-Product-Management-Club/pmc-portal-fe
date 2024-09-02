@@ -24,6 +24,7 @@
 }
 
 .PaymentSuccess-content--subheading{
+    text-align: center;
     font-size: medium;
     font-weight: 400;
     color: var(--pmc-light-grey)
