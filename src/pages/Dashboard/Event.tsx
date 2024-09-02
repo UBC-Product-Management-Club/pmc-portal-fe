@@ -10,10 +10,8 @@ import { MdOutlinePeopleAlt } from "react-icons/md";
 import { PiLinkSimpleLight } from "react-icons/pi";
 import { FaDollarSign } from "react-icons/fa6";
 
-
-
 const Event: React.FC = () => {
-    const { currentUser } = useAuth();
+    const { isSignedIn } = useAuth();
     const [event, setEvent] = useState<eventType | null>(null);
     const { event_id } = useParams<{ event_id: string }>();
     const [loading, setLoading] = useState(true);
@@ -25,40 +23,40 @@ const Event: React.FC = () => {
 
 
 
-    async function fetchEvent() {
-        try {
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/api/v1/events/${event_id}`,
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            const data: eventType = await response.json();
-            setEvent({
-                ...data,
-                date: new Date(data.date),
-            });
-        } catch (error) {
-            console.error("Error fetching event:", error);
-        } finally {
-            setLoading(false);
+  async function fetchEvent() {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/v1/events/${event_id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data: eventType = await response.json();
+      setEvent({
+        ...data,
+        date: new Date(data.date),
+      });
+    } catch (error) {
+      console.error("Error fetching event:", error);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    useEffect(() => {
-        fetchEvent();
-    }, [event_id]);
+  useEffect(() => {
+    fetchEvent();
+  }, [event_id]);
 
-    if (loading) return <p style={{ color: "white" }}>Loading...</p>;
-    if (!event)
-        return <p style={{ color: "white" }}>No event details available.</p>;
+  if (loading) return <p style={{ color: "white" }}>Loading...</p>;
+  if (!event)
+    return <p style={{ color: "white" }}>No event details available.</p>;
 
     return (
         <div className="background-event">
@@ -112,7 +110,7 @@ const Event: React.FC = () => {
                                     className="text-container"
                                     style={{ flexDirection: "column" }}
                                 >
-                                    {currentUser != null ? (
+                                    {isSignedIn ? (
                                         <>
                                             <h3>Event Pricing</h3>
                                             <h4>
@@ -153,12 +151,12 @@ const Event: React.FC = () => {
                     />
                 </div>
             </div>
-            <div className="event-desc">
-                <h3>About the event</h3>
-                <p>{event.description}</p>
-            </div>
-        </div>
-    );
+      <div className="event-desc">
+        <h3>About the event</h3>
+        <p>{event.description}</p>
+      </div>
+    </div>
+  );
 };
 
 export default Event;

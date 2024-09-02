@@ -19,7 +19,7 @@ export function EventRegistrationModal(props: {
   isModalOpen: boolean;
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { currentUser, userData } = useAuth();
+  const { currentUser, userData, isSignedIn } = useAuth();
   const [isGuest, setIsGuest] = useState(false);
   const defaultUserInfo: UserSchema = {
     first_name: "-",
@@ -32,7 +32,7 @@ export function EventRegistrationModal(props: {
   };
   const [userInfo, setUserInfo] = useState<UserSchema>(defaultUserInfo);
   const [eventRegInfo, setEventRegInfo] = useState<EventRegFormSchema>();
-  const [step, setStep] = useState(currentUser ? 2 : 0);
+  const [step, setStep] = useState(isSignedIn ? 2 : 0);
   const navigateTo = useNavigate();
 
   const handleContinueAsGuest = () => setStep(1);
@@ -106,7 +106,7 @@ export function EventRegistrationModal(props: {
     if (isGuest) {
       setIsGuest(false);
     }
-    setStep(currentUser ? 2 : 0);
+    setStep(isSignedIn ? 2 : 0);
     props.setIsModalOpen(false);
   }
 

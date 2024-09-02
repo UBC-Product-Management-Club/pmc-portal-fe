@@ -9,9 +9,9 @@ export function Navbar() {
 
     async function authButtonHandler() {
         try {
-            if (currentUser) {
-                const uid = currentUser.uid;
-                const displayName = currentUser.displayName;
+            if (isSignedIn) {
+                const uid = currentUser!.uid;
+                const displayName = currentUser!.displayName;
 
                 await logout();
 
