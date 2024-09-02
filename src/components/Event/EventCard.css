@@ -3,6 +3,10 @@
     color: rgba(255, 255, 255, 0.87);
     font-size: 12px;
     margin-right: 650px;
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    font-size: 12px;
+    margin-right: 650px;
 }
 
 
@@ -15,14 +19,22 @@
     overflow: hidden;
     flex-direction: column;
     flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
+    flex-direction: column;
+    flex: 1;
 }
 
 .card-container {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  justify-content: space-between;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: space-between;
 }
 
 .event {
@@ -40,41 +52,55 @@
     z-index: 1;
     box-sizing: border-box;
     cursor: pointer;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    cursor: pointer;
 }
 
 .event-name {
-  font-size: x-large;
-  font-weight: bold;
+    font-size: x-large;
+    font-weight: bold;
 }
 
 .event-col {
-  height: 15rem;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+    height: 15rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-.event-col > h2 {
-  margin-top: 0.5rem;
+.event-col>h2 {
+    margin-top: 0.5rem;
 }
 
 .event:hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .event-image {
-  margin-left: 10px;
-  border-radius: 13px;
-  width: 20rem;
-  height: 15rem;
-  /* height: 100%;
+    margin-left: 10px;
+    border-radius: 13px;
+    width: 20rem;
+    height: 15rem;
+    /* height: 100%;
   aspect-ratio: 1; */
-  /* float: right; */
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    /* float: right; */
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .event-time-loc {
+    height: 19px;
+    font-style: normal;
+    font-weight: 510;
+    font-size: 16px;
+    line-height: 19px;
+    color: #ffffff;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
     height: 19px;
     font-style: normal;
     font-weight: 510;
@@ -95,45 +121,52 @@
     line-clamp: 3;
     box-sizing: border-box;
     text-overflow: ellipsis;
+    height: 4.5rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-clamp: 3;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
 }
 
 .event-button {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  width: 8rem;
-  padding-top: 0.5rem;
-  padding-bottom:0.5rem;
-  background: linear-gradient(
-    134.02deg,
-    #8d9beb 29.24%,
-    #af71aa 57.54%,
-    #e33148 100%
-  );
-  border-radius: 50px;
-  flex: none;
-  order: 1;
-  flex-grow: 0;
-  color: #ffffff;
-  font-size: large;
-  font-weight: 500;
-  font-family: inherit;
-  border: none;
-  /* margin-top: 60px; */
-  align-self: flex-start;
-  cursor: pointer;
-  order: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 8rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    background: white;
+    border-radius: 50px;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    color: var(--pmc-blue);
+    font-size: normal;
+    font-weight: 500;
+    font-family: inherit;
+    border: none;
+    align-self: flex-start;
+    cursor: pointer;
+    order: 1;
 }
 
 .event-button:disabled {
     background: #6c757d;
     color: lightgray;
     cursor: not-allowed;
+    background: #6c757d;
+    color: lightgray;
+    cursor: not-allowed;
 }
 
 .event-button:hover {
+    border-color: #ffffff;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
     border-color: #ffffff;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
 }
@@ -143,14 +176,20 @@
     margin: 0;
     margin-top: 10px;
     order: 2;
+    color: lightgray;
+    margin: 0;
+    margin-top: 10px;
+    order: 2;
 }
 
 .event-button:focus,
 .event-button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
+    outline: 4px auto -webkit-focus-ring-color;
 }
 
 .disabled-card {
+    pointer-events: none;
     pointer-events: none;
 }
 
@@ -166,9 +205,25 @@
     border-radius: 12px;
     background: rgba(42, 50, 86, 0.86);
     z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    background: rgba(42, 50, 86, 0.86);
+    z-index: 2;
 }
 
 .disabled-comment {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 3;
     color: #ffffff;
     font-size: 18px;
     font-weight: bold;
