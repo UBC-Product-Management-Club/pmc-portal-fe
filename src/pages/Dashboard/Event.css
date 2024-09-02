@@ -14,7 +14,6 @@ body {
 }
 
 .background-event {
-  background-color: #1f2a37;
   display: flex;
   flex-direction: column;
   min-height: 100vh;

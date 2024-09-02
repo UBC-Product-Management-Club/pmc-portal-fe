@@ -6,6 +6,12 @@ import "./Event.css";
 import "./Dashboard.css";
 import { useAuth } from "../../providers/Auth/AuthProvider";
 import { EventRegistrationModal } from "../../components/Event/EventRegistrationModal";
+import { CiCalendar, CiLocationOn } from "react-icons/ci";
+import { MdOutlinePeopleAlt } from "react-icons/md";
+import { PiLinkSimpleLight } from "react-icons/pi";
+import { FaDollarSign } from "react-icons/fa6";
+
+
 
 const Event: React.FC = () => {
     const { currentUser } = useAuth();
@@ -56,21 +62,21 @@ const Event: React.FC = () => {
                 <div className="event-details-container">
                     <div className="event-details">
                         <div className="icon-text">
-                            <div className="icon">📅</div>
+                            <div className="icon"><CiCalendar /></div>
                             <div className="text-container">
                                 <h3>{event.date.toDateString()}</h3>
                                 <h4>No time available yet</h4>
                             </div>
                         </div>
                         <div className="icon-text">
-                            <div className="icon">📍</div>
+                            <div className="icon"><CiLocationOn /></div>
                             <div className="text-container">
                                 <h3>{event.location}</h3>
                                 <h4>Get directions</h4>
                             </div>
                         </div>
                         <div className="icon-text">
-                            <div className="icon">👥</div>
+                            <div className="icon"><MdOutlinePeopleAlt /></div>
                             <div className="text-container">
                                 <div>
                                     <h3>{event.maxAttendee - event.attendee_Ids.length}/{event.maxAttendee} spots left</h3>
@@ -83,7 +89,7 @@ const Event: React.FC = () => {
                             </div>
                         </div>
                         <div className="icon-text">
-                            <div className="icon">🔗</div>
+                            <div className="icon"><PiLinkSimpleLight /></div>
                             <div className="text-container">
                                 <h3>{event.name} Page</h3>
                                 <h4>www.{event.name}.com</h4>
@@ -94,7 +100,7 @@ const Event: React.FC = () => {
                 <div className="event-details-container">
                     <div className="event-details">
                         <div className="icon-text">
-                            <div className="icon">💳</div>
+                            <div className="icon"><FaDollarSign /></div>
                             <div
                                 className="text-container"
                                 style={{ flexDirection: "column" }}

@@ -48,7 +48,7 @@
         padding: 0;
         justify-content: center;
         position: relative;
-        background-color: #1f2a37;
+        background-color: var(--pmc-dark-blue);
     }
 
     .onboarding-content-header {

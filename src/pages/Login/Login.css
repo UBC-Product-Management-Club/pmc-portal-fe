@@ -1,4 +1,3 @@
-
 .login-container {
   display: flex;
   flex-direction: column;
@@ -6,7 +5,7 @@
   justify-content: space-around;
   width: 100vw;
   height: 100vh;
-  background-color: #3D4043;
+  background-color: var(--pmc-blue);
 }
 
 .login-content {
@@ -19,7 +18,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 1rem;
-  background-color: #1F2A37;
+  background-color: var(--pmc-dark-blue);
 }
 
 .login-content--logo {
@@ -31,8 +30,8 @@
   text-align: center;
   font-family: Helvetica;
   line-height: 1.5;
-  background: rgb(141,155,235);
-  background: linear-gradient(96deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
+  background: rgb(141, 155, 235);
+  background: linear-gradient(96deg, rgba(141, 155, 235, 1) 20%, rgba(175, 113, 170, 1) 52%, rgba(227, 49, 72, 1) 100%);
   color: transparent;
   background-clip: text;
 }
@@ -42,7 +41,7 @@
   flex-direction: column;
 }
 
-.login-content--button-container > button {
+.login-content--button-container>button {
   width: 300px;
   padding: 0.75rem 0 0.75rem 0;
   margin-top: 0.5rem;
@@ -102,13 +101,13 @@
     font-size: x-large;
     font-family: Helvetica;
     line-height: 1.5;
-    background: rgb(141,155,235);
-    background: linear-gradient(96deg, rgba(141,155,235,1) 20%, rgba(175,113,170,1) 52%, rgba(227,49,72,1) 100%);
+    background: rgb(141, 155, 235);
+    background: linear-gradient(96deg, rgba(141, 155, 235, 1) 20%, rgba(175, 113, 170, 1) 52%, rgba(227, 49, 72, 1) 100%);
     color: transparent;
     background-clip: text;
   }
 
-  .login-content--button-container > button {
+  .login-content--button-container>button {
     width: 15rem;
     padding: 0.75rem 0 0.75rem 0;
     margin-top: 0.5rem;
