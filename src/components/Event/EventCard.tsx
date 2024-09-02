@@ -36,7 +36,7 @@ export function EventCard(props: EventCardProps) {
         <div className={"card-container"}>
           <div className={"event-col"}>
             <p className="event-time-loc">7:00 PM | {props.event.location}</p>
-            <h2>{props.event.name}</h2>
+            <p className="event-name">{props.event.name}</p>
             <p className="event-description">{props.event.description}</p>
 
             {props.showRegister && (

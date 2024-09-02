@@ -5,6 +5,7 @@
   margin-right: 650px;
 }
 
+
 .card {
   display: flex;
   justify-content: space-between;
@@ -21,7 +22,7 @@
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  align-items: stretch;
+  justify-content: space-between;
 }
 
 .event {
@@ -41,12 +42,21 @@
   cursor: pointer;
 }
 
+.event-name {
+  font-size: x-large;
+  font-weight: bold;
+}
+
 .event-col {
-  width: 50%;
+  height: 15rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 1rem;
+}
+
+.event-col > h2 {
+  margin-top: 0.5rem;
 }
 
 .event:hover {
@@ -56,9 +66,11 @@
 .event-image {
   margin-left: 10px;
   border-radius: 13px;
-  height: 100%;
-  aspect-ratio: 1;
-  float: right;
+  width: 20rem;
+  height: 15rem;
+  /* height: 100%;
+  aspect-ratio: 1; */
+  /* float: right; */
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
@@ -91,8 +103,9 @@
   justify-content: center;
   align-items: center;
   gap: 10px;
-  width: 152px;
-  height: 51px;
+  width: 8rem;
+  padding-top: 0.5rem;
+  padding-bottom:0.5rem;
   background: linear-gradient(
     134.02deg,
     #8d9beb 29.24%,
@@ -108,7 +121,7 @@
   font-weight: 500;
   font-family: inherit;
   border: none;
-  margin-top: 60px;
+  /* margin-top: 60px; */
   align-self: flex-start;
   cursor: pointer;
   order: 1;
