@@ -29,11 +29,9 @@ export function Navbar() {
     }
 
     return <div className="navbar">
-        <div className="navbar-icon">
-            <a href="/">
-                <img src={PMCLogo} className="logo" alt={"PMC Logo"}/>
-            </a>
-        </div>
+        <a href="/" className="navbar-icon">
+            <img src={PMCLogo} className="logo" alt={"PMC Logo"}/>
+        </a>
         <nav className="navbar-nav">
             <a href="/dashboard" className="navbar-link">
                 Events
