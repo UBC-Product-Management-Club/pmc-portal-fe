@@ -63,7 +63,7 @@ const Event: React.FC = () => {
                     <div className="event-details-container">
                         <div className="event-details">
                             <div className="icon-text">
-                                <div className="icon"><CiCalendar /></div>
+                                <div className="icon"><CiCalendar/></div>
                                 <div className="text-container">
                                     <h3>{event.date.toDateString()}</h3>
                                     <h4>No time available yet</h4>
@@ -90,7 +90,7 @@ const Event: React.FC = () => {
                                 </div>
                             </div>
                             <div className="icon-text">
-                                <div className="icon"><PiLinkSimpleLight /></div>
+                                <div className="icon"><PiLinkSimpleLight/></div>
                                 <div className="text-container">
                                     <h3>{event.name} Page</h3>
                                     <h4>www.{event.name}.com</h4>
@@ -101,7 +101,7 @@ const Event: React.FC = () => {
                     <div className="event-details-container">
                         <div className="event-details">
                             <div className="icon-text">
-                                <div className="icon"><FaDollarSign /></div>
+                                <div className="icon"><FaDollarSign/></div>
                                 <div
                                     className="text-container"
                                     style={{ flexDirection: "column" }}
