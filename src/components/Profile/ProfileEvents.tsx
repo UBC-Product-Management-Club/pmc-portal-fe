@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { eventType } from "../../types/api";
 import { EventCard } from "../Event/EventCard";
 import { useAuth } from "../../providers/Auth/AuthProvider";
-import { useNavigate } from "react-router-dom";
 
 export default function ProfileEvents() {
   const { currentUser, isSignedIn } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [events, setEvents] = useState<eventType[]>([]);
-  const navigateTo = useNavigate();
 
   useEffect(() => {
     if (isLoading && isSignedIn) {
@@ -76,9 +74,6 @@ export default function ProfileEvents() {
             key={event.event_Id}
             isSignedIn={isSignedIn}
             event={event}
-            onClick={() => {
-              navigateTo(`/events/${event.event_Id}`);
-            }}
           />
         ))
       ) : (
