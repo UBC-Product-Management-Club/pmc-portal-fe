@@ -51,11 +51,10 @@
     position: relative;
     z-index: 1;
     box-sizing: border-box;
-    cursor: pointer;
+    /* cursor: pointer; */
     position: relative;
     z-index: 1;
     box-sizing: border-box;
-    cursor: pointer;
 }
 
 .event-name {

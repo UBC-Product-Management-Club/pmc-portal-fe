@@ -3,6 +3,7 @@ import { User } from "firebase/auth";
 import { eventType } from "../../types/api";
 import React, { useState } from "react";
 import { EventRegistrationModal } from "./EventRegistrationModal";
+import { useNavigate } from "react-router-dom";
 
 type EventCardProps = {
   currentUser: User | null;
@@ -13,14 +14,7 @@ type EventCardProps = {
 
 export function EventCard(props: EventCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const isEventFull =
-  //   props.event.maxAttendee !== null &&
-  //   props.event.attendee_Ids?.length >= props.event.maxAttendee;
-
-  // function handleRegister(e: React.MouseEvent<HTMLButtonElement>) {
-  //   e.stopPropagation();
-  //   setIsModalOpen(true);
-  // }
+  const navigateTo = useNavigate()
 
   return (
     <div>
@@ -45,19 +39,15 @@ export function EventCard(props: EventCardProps) {
                   ? "disabled-button"
                   : ""
                   }`}
-                onClick={props.onClick}
-              // disabled={
-              //   props.event.maxAttendee !== null &&
-              //   props.event.attendee_Ids?.length >= props.event.maxAttendee
-              // }
+                onClick={() => {
+                  navigateTo(`/events/${props.event.event_Id}`);
+                }
+                }
+
               >
                 see more
               </button>
             )}
-
-            {/* {isEventFull && (
-              <p className="error-message">sorry, this event is full...</p>
-            )} */}
 
             <EventRegistrationModal
               eventId={props.event?.event_Id}
