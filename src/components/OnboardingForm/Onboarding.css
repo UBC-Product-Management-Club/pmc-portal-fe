@@ -24,7 +24,7 @@
 .onboarding-content-header {
     font-size: x-large;
     margin: 2rem 0;
-    background: linear-gradient(94deg, rgba(141, 155, 235, 1) 20%, rgba(175, 113, 170, 1) 52%, rgba(227, 49, 72, 1) 100%);
+    background: #FFF;
     color: transparent;
     background-clip: text;
 }
@@ -55,7 +55,7 @@
     .onboarding-content-header {
         font-size: x-large;
         margin: 2rem 0;
-        background: linear-gradient(94deg, rgba(141, 155, 235, 1) 20%, rgba(175, 113, 170, 1) 52%, rgba(227, 49, 72, 1) 100%);
+        background: #FFF;
         color: transparent;
         background-clip: text;
     }

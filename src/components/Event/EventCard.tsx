@@ -1,10 +1,9 @@
 import "./EventCard.css";
-import { User } from "firebase/auth";
 import { eventType } from "../../types/api";
 import { useNavigate } from "react-router-dom";
 
 type EventCardProps = {
-  currentUser: User | null;
+  isSignedIn: boolean;
   event: eventType;
   showRegister?: boolean;
 };
@@ -16,10 +15,11 @@ export function EventCard(props: EventCardProps) {
     <div>
       <h2>{new Date(props.event.date).toDateString()}</h2>
       <div
-        className={`event ${!props.currentUser && !props.event.non_member_price
-          ? "disabled-card"
-          : ""
-          }`}
+        className={`event ${
+          !props.isSignedIn && !props.event.non_member_price
+            ? "disabled-card"
+            : ""
+        }`}
       >
         <div className={"card-container"}>
           <div className={"event-col"}>
@@ -43,7 +43,7 @@ export function EventCard(props: EventCardProps) {
                 See more
               </button>
             )}
-            {!props.event.non_member_price && !props.currentUser && (
+            {!props.event.non_member_price && !props.isSignedIn && (
               <div className="overlay">
                 <p className="disabled-comment">
                   Please sign in to your PMC account to view the details for

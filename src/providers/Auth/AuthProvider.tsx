@@ -2,8 +2,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { auth } from "../../../firebase";
 import { User, browserLocalPersistence, setPersistence } from "firebase/auth";
 import { AuthContextType, AuthProviderProps } from "./types";
-import {userDocument} from "../../types/api";
+import { userDocument } from "../../types/api";
 import AuthContext from "./AuthContext";
+import FF from "../../../feature-flag.json";
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
@@ -16,6 +17,7 @@ export const useAuth = (): AuthContextType => {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<userDocument | null>(null);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -34,13 +36,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const fetchUserData = async (user: User) => {
       const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/v1/profile/${user.uid}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+        `${import.meta.env.VITE_API_URL}/api/v1/profile/${user.uid}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       if (!response.ok) {
@@ -48,7 +50,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
       const data: userDocument = await response.json();
       setUserData(data);
-    }
+    };
 
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
@@ -65,7 +67,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => unsubscribe();
   }, [auth]);
 
+  useEffect(() => {
+    if (!FF.stripePayment) {
+      setIsSignedIn(!!currentUser && !!userData && userData.paymentVerified!);
+    } else {
+      setIsSignedIn(!!currentUser && !!userData);
+    }
+  }, [currentUser, userData]);
+
   const logout = () => {
+    setIsSignedIn(false);
     return auth.signOut();
   };
 
@@ -74,6 +85,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     userData,
     setUserData,
     logout,
+    isSignedIn,
   };
 
   return (

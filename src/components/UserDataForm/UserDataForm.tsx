@@ -233,7 +233,7 @@ export function UserDataForm({
         )}
 
         <button className="submit-button pmc-gradient-background" type="submit">
-          Continue
+          Continue to Payment
         </button>
       </div>
     </form>

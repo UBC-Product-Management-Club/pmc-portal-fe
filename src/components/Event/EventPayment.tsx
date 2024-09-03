@@ -23,6 +23,7 @@ export function EventPayment(props: EventPaymentProps) {
                 eventId: props.eventId,
                 onSuccess: props.onPaymentSuccess
             }} SuccessOptions={{
+            heading: "Payment successful",
             subheading: `We've processed your $${fee} charge.`,
             continueBtnText: "Close"
         }}

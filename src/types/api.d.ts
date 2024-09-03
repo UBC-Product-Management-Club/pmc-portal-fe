@@ -14,6 +14,7 @@ type userDocument = {
   major?: string;
   why_pm?: string;
   returning_member?: "yes" | "no";
+  paymentVerified?: boolean;
 };
 
 type loginBody = {
