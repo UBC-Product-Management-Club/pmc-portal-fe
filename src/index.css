@@ -19,12 +19,15 @@
   background-color: var(--pmc-dark-blue);
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  justify-content: center;
+  /* min-height: 100vh; */
   align-items: center;
 }
 
 .width-fit {
   width: 90vw;
+  max-width: 100%; /* Ensures the element doesn't overflow the viewport */
+  margin: 0 auto; /* Centers the element horizontally */
 }
 
 @media only screen and (min-width: 992px) {
@@ -53,4 +56,12 @@
 .button-dark-purple:hover {
   background-color: var(--pmc-light-blue);
   /* Change background color on hover */
+}
+
+@media screen and (max-width: 600px) {
+  .width-fit {
+    width: 90vw;
+    max-width: 100%; /* Ensures the element doesn't overflow the viewport */
+    margin: 0 auto; /* Centers the element horizontally */
+  }
 }
