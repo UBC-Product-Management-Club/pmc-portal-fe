@@ -13,13 +13,13 @@ export default function OnboardingForm() {
     const { setUserInfo, setCurrPage } = useContext(OnboardingContext)
     const submit = async (data: UserSchema) => {
         // update parent state to save user input
-        console.log()
         if (data.ubc_student == "yes")
             data.university = "University of British Columbia";
         setUserInfo(data)
         setUserData({ ...userData!, ...data })
         if (!FF.stripePayment) {
           addUser(currentUser, data)
+          window.open("https://ubc-pmc.square.site", "_blank")
         }
         setCurrPage("payment")
 
