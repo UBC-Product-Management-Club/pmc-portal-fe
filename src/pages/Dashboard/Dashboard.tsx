@@ -1,83 +1,78 @@
 import "./Dashboard.css";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { eventType } from "../../types/api";
 import { useAuth } from "../../providers/Auth/AuthProvider";
 import { EventCard } from "../../components/Event/EventCard";
 
 export default function Dashboard() {
-  const { currentUser } = useAuth();
-  const [allEvents, setAllEvents] = useState<eventType[]>([]);
-  const navigateTo = useNavigate();
-  const [welcomeMessage, setWelcomeMessage] = useState<string>("Welcome guest");
+    const { currentUser } = useAuth();
+    const [allEvents, setAllEvents] = useState<eventType[]>([]);
+    const [welcomeMessage, setWelcomeMessage] = useState<string>("Welcome guest");
 
-  async function dashboardComponents() {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/v1/events/`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
+    async function dashboardComponents() {
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/v1/events/`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Fetching all events was not ok");
+            }
+
+            const allEvents = await response.json();
+            setAllEvents(allEvents);
+            const message =
+                currentUser != null
+                    ? `Welcome ${currentUser.displayName}`
+                    : "Welcome guest";
+            setWelcomeMessage(message);
+        } catch (error) {
+            console.error("Error fetching events: ", error);
         }
-      );
-
-      if (!response.ok) {
-        throw new Error("Fetching all events was not ok");
-      }
-
-      const allEvents = await response.json();
-      setAllEvents(allEvents);
-      const message =
-        currentUser != null
-          ? `Welcome ${currentUser.displayName}`
-          : "Welcome guest";
-      setWelcomeMessage(message);
-    } catch (error) {
-      console.error("Error fetching events: ", error);
     }
-  }
 
-  useEffect(() => {
-    dashboardComponents();
-  }, []);
+    useEffect(() => {
+        dashboardComponents();
+    }, []);
 
-  return (
-    <div className="dashboard">
-      <div className={"dashboard-container"}>
-        <div className="dashboard-header">
-          <h2>Upcoming Events</h2>
-          <h4 className={"welcome-message"}>{welcomeMessage}</h4>
+    return (
+        <div className="dashboard">
+            <div className={"dashboard-container"}>
+                <div className="dashboard-header">
+                    <h2>Upcoming Events</h2>
+                    <h4 className={"welcome-message"}>{welcomeMessage}</h4>
+                </div>
+                <p>
+                    Every week, we feature some of our favorite events in cities like New
+                    York and London. You can also check out some great calendars from the
+                    community.
+                </p>
+            </div>
+
+            <div className={"dashboard-container"}>
+                <div>
+                    {allEvents.length > 0 ? (
+                        allEvents.map((event) => (
+                            <EventCard
+                                key={event.event_Id}
+                                currentUser={currentUser}
+                                event={event}
+                                showRegister={true}
+                            />
+                        ))
+                    ) : (
+                        <p style={{ color: "white" }}>Stay tuned for more events!</p>
+                    )}
+                </div>
+            </div>
         </div>
-        <p>
-          Every week, we feature some of our favorite events in cities like New
-          York and London. You can also check out some great calendars from the
-          community.
-        </p>
-      </div>
-
-      <div className={"dashboard-container"}>
-        <div>
-          {allEvents.length > 0 ? (
-            allEvents.map((event) => (
-              <EventCard
-                key={event.event_Id}
-                currentUser={currentUser}
-                event={event}
-                onClick={() => {
-                  navigateTo(`/events/${event.event_Id}`);
-                }}
-                showRegister={true}
-              />
-            ))
-          ) : (
-            <p style={{ color: "white" }}>No events found.</p>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 // MAIN PRIORITIES:

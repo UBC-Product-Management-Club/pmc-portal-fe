@@ -18,6 +18,12 @@ const Event: React.FC = () => {
     const { event_id } = useParams<{ event_id: string }>();
     const [loading, setLoading] = useState(true);
     const [isSignUpFormOpen, setIsSignUpFormOpen] = useState(false);
+    let isEventFull = false;
+    if (event) {
+        isEventFull = event.maxAttendee !== null && event.attendee_Ids?.length >= event.maxAttendee;
+    }
+
+
 
     async function fetchEvent() {
         try {
@@ -63,7 +69,7 @@ const Event: React.FC = () => {
                     <div className="event-details-container">
                         <div className="event-details">
                             <div className="icon-text">
-                                <div className="icon"><CiCalendar/></div>
+                                <div className="icon"><CiCalendar /></div>
                                 <div className="text-container">
                                     <h3>{event.date.toDateString()}</h3>
                                     <h4>No time available yet</h4>
@@ -90,7 +96,7 @@ const Event: React.FC = () => {
                                 </div>
                             </div>
                             <div className="icon-text">
-                                <div className="icon"><PiLinkSimpleLight/></div>
+                                <div className="icon"><PiLinkSimpleLight /></div>
                                 <div className="text-container">
                                     <h3>{event.name} Page</h3>
                                     <h4>www.{event.name}.com</h4>
@@ -101,7 +107,7 @@ const Event: React.FC = () => {
                     <div className="event-details-container">
                         <div className="event-details">
                             <div className="icon-text">
-                                <div className="icon"><FaDollarSign/></div>
+                                <div className="icon"><FaDollarSign /></div>
                                 <div
                                     className="text-container"
                                     style={{ flexDirection: "column" }}
@@ -135,7 +141,9 @@ const Event: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <button className="signup-button" onClick={() => setIsSignUpFormOpen(true)}>Sign up</button>
+                    <button className="signup-button" disabled={isEventFull} onClick={() => setIsSignUpFormOpen(true)}>
+                        {isEventFull ? <span className="signup-button-sorry-text">Sorry, the event is full</span> : <span className="signup-button-text">Sign up</span>}
+                    </button>
                     <EventRegistrationModal
                         isModalOpen={isSignUpFormOpen}
                         setIsModalOpen={setIsSignUpFormOpen}

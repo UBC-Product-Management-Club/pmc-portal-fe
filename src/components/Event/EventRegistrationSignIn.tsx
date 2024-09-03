@@ -1,4 +1,5 @@
 import '../styles/component-theme.css';
+import PMCLogo from '../../assets/pmclogo.svg';
 
 // TODO: add PMC logo
 // TODO: make sure reroute to the opened event page after user logs in
@@ -16,6 +17,7 @@ export default function EventRegistrationSignIn(
      }: EventRegistrationSignInProps) {
     return (
             <div className="event-registration-form">
+                <img src={PMCLogo} className="logo" alt={"PMC Logo"}/>
                 <h2>Are you a member?</h2>
                 <div className="event-registration-form-buttons">
                     <button

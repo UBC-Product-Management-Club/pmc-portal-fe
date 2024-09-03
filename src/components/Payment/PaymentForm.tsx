@@ -114,7 +114,7 @@ export default function PaymentForm() {
     return (
         <form className="PaymentForm-content" onSubmit={handleSubmit}>
             <PaymentElement className="PaymentForm-content--PaymentElement" options={paymentElementOptions} />
-            <button disabled={isLoading} className="PaymentForm-content--submit ">Pay now</button>
+            <button disabled={isLoading} className="PaymentForm-content--submit">Pay now</button>
             {paymentError && <span className="PaymentForm-content--error">{paymentError}</span>}
         </form>
     )

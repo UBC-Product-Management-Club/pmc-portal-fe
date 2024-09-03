@@ -1,37 +1,25 @@
 import "./EventCard.css";
 import { User } from "firebase/auth";
 import { eventType } from "../../types/api";
-import React, { useState } from "react";
-import { EventRegistrationModal } from "./EventRegistrationModal";
+import { useNavigate } from "react-router-dom";
 
 type EventCardProps = {
   currentUser: User | null;
   event: eventType;
-  onClick: () => void;
   showRegister?: boolean;
 };
 
 export function EventCard(props: EventCardProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const isEventFull =
-    props.event.maxAttendee !== null &&
-    props.event.attendee_Ids?.length >= props.event.maxAttendee;
-
-  function handleRegister(e: React.MouseEvent<HTMLButtonElement>) {
-    e.stopPropagation();
-    setIsModalOpen(true);
-  }
+  const navigateTo = useNavigate()
 
   return (
     <div>
       <h2>{new Date(props.event.date).toDateString()}</h2>
       <div
-        className={`event ${
-          !props.currentUser && !props.event.non_member_price
-            ? "disabled-card"
-            : ""
-        }`}
-        onClick={props.onClick}
+        className={`event ${!props.currentUser && !props.event.non_member_price
+          ? "disabled-card"
+          : ""
+          }`}
       >
         <div className={"card-container"}>
           <div className={"event-col"}>
@@ -41,33 +29,20 @@ export function EventCard(props: EventCardProps) {
 
             {props.showRegister && (
               <button
-                className={`event-button ${
-                  props.event.maxAttendee !== null &&
+                className={`event-button ${props.event.maxAttendee !== null &&
                   props.event.attendee_Ids?.length >= props.event.maxAttendee
-                    ? "disabled-button"
-                    : ""
-                }`}
-                onClick={handleRegister}
-                disabled={
-                  props.event.maxAttendee !== null &&
-                  props.event.attendee_Ids?.length >= props.event.maxAttendee
+                  ? "disabled-button"
+                  : ""
+                  }`}
+                onClick={() => {
+                  navigateTo(`/events/${props.event.event_Id}`);
                 }
+                }
+
               >
-                Register
+                See more
               </button>
             )}
-
-            {isEventFull && (
-              <p className="error-message">sorry, this event is full...</p>
-            )}
-
-            <EventRegistrationModal
-              eventId={props.event?.event_Id}
-              memberPrice={props.event?.member_price}
-              nonMemberPrice={props.event?.non_member_price}
-              isModalOpen={isModalOpen}
-              setIsModalOpen={setIsModalOpen}
-            />
             {!props.event.non_member_price && !props.currentUser && (
               <div className="overlay">
                 <p className="disabled-comment">
