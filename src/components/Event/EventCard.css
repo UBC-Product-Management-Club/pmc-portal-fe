@@ -80,13 +80,10 @@
 }
 
 .event-image {
-  margin-left: 10px;
-  border-radius: 13px;
-  width: 25rem;
-  height: 15rem;
-  /* height: 100%;
-  aspect-ratio: 1; */
-    /* float: right; */
+    margin-left: 10px;
+    border-radius: 13px;
+    width: 20rem;
+    height: 15rem;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
@@ -234,6 +231,18 @@
     font-weight: bold;
     text-align: center;
     z-index: 3;
+}
+
+@media screen and (max-width: 768px) {
+  .event {
+    width: 80%;
+    flex-direction: column;
+  }
+
+  .event-image {
+    width: 20rem;
+    margin-left: 0;
+  }
 }
 
 @media screen and (max-width: 768px) {
