@@ -1,19 +1,15 @@
 import "./EventCard.css";
 import { User } from "firebase/auth";
 import { eventType } from "../../types/api";
-import React, { useState } from "react";
-import { EventRegistrationModal } from "./EventRegistrationModal";
 import { useNavigate } from "react-router-dom";
 
 type EventCardProps = {
   currentUser: User | null;
   event: eventType;
-  onClick: () => void;
   showRegister?: boolean;
 };
 
 export function EventCard(props: EventCardProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigateTo = useNavigate()
 
   return (
@@ -24,7 +20,6 @@ export function EventCard(props: EventCardProps) {
           ? "disabled-card"
           : ""
           }`}
-        onClick={props.onClick}
       >
         <div className={"card-container"}>
           <div className={"event-col"}>
@@ -45,17 +40,9 @@ export function EventCard(props: EventCardProps) {
                 }
 
               >
-                see more
+                See more
               </button>
             )}
-
-            <EventRegistrationModal
-              eventId={props.event?.event_Id}
-              memberPrice={props.event?.member_price}
-              nonMemberPrice={props.event?.non_member_price}
-              isModalOpen={isModalOpen}
-              setIsModalOpen={setIsModalOpen}
-            />
             {!props.event.non_member_price && !props.currentUser && (
               <div className="overlay">
                 <p className="disabled-comment">

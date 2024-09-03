@@ -30,8 +30,7 @@
   text-align: center;
   font-family: Helvetica;
   line-height: 1.5;
-  background: rgb(141, 155, 235);
-  background: linear-gradient(96deg, rgba(141, 155, 235, 1) 20%, rgba(175, 113, 170, 1) 52%, rgba(227, 49, 72, 1) 100%);
+  background: #FFF;
   color: transparent;
   background-clip: text;
 }
@@ -101,8 +100,7 @@
     font-size: x-large;
     font-family: Helvetica;
     line-height: 1.5;
-    background: rgb(141, 155, 235);
-    background: linear-gradient(96deg, rgba(141, 155, 235, 1) 20%, rgba(175, 113, 170, 1) 52%, rgba(227, 49, 72, 1) 100%);
+    background: #FFF;
     color: transparent;
     background-clip: text;
   }

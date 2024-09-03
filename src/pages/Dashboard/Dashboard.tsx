@@ -1,6 +1,5 @@
 import "./Dashboard.css";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { eventType } from "../../types/api";
 import { useAuth } from "../../providers/Auth/AuthProvider";
 import { EventCard } from "../../components/Event/EventCard";
@@ -8,7 +7,6 @@ import { EventCard } from "../../components/Event/EventCard";
 export default function Dashboard() {
     const { currentUser } = useAuth();
     const [allEvents, setAllEvents] = useState<eventType[]>([]);
-    const navigateTo = useNavigate();
     const [welcomeMessage, setWelcomeMessage] = useState<string>("Welcome guest");
 
     async function dashboardComponents() {
@@ -65,9 +63,6 @@ export default function Dashboard() {
                                 key={event.event_Id}
                                 currentUser={currentUser}
                                 event={event}
-                                onClick={() => {
-                                    // navigateTo(`/events/${event.event_Id}`);
-                                }}
                                 showRegister={true}
                             />
                         ))

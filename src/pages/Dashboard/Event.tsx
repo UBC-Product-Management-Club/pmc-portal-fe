@@ -142,7 +142,7 @@ const Event: React.FC = () => {
                         </div>
                     </div>
                     <button className="signup-button" disabled={isEventFull} onClick={() => setIsSignUpFormOpen(true)}>
-                        {isEventFull ? <span className="signup-button-sorry-text">sorry, the event is full</span> : <span className="signup-button-text">Sign up</span>}
+                        {isEventFull ? <span className="signup-button-sorry-text">Sorry, the event is full</span> : <span className="signup-button-text">Sign up</span>}
                     </button>
                     <EventRegistrationModal
                         isModalOpen={isSignUpFormOpen}
