@@ -47,9 +47,12 @@ export default function Dashboard() {
           </h4>
         </div>
         <p>
-          Every week, we feature some of our favorite events in cities like New
-          York and London. You can also check out some great calendars from the
-          community.
+        At PMC, our mission is to empower aspiring product managers 
+        by providing valuable insights, hands-on experiences, and 
+        opportunities to connect with industry leaders. Check out 
+        our upcoming events to support you on your product journey 
+        and help you grow your skills, expand your network, and 
+        explore new opportunities in the field!
         </p>
       </div>
 
