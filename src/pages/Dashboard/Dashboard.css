@@ -18,6 +18,13 @@ body {
   width: 100%;
 }
 
+.dashboard-staytuned {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    margin-top: 5rem;
+}
+
 html {
   scroll-behavior: smooth;
 }

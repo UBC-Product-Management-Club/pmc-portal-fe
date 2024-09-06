@@ -68,7 +68,7 @@ export default function Dashboard() {
               />
             ))
           ) : (
-            <p style={{ color: "white" }}>No events found.</p>
+            <p className="dashboard-staytuned">Stay tuned for future events!</p>
           )}
         </div>
       </div>
