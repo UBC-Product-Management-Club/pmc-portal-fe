@@ -9,6 +9,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
     padding: 12px 32px;
     height: 4rem;
     left: 320px;

@@ -17,7 +17,7 @@ const stripe_key = loadStripe(import.meta.env.VITE_STRIPE_KEY)
 export default function Payment() {
     // TODO:
     // - Needs a "back" button?
-    const { currentUser } = useAuth()
+    const { currentUser, isSignedIn } = useAuth()
     const { paid, FormOptions } = usePayment()
     const { type, prompt, eventId } = FormOptions
     const [paymentSecret, setPaymentSecret] = useState<string>("")
@@ -38,7 +38,7 @@ export default function Payment() {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                      uid: currentUser ? currentUser.uid : null
+                      uid: isSignedIn ? currentUser!.uid : null
                     })
                   })
                 }

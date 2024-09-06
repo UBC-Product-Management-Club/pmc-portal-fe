@@ -5,7 +5,7 @@
 .onboarding-waiver h3 {
     font-size: small;
     font-weight: normal;
-    color: white;
+    color: #ffffff;
     margin: 0.5%;
 }
 
@@ -16,11 +16,15 @@
 }
 
 .waiver-checkbox-row {
+    width: 100%;
     display: flex;
-    align-items: center;
-    flex-direction: row;
-    gap: 0.5%;
-    position: relative;
+    flex: none;
+    justify-content: start;
+}
+
+.onboarding-waiver-checkbox {
+    width: 1rem;
+    cursor: pointer;
 }
 
 .error-message {
@@ -28,9 +32,4 @@
     font-size: small;
     margin: 0.5%;
     margin-left: 2.5rem;
-}
-
-.onboarding-waiver-checkbox {
-    cursor: pointer;
-    position: absolute;
 }

@@ -14,7 +14,7 @@ export default function PaymentForm() {
     
     const [paymentError, setPaymentError] = useState<string>("")
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const { currentUser } = useAuth()
+    const { currentUser, isSignedIn } = useAuth()
     const { FormOptions, setPaid } = usePayment()
     const { onSuccess } = FormOptions
 
@@ -60,7 +60,7 @@ export default function PaymentForm() {
     const addTransaction = async (paymentIntent: PaymentIntent) => {
       const transaction: addTransactionBody = {
           type: "membership",
-          member_id: currentUser ? currentUser.uid : "attendee", // not sure how to deal with non-members here.
+          member_id: isSignedIn ? currentUser!.uid : "attendee", // not sure how to deal with non-members here.
           payment: {
               id: paymentIntent.id,
               amount: paymentIntent.amount,
@@ -114,7 +114,7 @@ export default function PaymentForm() {
     return (
         <form className="PaymentForm-content" onSubmit={handleSubmit}>
             <PaymentElement className="PaymentForm-content--PaymentElement" options={paymentElementOptions} />
-            <button disabled={isLoading} className="PaymentForm-content--submit ">Pay now</button>
+            <button disabled={isLoading} className="PaymentForm-content--submit">Pay now</button>
             {paymentError && <span className="PaymentForm-content--error">{paymentError}</span>}
         </form>
     )

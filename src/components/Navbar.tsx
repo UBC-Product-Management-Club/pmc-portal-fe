@@ -4,14 +4,14 @@ import PMCLogo from "../assets/pmclogo.svg";
 import {useNavigate} from "react-router-dom";
 
 export function Navbar() {
-    const {currentUser, logout} = useAuth();
+    const {currentUser, logout, isSignedIn} = useAuth();
     const navigateTo = useNavigate();
 
     async function authButtonHandler() {
         try {
-            if (currentUser) {
-                const uid = currentUser.uid;
-                const displayName = currentUser.displayName;
+            if (isSignedIn) {
+                const uid = currentUser!.uid;
+                const displayName = currentUser!.displayName;
 
                 await logout();
 
@@ -29,17 +29,15 @@ export function Navbar() {
     }
 
     return <div className="navbar">
-        <div className="navbar-icon">
-            <a href="/">
-                <img src={PMCLogo} className="logo" alt={"PMC Logo"}/>
-            </a>
-        </div>
+        <a href="/" className="navbar-icon">
+            <img src={PMCLogo} className="logo" alt={"PMC Logo"}/>
+        </a>
         <nav className="navbar-nav">
             <a href="/dashboard" className="navbar-link">
                 Events
             </a>
             <div>
-                {currentUser != null ? (
+                {isSignedIn ? (
                     <a href="/profile" className="navbar-link">
                         Profile
                     </a>
@@ -51,7 +49,7 @@ export function Navbar() {
             </div>
             <div className="navbar-button">
                 <div onClick={authButtonHandler}>
-                    {currentUser ? "Sign out" : "Sign in"}
+                    {isSignedIn ? "Sign out" : "Sign in"}
                 </div>
             </div>
         </nav>
