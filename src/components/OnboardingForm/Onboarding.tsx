@@ -86,9 +86,9 @@ export default function Onboarding() {
             <div className="onboarding-content">
                 <img className="onboarding-content--logo" src={PMCLogo} />
                 {paid ?
-                    <h1 className="onboarding-content-header pmc-gradient-text">Welcome to PMC {userInfo?.first_name}! <span style={{fontSize: 'x-large'}}>🥳</span></h1> 
+                    <h1 className="onboarding-content-header">Welcome to PMC {userInfo?.first_name}! <span style={{fontSize: 'x-large'}}>🥳</span></h1> 
                 : 
-                    <h1 className="onboarding-content-header pmc-gradient-text">Become a member</h1>}
+                    <h1 className="onboarding-content-header">Become a member</h1>}
                 {/* Toggle between onboardingform/paymentform */}
                 {/* Use Context to keep track of current state */}
                 <OnboardingProvider setters={{ setUserInfo, setCurrPage }} >
