@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { auth } from "../../../firebase";
-import { User, browserLocalPersistence, setPersistence } from "firebase/auth";
+import { User, browserSessionPersistence, setPersistence } from "firebase/auth";
 import { AuthContextType, AuthProviderProps } from "./types";
 import { userDocument } from "../../types/api";
 import AuthContext from "./AuthContext";
@@ -25,7 +25,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const setAuthPersistence = async () => {
       try {
-        await setPersistence(auth, browserLocalPersistence);
+        await setPersistence(auth, browserSessionPersistence);
         console.log("Persistence set to local");
       } catch (error) {
         console.error("Failed to set persistence:", error);

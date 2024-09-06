@@ -12,10 +12,12 @@ import { useState } from "react";
 import GoogleLogo from "../../assets/google.svg";
 import PMCLogo from "../../assets/pmclogo.svg";
 import Onboarding from "../../components/OnboardingForm/Onboarding";
+import { useAuth } from "../../providers/Auth/AuthProvider";
 
 export default function Login() {
   const [onboarding, setOnboarding] = useState<boolean>(false);
   const navigateTo = useNavigate();
+  const { logout } = useAuth();
 
   async function googleLogin() {
     try {
@@ -75,7 +77,10 @@ export default function Login() {
               </button>
               <button
                 className="login-continue"
-                onClick={() => navigateTo("/dashboard")}
+                onClick={async () => {
+                  navigateTo("/dashboard")
+                  await logout()
+                }}
               >
                 Continue as a non-member
               </button>
