@@ -44,7 +44,8 @@ export default function Dashboard() {
             but your payment is not verified. If you haven't paid, 
             please visit our <a href="https://ubc-pmc.square.site" 
             target="_blank">checkout page</a>. If you've paid already, 
-            we will notify you when we've verified your payment.
+            we will notify you when we've verified your payment. Your 
+            account will be activated once you are verified.
           </p>
         )}
         <div className="dashboard-header">
