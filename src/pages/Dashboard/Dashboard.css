@@ -14,6 +14,22 @@ body {
   gap: 2rem;
 }
 
+.dashboard-top-banner {
+  text-align: center;
+  background-color: #fff;
+  color: var(--pmc-dark-blue);
+  padding: 20px 10px;
+  border-radius: 20px;
+}
+
+.dashboard-top-banner a {
+  text-decoration: underline;
+}
+
+.dashboard-top-banner a:visited {
+  color: var(--pmc-dark-blue)
+}
+
 .dashboard-container {
   width: 100%;
 }

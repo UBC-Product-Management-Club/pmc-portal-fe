@@ -1,7 +1,7 @@
 import "./Login.css";
 import {
   GoogleAuthProvider,
-  browserLocalPersistence,
+  browserSessionPersistence,
   setPersistence,
   signInWithPopup,
   type User,
@@ -19,7 +19,7 @@ export default function Login() {
 
   async function googleLogin() {
     try {
-      setPersistence(auth, browserLocalPersistence);
+      setPersistence(auth, browserSessionPersistence);
       const authProvider = new GoogleAuthProvider();
       const signInResult = await signInWithPopup(auth, authProvider);
       const user: User = signInResult.user;
