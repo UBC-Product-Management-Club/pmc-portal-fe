@@ -28,6 +28,7 @@ jobs:
           touch .secret/.env
           echo VITE_API_URL=${{ secrets.VITE_API_URL }} >> .secret/.env
           echo VITE_STRIPE_KEY=${{ secrets.VITE_STRIPE_KEY }} >> .secret/.env
+          echo VITE_AUTH0_API_URL=${{ secrets.VITE_AUTH0_API_URL }} >> .secret/.env
 
       - name: Create Credential JSON
         id: create-json-1

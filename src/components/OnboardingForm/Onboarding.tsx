@@ -6,11 +6,10 @@ import Payment from "../Payment/Payment"
 import { OnboardingProvider } from "./Context"
 import { loginBody, onboardingBody } from "../../types/api"
 import { UserSchema } from "./types"
-import { useAuth } from "../../providers/Auth/AuthProvider";
 import { PaymentProvider } from "../../providers/Payment/PaymentProvider"
-import { User } from "firebase/auth"
 import FF from "../../../feature-flag.json"
 import PaymentSuccess from "../Payment/PaymentSuccess"
+import {useAuth0} from "@auth0/auth0-react";
 
 /**
  * 
@@ -24,60 +23,81 @@ import PaymentSuccess from "../Payment/PaymentSuccess"
  * 
  */
 
-export const addUser = async (currentUser: User | null, userInfo: UserSchema | undefined) => {
-    if (!currentUser) {
-        // If for some reason the user isn't signed-in at this point, throw some error
-        return
-    }
-
-    const idToken = await currentUser.getIdToken()
-    const creds: loginBody = {
-        userUID: currentUser.uid,
-        idToken: idToken
-    }
-
-    try {
-        // Add user to the database
-        const onboardBody: onboardingBody = {
-                creds: creds, // Must be user's UID and idToken
-                userDoc: {
-                    ...userInfo!,
-                    displayName: currentUser.displayName!,
-                    email: currentUser.email!,
-                    pfp: currentUser.photoURL!,
-                }
-        }
-        if (!FF.stripePayment) {
-            onboardBody["userDoc"]["paymentVerified"] = false;
-        }
-        const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify(onboardBody)
-        })
-        if (!onboardUser.ok) {
-            throw Error("Failed adding user to database")
-        }
-    } catch (error) {
-        console.log(error)
-        return
-    }
-}
-
 export default function Onboarding() {
     // a lot of type duplication for userInfo. Improve this in the future
     const [userInfo, setUserInfo] = useState<UserSchema | undefined>(undefined)
     const [currPage, setCurrPage] = useState<"userInfo" | "payment" | "paymentSuccess">("userInfo")
     const [paid, setPaid] = useState<boolean>(false)
-    const { currentUser, userData, setUserData } = useAuth()
+    const {user, getIdTokenClaims} = useAuth0()
 
-    // Do stuff on successful payment
+    const addUser = async (userInfo: UserSchema | undefined) => {
+        const claims = await getIdTokenClaims();
+        if (!user || !user.sub || !claims?.__raw) {
+            throw new Error("Unable to retrieve user credentials.");
+        }
+
+        const idToken = claims.__raw;
+        const creds: loginBody = {
+            userUID: user.sub,
+            idToken: idToken
+        }
+        const onboardBody: onboardingBody = {
+            creds: creds, // Must be user's UID and idToken
+            userDoc: {
+                ...userInfo!,
+                displayName: user.name!,
+                email: user.email!,
+                pfp: user.picture!,
+            }
+        }
+
+        await updateAuth0Metadata(userInfo);
+        await addUserInDatabase(onboardBody);
+
+        console.log(user);
+    }
+
+    async function updateAuth0Metadata(userInfo: UserSchema | undefined) {
+        try {
+            await fetch(`${import.meta.env.VITE_AUTH0_API_URL}/api/v2/users`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': `Bearer ${import.meta.env.VITE_AUTH0_API_ACCESS_TOKEN}`
+                },
+                body: JSON.stringify({user_metadata: {
+                    ...userInfo,
+                    onboarded: true
+                }})
+            })
+        } catch (error) {
+            console.error("Error adding onboarding information to Auth0 user metadata")
+        }
+    }
+
+    async function addUserInDatabase(onboardBody: onboardingBody) {
+        try {
+            if (!FF.stripePayment) {
+                onboardBody["userDoc"]["paymentVerified"] = false;
+            }
+            const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify(onboardBody)
+            })
+            if (!onboardUser.ok) {
+                throw Error("Failed adding user to database")
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     const onPaymentSuccess = () => {
-        addUser(currentUser, userInfo)
-        setUserData({...userData!, ...userInfo})
+        addUser(userInfo)
         setPaid(true)
     }
 
@@ -86,7 +106,7 @@ export default function Onboarding() {
             <div className="onboarding-content">
                 <img className="onboarding-content--logo" src={PMCLogo} />
                 {paid ?
-                    <h1 className="onboarding-content-header pmc-gradient-text">Welcome to PMC {userInfo?.first_name}! <span style={{fontSize: 'x-large'}}>🥳</span></h1> 
+                    <h1 className="onboarding-content-header pmc-gradient-text">Welcome to PMC {userInfo?.first_name}! <span style={{fontSize: 'x-large'}}>🥳</span></h1>
                 : 
                     <h1 className="onboarding-content-header pmc-gradient-text">Become a member</h1>}
                 {/* Toggle between onboardingform/paymentform */}
@@ -108,7 +128,7 @@ export default function Onboarding() {
                             {!FF.stripePayment ? <PaymentSuccess /> : <Payment />}
                         </PaymentProvider>
                     :
-                        <OnboardingForm />
+                        <OnboardingForm addUser={addUser}/>
                     }
                 </OnboardingProvider>
             </div>
