@@ -30,9 +30,7 @@ export default function ProfileEvents() {
 
       const fetchEvents = async () => {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/v1/profile/${
-            user?.sub
-          }/events`,
+          `${import.meta.env.VITE_API_URL}/api/v1/profile/${user?.sub}/events`,
           {
             method: "GET",
             headers: {
