@@ -3,36 +3,34 @@ import {FiBook} from "react-icons/fi";
 import {TbSchool} from "react-icons/tb";
 import {ProfileWhyPM} from "../../components/Profile/ProfileWhyPM";
 import ProfileEvents from "../../components/Profile/ProfileEvents";
-import {useAuth0} from "@auth0/auth0-react";
+import {useUserData} from "../../providers/Auth/UserDataProvider";
 
 export function Profile() {
-    const {user} = useAuth0();
+    const {userData} = useUserData();
 
     return (
         <div className={"profile"}>
             <div className={"profile-space-around"}>
                 <div className={"profile-picture-wrapper w-50"}>
                     <img className={"profile-picture"}
-                         src={user?.picture}
+                         src={userData?.pfp}
                          alt={"Profile Picture"}/>
                 </div>
                 <div className={"w-50"}>
                     <div className={"profile-name-pronouns"}>
-                        <h2>{user?.name}</h2>
-                        <p>{user?.user_metadata.pronouns}</p>
+                        <h2>{userData?.first_name} {userData?.last_name}</h2>
+                        <p>{userData?.pronouns}</p>
                     </div>
-                    {user?.user_metadata.university &&
-                        <div>
-                            <div className={"profile-pill"}>
-                                <TbSchool/>
-                                <p>{user?.user_metadata.university}</p>
-                            </div>
-                            <div className={"profile-pill"}>
-                                <FiBook/>
-                                <p>Year {user?.user_metadata.year}, {user?.user_metadata.faculty}, {user?.user_metadata.major}</p>
-                            </div>
+                    {userData?.university &&
+                        <div className={"profile-pill"}>
+                            <TbSchool/>
+                            <p>{userData?.university}</p>
                         </div>
                     }
+                    <div className={"profile-pill"}>
+                        <FiBook/>
+                        <p>Year {userData?.year}, {userData?.faculty}, {userData?.major}</p>
+                    </div>
                 </div>
             </div>
             <ProfileWhyPM/>

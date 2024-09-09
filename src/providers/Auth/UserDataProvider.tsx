@@ -6,7 +6,7 @@ import { userDocument } from "../../types/api";
 import AuthContext from "./AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
 
-export const useAuth = (): AuthContextType => {
+export const useUserData = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");

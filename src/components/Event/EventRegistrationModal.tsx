@@ -9,6 +9,7 @@ import { EventRegFormSchema } from "../FormInput/EventRegFormUtils";
 import EventRegistrationGuest from "./EventRegistrationGuest";
 import { EventPayment } from "./EventPayment";
 import {useAuth0} from "@auth0/auth0-react";
+import {useUserData} from "../../providers/Auth/UserDataProvider";
 Modal.setAppElement("#root");
 
 // TODO: if alr signed up, don't make button visible
@@ -19,7 +20,8 @@ export function EventRegistrationModal(props: {
   isModalOpen: boolean;
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { user, isAuthenticated } = useAuth0()
+  const { user, isAuthenticated } = useAuth0();
+  const { userData } = useUserData();
   const [isGuest, setIsGuest] = useState(false);
   const defaultUserInfo: UserSchema = {
     first_name: "-",
@@ -28,7 +30,7 @@ export function EventRegistrationModal(props: {
     ubc_student: "no, other",
     why_pm: "-",
     returning_member: "no",
-    ...user?.user_metadata,
+    ...userData,
   };
   const [userInfo, setUserInfo] = useState<UserSchema>(defaultUserInfo);
   const [eventRegInfo, setEventRegInfo] = useState<EventRegFormSchema>();
@@ -77,7 +79,7 @@ export function EventRegistrationModal(props: {
   };
 
   useEffect(() => {
-    setUserInfo({ ...userInfo, ...user?.user_metadata });
+    setUserInfo({ ...userInfo, ...userData });
   }, [props.isModalOpen]);
 
   const stepComponents = [

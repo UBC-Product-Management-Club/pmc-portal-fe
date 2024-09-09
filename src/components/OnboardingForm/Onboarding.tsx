@@ -10,6 +10,7 @@ import { PaymentProvider } from "../../providers/Payment/PaymentProvider"
 import FF from "../../../feature-flag.json"
 import PaymentSuccess from "../Payment/PaymentSuccess"
 import {useAuth0} from "@auth0/auth0-react";
+import {useUserData} from "../../providers/Auth/UserDataProvider";
 
 /**
  * 
@@ -29,6 +30,7 @@ export default function Onboarding() {
     const [currPage, setCurrPage] = useState<"userInfo" | "payment" | "paymentSuccess">("userInfo")
     const [paid, setPaid] = useState<boolean>(false)
     const {user, getIdTokenClaims} = useAuth0()
+    const {userData, setUserData} = useUserData()
 
     const addUser = async (userInfo: UserSchema | undefined) => {
         const claims = await getIdTokenClaims();
@@ -51,48 +53,9 @@ export default function Onboarding() {
             }
         }
 
-        await updateAuth0Metadata(userInfo);
         await addUserInDatabase(onboardBody);
-
-        console.log(user);
+        setUserData({...userData!, ...userInfo});
     }
-
-    async function updateAuth0Metadata(userInfo: UserSchema | undefined) {
-        try {
-            // const res = await fetch(`${import.meta.env.VITE_AUTH0_API_URL}/api/v2/users`, {
-            //     method: 'GET',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'Authorization': `Bearer ${import.meta.env.VITE_AUTH0_API_ACCESS_TOKEN}`
-            //     },
-            //     body: JSON.stringify({})
-            // });
-            // console.log(res);
-            const userId = user?.sub; // This is the Auth0 user ID
-
-            // Update user metadata
-            const res = await fetch(`${import.meta.env.VITE_AUTH0_API_URL}/api/v2/users/${userId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${import.meta.env.VITE_AUTH0_API_ACCESS_TOKEN}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    user_metadata: {
-                        ...userInfo,
-                        onboarded: true
-                    }
-                })
-            });
-            if (!res.ok) {
-                const error = await res.json();
-                console.error(error);
-            }
-        } catch (error) {
-            console.error("Error adding onboarding information to Auth0 user metadata")
-        }
-    }
-
     async function addUserInDatabase(onboardBody: onboardingBody) {
         try {
             if (!FF.stripePayment) {
