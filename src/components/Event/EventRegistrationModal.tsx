@@ -2,13 +2,13 @@ import "./EventRegistrationModal.css";
 import EventRegistrationSignIn from "./EventRegistrationSignIn";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../providers/Auth/AuthProvider";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import EventRegistrationForm from "./EventRegistrationForm";
 import { UserSchema } from "../OnboardingForm/types";
 import { EventRegFormSchema } from "../FormInput/EventRegFormUtils";
 import EventRegistrationGuest from "./EventRegistrationGuest";
 import { EventPayment } from "./EventPayment";
+import {useAuth0} from "@auth0/auth0-react";
 Modal.setAppElement("#root");
 
 // TODO: if alr signed up, don't make button visible
@@ -19,7 +19,7 @@ export function EventRegistrationModal(props: {
   isModalOpen: boolean;
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { currentUser, userData, isSignedIn } = useAuth();
+  const { user, isAuthenticated } = useAuth0()
   const [isGuest, setIsGuest] = useState(false);
   const defaultUserInfo: UserSchema = {
     first_name: "-",
@@ -28,11 +28,11 @@ export function EventRegistrationModal(props: {
     ubc_student: "no, other",
     why_pm: "-",
     returning_member: "no",
-    ...userData,
+    ...user?.user_metadata,
   };
   const [userInfo, setUserInfo] = useState<UserSchema>(defaultUserInfo);
   const [eventRegInfo, setEventRegInfo] = useState<EventRegFormSchema>();
-  const [step, setStep] = useState(isSignedIn ? 2 : 0);
+  const [step, setStep] = useState(isAuthenticated ? 2 : 0);
   const navigateTo = useNavigate();
 
   const handleContinueAsGuest = () => setStep(1);
@@ -51,8 +51,8 @@ export function EventRegistrationModal(props: {
     const eventFormBody = JSON.stringify({
       is_member: !isGuest,
       event_Id: props.eventId,
-      email: currentUser?.email,
-      member_Id: currentUser?.uid,
+      email: user?.email,
+      member_Id: user?.sub,
       ...userInfo,
       ...eventRegInfo,
     });
@@ -77,7 +77,7 @@ export function EventRegistrationModal(props: {
   };
 
   useEffect(() => {
-    setUserInfo({ ...userInfo, ...userData });
+    setUserInfo({ ...userInfo, ...user?.user_metadata });
   }, [props.isModalOpen]);
 
   const stepComponents = [
@@ -106,7 +106,7 @@ export function EventRegistrationModal(props: {
     if (isGuest) {
       setIsGuest(false);
     }
-    setStep(isSignedIn ? 2 : 0);
+    setStep(isAuthenticated ? 2 : 0);
     props.setIsModalOpen(false);
   }
 

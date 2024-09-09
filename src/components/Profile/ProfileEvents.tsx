@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { eventType } from "../../types/api";
 import { EventCard } from "../Event/EventCard";
-import { useAuth } from "../../providers/Auth/AuthProvider";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function ProfileEvents() {
-  const { currentUser, isSignedIn } = useAuth();
+  const { user, isAuthenticated } = useAuth0();
   const [isLoading, setIsLoading] = useState(true);
   const [events, setEvents] = useState<eventType[]>([]);
 
   useEffect(() => {
-    if (isLoading && isSignedIn) {
+    if (isLoading && isAuthenticated) {
       const fetchEvent = async (eventId: string): Promise<eventType> => {
         const eventResponse = await fetch(
           `${import.meta.env.VITE_API_URL}/api/v1/events/${eventId}`,
@@ -31,7 +31,7 @@ export default function ProfileEvents() {
       const fetchEvents = async () => {
         const response = await fetch(
           `${import.meta.env.VITE_API_URL}/api/v1/profile/${
-            currentUser?.uid
+            user?.sub
           }/events`,
           {
             method: "GET",
@@ -63,7 +63,7 @@ export default function ProfileEvents() {
       }
       setIsLoading(false);
     }
-  }, [currentUser, isLoading]);
+  }, [user, isLoading]);
 
   return (
     <div>
@@ -72,7 +72,7 @@ export default function ProfileEvents() {
         events.map((event) => (
           <EventCard
             key={event.event_Id}
-            isSignedIn={isSignedIn}
+            isSignedIn={isAuthenticated}
             event={event}
           />
         ))

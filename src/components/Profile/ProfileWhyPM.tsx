@@ -1,5 +1,5 @@
-import {useAuth} from "../../providers/Auth/AuthProvider";
 import {ChangeEvent, useEffect, useState} from "react";
+import {useAuth0} from "@auth0/auth0-react";
 // import {MdOutlineEdit} from "react-icons/md";
 
 export function ProfileWhyPM() {
@@ -7,7 +7,7 @@ export function ProfileWhyPM() {
     // const {userData, setUserData} = useAuth();
     // const [isEditing, setIsEditing] = useState(false);
 
-    const {userData} = useAuth();
+    const {user} = useAuth0();
     const [isEditing] = useState(false);
     const [text, setText] = useState("Why are you interested in Product Management…")
 
@@ -24,11 +24,11 @@ export function ProfileWhyPM() {
 
     useEffect(() => {
         if (!isLoading) return;
-        if (userData && userData.why_pm) {
-            setText(userData.why_pm);
+        if (user && user.user_metadata.why_pm) {
+            setText(user.user_metadata.why_pm);
             setIsLoading(false);
         }
-    }, [userData, isLoading])
+    }, [user, isLoading])
 
     return <div>
         <div className={"profile-space-between"}>

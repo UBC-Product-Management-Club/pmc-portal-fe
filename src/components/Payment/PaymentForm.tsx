@@ -3,9 +3,9 @@ import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js"
 import { Layout, LayoutObject, PaymentIntent } from "@stripe/stripe-js"
 import { useEffect, useState } from "react"
 import { addTransactionBody } from "../../types/api"
-import { useAuth } from "../../providers/Auth/AuthProvider"
 import { usePayment } from "../../providers/Payment/PaymentProvider"
 import { Timestamp } from "firebase/firestore"
+import {useAuth0} from "@auth0/auth0-react";
 
 
 export default function PaymentForm() {
@@ -14,7 +14,7 @@ export default function PaymentForm() {
     
     const [paymentError, setPaymentError] = useState<string>("")
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const { currentUser, isSignedIn } = useAuth()
+    const { user, isAuthenticated } = useAuth0()
     const { FormOptions, setPaid } = usePayment()
     const { onSuccess } = FormOptions
 
@@ -60,7 +60,7 @@ export default function PaymentForm() {
     const addTransaction = async (paymentIntent: PaymentIntent) => {
       const transaction: addTransactionBody = {
           type: "membership",
-          member_id: isSignedIn ? currentUser!.uid : "attendee", // not sure how to deal with non-members here.
+          member_id: isAuthenticated ? user!.sub : "attendee", // not sure how to deal with non-members here.
           payment: {
               id: paymentIntent.id,
               amount: paymentIntent.amount,

@@ -3,15 +3,15 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { eventType } from "../../types/api";
 import "./Event.css";
-import { useAuth } from "../../providers/Auth/AuthProvider";
 import { EventRegistrationModal } from "../../components/Event/EventRegistrationModal";
 import { CiCalendar, CiLocationOn } from "react-icons/ci";
 import { MdOutlinePeopleAlt } from "react-icons/md";
 import { PiLinkSimpleLight } from "react-icons/pi";
 import { FaDollarSign } from "react-icons/fa6";
+import {useAuth0} from "@auth0/auth0-react";
 
 const Event: React.FC = () => {
-    const { isSignedIn } = useAuth();
+    const { isAuthenticated } = useAuth0();
     const [event, setEvent] = useState<eventType | null>(null);
     const { event_id } = useParams<{ event_id: string }>();
     const [loading, setLoading] = useState(true);
@@ -110,7 +110,7 @@ const Event: React.FC = () => {
                                     className="text-container"
                                     style={{ flexDirection: "column" }}
                                 >
-                                    {isSignedIn ? (
+                                    {isAuthenticated ? (
                                         <>
                                             <h3>Event Pricing</h3>
                                             <h4>
