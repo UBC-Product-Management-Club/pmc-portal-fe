@@ -15,7 +15,7 @@ type userDocument = {
   why_pm?: string;
   returning_member?: "yes" | "no";
   paymentVerified?: boolean;
-  isGuest?: boolean;
+  onboarded?: boolean;
 };
 
 type loginBody = {

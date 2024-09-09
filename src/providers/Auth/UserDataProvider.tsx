@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import { auth } from "../../../firebase";
-import { browserLocalPersistence, setPersistence } from "firebase/auth";
-import { AuthContextType, AuthProviderProps } from "./types";
+import { useContext, useEffect, useState } from "react";
+import { AuthContextType } from "./types";
 import { userDocument } from "../../types/api";
 import AuthContext from "./AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
+import {Outlet} from "react-router-dom";
 
 export const useUserData = (): AuthContextType => {
   const context = useContext(AuthContext);
@@ -14,25 +13,10 @@ export const useUserData = (): AuthContextType => {
   return context;
 };
 
-export const UserDataProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export function UserDataProvider() {
   const [userData, setUserData] = useState<userDocument | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { user, isAuthenticated } = useAuth0();
-
-  useEffect(() => {
-    if (!auth) return;
-
-    const setAuthPersistence = async () => {
-      try {
-        await setPersistence(auth, browserLocalPersistence);
-        console.log("Persistence set to local");
-      } catch (error) {
-        console.error("Failed to set persistence:", error);
-      }
-    };
-
-    setAuthPersistence();
-  }, [auth]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -60,7 +44,7 @@ export const UserDataProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     };
 
-    if (isAuthenticated && user && !isLoading) {
+    if (isAuthenticated && user) {
       fetchUserData();
     }
   }, [isAuthenticated, user])
@@ -73,7 +57,7 @@ export const UserDataProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {!isLoading && children}
+      {!isLoading && <Outlet/>}
     </AuthContext.Provider>
   );
-};
+}

@@ -50,6 +50,7 @@ export default function Onboarding() {
                 displayName: user.name!,
                 email: user.email!,
                 pfp: user.picture!,
+                onboarded: true
             }
         }
 

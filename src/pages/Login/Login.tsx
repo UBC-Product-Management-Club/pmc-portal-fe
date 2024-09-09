@@ -9,8 +9,8 @@ export default function Login() {
   const navigateTo = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      const onboarded = user?.app_metadata?.onboarded; // Assuming `isNewUser` is tracked in metadata
+    if (isAuthenticated && user) {
+      const onboarded = user?.app_metadata?.onboarded;
 
       if (!onboarded) {
         navigateTo("/onboarding"); // Redirect to onboarding form
