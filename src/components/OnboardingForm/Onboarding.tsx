@@ -59,17 +59,35 @@ export default function Onboarding() {
 
     async function updateAuth0Metadata(userInfo: UserSchema | undefined) {
         try {
-            await fetch(`${import.meta.env.VITE_AUTH0_API_URL}/api/v2/users`, {
-                method: 'POST',
+            // const res = await fetch(`${import.meta.env.VITE_AUTH0_API_URL}/api/v2/users`, {
+            //     method: 'GET',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Authorization': `Bearer ${import.meta.env.VITE_AUTH0_API_ACCESS_TOKEN}`
+            //     },
+            //     body: JSON.stringify({})
+            // });
+            // console.log(res);
+            const userId = user?.sub; // This is the Auth0 user ID
+
+            // Update user metadata
+            const res = await fetch(`${import.meta.env.VITE_AUTH0_API_URL}/api/v2/users/${userId}`, {
+                method: 'PATCH',
                 headers: {
-                    'Content-type': 'application/json',
-                    'Authorization': `Bearer ${import.meta.env.VITE_AUTH0_API_ACCESS_TOKEN}`
+                    'Authorization': `Bearer ${import.meta.env.VITE_AUTH0_API_ACCESS_TOKEN}`,
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({user_metadata: {
-                    ...userInfo,
-                    onboarded: true
-                }})
-            })
+                body: JSON.stringify({
+                    user_metadata: {
+                        ...userInfo,
+                        onboarded: true
+                    }
+                })
+            });
+            if (!res.ok) {
+                const error = await res.json();
+                console.error(error);
+            }
         } catch (error) {
             console.error("Error adding onboarding information to Auth0 user metadata")
         }
