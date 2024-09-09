@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import {useEffect} from "react";
 import PMCLogo from "../../assets/pmclogo.svg";
 import {useAuth0} from "@auth0/auth0-react";
+import {useUserData} from "../../providers/Auth/UserDataProvider";
 
 export default function Login() {
   const {user, isAuthenticated, loginWithRedirect} = useAuth0();
+  const {setIsGuest} = useUserData();
   const navigateTo = useNavigate();
 
   useEffect(() => {
@@ -20,6 +22,11 @@ export default function Login() {
     }
   }, [isAuthenticated, user, navigateTo]);
 
+  function handleContinueGuest() {
+    setIsGuest(true);
+    navigateTo("/dashboard");
+  }
+
   return (
     <div className="login-container">
       <div className="login-content">
@@ -31,7 +38,7 @@ export default function Login() {
           </button>
           <button
             className="login-continue"
-            onClick={() => navigateTo("/dashboard")}
+            onClick={handleContinueGuest}
           >
             Continue as a non-member
           </button>

@@ -1,22 +1,22 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContextType } from "./types";
+import {UserDataContextType, UserDataProviderProps} from "./types";
 import { userDocument } from "../../types/api";
-import AuthContext from "./AuthContext";
+import UserDataContext from "./UserDataContext";
 import {useAuth0} from "@auth0/auth0-react";
-import {Outlet} from "react-router-dom";
 
-export const useUserData = (): AuthContextType => {
-  const context = useContext(AuthContext);
+export const useUserData = (): UserDataContextType => {
+  const context = useContext(UserDataContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
 
-export function UserDataProvider() {
-  const [userData, setUserData] = useState<userDocument | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+export function UserDataProvider({children}: UserDataProviderProps) {
   const { user, isAuthenticated } = useAuth0();
+  const [userData, setUserData] = useState<userDocument | null>(null);
+  const [isGuest, setIsGuest] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -46,18 +46,21 @@ export function UserDataProvider() {
 
     if (isAuthenticated && user) {
       fetchUserData();
+    } else {
+      setUserData(null);
     }
   }, [isAuthenticated, user])
 
-
-  const value: AuthContextType = {
+  const value: UserDataContextType = {
     userData,
-    setUserData
+    setUserData,
+    isGuest,
+    setIsGuest
   };
 
   return (
-    <AuthContext.Provider value={value}>
-      {!isLoading && <Outlet/>}
-    </AuthContext.Provider>
+    <UserDataContext.Provider value={value}>
+      {!isLoading && children}
+    </UserDataContext.Provider>
   );
 }

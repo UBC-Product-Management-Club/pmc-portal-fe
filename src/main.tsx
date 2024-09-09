@@ -21,17 +21,17 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             redirect_uri: window.location.origin
           }}
       >
+          <UserDataProvider>
             <Routes>
               <Route path={"/"} element={<Login/>}/>
-                <Route element={<UserDataProvider/>}>
                 <Route path={"/onboarding"} element={<Onboarding/>}/>
                   <Route element={<Layout />}>
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/events/:event_id" element={<Event />} />
                     <Route path="/profile" element={<Profile />} />
                   </Route>
-                </Route>
             </Routes>
+          </UserDataProvider>
       </Auth0Provider>
     </Router>
   </React.StrictMode>
