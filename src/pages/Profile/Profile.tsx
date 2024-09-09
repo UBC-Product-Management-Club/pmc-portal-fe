@@ -4,11 +4,14 @@ import {TbSchool} from "react-icons/tb";
 import {ProfileWhyPM} from "../../components/Profile/ProfileWhyPM";
 import ProfileEvents from "../../components/Profile/ProfileEvents";
 import {useUserData} from "../../providers/Auth/UserDataProvider";
+import {useEffect} from "react";
 
 export function Profile() {
     const {userData} = useUserData();
 
-    return (
+    useEffect(() => console.log(userData),[userData])
+
+    return (userData &&
         <div className={"profile"}>
             <div className={"profile-space-around"}>
                 <div className={"profile-picture-wrapper w-50"}>
@@ -22,15 +25,17 @@ export function Profile() {
                         <p>{userData?.pronouns}</p>
                     </div>
                     {userData?.university &&
-                        <div className={"profile-pill"}>
-                            <TbSchool/>
-                            <p>{userData?.university}</p>
+                        <div>
+                            <div className={"profile-pill"}>
+                                <TbSchool/>
+                                <p>{userData?.university}</p>
+                            </div>
+                            <div className={"profile-pill"}>
+                                <FiBook/>
+                                <p>Year {userData?.year}, {userData?.faculty}, {userData?.major}</p>
+                            </div>
                         </div>
                     }
-                    <div className={"profile-pill"}>
-                        <FiBook/>
-                        <p>Year {userData?.year}, {userData?.faculty}, {userData?.major}</p>
-                    </div>
                 </div>
             </div>
             <ProfileWhyPM/>

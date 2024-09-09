@@ -46,8 +46,10 @@ export function UserDataProvider({children}: UserDataProviderProps) {
 
     if (isAuthenticated && user) {
       fetchUserData();
+      setIsGuest(false);
     } else {
       setUserData(null);
+      setIsGuest(true);
     }
   }, [isAuthenticated, user])
 
