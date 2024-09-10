@@ -5,13 +5,13 @@ import {useAuth0} from "@auth0/auth0-react";
 import {useAuth} from "../providers/Auth/AuthProvider";
 
 export function Navbar() {
-    const { user, logout } = useAuth0();
-    const { isSignedIn } = useAuth();
+    const {user, isAuthenticated, logout} = useAuth0();
+    const {isSignedIn} = useAuth();
     const navigateTo = useNavigate();
 
     async function authButtonHandler() {
         try {
-            if (isSignedIn) {
+            if (isAuthenticated) {
                 const uid = user?.sub;
                 const displayName = user?.displayName;
 
@@ -47,7 +47,7 @@ export function Navbar() {
             </div>
             <div className="navbar-button">
                 <div onClick={authButtonHandler}>
-                    {isSignedIn ? "Sign out" : "Sign in"}
+                    {isAuthenticated ? "Sign out" : "Sign in"}
                 </div>
             </div>
         </nav>

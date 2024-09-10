@@ -1,26 +1,11 @@
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
-import {useEffect} from "react";
 import PMCLogo from "../../assets/pmclogo.svg";
 import {useAuth0} from "@auth0/auth0-react";
-import {useAuth} from "../../providers/Auth/AuthProvider";
 
 export default function Login() {
-  const {user, loginWithRedirect} = useAuth0();
-  const {isSignedIn} = useAuth();
+  const {loginWithRedirect} = useAuth0();
   const navigateTo = useNavigate();
-
-  useEffect(() => {
-    if (isSignedIn && user) {
-      const onboarded = user?.app_metadata?.onboarded;
-
-      if (!onboarded) {
-        navigateTo("/onboarding"); // Redirect to onboarding form
-      } else {
-        navigateTo("/dashboard"); // Redirect to dashboard
-      }
-    }
-  }, [isSignedIn, user, navigateTo]);
 
   return (
     <div className="login-container">
