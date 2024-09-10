@@ -1,7 +1,7 @@
 import { Dispatch, ReactNode, SetStateAction } from "react";
 import { userDocument } from "../../types/api";
 
-export interface UserDataContextType {
+export interface AuthContextType {
   userData: userDocument | null;
   setUserData: Dispatch<SetStateAction<userDocument | null>>;
   isSignedIn: boolean;

@@ -1,6 +1,6 @@
-import { UserDataContextType } from "./types";
+import { AuthContextType } from "./types";
 import { createContext } from "react";
 
-const UserDataContext = createContext<UserDataContextType | undefined>(undefined);
+const UserDataContext = createContext<AuthContextType | undefined>(undefined);
 
 export default UserDataContext;
