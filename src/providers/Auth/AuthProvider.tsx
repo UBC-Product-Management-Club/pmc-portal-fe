@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import {UserDataContextType, AuthProviderProps} from "./types";
+import {AuthContextType, AuthProviderProps} from "./types";
 import { userDocument } from "../../types/api";
 import AuthContext from "./UserDataContext";
 import {useAuth0} from "@auth0/auth0-react";
 import FF from "../../../feature-flag.json";
 
-export const useAuth = (): UserDataContextType => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
@@ -59,7 +59,7 @@ export function AuthProvider({children}: AuthProviderProps) {
     }
   }, [isAuthenticated, user])
 
-  const value: UserDataContextType = {
+  const value: AuthContextType = {
     userData,
     setUserData,
     isSignedIn,
