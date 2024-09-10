@@ -39,12 +39,8 @@ export function Navbar() {
                 Events
             </a>
             <div>
-                {isSignedIn ? (
+                {isSignedIn && (
                     <a href="/profile" className="navbar-link">
-                        Profile
-                    </a>
-                ) : (
-                    <a href="/" className="navbar-link">
                         Profile
                     </a>
                 )}
