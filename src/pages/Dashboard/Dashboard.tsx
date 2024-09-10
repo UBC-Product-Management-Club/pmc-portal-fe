@@ -1,12 +1,14 @@
 import "./Dashboard.css";
 import { useEffect, useState } from "react";
 import { eventType } from "../../types/api";
-import { useAuth } from "../../providers/Auth/AuthProvider";
 import { EventCard } from "../../components/Event/EventCard";
+import {useAuth0} from "@auth0/auth0-react";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 
 export default function Dashboard() {
-  const { currentUser, userData, isSignedIn } = useAuth();
-  const [allEvents, setAllEvents] = useState<eventType[]>([]);
+    const { user } = useAuth0();
+    const { userData, isSignedIn } = useAuth();
+    const [allEvents, setAllEvents] = useState<eventType[]>([]);
 
     async function dashboardComponents() {
         try {
@@ -40,11 +42,11 @@ export default function Dashboard() {
       <div className={"dashboard-container"}>
         {userData && !userData.paymentVerified && (
           <p className="dashboard-top-banner">
-            We've noticed you have signed up as a member, 
-            but your payment is not verified. If you haven't paid, 
-            please visit our <a href="https://ubc-pmc.square.site" 
-            target="_blank">checkout page</a>. If you've paid already, 
-            we will notify you when we've verified your payment. Your 
+            We've noticed you have signed up as a member,
+            but your payment is not verified. If you haven't paid,
+            please visit our <a href="https://ubc-pmc.square.site"
+            target="_blank">checkout page</a>. If you've paid already,
+            we will notify you when we've verified your payment. Your
             account will be activated once you are verified.
           </p>
         )}
@@ -52,7 +54,7 @@ export default function Dashboard() {
           <h2>Upcoming Events</h2>
           <h4 className={"welcome-message"}>
             {isSignedIn
-              ? `Welcome ${currentUser!.displayName}`
+              ? `Welcome ${user?.name}`
               : "Welcome guest"}
           </h4>
         </div>

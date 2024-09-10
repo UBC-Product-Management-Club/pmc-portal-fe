@@ -1,12 +1,10 @@
-import {useAuth} from "../../providers/Auth/AuthProvider";
 import {ChangeEvent, useEffect, useState} from "react";
+import {useAuth} from "../../providers/Auth/AuthProvider";
+
 // import {MdOutlineEdit} from "react-icons/md";
 
 export function ProfileWhyPM() {
     const [isLoading, setIsLoading] = useState(true);
-    // const {userData, setUserData} = useAuth();
-    // const [isEditing, setIsEditing] = useState(false);
-
     const {userData} = useAuth();
     const [isEditing] = useState(false);
     const [text, setText] = useState("Why are you interested in Product Management…")
@@ -24,8 +22,8 @@ export function ProfileWhyPM() {
 
     useEffect(() => {
         if (!isLoading) return;
-        if (userData && userData.why_pm) {
-            setText(userData.why_pm);
+        if (userData && userData?.why_pm) {
+            setText(userData?.why_pm);
             setIsLoading(false);
         }
     }, [userData, isLoading])

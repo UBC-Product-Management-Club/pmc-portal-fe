@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { eventType } from "../../types/api";
 import { EventCard } from "../Event/EventCard";
-import { useAuth } from "../../providers/Auth/AuthProvider";
+import { useAuth0 } from "@auth0/auth0-react";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 
 export default function ProfileEvents() {
-  const { currentUser, isSignedIn } = useAuth();
+  const { user } = useAuth0();
+  const { isSignedIn } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [events, setEvents] = useState<eventType[]>([]);
 
@@ -30,9 +32,7 @@ export default function ProfileEvents() {
 
       const fetchEvents = async () => {
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/v1/profile/${
-            currentUser?.uid
-          }/events`,
+          `${import.meta.env.VITE_API_URL}/api/v1/profile/${user?.sub}/events`,
           {
             method: "GET",
             headers: {
@@ -63,7 +63,7 @@ export default function ProfileEvents() {
       }
       setIsLoading(false);
     }
-  }, [currentUser, isLoading]);
+  }, [user, isLoading]);
 
   return (
     <div>

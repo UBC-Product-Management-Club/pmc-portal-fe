@@ -1,14 +1,14 @@
 import "./Profile.css"
-import {useAuth} from "../../providers/Auth/AuthProvider";
 import {FiBook} from "react-icons/fi";
 import {TbSchool} from "react-icons/tb";
 import {ProfileWhyPM} from "../../components/Profile/ProfileWhyPM";
 import ProfileEvents from "../../components/Profile/ProfileEvents";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 
 export function Profile() {
     const {userData} = useAuth();
 
-    return (
+    return (userData &&
         <div className={"profile"}>
             <div className={"profile-space-around"}>
                 <div className={"profile-picture-wrapper w-50"}>
