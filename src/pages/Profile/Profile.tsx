@@ -4,12 +4,9 @@ import {TbSchool} from "react-icons/tb";
 import {ProfileWhyPM} from "../../components/Profile/ProfileWhyPM";
 import ProfileEvents from "../../components/Profile/ProfileEvents";
 import {useAuth} from "../../providers/Auth/AuthProvider";
-import {useEffect} from "react";
 
 export function Profile() {
     const {userData} = useAuth();
-
-    useEffect(() => console.log(userData),[userData])
 
     return (userData &&
         <div className={"profile"}>

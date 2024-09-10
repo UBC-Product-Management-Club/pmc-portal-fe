@@ -1,27 +1,27 @@
 import "./Onboarding.css"
 import PMCLogo from "../../assets/pmclogo.svg"
 import OnboardingForm from "./OnboardingForm"
-import { useState } from "react"
+import {useState} from "react"
 import Payment from "../Payment/Payment"
-import { OnboardingProvider } from "./Context"
-import { loginBody, onboardingBody } from "../../types/api"
-import { UserSchema } from "./types"
-import { PaymentProvider } from "../../providers/Payment/PaymentProvider"
+import {OnboardingProvider} from "./Context"
+import {loginBody, onboardingBody} from "../../types/api"
+import {UserSchema} from "./types"
+import {PaymentProvider} from "../../providers/Payment/PaymentProvider"
 import FF from "../../../feature-flag.json"
 import PaymentSuccess from "../Payment/PaymentSuccess"
 import {useAuth0} from "@auth0/auth0-react";
 import {useAuth} from "../../providers/Auth/AuthProvider";
 
 /**
- * 
+ *
  * @param user
- * The currently logged in user via Google SSO that needs to be onboarded 
- * 
+ * The currently logged in user via Google SSO that needs to be onboarded
+ *
  * @param creds
- * Login credentials such as userUID and idToken needed to exchange for session cookie. 
- * These credentials are needed as the login method is called after onboarding. 
+ * Login credentials such as userUID and idToken needed to exchange for session cookie.
+ * These credentials are needed as the login method is called after onboarding.
  * This will log the user in after onboarding.
- * 
+ *
  */
 
 export default function Onboarding() {
@@ -32,7 +32,13 @@ export default function Onboarding() {
     const {user, getIdTokenClaims} = useAuth0()
     const {userData, setUserData} = useAuth()
 
-    const addUser = async (userInfo: UserSchema | undefined) => {
+    async function addUser(userInfo: UserSchema | undefined) {
+        const onboardRequestBody = await buildOnboardingRequest(userInfo);
+        await addUserInDatabase(onboardRequestBody);
+        setUserData({...userData!, ...userInfo});
+    }
+
+    async function buildOnboardingRequest(userInfo: UserSchema | undefined) {
         const claims = await getIdTokenClaims();
         if (!user || !user.sub || !claims?.__raw) {
             throw new Error("Unable to retrieve user credentials.");
@@ -50,18 +56,17 @@ export default function Onboarding() {
                 displayName: user.name!,
                 email: user.email!,
                 pfp: user.picture!,
-                onboarded: true
+                onboarded: true,
             }
         }
-
-        await addUserInDatabase(onboardBody);
-        setUserData({...userData!, ...userInfo});
+        if (!FF.stripePayment) {
+            onboardBody.userDoc.paymentVerified = false;
+        }
+        return onboardBody;
     }
+
     async function addUserInDatabase(onboardBody: onboardingBody) {
         try {
-            if (!FF.stripePayment) {
-                onboardBody["userDoc"]["paymentVerified"] = false;
-            }
             const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
                 method: "POST",
                 credentials: "include",
@@ -86,30 +91,31 @@ export default function Onboarding() {
     return (
         <div className="onboarding-container">
             <div className="onboarding-content">
-                <img className="onboarding-content--logo" src={PMCLogo} />
+                <img className="onboarding-content--logo" src={PMCLogo}/>
                 {paid ?
-                    <h1 className="onboarding-content-header pmc-gradient-text">Welcome to PMC {userInfo?.first_name}! <span style={{fontSize: 'x-large'}}>🥳</span></h1>
-                : 
+                    <h1 className="onboarding-content-header pmc-gradient-text">Welcome to
+                        PMC {userInfo?.first_name}! <span style={{fontSize: 'x-large'}}>🥳</span></h1>
+                    :
                     <h1 className="onboarding-content-header pmc-gradient-text">Become a member</h1>}
                 {/* Toggle between onboardingform/paymentform */}
                 {/* Use Context to keep track of current state */}
-                <OnboardingProvider setters={{ setUserInfo, setCurrPage }} >
-                    {currPage == "payment" ? 
+                <OnboardingProvider setters={{setUserInfo, setCurrPage}}>
+                    {currPage == "payment" ?
                         <PaymentProvider
                             FormOptions={{
-                                prompt:"To become a PMC member for the 2024/2025 academic year, a $10 membership fee is required.",
+                                prompt: "To become a PMC member for the 2024/2025 academic year, a $10 membership fee is required.",
                                 type: "membership",
                                 amt: 1000,
                                 onSuccess: onPaymentSuccess
                             }} SuccessOptions={{
-                                heading: `${!FF.stripePayment ? "Information recorded" : "Payment successful"}`,
-                                subheading: `${!FF.stripePayment ? "We've recorded your information. We will email you once we've verified your payment." : "We've processed your $10 charge."}`,
-                                continueBtnText: `${!FF.stripePayment ? "Continue to dashboard as a guest" : "Continue to dashboard"}`
-                            }}
+                            heading: `${!FF.stripePayment ? "Information recorded" : "Payment successful"}`,
+                            subheading: `${!FF.stripePayment ? "We've recorded your information. We will email you once we've verified your payment." : "We've processed your $10 charge."}`,
+                            continueBtnText: `${!FF.stripePayment ? "Continue to dashboard as a guest" : "Continue to dashboard"}`
+                        }}
                         >
-                            {!FF.stripePayment ? <PaymentSuccess /> : <Payment />}
+                            {!FF.stripePayment ? <PaymentSuccess/> : <Payment/>}
                         </PaymentProvider>
-                    :
+                        :
                         <OnboardingForm addUser={addUser}/>
                     }
                 </OnboardingProvider>
