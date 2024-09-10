@@ -1,21 +1,22 @@
 import { useContext, useEffect, useState } from "react";
-import {UserDataContextType, UserDataProviderProps} from "./types";
+import {UserDataContextType, AuthProviderProps} from "./types";
 import { userDocument } from "../../types/api";
-import UserDataContext from "./UserDataContext";
+import AuthContext from "./UserDataContext";
 import {useAuth0} from "@auth0/auth0-react";
+import FF from "../../../feature-flag.json";
 
-export const useUserData = (): UserDataContextType => {
-  const context = useContext(UserDataContext);
+export const useAuth = (): UserDataContextType => {
+  const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
 
-export function UserDataProvider({children}: UserDataProviderProps) {
+export function AuthProvider({children}: AuthProviderProps) {
   const { user, isAuthenticated } = useAuth0();
   const [userData, setUserData] = useState<userDocument | null>(null);
-  const [isGuest, setIsGuest] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -45,24 +46,29 @@ export function UserDataProvider({children}: UserDataProviderProps) {
     };
 
     if (isAuthenticated && user) {
-      fetchUserData();
-      setIsGuest(false);
+      fetchUserData().then(() => {
+        if (!FF.stripePayment) {
+          setIsSignedIn(!!user && !!userData && userData.paymentVerified!);
+        } else {
+          setIsSignedIn(!!user && !!userData);
+        }
+      });
     } else {
       setUserData(null);
-      setIsGuest(true);
+      setIsSignedIn(false);
     }
   }, [isAuthenticated, user])
 
   const value: UserDataContextType = {
     userData,
     setUserData,
-    isGuest,
-    setIsGuest
+    isSignedIn,
+    setIsSignedIn
   };
 
   return (
-    <UserDataContext.Provider value={value}>
+    <AuthContext.Provider value={value}>
       {!isLoading && children}
-    </UserDataContext.Provider>
+    </AuthContext.Provider>
   );
 }

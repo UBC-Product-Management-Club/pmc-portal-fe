@@ -9,7 +9,7 @@ import { EventRegFormSchema } from "../FormInput/EventRegFormUtils";
 import EventRegistrationGuest from "./EventRegistrationGuest";
 import { EventPayment } from "./EventPayment";
 import {useAuth0} from "@auth0/auth0-react";
-import {useUserData} from "../../providers/Auth/UserDataProvider";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 Modal.setAppElement("#root");
 
 // TODO: if alr signed up, don't make button visible
@@ -20,8 +20,8 @@ export function EventRegistrationModal(props: {
   isModalOpen: boolean;
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { user, isAuthenticated } = useAuth0();
-  const { userData } = useUserData();
+  const { user } = useAuth0();
+  const { userData, isSignedIn } = useAuth();
   const [isGuest, setIsGuest] = useState(false);
   const defaultUserInfo: UserSchema = {
     first_name: "-",
@@ -34,7 +34,7 @@ export function EventRegistrationModal(props: {
   };
   const [userInfo, setUserInfo] = useState<UserSchema>(defaultUserInfo);
   const [eventRegInfo, setEventRegInfo] = useState<EventRegFormSchema>();
-  const [step, setStep] = useState(isAuthenticated ? 2 : 0);
+  const [step, setStep] = useState(isSignedIn ? 2 : 0);
   const navigateTo = useNavigate();
 
   const handleContinueAsGuest = () => setStep(1);
@@ -108,7 +108,7 @@ export function EventRegistrationModal(props: {
     if (isGuest) {
       setIsGuest(false);
     }
-    setStep(isAuthenticated ? 2 : 0);
+    setStep(isSignedIn ? 2 : 0);
     props.setIsModalOpen(false);
   }
 

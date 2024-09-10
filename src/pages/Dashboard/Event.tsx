@@ -8,10 +8,10 @@ import { CiCalendar, CiLocationOn } from "react-icons/ci";
 import { MdOutlinePeopleAlt } from "react-icons/md";
 import { PiLinkSimpleLight } from "react-icons/pi";
 import { FaDollarSign } from "react-icons/fa6";
-import {useAuth0} from "@auth0/auth0-react";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 
 const Event: React.FC = () => {
-    const { isAuthenticated } = useAuth0();
+    const { isSignedIn } = useAuth();
     const [event, setEvent] = useState<eventType | null>(null);
     const { event_id } = useParams<{ event_id: string }>();
     const [loading, setLoading] = useState(true);
@@ -110,7 +110,7 @@ const Event: React.FC = () => {
                                     className="text-container"
                                     style={{ flexDirection: "column" }}
                                 >
-                                    {isAuthenticated ? (
+                                    {isSignedIn ? (
                                         <>
                                             <h3>Event Pricing</h3>
                                             <h4>

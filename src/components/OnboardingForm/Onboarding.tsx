@@ -10,7 +10,7 @@ import { PaymentProvider } from "../../providers/Payment/PaymentProvider"
 import FF from "../../../feature-flag.json"
 import PaymentSuccess from "../Payment/PaymentSuccess"
 import {useAuth0} from "@auth0/auth0-react";
-import {useUserData} from "../../providers/Auth/UserDataProvider";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 
 /**
  * 
@@ -30,7 +30,7 @@ export default function Onboarding() {
     const [currPage, setCurrPage] = useState<"userInfo" | "payment" | "paymentSuccess">("userInfo")
     const [paid, setPaid] = useState<boolean>(false)
     const {user, getIdTokenClaims} = useAuth0()
-    const {userData, setUserData} = useUserData()
+    const {userData, setUserData} = useAuth()
 
     const addUser = async (userInfo: UserSchema | undefined) => {
         const claims = await getIdTokenClaims();

@@ -1,12 +1,12 @@
 import {ChangeEvent, useEffect, useState} from "react";
 import {useAuth0} from "@auth0/auth0-react";
-import {useUserData} from "../../providers/Auth/UserDataProvider";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 // import {MdOutlineEdit} from "react-icons/md";
 
 export function ProfileWhyPM() {
     const [isLoading, setIsLoading] = useState(true);
     const {user} = useAuth0();
-    const {userData} = useUserData();
+    const {userData} = useAuth();
     const [isEditing] = useState(false);
     const [text, setText] = useState("Why are you interested in Product Management…")
 

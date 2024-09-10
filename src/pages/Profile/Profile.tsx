@@ -3,11 +3,11 @@ import {FiBook} from "react-icons/fi";
 import {TbSchool} from "react-icons/tb";
 import {ProfileWhyPM} from "../../components/Profile/ProfileWhyPM";
 import ProfileEvents from "../../components/Profile/ProfileEvents";
-import {useUserData} from "../../providers/Auth/UserDataProvider";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 import {useEffect} from "react";
 
 export function Profile() {
-    const {userData} = useUserData();
+    const {userData} = useAuth();
 
     useEffect(() => console.log(userData),[userData])
 

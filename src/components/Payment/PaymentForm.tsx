@@ -6,6 +6,7 @@ import { addTransactionBody } from "../../types/api"
 import { usePayment } from "../../providers/Payment/PaymentProvider"
 import { Timestamp } from "firebase/firestore"
 import {useAuth0} from "@auth0/auth0-react";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 
 
 export default function PaymentForm() {
@@ -14,7 +15,8 @@ export default function PaymentForm() {
     
     const [paymentError, setPaymentError] = useState<string>("")
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const { user, isAuthenticated } = useAuth0()
+    const { user } = useAuth0()
+    const { isSignedIn } = useAuth()
     const { FormOptions, setPaid } = usePayment()
     const { onSuccess } = FormOptions
 
@@ -60,7 +62,7 @@ export default function PaymentForm() {
     const addTransaction = async (paymentIntent: PaymentIntent) => {
       const transaction: addTransactionBody = {
           type: "membership",
-          member_id: isAuthenticated ? user!.sub : "attendee", // not sure how to deal with non-members here.
+          member_id: isSignedIn ? user!.sub : "attendee", // not sure how to deal with non-members here.
           payment: {
               id: paymentIntent.id,
               amount: paymentIntent.amount,

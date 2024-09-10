@@ -9,7 +9,7 @@ import {Profile} from "./pages/Profile/Profile";
 import {Layout} from "./layout";
 import {Auth0Provider} from "@auth0/auth0-react";
 import Onboarding from "./components/OnboardingForm/Onboarding";
-import {UserDataProvider} from "./providers/Auth/UserDataProvider";
+import {AuthProvider} from "./providers/Auth/AuthProvider";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -21,7 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             redirect_uri: window.location.origin
           }}
       >
-          <UserDataProvider>
+          <AuthProvider>
             <Routes>
               <Route path={"/"} element={<Login/>}/>
                 <Route path={"/onboarding"} element={<Onboarding/>}/>
@@ -31,7 +31,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                     <Route path="/profile" element={<Profile />} />
                   </Route>
             </Routes>
-          </UserDataProvider>
+          </AuthProvider>
       </Auth0Provider>
     </Router>
   </React.StrictMode>

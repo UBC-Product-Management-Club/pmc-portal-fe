@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { eventType } from "../../types/api";
 import { EventCard } from "../../components/Event/EventCard";
 import {useAuth0} from "@auth0/auth0-react";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 
 export default function Dashboard() {
-    const { user, isAuthenticated } = useAuth0();
+    const { user } = useAuth0();
+    const { isSignedIn } = useAuth();
     const [allEvents, setAllEvents] = useState<eventType[]>([]);
 
     useEffect(() => console.log(user), [user])
@@ -43,7 +45,7 @@ export default function Dashboard() {
         <div className="dashboard-header">
           <h2>Upcoming Events</h2>
           <h4 className={"welcome-message"}>
-            {isAuthenticated
+            {isSignedIn
               ? `Welcome ${user?.name}`
               : "Welcome guest"}
           </h4>
@@ -64,7 +66,7 @@ export default function Dashboard() {
             allEvents.map((event) => (
               <EventCard
                 key={event.event_Id}
-                isSignedIn={isAuthenticated}
+                isSignedIn={isSignedIn}
                 event={event}
                 showRegister={true}
               />

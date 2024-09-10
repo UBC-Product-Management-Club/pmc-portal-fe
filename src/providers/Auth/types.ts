@@ -4,10 +4,10 @@ import { userDocument } from "../../types/api";
 export interface UserDataContextType {
   userData: userDocument | null;
   setUserData: Dispatch<SetStateAction<userDocument | null>>;
-  isGuest: boolean;
-  setIsGuest: Dispatch<SetStateAction<boolean>>;
+  isSignedIn: boolean;
+  setIsSignedIn: Dispatch<SetStateAction<boolean>>;
 }
 
-export interface UserDataProviderProps {
+export interface AuthProviderProps {
   children: ReactNode;
 }
