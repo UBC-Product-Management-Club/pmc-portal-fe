@@ -34,6 +34,10 @@ body {
   width: 100%;
 }
 
+.dashboard-main-text {
+    height: 8rem;
+}
+
 .dashboard-staytuned {
     text-align: center;
     color: white;
