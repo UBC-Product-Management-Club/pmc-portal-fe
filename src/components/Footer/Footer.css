@@ -18,3 +18,9 @@
     background: linear-gradient(90deg, #e33148,#8D9BEB); 
     background-clip: text
 }
+
+@media screen and (max-width: 480px) {
+    .footer-text {
+        font-size: small;
+    }
+}
