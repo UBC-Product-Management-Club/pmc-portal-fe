@@ -12,6 +12,7 @@ import { useState } from "react";
 import GoogleLogo from "../../assets/google.svg";
 import PMCLogo from "../../assets/pmclogo.svg";
 import Onboarding from "../../components/OnboardingForm/Onboarding";
+import Footer from "../../components/Footer/Footer";
 
 export default function Login() {
   const [onboarding, setOnboarding] = useState<boolean>(false);
@@ -60,27 +61,30 @@ export default function Login() {
         <Onboarding />
       ) : (
         <div className="login-container">
-          <div className="login-content">
-            <img className="login-content--logo" src={PMCLogo} />
-            <h1 className="login-content--header">PMC Membership Portal</h1>
-            <div className="login-content--button-container">
-              <button className="login-googlesso" onClick={googleLogin}>
-                <img
-                  src={GoogleLogo}
-                  className="googleLogo"
-                  width={14}
-                  height={14}
-                />
-                Continue with Google
-              </button>
-              <button
-                className="login-continue"
-                onClick={() => navigateTo("/dashboard")}
-              >
-                Continue as a non-member
-              </button>
+            <div className="login-content">
+                <img className="login-content--logo" src={PMCLogo} />
+                <h1 className="login-content--header">PMC Membership Portal</h1>
+                <div className="login-content--button-container">
+                <button className="login-googlesso" onClick={googleLogin}>
+                    <img
+                    src={GoogleLogo}
+                    className="googleLogo"
+                    width={14}
+                    height={14}
+                    />
+                    Continue with Google
+                </button>
+                <button
+                    className="login-continue"
+                    onClick={() => navigateTo("/dashboard")}
+                >
+                    Continue as a non-member
+                </button>
+                </div>
             </div>
-          </div>
+            <div className="login-footer--container">
+                <Footer />
+            </div>
         </div>
       )}
     </>
