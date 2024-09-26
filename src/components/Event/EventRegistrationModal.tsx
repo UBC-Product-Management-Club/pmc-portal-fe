@@ -46,10 +46,12 @@ export function EventRegistrationModal(props: {
 
   const handleSubmitEventRegInfo = async (data: EventRegFormSchema) => {
     setEventRegInfo(data);
-    setStep(3);
+    await handlePaymentSuccess(); // only in testing! change it when in prod
+    // setStep(3); 
   };
 
   const handlePaymentSuccess = async () => {
+    console.log("hello");
     const eventFormBody = JSON.stringify({
       is_member: !isGuest,
       event_Id: props.eventId,
@@ -76,6 +78,7 @@ export function EventRegistrationModal(props: {
     } catch (e) {
       console.error(e);
     }
+    console.log("bye");
   };
 
   useEffect(() => {
