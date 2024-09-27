@@ -22,7 +22,7 @@ export default function OnboardingForm() {
       if (data.ubc_student == "yes") {
         window.open("https://ubc-pmc.square.site", "_blank")
       } else {
-        window.open("https://www.google.com/", "_blank")
+        window.open("https://ubc-pmc.square.site/product/ubc-pmc-non-ubc-membership-24-25/1929", "_blank")
       }
     }
     setCurrPage("payment")
