@@ -1,0 +1,66 @@
+name: Build Image on Pull Request
+
+on:
+  pull_request:
+    branches: 
+      - toby-pr-cicd
+    
+env:
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  APP_NAME: ${{ secrets.APP_NAME }}
+  REGION: us-west1
+
+jobs:
+  # test:
+    #  run tests here
+
+  # lint:
+    #  run linting here
+  
+    build-verify-test:
+        name: Build Docker Image
+        runs-on: ubuntu-latest
+        environment: testing
+
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+
+          - name: Create .secret folder
+            run: mkdir .secret
+
+          - name: Create env file
+            run: |
+              touch .secret/.env
+              echo VITE_API_URL=${{ secrets.VITE_API_URL }} >> .secret/.env
+              echo VITE_STRIPE_KEY=${{ secrets.VITE_STRIPE_KEY }} >> .secret/.env
+
+          - name: Create Credential JSON
+            id: create-json-1
+            uses: jsdaniell/create-json@v1.2.2
+            with:
+              name: "firebase-config.json"
+              json: ${{ secrets.FIREBASE_CONFIG }}
+              dir: ".secret/"
+          
+          - name: Build the Docker image
+            run: |
+                set -e
+                echo "Building Docker image."
+                docker build -t pmc-portal-fe:${{ github.event.pull_request.number }} .
+                echo "Docker image successfully created."
+            
+          - name: Verify Docker image
+            run: |
+                set -e
+                echo "Verifying Docker image exists..."    
+                docker images pmc-portal-fe:${{ github.event.pull_request.number }}
+                echo "Docker image verified."
+
+          - name: Remove Docker image
+            run: |
+                set -e
+                echo "Deleting Docker image..."
+                docker rmi pmc-portal-fe:${{ github.event.pull_request.number }}
+                echo "Docker image deleted."
+            
