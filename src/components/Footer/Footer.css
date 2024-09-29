@@ -1,0 +1,26 @@
+
+.footer-container {
+    width: 100%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-text {
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+
+.footer-link {
+    text-decoration: none;
+    color: transparent;
+    background: linear-gradient(90deg, #e33148,#8D9BEB); 
+    background-clip: text
+}
+
+@media screen and (max-width: 480px) {
+    .footer-text {
+        font-size: small;
+    }
+}
