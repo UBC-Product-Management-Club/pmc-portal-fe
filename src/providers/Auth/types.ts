@@ -1,15 +1,12 @@
-import { User } from "firebase/auth";
-import { Dispatch, ReactNode, SetStateAction } from "react";
-import { userDocument } from "../../types/api";
+import {Dispatch, ReactNode, SetStateAction} from "react";
+import {userDocument} from "../../types/api";
 
 export interface AuthContextType {
-  currentUser: User | null;
-  userData: userDocument | null;
-  setUserData: Dispatch<SetStateAction<userDocument | null>>;
-  logout: () => Promise<void>;
-  isSignedIn: boolean;
+    userData: userDocument | null;
+    setUserData: Dispatch<SetStateAction<userDocument | null>>;
+    isSignedIn: boolean;
 }
 
 export interface AuthProviderProps {
-  children: ReactNode;
+    children: ReactNode;
 }

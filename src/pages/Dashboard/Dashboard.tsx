@@ -1,12 +1,12 @@
 import "./Dashboard.css";
-import { useEffect, useState } from "react";
-import { eventType } from "../../types/api";
-import { useAuth } from "../../providers/Auth/AuthProvider";
-import { EventCard } from "../../components/Event/EventCard";
+import {useEffect, useState} from "react";
+import {eventType} from "../../types/api";
+import {EventCard} from "../../components/Event/EventCard";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 
 export default function Dashboard() {
-  const { currentUser, userData, isSignedIn } = useAuth();
-  const [allEvents, setAllEvents] = useState<eventType[]>([]);
+    const {userData, isSignedIn} = useAuth();
+    const [allEvents, setAllEvents] = useState<eventType[]>([]);
 
     async function dashboardComponents() {
         try {
@@ -35,36 +35,36 @@ export default function Dashboard() {
         dashboardComponents();
     }, []);
 
-  return (
-    <div className="dashboard">
-      <div className={"dashboard-container"}>
-        {userData && !userData.paymentVerified && (
-          <p className="dashboard-top-banner">
-            We've noticed you have signed up as a member, 
-            but your payment is not verified. If you haven't paid, 
-            please visit our <a href="https://ubc-pmc.square.site" 
-            target="_blank">checkout page</a>. If you've paid already, 
-            we will notify you when we've verified your payment. Your 
-            account will be activated once you are verified.
-          </p>
-        )}
-        <div className="dashboard-header">
-          <h2>Upcoming Events</h2>
-          <h4 className={"welcome-message"}>
-            {isSignedIn
-              ? `Welcome ${currentUser!.displayName}`
-              : "Welcome guest"}
-          </h4>
-        </div>
-        <p className="dashboard-main-text">
-        At PMC, our mission is to empower aspiring product managers 
-        by providing valuable insights, hands-on experiences, and 
-        opportunities to connect with industry leaders. Check out 
-        our upcoming events to support you on your product journey 
-        and help you grow your skills, expand your network, and 
-        explore new opportunities in the field!
-        </p>
-      </div>
+    return (
+        <div className="dashboard">
+            <div className={"dashboard-container"}>
+                {userData && !userData.paymentVerified && (
+                    <p className="dashboard-top-banner">
+                        We've noticed you have signed up as a member,
+                        but your payment is not verified. If you haven't paid,
+                        please visit our <a href="https://ubc-pmc.square.site"
+                        target="_blank">checkout page</a>. If you've paid already,
+                        we will notify you when we've verified your payment. Your
+                        account will be activated once you are verified.
+                    </p>
+                )}
+                <div className="dashboard-header">
+                    <h2>Upcoming Events</h2>
+                    <h4 className={"welcome-message"}>
+                        {isSignedIn
+                            ? `Welcome ${userData?.displayName}`
+                            : "Welcome guest"}
+                    </h4>
+                </div>
+                <p className={"dashboard-main-text"}>
+                    At PMC, our mission is to empower aspiring product managers
+                    by providing valuable insights, hands-on experiences, and
+                    opportunities to connect with industry leaders. Check out
+                    our upcoming events to support you on your product journey
+                    and help you grow your skills, expand your network, and
+                    explore new opportunities in the field!
+                </p>
+            </div>
 
       <div className={"dashboard-container"}>
         <div>

@@ -2,13 +2,14 @@ import "./EventRegistrationModal.css";
 import EventRegistrationSignIn from "./EventRegistrationSignIn";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../providers/Auth/AuthProvider";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import EventRegistrationForm from "./EventRegistrationForm";
 import { UserSchema } from "../OnboardingForm/types";
 import { EventRegFormSchema } from "../FormInput/EventRegFormUtils";
 import EventRegistrationGuest from "./EventRegistrationGuest";
 import { EventPayment } from "./EventPayment";
+import {useAuth0} from "@auth0/auth0-react";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 Modal.setAppElement("#root");
 
 // TODO: if alr signed up, don't make button visible
@@ -19,7 +20,8 @@ export function EventRegistrationModal(props: {
   isModalOpen: boolean;
   setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { currentUser, userData, isSignedIn } = useAuth();
+  const { user } = useAuth0();
+  const { userData, isSignedIn } = useAuth();
   const [isGuest, setIsGuest] = useState(false);
   const defaultUserInfo: UserSchema = {
     first_name: "-",
@@ -51,8 +53,8 @@ export function EventRegistrationModal(props: {
     const eventFormBody = JSON.stringify({
       is_member: !isGuest,
       event_Id: props.eventId,
-      email: currentUser?.email,
-      member_Id: currentUser?.uid,
+      email: user?.email,
+      member_Id: user?.sub,
       ...userInfo,
       ...eventRegInfo,
     });
