@@ -30,7 +30,6 @@ jobs:
           echo VITE_STRIPE_KEY=${{ secrets.VITE_STRIPE_KEY }} >> .secret/.env
           echo VITE_AUTH0_API_URL=${{ secrets.VITE_AUTH0_API_URL }} >> .secret/.env
           echo VITE_AUTH0_API_URL=${{ secrets.VITE_AUTH0_CLIENT_ID }} >> .secret/.env
-          echo VITE_AUTH0_API_URL=${{ secrets.VITE_AUTH0_API_ACCESS_TOKEN }} >> .secret/.env
 
       - name: Create Credential JSON
         id: create-json-1
