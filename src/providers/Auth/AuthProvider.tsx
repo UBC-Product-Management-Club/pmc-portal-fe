@@ -31,9 +31,9 @@ export function AuthProvider({children}: AuthProviderProps) {
                 }
 
                 if (!FF.stripePayment) {
-                    setIsSignedIn(!!user && !!userData && userData.paymentVerified!);
+                    setIsSignedIn(!!user && !!data && data.paymentVerified!);
                 } else {
-                    setIsSignedIn(!!user && !!userData);
+                    setIsSignedIn(!!user && !!data);
                 }
             } catch (e) {
                 console.error(e);
