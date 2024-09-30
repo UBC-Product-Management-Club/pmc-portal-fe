@@ -43,7 +43,7 @@ export default function Dashboard() {
                         We've noticed you have signed up as a member,
                         but your payment is not verified. If you haven't paid,
                         please visit our <a href="https://ubc-pmc.square.site"
-                                            target="_blank">checkout page</a>. If you've paid already,
+                        target="_blank">checkout page</a>. If you've paid already,
                         we will notify you when we've verified your payment. Your
                         account will be activated once you are verified.
                     </p>
@@ -56,7 +56,7 @@ export default function Dashboard() {
                             : "Welcome guest"}
                     </h4>
                 </div>
-                <p>
+                <p className={"dashboard-main-text"}>
                     At PMC, our mission is to empower aspiring product managers
                     by providing valuable insights, hands-on experiences, and
                     opportunities to connect with industry leaders. Check out
@@ -66,23 +66,23 @@ export default function Dashboard() {
                 </p>
             </div>
 
-            <div className={"dashboard-container"}>
-                <div>
-                    {allEvents.length > 0 ? (
-                        allEvents.map((event) => (
-                            <EventCard
-                                key={event.event_Id}
-                                isSignedIn={isSignedIn}
-                                event={event}
-                                showRegister={true}
-                            />
-                        ))
-                    ) : (
-                        <p style={{color: "white"}}>No events found.</p>
-                    )}
-                </div>
-            </div>
+      <div className={"dashboard-container"}>
+        <div>
+          {allEvents.length > 0 ? (
+            allEvents.map((event) => (
+              <EventCard
+                key={event.event_Id}
+                isSignedIn={isSignedIn}
+                event={event}
+                showRegister={true}
+              />
+            ))
+          ) : (
+            <p className="dashboard-staytuned">Stay tuned for future events!</p>
+          )}
         </div>
+      </div>
+    </div>
     );
 }
 

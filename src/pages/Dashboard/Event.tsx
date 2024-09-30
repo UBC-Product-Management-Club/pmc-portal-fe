@@ -6,7 +6,6 @@ import {useAuth} from "../../providers/Auth/AuthProvider";
 import {EventRegistrationModal} from "../../components/Event/EventRegistrationModal";
 import {CiCalendar, CiLocationOn} from "react-icons/ci";
 import {MdOutlinePeopleAlt} from "react-icons/md";
-import {PiLinkSimpleLight} from "react-icons/pi";
 import {FaDollarSign} from "react-icons/fa6";
 
 const Event: React.FC = () => {
@@ -82,8 +81,7 @@ const Event: React.FC = () => {
                                 <div className="icon"><MdOutlinePeopleAlt/></div>
                                 <div className="text-container">
                                     <div>
-                                        <h3>{event.maxAttendee - event.attendee_Ids.length}/{event.maxAttendee} spots
-                                            left</h3>
+                                        <h3>{event.maxAttendee - event.attendee_Ids.length}/{event.maxAttendee} spots left</h3>
                                         {event.attendee_Ids.length >= 0 ? (
                                             <h4>Register now!</h4>
                                         ) : (
@@ -92,13 +90,13 @@ const Event: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="icon-text">
-                                <div className="icon"><PiLinkSimpleLight/></div>
+                            {/* <div className="icon-text">
+                                <div className="icon"><PiLinkSimpleLight /></div>
                                 <div className="text-container">
                                     <h3>{event.name} Page</h3>
                                     <h4>www.{event.name}.com</h4>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div className="event-details-container">

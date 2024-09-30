@@ -26,9 +26,21 @@
 
 .width-fit {
   width: 90vw;
+  height: 95vh;
   max-width: 100%; /* Ensures the element doesn't overflow the viewport */
   margin: 0 auto; /* Centers the element horizontally */
 }
+
+.container {
+    margin-bottom: 32vh;
+}
+
+.footer {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+
 
 @media only screen and (min-width: 992px) {
   .width-fit {

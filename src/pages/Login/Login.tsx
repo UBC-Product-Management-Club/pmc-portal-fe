@@ -2,6 +2,7 @@ import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import PMCLogo from "../../assets/pmclogo.svg";
 import {useAuth0} from "@auth0/auth0-react";
+import Footer from "../../components/Footer/Footer";
 
 export default function Login() {
   const {loginWithRedirect} = useAuth0();
@@ -23,6 +24,9 @@ export default function Login() {
             Continue as a non-member
           </button>
         </div>
+      </div>
+      <div className="login-footer--container">
+        <Footer />
       </div>
     </div>
   );

@@ -35,12 +35,12 @@ export default function EventRegistrationForm({onSubmit}: {onSubmit: (data: Even
                 <option value="pmc-booth">PMC Booth</option>
                 <option value="other">Other</option>
             </select>
-            <EventRegistrationFormInput
+            {/* <EventRegistrationFormInput
                 type={"text"}
                 placeholder={"Dietary restrictions"}
                 name={"dietary"}
                 register={register}
-                error={errors.dietary}/>
+                error={errors.dietary}/> */}
             <EventRegistrationFormInput
                 type={"text"}
                 placeholder={"What do you hope to get out of this event?"}

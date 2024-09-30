@@ -34,6 +34,17 @@ body {
   width: 100%;
 }
 
+.dashboard-main-text {
+    height: 8rem;
+}
+
+.dashboard-staytuned {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    margin-top: 5rem;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -42,7 +53,7 @@ html {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
 }
 
 .welcome-message {
