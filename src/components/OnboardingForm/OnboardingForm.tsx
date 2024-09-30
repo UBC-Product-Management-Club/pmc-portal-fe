@@ -17,8 +17,12 @@ export default function OnboardingForm(props: OnboardingFormProps) {
             data.university = "University of British Columbia";
         setUserInfo(data)
         if (!FF.stripePayment) {
-          await props.addUser(data)
-          window.open("https://ubc-pmc.square.site", "_blank")
+            await props.addUser(data)
+            if (data.ubc_student == "yes") {
+                window.open("https://ubc-pmc.square.site", "_blank")
+            } else {
+                window.open("https://ubc-pmc.square.site/product/ubc-pmc-non-ubc-membership-24-25/1929", "_blank")
+            }
         }
         setCurrPage("payment")
   };
