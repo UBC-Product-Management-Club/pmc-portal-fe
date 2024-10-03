@@ -15,7 +15,11 @@ export function Navbar() {
                 const uid = user?.sub;
                 const displayName = user?.displayName;
 
-                await logout();
+                await logout({
+                    logoutParams: {
+                      returnTo: window.location.origin,
+                    },
+                  });
 
                 if (uid) {
                     localStorage.removeItem(uid);
