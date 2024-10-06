@@ -34,6 +34,12 @@
     height: 4rem;
 }
 
+.onboarding-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
 @media screen and (max-width: 768px) {
     .onboarding-container {
         width: 100vw;
@@ -71,5 +77,5 @@
     .onboarding-content {
         margin-top: 2rem;
         padding-bottom: 2rem;
-    } 
+    }
 }
