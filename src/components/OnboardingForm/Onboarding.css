@@ -34,6 +34,16 @@
     height: 4rem;
 }
 
+.onboarding-row {
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
 @media screen and (max-width: 768px) {
     .onboarding-container {
         width: 100vw;
@@ -71,5 +81,5 @@
     .onboarding-content {
         margin-top: 2rem;
         padding-bottom: 2rem;
-    } 
+    }
 }

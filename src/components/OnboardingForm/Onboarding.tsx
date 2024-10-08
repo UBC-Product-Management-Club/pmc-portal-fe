@@ -11,6 +11,7 @@ import FF from "../../../feature-flag.json"
 import PaymentSuccess from "../Payment/PaymentSuccess"
 import {useAuth0} from "@auth0/auth0-react";
 import {useAuth} from "../../providers/Auth/AuthProvider";
+import {IoArrowBack} from "react-icons/io5";
 
 /**
  *
@@ -29,8 +30,12 @@ export default function Onboarding() {
     const [userInfo, setUserInfo] = useState<UserSchema | undefined>(undefined)
     const [currPage, setCurrPage] = useState<"userInfo" | "payment" | "paymentSuccess">("userInfo")
     const [paid, setPaid] = useState<boolean>(false)
-    const {user, getIdTokenClaims} = useAuth0()
+    const {user, logout, getIdTokenClaims} = useAuth0()
     const {userData, setUserData} = useAuth()
+
+    const handleBackToLogin = async () => {
+        await logout();
+    }
 
     async function addUser(userInfo: UserSchema | undefined) {
         const onboardRequestBody = await buildOnboardingRequest(userInfo);
@@ -91,10 +96,15 @@ export default function Onboarding() {
     return (
         <div className="onboarding-container">
             <div className="onboarding-content">
+                <div className={"onboarding-row"} onClick={handleBackToLogin}>
+                    <IoArrowBack/>
+                    <p>Back</p>
+                </div>
                 <img className="onboarding-content--logo" src={PMCLogo}/>
                 {paid
-                    ? <h1 className="onboarding-content-header">Welcome to PMC {userInfo?.first_name}! <span style={{fontSize: 'x-large'}}>🥳</span></h1>
-                    : <h1 className="onboarding-content-header">Become a member</h1>}
+                    ? <h1 className="onboarding-content-header">Welcome to PMC {userInfo?.first_name}! <span
+                        style={{fontSize: 'x-large'}}>🥳</span></h1>
+                    : <h1 className="onboarding-content-header">Let's get you signed up, {user?.name}</h1>}
                 {/* Toggle between onboardingform/paymentform */}
                 {/* Use Context to keep track of current state */}
                 <OnboardingProvider setters={{setUserInfo, setCurrPage}}>
