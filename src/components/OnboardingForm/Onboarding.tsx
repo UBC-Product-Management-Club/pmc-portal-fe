@@ -12,7 +12,6 @@ import PaymentSuccess from "../Payment/PaymentSuccess"
 import {useAuth0} from "@auth0/auth0-react";
 import {useAuth} from "../../providers/Auth/AuthProvider";
 import {IoArrowBack} from "react-icons/io5";
-import {useNavigate} from "react-router-dom";
 
 /**
  *
@@ -33,11 +32,9 @@ export default function Onboarding() {
     const [paid, setPaid] = useState<boolean>(false)
     const {user, logout, getIdTokenClaims} = useAuth0()
     const {userData, setUserData} = useAuth()
-    const navigateTo = useNavigate()
 
     const handleBackToLogin = async () => {
         await logout();
-        navigateTo("/");
     }
 
     async function addUser(userInfo: UserSchema | undefined) {
@@ -99,8 +96,8 @@ export default function Onboarding() {
     return (
         <div className="onboarding-container">
             <div className="onboarding-content">
-                <div className={"onboarding-row"}>
-                    <IoArrowBack onClick={handleBackToLogin}/>
+                <div className={"onboarding-row"} onClick={handleBackToLogin}>
+                    <IoArrowBack/>
                     <p>Back</p>
                 </div>
                 <img className="onboarding-content--logo" src={PMCLogo}/>
