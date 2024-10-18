@@ -35,6 +35,10 @@ export default function Dashboard() {
         dashboardComponents();
     }, []);
 
+    const paymentLink = userData?.university === "University of British Columbia" ? 
+    "https://ubcpmc.square.site/product/ubc-pmc-membership-24-25/1990" : 
+    "https://ubcpmc.square.site/product/ubc-pmc-non-ubc-membership-24-25/1991"
+
     return (
         <div className="dashboard">
             <div className={"dashboard-container"}>
@@ -42,7 +46,7 @@ export default function Dashboard() {
                     <p className="dashboard-top-banner">
                         We've noticed you have signed up as a member,
                         but your payment is not verified. If you haven't paid,
-                        please visit our <a href="https://ubc-pmc.square.site"
+                        please visit our <a href={paymentLink}
                         target="_blank">checkout page</a>. If you've paid already,
                         we will notify you when we've verified your payment. Your
                         account will be activated once you are verified.
