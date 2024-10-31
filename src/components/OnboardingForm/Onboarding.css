@@ -10,12 +10,9 @@
 
 .onboarding-content {
     width: 40rem;
-    height: 35rem;
     display: flex;
     flex-direction: column;
-    padding-top: 2rem;
-    padding-left: 5rem;
-    padding-right: 5rem;
+    padding: 2rem 5rem;
     border-radius: 1rem;
     position: relative;
     background-color: #1D233F;
