@@ -4,11 +4,11 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {EventRegFormSchema, EventRegZodObj} from "../FormInput/EventRegFormUtils";
 import EventRegistrationFormInput from "../FormInput/EventRegFormInput";
 
-export default function EventRegistrationForm({onSubmit}: {onSubmit: (data: EventRegFormSchema) => Promise<void>}) {
+export default function EventRegistrationForm({onSubmit}: { onSubmit: (data: EventRegFormSchema) => Promise<void> }) {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: {errors},
     } = useForm<EventRegFormSchema>({
         resolver: zodResolver(EventRegZodObj)
     });
@@ -16,15 +16,17 @@ export default function EventRegistrationForm({onSubmit}: {onSubmit: (data: Even
     return (
         <form className={"form-content form-bg-dark-blue"} autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             <select className={"form-select"} required
-                    {...register("familiarity",{required: "please select a value"})}>
+                    {...register("familiarity", {required: "please select a value"})}>
                 <option value={""} hidden>How familiar are you with product management?</option>
                 <option value={"beginner"}>Beginner; little to no knowledge</option>
-                <option value={"intermediate"}>Intermediate; some knowledge from competitions, courses, self research</option>
-                <option value={"advanced"}>Advanced; had formal experience, familiar with frameworks & applications</option>
+                <option value={"intermediate"}>Intermediate; some knowledge from competitions, courses, self research
+                </option>
+                <option value={"advanced"}>Advanced; had formal experience, familiar with frameworks & applications
+                </option>
                 <option value={"mentor"}>Mentor; have mentored before</option>
             </select>
             <select className={"form-select"} required
-                    {...register("found_out",{required: "please select a value"})}>
+                    {...register("found_out", {required: "please select a value"})}>
                 <option value={""} hidden>How did you find out about this event?</option>
                 <option value="instagram">Instagram</option>
                 <option value="linkedin">LinkedIn</option>
@@ -35,12 +37,12 @@ export default function EventRegistrationForm({onSubmit}: {onSubmit: (data: Even
                 <option value="pmc-booth">PMC Booth</option>
                 <option value="other">Other</option>
             </select>
-            {/* <EventRegistrationFormInput
+            <EventRegistrationFormInput
                 type={"text"}
                 placeholder={"Dietary restrictions"}
                 name={"dietary"}
                 register={register}
-                error={errors.dietary}/> */}
+                error={errors.dietary}/>
             <EventRegistrationFormInput
                 type={"text"}
                 placeholder={"What do you hope to get out of this event?"}
