@@ -10,6 +10,10 @@ import EventRegistrationGuest from "./EventRegistrationGuest";
 import { EventPayment } from "./EventPayment";
 import {useAuth0} from "@auth0/auth0-react";
 import {useAuth} from "../../providers/Auth/AuthProvider";
+import { v4 as generateAttendeeId } from "uuid";
+import { PaymentIntent } from "@stripe/stripe-js";
+import { addTransactionBody, attendeeType } from "../../types/api";
+import { Timestamp } from "firebase/firestore";
 Modal.setAppElement("#root");
 
 // TODO: if alr signed up, don't make button visible
@@ -30,6 +34,7 @@ export function EventRegistrationModal(props: {
     ubc_student: "no, other",
     why_pm: "-",
     returning_member: "no",
+    email: "",
     ...userData,
   };
   const [userInfo, setUserInfo] = useState<UserSchema>(defaultUserInfo);
@@ -49,35 +54,52 @@ export function EventRegistrationModal(props: {
     setStep(3);
   };
 
-  const handlePaymentSuccess = async () => {
-    const eventFormBody = JSON.stringify({
+  const handlePaymentSuccess = async (paymentIntent : PaymentIntent) => {
+    const attendeeId = generateAttendeeId() // generate attendee uuid here
+    const attendeeInfo : attendeeType = {
+      attendee_Id: attendeeId, // both members and non-members have this
       is_member: !isGuest,
+      member_Id: user?.sub || "", // if they're not a member this is empty
       event_Id: props.eventId,
-      email: user?.email,
-      member_Id: user?.sub,
       ...userInfo,
-      ...eventRegInfo,
-    });
+      ...eventRegInfo!, // eventRegInfo can't be null...?
+      email: user?.email || userInfo.email,  // we don't want to overwrite this. Either provided from user profile or guest input
+    }
+    const paymentInfo: addTransactionBody = {
+      type: "event",
+      member_id: user?.sub || "",
+      attendee_id: attendeeId,
+      payment: {
+        id: paymentIntent.id,
+        amount: paymentIntent.amount,
+        status: paymentIntent.status,
+        created: new Timestamp(paymentIntent.created,0)
+      }
+    }
+
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/v1/attendee/addAttendee`,
-        {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/registered`, {
           method: "POST",
           credentials: "include",
           headers: {
-            "Content-type": "application/json",
+            "Content-Type": "application/json"
           },
-          body: eventFormBody,
+          body: JSON.stringify({
+            attendeeInfo: attendeeInfo,
+            paymentInfo: paymentInfo 
+          })
         }
-      );
+      )
       if (!response.ok) {
-        throw Error("Failed to register attendee");
+        // this would be pretty bad since the user has already paid at this point. 
+        throw Error("Event registration failed. Contact tech@ubcpmc.com for support")
       }
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
   };
 
+  // what is this for?
   useEffect(() => {
     setUserInfo({ ...userInfo, ...userData });
   }, [props.isModalOpen]);
