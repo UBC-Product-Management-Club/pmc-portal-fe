@@ -21,14 +21,15 @@ export function EventPayment(props: EventPaymentProps) {
                 prompt: prompt,
                 type: "event",
                 eventId: props.eventId,
-                onSuccess: props.onPaymentSuccess
+                onSuccess: props.onPaymentSuccess,
+                amt: fee
             }} SuccessOptions={{
             heading: "Payment successful",
             subheading: `We've processed your $${fee} charge.`,
             continueBtnText: "Close"
         }}
         >
-            <Payment />
+            <Payment/>
         </PaymentProvider>
     )
 }
