@@ -63,7 +63,7 @@ export function EventRegistrationModal(props: {
       event_Id: props.eventId,
       ...userInfo,
       ...eventRegInfo!, // eventRegInfo can't be null...?
-      email: user?.email || userInfo.email,  // we don't want to overwrite this. Either provided from user profile or guest input
+      email: user?.email ?? userInfo.email!,  // we don't want to overwrite this. Either provided from user profile or guest input
     }
     const paymentInfo: addTransactionBody = {
       type: "event",
