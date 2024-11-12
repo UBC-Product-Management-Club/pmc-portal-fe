@@ -159,7 +159,7 @@ export function AuthProvider({children}: AuthProviderProps) {
         userData,
         setUserData,
         isSignedIn,
-        handleLogin
+        setIsSignedIn
     };
 
     return (

@@ -5,7 +5,7 @@ export interface AuthContextType {
     userData: userDocument | null;
     setUserData: Dispatch<SetStateAction<userDocument | null>>;
     isSignedIn: boolean;
-    handleLogin: () => Promise<void>;
+    setIsSignedIn: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface AuthProviderProps {
