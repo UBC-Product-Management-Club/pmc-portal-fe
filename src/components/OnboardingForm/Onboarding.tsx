@@ -31,7 +31,7 @@ export default function Onboarding() {
     const [currPage, setCurrPage] = useState<"userInfo" | "payment" | "paymentSuccess">("userInfo")
     const [paid, setPaid] = useState<boolean>(false)
     const {user, logout, getIdTokenClaims} = useAuth0()
-    const {userData, setUserData} = useAuth()
+    const {userData, setUserData, handleLogin} = useAuth()
 
     const handleBackToLogin = async () => {
         await logout();
@@ -91,6 +91,7 @@ export default function Onboarding() {
     const onPaymentSuccess = () => {
         addUser(userInfo)
         setPaid(true)
+        handleLogin()
     }
 
     return (
