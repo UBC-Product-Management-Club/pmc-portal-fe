@@ -114,7 +114,7 @@ export default function Onboarding() {
                             FormOptions={{
                                 prompt: "To become a PMC member for the 2024/2025 academic year, a $10 membership fee is required.",
                                 type: "membership",
-                                amt: 1000,
+                                amt: userInfo?.university === "University of British Columbia" ? 10.61 : 15.76,
                                 onSuccess: onPaymentSuccess
                             }} SuccessOptions={{
                             heading: `${!FF.stripePayment ? "Information recorded" : "Payment successful"}`,
