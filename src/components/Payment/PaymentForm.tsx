@@ -53,9 +53,17 @@ export default function PaymentForm() {
     }, [stripe])
       
     const paymentElementOptions: {
-        layout: Layout | LayoutObject | undefined
+        layout: Layout | LayoutObject | undefined,
+        wallets: {
+            applePay: "never" | "auto",
+            googlePay: "never" | "auto"
+        }
     } = {
-        layout: "tabs"
+        layout: "tabs",
+        wallets: {
+            applePay: "never",
+            googlePay: "never"
+        }
     }
 
     // Adds transaction to firestore

@@ -31,7 +31,7 @@ export default function Onboarding() {
     const [currPage, setCurrPage] = useState<"userInfo" | "payment" | "paymentSuccess">("userInfo")
     const [paid, setPaid] = useState<boolean>(false)
     const {user, logout, getIdTokenClaims} = useAuth0()
-    const {userData, setUserData} = useAuth()
+    const {userData, setUserData, setIsSignedIn} = useAuth()
 
     const handleBackToLogin = async () => {
         await logout();
@@ -91,6 +91,7 @@ export default function Onboarding() {
     const onPaymentSuccess = () => {
         addUser(userInfo)
         setPaid(true)
+        setIsSignedIn(true)
     }
 
     return (
@@ -111,13 +112,13 @@ export default function Onboarding() {
                     {currPage == "payment" ?
                         <PaymentProvider
                             FormOptions={{
-                                prompt: "To become a PMC member for the 2024/2025 academic year, a $10 membership fee is required.",
+                                prompt: `To become a PMC member for the 2024/2025 academic year, a $${userInfo?.university === "University of British Columbia" ? 10.61 : 15.76} membership fee is required.`,
                                 type: "membership",
-                                amt: 1000,
+                                amt: userInfo?.university === "University of British Columbia" ? 10.61 : 15.76,
                                 onSuccess: onPaymentSuccess
                             }} SuccessOptions={{
                             heading: `${!FF.stripePayment ? "Information recorded" : "Payment successful"}`,
-                            subheading: `${!FF.stripePayment ? "We've recorded your information. We will email you once we've verified your payment." : "We've processed your $10 charge."}`,
+                            subheading: `${!FF.stripePayment ? "We've recorded your information. We will email you once we've verified your payment." : "We've processed your charge."}`,
                             continueBtnText: `${!FF.stripePayment ? "Continue to dashboard as a guest" : "Continue to dashboard"}`
                         }}
                         >
