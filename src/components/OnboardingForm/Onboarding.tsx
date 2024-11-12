@@ -34,7 +34,11 @@ export default function Onboarding() {
     const {userData, setUserData, setIsSignedIn} = useAuth()
 
     const handleBackToLogin = async () => {
-        await logout();
+        await logout({
+            logoutParams: {
+                returnTo: window.location.origin,
+            },
+        });
     }
 
     async function addUser(userInfo: UserSchema | undefined) {
