@@ -1,10 +1,11 @@
 import Payment from "../Payment/Payment";
 import {PaymentProvider} from "../../providers/Payment/PaymentProvider";
+import { PaymentIntent } from "@stripe/stripe-js";
 
 type EventPaymentProps = {
-    onPaymentSuccess: () => void;
-    isGuest: boolean;
-    eventId: string;
+    onPaymentSuccess: (paymentIntent: PaymentIntent) => void
+    isGuest: boolean
+    eventId: string
     memberPrice: number
     nonMemberPrice: number
 }
