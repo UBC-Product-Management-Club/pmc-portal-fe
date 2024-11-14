@@ -21,7 +21,7 @@ export default function Payment() {
     const { user } = useAuth0()
     const { isSignedIn } = useAuth()
     const { paid, FormOptions } = usePayment()
-    const { type, prompt, eventId } = FormOptions
+    const { type, prompt, eventId, amt } = FormOptions
     const [paymentSecret, setPaymentSecret] = useState<string>("")
 
     useEffect(() => {
@@ -34,6 +34,9 @@ export default function Payment() {
                   paymentIntent = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/payments/membership`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      amt
+                    })
                   })
                 } else {
                   paymentIntent = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/payments/event/${eventId}`, {
