@@ -11,6 +11,7 @@ interface PaymentContextType {
 interface PaymentFormOptions {
     prompt: string
     type: "membership" | "event"
+    attendeeId?: string
     eventId?: string
     amt?: number
     onSuccess: (paymentIntent: PaymentIntent) => void

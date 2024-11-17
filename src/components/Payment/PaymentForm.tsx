@@ -1,12 +1,8 @@
 import "./PaymentForm.css"
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js"
-import { Layout, LayoutObject, PaymentIntent } from "@stripe/stripe-js"
+import { Layout, LayoutObject } from "@stripe/stripe-js"
 import { useEffect, useState } from "react"
-import { addTransactionBody } from "../../types/api"
 import { usePayment } from "../../providers/Payment/PaymentProvider"
-import { Timestamp } from "firebase/firestore"
-import {useAuth0} from "@auth0/auth0-react";
-import {useAuth} from "../../providers/Auth/AuthProvider";
 
 
 export default function PaymentForm() {
@@ -15,8 +11,6 @@ export default function PaymentForm() {
     
     const [paymentError, setPaymentError] = useState<string>("")
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const { user } = useAuth0()
-    const { isSignedIn } = useAuth()
     const { FormOptions, setPaid } = usePayment()
     const { onSuccess } = FormOptions
 
@@ -66,30 +60,6 @@ export default function PaymentForm() {
         }
     }
 
-    // Adds transaction to firestore
-    const addTransaction = async (paymentIntent: PaymentIntent) => {
-      const transaction: addTransactionBody = {
-          type: "membership",
-          member_id: isSignedIn ? user!.sub : "attendee", // not sure how to deal with non-members here.
-          payment: {
-              id: paymentIntent.id,
-              amount: paymentIntent.amount,
-              status: paymentIntent.status,
-              created: new Timestamp(paymentIntent.created,0)
-          }
-      }
-      const add = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/payments/add-transaction`, {
-          method: "POST",
-          headers: {
-              'Content-type': 'application/json'
-          },
-          body: JSON.stringify(transaction)
-      })
-      if (!add.ok) {
-          throw Error("Failed adding transaction to database")
-      }
-    }
-
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
     
@@ -114,8 +84,7 @@ export default function PaymentForm() {
         if (error) {
           setPaymentError(error.message || "An unexpected error occurred");
         } else if (paymentIntent && paymentIntent.status === "succeeded" ) {
-          addTransaction(paymentIntent) // Add transaction to firestore
-          onSuccess(paymentIntent) // call onSuccess handler
+          onSuccess(paymentIntent) // call onSuccess handler 
           setPaid(true) // show PaymentSuccess component
         } 
     

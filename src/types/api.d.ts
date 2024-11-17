@@ -37,7 +37,7 @@ type eventType = {
   media: string[];
   member_price: number;
   non_member_price: number;
-  attendee_Ids: AttendeeType[];
+  attendee_Ids: string[];
   member_only: boolean;
   maxAttendee: number;
 };
@@ -49,11 +49,11 @@ type attendeeType = {
   event_Id: string;
   first_name: string;
   last_name: string;
-  student_num: number;
+  student_id?: number;
   email: string;
-  year: number;
-  major: string;
-  faculty: string;
+  year?: string;
+  major?: string;
+  faculty?: string;
   familiarity: "beginner" | "intermediate" | "advanced" | "mentor";
   found_out: string;
   dietary: string;
