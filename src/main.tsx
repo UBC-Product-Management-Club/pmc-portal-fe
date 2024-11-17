@@ -11,6 +11,7 @@ import {Auth0Provider} from "@auth0/auth0-react";
 import Onboarding from "./components/OnboardingForm/Onboarding";
 import {AuthProvider} from "./providers/Auth/AuthProvider";
 import AuthRedirect from "./providers/Auth/AuthRedirect";
+import AllUsers from "./pages/Admin/AllUsers/AllUsers.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
@@ -33,6 +34,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                             <Route path="/dashboard" element={<Dashboard/>}/>
                             <Route path="/events/:event_id" element={<Event/>}/>
                             <Route path="/profile" element={<Profile/>}/>
+                            <Route path="/admin/users" element={<AllUsers/>}/>
                         </Route>
                     </Routes>
                 </AuthProvider>
