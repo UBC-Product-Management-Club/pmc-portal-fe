@@ -38,10 +38,10 @@ export default function AllUsers() {
                 <FaSync 
                     className={`refresh-icon ${isLoading ? 'spinning' : ''}`}
                     onClick={() => !isLoading && fetchAllUsers()}
-                    size={20}  // Font Awesome icons typically look better at slightly smaller sizes
+                    size={20}
                     style={{ 
                         cursor: isLoading ? 'default' : 'pointer',
-                        color: '#666'  // You can adjust this to match your color scheme
+                        color: '#666'
                     }}
                 />
             </div>
