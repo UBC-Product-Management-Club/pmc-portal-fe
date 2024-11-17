@@ -34,16 +34,19 @@ export default function AllUsers() {
     return (
         <div>
             <div className="header-section">
-                <h1>All Users</h1>
-                <FaSync 
-                    className={`refresh-icon ${isLoading ? 'spinning' : ''}`}
-                    onClick={() => !isLoading && fetchAllUsers()}
-                    size={20}
-                    style={{ 
-                        cursor: isLoading ? 'default' : 'pointer',
-                        color: '#666'
-                    }}
-                />
+                <div className="header-group">
+                    <h1>All Users</h1>
+                    <FaSync 
+                        className={`refresh-icon ${isLoading ? 'spinning' : ''}`}
+                        onClick={() => !isLoading && fetchAllUsers()}
+                        size={20}
+                        style={{ 
+                            cursor: isLoading ? 'default' : 'pointer',
+                            color: '#666'
+                        }}
+                    />
+                </div>
+                <div>Total member count: {allUsers.length}</div>
             </div>
             
             <div className="users-table">
