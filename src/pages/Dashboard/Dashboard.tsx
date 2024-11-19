@@ -1,11 +1,14 @@
 import "./Dashboard.css";
+import FF from "../../../feature-flag.json";
 import {useEffect, useState} from "react";
 import {eventType} from "../../types/api";
 import {EventCard} from "../../components/Event/EventCard";
 import {useAuth} from "../../providers/Auth/AuthProvider";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Dashboard() {
     const {userData, isSignedIn} = useAuth();
+    const {user} = useAuth0();
     const [allEvents, setAllEvents] = useState<eventType[]>([]);
 
     async function dashboardComponents() {
@@ -42,7 +45,7 @@ export default function Dashboard() {
     return (
         <div className="dashboard">
             <div className={"dashboard-container"}>
-                {userData && !userData.paymentVerified && (
+                {!!!FF.stripePayment && userData && !userData.paymentVerified && (
                     <p className="dashboard-top-banner">
                         We've noticed you have signed up as a member,
                         but your payment is not verified. If you haven't paid,
@@ -56,7 +59,7 @@ export default function Dashboard() {
                     <h2>Upcoming Events</h2>
                     <h4 className={"welcome-message"}>
                         {isSignedIn
-                            ? `Welcome ${userData?.displayName}`
+                            ? `Welcome ${user?.name}`
                             : "Welcome guest"}
                     </h4>
                 </div>

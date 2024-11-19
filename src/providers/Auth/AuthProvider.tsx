@@ -19,29 +19,29 @@ export function AuthProvider({children}: AuthProviderProps) {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        const handleLogin = async () => {
-            setIsLoading(true);
-            try {
-                await migrateOldUser();
+    const handleLogin = async () => {
+        setIsLoading(true);
+        try {
+            await migrateOldUser();
 
-                const data = await fetchUserData(user!.sub!);
-                if (data) {
-                    setUserData(data);
-                }
-
-                if (!FF.stripePayment) {
-                    setIsSignedIn(!!user && !!data && data.paymentVerified!);
-                } else {
-                    setIsSignedIn(!!user && !!data);
-                }
-            } catch (e) {
-                console.error(e);
-            } finally {
-                setIsLoading(false);
+            const data = await fetchUserData(user!.sub!);
+            if (data) {
+                setUserData(data);
             }
-        }
 
+            if (!FF.stripePayment) {
+                setIsSignedIn(!!user && !!data && data.paymentVerified!);
+            } else {
+                setIsSignedIn(!!user && !!data);
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
         if (isAuthenticated && user) {
             handleLogin();
         } else {
@@ -158,7 +158,8 @@ export function AuthProvider({children}: AuthProviderProps) {
     const value: AuthContextType = {
         userData,
         setUserData,
-        isSignedIn
+        isSignedIn,
+        setIsSignedIn
     };
 
     return (
