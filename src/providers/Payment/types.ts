@@ -12,7 +12,7 @@ interface PaymentFormOptions {
     attendeeId?: string
     eventId?: string
     amt?: number
-    onSuccess: (paymentIntent: *) => void
+    onSuccess: (paymentIntent: unknown) => void
 }
 
 // Options for the Payment success component
