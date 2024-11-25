@@ -119,7 +119,9 @@ export default function Onboarding() {
                                 prompt: `To become a PMC member for the 2024/2025 academic year, a $${userInfo?.university === "University of British Columbia" ? 10.61 : 15.76} membership fee is required.`,
                                 type: "membership",
                                 amt: userInfo?.university === "University of British Columbia" ? 10.61 : 15.76,
-                                onSuccess: onPaymentSuccess
+                                onSuccess: onPaymentSuccess,
+                                footer: `Disclaimer: \n
+                                        While membership grants you access to our exclusive resources, please note that it does not automatically secure a spot at our events. Due to limited availability, we encourage you to sign up early to secure your participation.`
                             }} SuccessOptions={{
                             heading: `${!FF.stripePayment ? "Information recorded" : "Payment successful"}`,
                             subheading: `${!FF.stripePayment ? "We've recorded your information. We will email you once we've verified your payment." : "We've processed your charge."}`,
