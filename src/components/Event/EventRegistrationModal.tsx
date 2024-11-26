@@ -78,7 +78,7 @@ export function EventRegistrationModal(props: {
                     created: new Timestamp(paymentIntent.created, 0)
                 }
                 : {
-                    id: "",
+                    id: attendeeId,
                     amount: 0,
                     status: 'succeeded',
                     created: new Timestamp(Math.floor(Date.now() / 1000), 0)
