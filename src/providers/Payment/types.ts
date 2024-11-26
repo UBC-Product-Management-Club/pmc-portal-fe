@@ -1,4 +1,4 @@
-import { PaymentIntent } from "@stripe/stripe-js"
+import {PaymentIntent} from "@stripe/stripe-js";
 
 interface PaymentContextType {
     FormOptions: PaymentFormOptions
@@ -14,7 +14,7 @@ interface PaymentFormOptions {
     attendeeId?: string
     eventId?: string
     amt?: number
-    onSuccess: (paymentIntent: PaymentIntent) => void
+    onSuccess: (paymentIntent: PaymentIntent | null) => void
     footer?: string
 }
 
@@ -25,4 +25,4 @@ interface PaymentSuccessOptions {
     continueBtnText: string
 }
 
-export type { PaymentFormOptions, PaymentSuccessOptions, PaymentContextType }
+export type {PaymentFormOptions, PaymentSuccessOptions, PaymentContextType}

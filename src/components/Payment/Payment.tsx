@@ -25,6 +25,11 @@ export default function Payment() {
     const [paymentSecret, setPaymentSecret] = useState<string>("")
 
     useEffect(() => {
+        if (amt === 0) {
+            setPaymentSecret("free");
+            return;
+        }
+
         // Create PaymentIntent as soon as the page loads
         const fetchPaymentIntent = async () => {
             try {
@@ -39,13 +44,13 @@ export default function Payment() {
                     })
                   })
                 } else {
-                  paymentIntent = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/payments/event/${eventId}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      uid: isSignedIn ? user!.sub : null
+                    paymentIntent = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/payments/event/${eventId}`, {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({
+                            uid: isSignedIn ? user!.sub : null
+                        })
                     })
-                  })
                 }
                 const res: paymentIntentResponse = await paymentIntent.json();
                 // console.log("secret: " + res.payment_secret);
@@ -55,7 +60,7 @@ export default function Payment() {
             }
         }
         fetchPaymentIntent()
-      }, []);
+    }, [amt]);
 
     const appearance : Appearance = {
         theme: 'stripe',

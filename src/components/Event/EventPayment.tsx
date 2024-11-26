@@ -1,9 +1,9 @@
 import Payment from "../Payment/Payment";
 import {PaymentProvider} from "../../providers/Payment/PaymentProvider";
-import { PaymentIntent } from "@stripe/stripe-js";
+import {PaymentIntent} from "@stripe/stripe-js";
 
 type EventPaymentProps = {
-    onPaymentSuccess: (paymentIntent: PaymentIntent) => void
+    onPaymentSuccess: (paymentIntent: PaymentIntent | null) => void
     isGuest: boolean
     eventId: string
     memberPrice: number
@@ -22,14 +22,15 @@ export function EventPayment(props: EventPaymentProps) {
                 prompt: prompt,
                 type: "event",
                 eventId: props.eventId,
-                onSuccess: props.onPaymentSuccess
+                onSuccess: props.onPaymentSuccess,
+                amt: fee
             }} SuccessOptions={{
             heading: "Payment successful",
             subheading: `We've processed your $${fee} charge.`,
             continueBtnText: "Close"
         }}
         >
-            <Payment />
+            <Payment/>
         </PaymentProvider>
     )
 }
