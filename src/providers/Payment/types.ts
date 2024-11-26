@@ -14,7 +14,7 @@ interface PaymentFormOptions {
     attendeeId?: string
     eventId?: string
     amt?: number
-    onSuccess: (paymentIntent: PaymentIntent) => void
+    onSuccess: (paymentIntent: PaymentIntent | null) => void
     footer?: string
 }
 
