@@ -21,7 +21,7 @@ export default function Payment() {
     const { user } = useAuth0()
     const { isSignedIn } = useAuth()
     const { paid, FormOptions } = usePayment()
-    const { type, prompt, eventId, amt } = FormOptions
+    const { type, prompt, eventId, amt, footer } = FormOptions
     const [paymentSecret, setPaymentSecret] = useState<string>("")
 
     useEffect(() => {
@@ -115,6 +115,7 @@ export default function Payment() {
                       <PaymentForm />
                   </Elements>
               }
+              <span className="payment-footer">{footer}</span>
           </div> 
         }
       </>

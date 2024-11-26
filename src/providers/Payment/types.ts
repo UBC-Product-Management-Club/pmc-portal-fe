@@ -14,7 +14,8 @@ interface PaymentFormOptions {
     attendeeId?: string
     eventId?: string
     amt?: number
-    onSuccess: (paymentIntent: PaymentIntent | null) => void
+    onSuccess: (paymentIntent: PaymentIntent) => void
+    footer?: string
 }
 
 // Options for the Payment success component
