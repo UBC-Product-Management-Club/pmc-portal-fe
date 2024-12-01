@@ -74,7 +74,7 @@ const Event: React.FC = () => {
                                 <div className="icon"><CiCalendar/></div>
                                 <div className="text-container">
                                     {/* TODO: Use moment. Date string will be (YYYY-MM-DD)*/}
-                                    <h3>{moment(event.date).format("dddd, MMMM D")}</h3> 
+                                    <h3>{moment(event.date).format("ddd, MMMM D")}</h3> 
                                     {/* TODO: Update to parse time. Time string will be (Thh:mm:ss) */}
                                     <h4>{toTimeString(event.start_time, event.end_time)}</h4>
                                 </div>
