@@ -32,6 +32,8 @@ type eventType = {
   event_Id: string;
   name: string;
   date: Date;
+  start_time: string;
+  end_time: string;
   location: string;
   description: string;
   media: string[];
