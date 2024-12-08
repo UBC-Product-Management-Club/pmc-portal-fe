@@ -4,7 +4,7 @@ import OnboardingForm from "./OnboardingForm"
 import {useState} from "react"
 import Payment from "../Payment/Payment"
 import {OnboardingProvider} from "./Context"
-import {loginBody, onboardingBody} from "../../types/api"
+import {addTransactionBody, loginBody, onboardingBody} from "../../types/api"
 import {UserSchema} from "./types"
 import {PaymentProvider} from "../../providers/Payment/PaymentProvider"
 import FF from "../../../feature-flag.json"
@@ -12,6 +12,8 @@ import PaymentSuccess from "../Payment/PaymentSuccess"
 import {useAuth0} from "@auth0/auth0-react";
 import {useAuth} from "../../providers/Auth/AuthProvider";
 import {IoArrowBack} from "react-icons/io5";
+import { PaymentIntent } from "@stripe/stripe-js"
+import { Timestamp } from "firebase/firestore"
 
 /**
  *
@@ -41,9 +43,9 @@ export default function Onboarding() {
         });
     }
 
-    async function addUser(userInfo: UserSchema | undefined) {
+    async function onboardUser(userInfo: UserSchema | undefined, paymentInfo: addTransactionBody) {
         const onboardRequestBody = await buildOnboardingRequest(userInfo);
-        await addUserInDatabase(onboardRequestBody);
+        await addUserInDatabase(onboardRequestBody, paymentInfo);
         setUserData({...userData!, ...userInfo});
     }
 
@@ -74,15 +76,18 @@ export default function Onboarding() {
         return onboardBody;
     }
 
-    async function addUserInDatabase(onboardBody: onboardingBody) {
+    async function addUserInDatabase(onboardBody: onboardingBody, paymentInfo: addTransactionBody) {
         try {
-            const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
+            const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboard`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
                     'Content-type': 'application/json',
                 },
-                body: JSON.stringify(onboardBody)
+                body: JSON.stringify({
+                    onboardingInfo: onboardBody,
+                    paymentInfo: paymentInfo
+                })
             })
             if (!onboardUser.ok) {
                 throw Error("Failed adding user to database")
@@ -92,10 +97,25 @@ export default function Onboarding() {
         }
     }
 
-    const onPaymentSuccess = () => {
-        addUser(userInfo)
-        setPaid(true)
-        setIsSignedIn(true)
+    const onPaymentSuccess = (paymentIntent: PaymentIntent) => {
+        const paymentInfo: addTransactionBody = {
+            type: "membership",
+            member_id: user?.sub || "",
+            payment: {
+                id: paymentIntent.id,
+                amount: paymentIntent.amount,
+                status: paymentIntent.status,
+                created: new Timestamp(paymentIntent.created,0)
+            }
+        }
+
+        try {
+            onboardUser(userInfo, paymentInfo)
+            setPaid(true)
+            setIsSignedIn(true)
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     return (
@@ -129,7 +149,8 @@ export default function Onboarding() {
                             {!FF.stripePayment ? <PaymentSuccess/> : <Payment/>}
                         </PaymentProvider>
                         :
-                        <OnboardingForm addUser={addUser}/>
+                        // <OnboardingForm addUser={addUser}/>
+                        <OnboardingForm />
                     }
                 </OnboardingProvider>
             </div>
