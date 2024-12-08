@@ -49,8 +49,8 @@ const Event: React.FC = () => {
     function toTimeString(start_time: string, end_time: string): string {
         const time_format: string = "HH:mm";
         // only works with a date string provided. The format won't display the date only the time.
-        const start = moment(`01-01-2001 ${start_time}`).format(time_format) 
-        const end = moment(`01-01-2001 ${end_time}`).format(time_format) 
+        const start = moment(`2024-01-01 ${start_time}`).format(time_format) 
+        const end = moment(`2024-01-01 ${end_time}`).format(time_format) 
         return start + " - " + end
     }
 
