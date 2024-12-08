@@ -86,7 +86,7 @@ export function EventRegistrationModal(props: {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/registered`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/${props.eventId}/registered`, {
         method: "POST",
         credentials: "include",
         headers: {

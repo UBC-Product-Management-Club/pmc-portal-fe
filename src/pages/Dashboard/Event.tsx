@@ -70,6 +70,17 @@ const Event: React.FC = () => {
     if (!event)
         return <p style={{ color: "white" }}>No event details available.</p>;
 
+    const buttonText = (() => {
+        switch (true) {
+            case isEventFull:
+                return <span className="signup-button-sorry-text">Sorry, the event is full</span>;
+            // case event.isRegistered:
+            //     return <span className="signup-button-sorry-text">You've already registered</span>;
+            default:
+                return <span className="signup-button-text">Sign up</span>;
+        }
+    })();
+
     return (
         <div className="background-event">
             <div className="event-container">
@@ -153,10 +164,22 @@ const Event: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <button className="signup-button" disabled={isEventFull} onClick={() => setIsSignUpFormOpen(true)}>
+
+                    <button
+                        className="signup-button"
+                        disabled={isEventFull || event.isRegistered}
+                        onClick={() => setIsSignUpFormOpen(true)}
+                    >
+                        {buttonText}
+                    </button>
+
+                    {/* <button className="signup-button" disabled={isEventFull || isRegistered} onClick={() => setIsSignUpFormOpen(true)}>
                         {isEventFull ? <span className="signup-button-sorry-text">Sorry, the event is full</span> :
                             <span className="signup-button-text">Sign up</span>}
-                    </button>
+
+                        {isRegistered ? <span className="signup-button-sorry-text">You've already registered</span> :
+                            <span className="signup-button-text">Sign up</span>}
+                    </button> */}
                     <EventRegistrationModal
                         isModalOpen={isSignUpFormOpen}
                         setIsModalOpen={setIsSignUpFormOpen}
