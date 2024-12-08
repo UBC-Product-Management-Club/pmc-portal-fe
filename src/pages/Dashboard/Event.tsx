@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
-import {eventType} from "../../types/api";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { eventType } from "../../types/api";
 import "./Event.css";
-import {useAuth} from "../../providers/Auth/AuthProvider";
-import {EventRegistrationModal} from "../../components/Event/EventRegistrationModal";
-import {CiCalendar, CiLocationOn} from "react-icons/ci";
-import {MdOutlinePeopleAlt} from "react-icons/md";
-import {FaDollarSign} from "react-icons/fa6";
-import moment from 'moment';
+import { useAuth } from "../../providers/Auth/AuthProvider";
+import { EventRegistrationModal } from "../../components/Event/EventRegistrationModal";
+import { CiCalendar, CiLocationOn } from "react-icons/ci";
+import { MdOutlinePeopleAlt } from "react-icons/md";
+import { FaDollarSign } from "react-icons/fa6";
+import moment from "moment";
 
 const Event: React.FC = () => {
-    const {isSignedIn} = useAuth();
+    const { isSignedIn, userData } = useAuth();
     const [event, setEvent] = useState<eventType | null>(null);
-    const {event_id} = useParams<{ event_id: string }>();
+    const { event_id } = useParams<{ event_id: string }>();
     const [loading, setLoading] = useState(true);
     const [isSignUpFormOpen, setIsSignUpFormOpen] = useState(false);
     let isEventFull = false;
@@ -20,15 +20,23 @@ const Event: React.FC = () => {
         isEventFull = event.maxAttendee !== null && event.attendee_Ids?.length >= event.maxAttendee;
     }
 
+    const attendeeEmail = localStorage.getItem(event_id!); // attendeeEmail or userEmail
+    const userEmail = userData?.email;
+
+
     async function fetchEvent() {
         try {
             const response = await fetch(
                 `${import.meta.env.VITE_API_URL}/api/v1/events/${event_id}`,
                 {
-                    method: "GET",
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
+                    body: JSON.stringify({ // optional
+                        attendeeEmail,
+                        userEmail,
+                    }),
                 }
             );
 
@@ -49,8 +57,8 @@ const Event: React.FC = () => {
     function toTimeString(start_time: string, end_time: string): string {
         const time_format: string = "HH:mm";
         // only works with a date string provided. The format won't display the date only the time.
-        const start = moment(`01-01-2001 ${start_time}`).format(time_format) 
-        const end = moment(`01-01-2001 ${end_time}`).format(time_format) 
+        const start = moment(`01-01-2001 ${start_time}`).format(time_format)
+        const end = moment(`01-01-2001 ${end_time}`).format(time_format)
         return start + " - " + end
     }
 
@@ -58,9 +66,9 @@ const Event: React.FC = () => {
         fetchEvent();
     }, [event_id]);
 
-    if (loading) return <p style={{color: "white"}}>Loading...</p>;
+    if (loading) return <p style={{ color: "white" }}>Loading...</p>;
     if (!event)
-        return <p style={{color: "white"}}>No event details available.</p>;
+        return <p style={{ color: "white" }}>No event details available.</p>;
 
     return (
         <div className="background-event">
@@ -71,23 +79,23 @@ const Event: React.FC = () => {
                     <div className="event-details-container">
                         <div className="event-details">
                             <div className="icon-text">
-                                <div className="icon"><CiCalendar/></div>
+                                <div className="icon"><CiCalendar /></div>
                                 <div className="text-container">
                                     {/* Will display date as "Sun, December 1" or "Sat, November 30" */}
-                                    <h3>{moment(event.date).format("ddd, MMMM D")}</h3> 
+                                    <h3>{moment(event.date).format("ddd, MMMM D")}</h3>
                                     {/* Displays time in 24 hours as hh:mm - hh:mm*/}
                                     <h4>{toTimeString(event.start_time, event.end_time)}</h4>
                                 </div>
                             </div>
                             <div className="icon-text">
-                                <div className="icon"><CiLocationOn/></div>
+                                <div className="icon"><CiLocationOn /></div>
                                 <div className="text-container">
                                     <h3>{event.location}</h3>
                                     <h4>Get directions</h4>
                                 </div>
                             </div>
                             <div className="icon-text">
-                                <div className="icon"><MdOutlinePeopleAlt/></div>
+                                <div className="icon"><MdOutlinePeopleAlt /></div>
                                 <div className="text-container">
                                     <div>
                                         <h3>{event.maxAttendee - event.attendee_Ids.length}/{event.maxAttendee} spots left</h3>
@@ -111,10 +119,10 @@ const Event: React.FC = () => {
                     <div className="event-details-container">
                         <div className="event-details">
                             <div className="icon-text">
-                                <div className="icon"><FaDollarSign/></div>
+                                <div className="icon"><FaDollarSign /></div>
                                 <div
                                     className="text-container"
-                                    style={{flexDirection: "column"}}
+                                    style={{ flexDirection: "column" }}
                                 >
                                     {isSignedIn ? (
                                         <>

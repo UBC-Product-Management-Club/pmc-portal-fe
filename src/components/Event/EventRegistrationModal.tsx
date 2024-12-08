@@ -8,8 +8,8 @@ import { UserSchema } from "../OnboardingForm/types";
 import { EventRegFormSchema } from "../FormInput/EventRegFormUtils";
 import EventRegistrationGuest from "./EventRegistrationGuest";
 import { EventPayment } from "./EventPayment";
-import {useAuth0} from "@auth0/auth0-react";
-import {useAuth} from "../../providers/Auth/AuthProvider";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "../../providers/Auth/AuthProvider";
 import { v4 as generateAttendeeId } from "uuid";
 import { PaymentIntent } from "@stripe/stripe-js";
 import { addTransactionBody, attendeeType } from "../../types/api";
@@ -54,9 +54,17 @@ export function EventRegistrationModal(props: {
     setStep(3);
   };
 
-  const handlePaymentSuccess = async (paymentIntent : PaymentIntent) => {
+  const eventAttendeeEmail = async (email: string) => { // can be both attendee and user bcuz sometimes there might not be attendee
+    const event_Id = props.eventId;
+    if (event_Id && email) {
+      localStorage.setItem(event_Id, email);
+    }
+
+  };
+
+  const handlePaymentSuccess = async (paymentIntent: PaymentIntent) => {
     const attendeeId = generateAttendeeId() // generate attendee uuid here
-    const attendeeInfo : attendeeType = {
+    const attendeeInfo: attendeeType = {
       attendee_Id: attendeeId, // both members and non-members have this
       is_member: !isGuest,
       member_Id: user?.sub || "", // if they're not a member this is empty
@@ -73,23 +81,25 @@ export function EventRegistrationModal(props: {
         id: paymentIntent.id,
         amount: paymentIntent.amount,
         status: paymentIntent.status,
-        created: new Timestamp(paymentIntent.created,0)
+        created: new Timestamp(paymentIntent.created, 0)
       }
     }
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/registered`, {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            attendeeInfo: attendeeInfo,
-            paymentInfo: paymentInfo 
-          })
-        }
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          attendeeInfo: attendeeInfo,
+          paymentInfo: paymentInfo
+        })
+      }
       )
+      eventAttendeeEmail(attendeeInfo.email); // stores attendeeEmail into localstorage
+
       if (!response.ok) {
         // this would be pretty bad since the user has already paid at this point. 
         throw Error("Event registration failed. Contact tech@ubcpmc.com for support")
