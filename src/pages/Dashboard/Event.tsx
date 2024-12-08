@@ -95,6 +95,17 @@ const Event: React.FC = () => {
     if (!event)
         return <p style={{ color: "white" }}>No event details available.</p>;
 
+    const buttonText = (() => {
+        switch (true) {
+            case isEventFull:
+                return <span className="signup-button-sorry-text">Sorry, the event is full</span>;
+            // case event.isRegistered:
+            //     return <span className="signup-button-sorry-text">You've already registered</span>;
+            default:
+                return <span className="signup-button-text">Sign up</span>;
+        }
+    })();
+
     return (
         <div className="background-event">
             <div className="event-container">
