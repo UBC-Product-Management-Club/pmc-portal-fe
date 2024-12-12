@@ -97,15 +97,26 @@ export default function Onboarding() {
         }
     }
 
+<<<<<<< HEAD
     const onPaymentSuccess = (paymentIntent: PaymentIntent | null) => {
+=======
+    const onPaymentSuccess = (paymentIntent: PaymentIntent) => {
+>>>>>>> fe741d7 (Refactored membership payment flow (#52))
         const paymentInfo: addTransactionBody = {
             type: "membership",
             member_id: user?.sub || "",
             payment: {
+<<<<<<< HEAD
                 id: paymentIntent!.id,
                 amount: paymentIntent!.amount,
                 status: paymentIntent!.status,
                 created: new Timestamp(paymentIntent!.created,0)
+=======
+                id: paymentIntent.id,
+                amount: paymentIntent.amount,
+                status: paymentIntent.status,
+                created: new Timestamp(paymentIntent.created,0)
+>>>>>>> fe741d7 (Refactored membership payment flow (#52))
             }
         }
 
@@ -151,6 +162,10 @@ export default function Onboarding() {
                             {!FF.stripePayment ? <PaymentSuccess/> : <Payment/>}
                         </PaymentProvider>
                         :
+<<<<<<< HEAD
+=======
+                        // <OnboardingForm addUser={addUser}/>
+>>>>>>> fe741d7 (Refactored membership payment flow (#52))
                         <OnboardingForm />
                     }
                 </OnboardingProvider>
