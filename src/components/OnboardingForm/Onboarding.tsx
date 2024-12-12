@@ -97,15 +97,15 @@ export default function Onboarding() {
         }
     }
 
-    const onPaymentSuccess = (paymentIntent: PaymentIntent) => {
+    const onPaymentSuccess = (paymentIntent: PaymentIntent | null) => {
         const paymentInfo: addTransactionBody = {
             type: "membership",
             member_id: user?.sub || "",
             payment: {
-                id: paymentIntent.id,
-                amount: paymentIntent.amount,
-                status: paymentIntent.status,
-                created: new Timestamp(paymentIntent.created,0)
+                id: paymentIntent!.id,
+                amount: paymentIntent!.amount,
+                status: paymentIntent!.status,
+                created: new Timestamp(paymentIntent!.created,0)
             }
         }
 
@@ -151,7 +151,6 @@ export default function Onboarding() {
                             {!FF.stripePayment ? <PaymentSuccess/> : <Payment/>}
                         </PaymentProvider>
                         :
-                        // <OnboardingForm addUser={addUser}/>
                         <OnboardingForm />
                     }
                 </OnboardingProvider>
