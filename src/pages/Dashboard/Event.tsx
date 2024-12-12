@@ -7,6 +7,7 @@ import {EventRegistrationModal} from "../../components/Event/EventRegistrationMo
 import {CiCalendar, CiLocationOn} from "react-icons/ci";
 import {MdOutlinePeopleAlt} from "react-icons/md";
 import {FaDollarSign} from "react-icons/fa6";
+import moment from 'moment';
 
 const Event: React.FC = () => {
     const {isSignedIn} = useAuth();
@@ -18,7 +19,6 @@ const Event: React.FC = () => {
     if (event) {
         isEventFull = event.maxAttendee !== null && event.attendee_Ids?.length >= event.maxAttendee;
     }
-
 
     async function fetchEvent() {
         try {
@@ -36,15 +36,22 @@ const Event: React.FC = () => {
                 throw new Error("Network response was not ok");
             }
             const data: eventType = await response.json();
-            setEvent({
-                ...data,
-                date: new Date(data.date),
-            });
+            setEvent(data)
         } catch (error) {
             console.error("Error fetching event:", error);
         } finally {
             setLoading(false);
         }
+    }
+
+    // time_string = Thh:mm:ss
+    // return hh:mm - hh:mm
+    function toTimeString(start_time: string, end_time: string): string {
+        const time_format: string = "HH:mm";
+        // only works with a date string provided. The format won't display the date only the time.
+        const start = moment(`2024-01-01 ${start_time}`).format(time_format) 
+        const end = moment(`2024-01-01 ${end_time}`).format(time_format) 
+        return start + " - " + end
     }
 
     useEffect(() => {
@@ -66,8 +73,10 @@ const Event: React.FC = () => {
                             <div className="icon-text">
                                 <div className="icon"><CiCalendar/></div>
                                 <div className="text-container">
-                                    <h3>{event.date.toDateString()}</h3>
-                                    <h4>No time available yet</h4>
+                                    {/* Will display date as "Sun, December 1" or "Sat, November 30" */}
+                                    <h3>{moment(event.date).format("ddd, MMMM D")}</h3> 
+                                    {/* Displays time in 24 hours as hh:mm - hh:mm*/}
+                                    <h4>{toTimeString(event.start_time, event.end_time)}</h4>
                                 </div>
                             </div>
                             <div className="icon-text">
