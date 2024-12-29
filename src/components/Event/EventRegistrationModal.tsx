@@ -43,13 +43,28 @@ export function EventRegistrationModal(props: {
     const [step, setStep] = useState(isSignedIn ? 2 : 0);
     const navigateTo = useNavigate();
 
-    const handleContinueAsGuest = () => setStep(1);
-    const handleSubmitGuest = async (data: UserSchema) => {
-        setIsGuest(true);
-        setUserInfo(data);
-        setStep(2);
-    };
-
+  const handleContinueAsGuest = () => setStep(1);
+  const handleSubmitGuest = async (data: UserSchema) => {
+    const isRegistered = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/${props.eventId}/attendees/isRegistered`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({email: data.email}),
+    });
+    if (!isRegistered.ok) {
+      throw Error("Failed to check if user is registered");
+    }
+    const isRegisteredData = await isRegistered.json();
+    if (!isRegisteredData.isRegistered) {
+      setIsGuest(true);
+      setUserInfo(data);
+      setStep(2);
+    } else {
+      alert("You've already registered for this event");
+      handleClose();
+    }
+  };
     const handleSubmitEventRegInfo = async (data: EventRegFormSchema) => {
         setEventRegInfo(data);
         setStep(3);
