@@ -10,12 +10,9 @@
 
 .onboarding-content {
     width: 40rem;
-    height: 35rem;
     display: flex;
     flex-direction: column;
-    padding-top: 2rem;
-    padding-left: 5rem;
-    padding-right: 5rem;
+    padding: 2rem 5rem;
     border-radius: 1rem;
     position: relative;
     background-color: #1D233F;
@@ -32,6 +29,16 @@
 .onboarding-content--logo {
     width: 4rem;
     height: 4rem;
+}
+
+.onboarding-row {
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    gap: 1rem;
 }
 
 @media screen and (max-width: 768px) {
@@ -71,5 +78,5 @@
     .onboarding-content {
         margin-top: 2rem;
         padding-bottom: 2rem;
-    } 
+    }
 }

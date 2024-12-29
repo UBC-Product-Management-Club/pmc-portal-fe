@@ -4,13 +4,16 @@ import OnboardingForm from "./OnboardingForm"
 import {useState} from "react"
 import Payment from "../Payment/Payment"
 import {OnboardingProvider} from "./Context"
-import {loginBody, onboardingBody} from "../../types/api"
+import {addTransactionBody, loginBody, onboardingBody} from "../../types/api"
 import {UserSchema} from "./types"
 import {PaymentProvider} from "../../providers/Payment/PaymentProvider"
 import FF from "../../../feature-flag.json"
 import PaymentSuccess from "../Payment/PaymentSuccess"
 import {useAuth0} from "@auth0/auth0-react";
 import {useAuth} from "../../providers/Auth/AuthProvider";
+import {IoArrowBack} from "react-icons/io5";
+import { PaymentIntent } from "@stripe/stripe-js"
+import { Timestamp } from "firebase/firestore"
 
 /**
  *
@@ -29,12 +32,20 @@ export default function Onboarding() {
     const [userInfo, setUserInfo] = useState<UserSchema | undefined>(undefined)
     const [currPage, setCurrPage] = useState<"userInfo" | "payment" | "paymentSuccess">("userInfo")
     const [paid, setPaid] = useState<boolean>(false)
-    const {user, getIdTokenClaims} = useAuth0()
-    const {userData, setUserData} = useAuth()
+    const {user, logout, getIdTokenClaims} = useAuth0()
+    const {userData, setUserData, setIsSignedIn} = useAuth()
 
-    async function addUser(userInfo: UserSchema | undefined) {
+    const handleBackToLogin = async () => {
+        await logout({
+            logoutParams: {
+                returnTo: window.location.origin,
+            },
+        });
+    }
+
+    async function onboardUser(userInfo: UserSchema | undefined, paymentInfo: addTransactionBody) {
         const onboardRequestBody = await buildOnboardingRequest(userInfo);
-        await addUserInDatabase(onboardRequestBody);
+        await addUserInDatabase(onboardRequestBody, paymentInfo);
         setUserData({...userData!, ...userInfo});
     }
 
@@ -65,15 +76,18 @@ export default function Onboarding() {
         return onboardBody;
     }
 
-    async function addUserInDatabase(onboardBody: onboardingBody) {
+    async function addUserInDatabase(onboardBody: onboardingBody, paymentInfo: addTransactionBody) {
         try {
-            const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
+            const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboard`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
                     'Content-type': 'application/json',
                 },
-                body: JSON.stringify(onboardBody)
+                body: JSON.stringify({
+                    onboardingInfo: onboardBody,
+                    paymentInfo: paymentInfo
+                })
             })
             if (!onboardUser.ok) {
                 throw Error("Failed adding user to database")
@@ -83,38 +97,61 @@ export default function Onboarding() {
         }
     }
 
-    const onPaymentSuccess = () => {
-        addUser(userInfo)
-        setPaid(true)
+    const onPaymentSuccess = (paymentIntent: PaymentIntent | null) => {
+        const paymentInfo: addTransactionBody = {
+            type: "membership",
+            member_id: user?.sub || "",
+            payment: {
+                id: paymentIntent!.id,
+                amount: paymentIntent!.amount,
+                status: paymentIntent!.status,
+                created: new Timestamp(paymentIntent!.created,0)
+            }
+        }
+
+        try {
+            onboardUser(userInfo, paymentInfo)
+            setPaid(true)
+            setIsSignedIn(true)
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     return (
         <div className="onboarding-container">
             <div className="onboarding-content">
+                <div className={"onboarding-row"} onClick={handleBackToLogin}>
+                    <IoArrowBack/>
+                    <p>Back</p>
+                </div>
                 <img className="onboarding-content--logo" src={PMCLogo}/>
                 {paid
-                    ? <h1 className="onboarding-content-header">Welcome to PMC {userInfo?.first_name}! <span style={{fontSize: 'x-large'}}>🥳</span></h1>
-                    : <h1 className="onboarding-content-header">Become a member</h1>}
+                    ? <h1 className="onboarding-content-header">Welcome to PMC {userInfo?.first_name}! <span
+                        style={{fontSize: 'x-large'}}>🥳</span></h1>
+                    : <h1 className="onboarding-content-header">Let's get you signed up, {user?.name}</h1>}
                 {/* Toggle between onboardingform/paymentform */}
                 {/* Use Context to keep track of current state */}
                 <OnboardingProvider setters={{setUserInfo, setCurrPage}}>
                     {currPage == "payment" ?
                         <PaymentProvider
                             FormOptions={{
-                                prompt: "To become a PMC member for the 2024/2025 academic year, a $10 membership fee is required.",
+                                prompt: `To become a PMC member for the 2024/2025 academic year, a $${userInfo?.university === "University of British Columbia" ? 10.61 : 15.76} membership fee is required.`,
                                 type: "membership",
-                                amt: 1000,
-                                onSuccess: onPaymentSuccess
+                                amt: userInfo?.university === "University of British Columbia" ? 10.61 : 15.76,
+                                onSuccess: onPaymentSuccess,
+                                footer: `Disclaimer: \n
+                                        While membership grants you access to our exclusive resources, please note that it does not automatically secure a spot at our events. Due to limited availability, we encourage you to sign up early to secure your participation.`
                             }} SuccessOptions={{
                             heading: `${!FF.stripePayment ? "Information recorded" : "Payment successful"}`,
-                            subheading: `${!FF.stripePayment ? "We've recorded your information. We will email you once we've verified your payment." : "We've processed your $10 charge."}`,
+                            subheading: `${!FF.stripePayment ? "We've recorded your information. We will email you once we've verified your payment." : "We've processed your charge."}`,
                             continueBtnText: `${!FF.stripePayment ? "Continue to dashboard as a guest" : "Continue to dashboard"}`
                         }}
                         >
                             {!FF.stripePayment ? <PaymentSuccess/> : <Payment/>}
                         </PaymentProvider>
                         :
-                        <OnboardingForm addUser={addUser}/>
+                        <OnboardingForm />
                     }
                 </OnboardingProvider>
             </div>

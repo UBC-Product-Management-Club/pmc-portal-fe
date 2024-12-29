@@ -19,29 +19,29 @@ export function AuthProvider({children}: AuthProviderProps) {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        const handleLogin = async () => {
-            setIsLoading(true);
-            try {
-                await migrateOldUser();
+    const handleLogin = async () => {
+        setIsLoading(true);
+        try {
+            await migrateOldUser();
 
-                const data = await fetchUserData(user!.sub!);
-                if (data) {
-                    setUserData(data);
-                }
-
-                if (!FF.stripePayment) {
-                    setIsSignedIn(!!user && !!data && data.paymentVerified!);
-                } else {
-                    setIsSignedIn(!!user && !!data);
-                }
-            } catch (e) {
-                console.error(e);
-            } finally {
-                setIsLoading(false);
+            const data = await fetchUserData(user!.sub!);
+            if (data) {
+                setUserData(data);
             }
-        }
 
+            if (!FF.stripePayment) {
+                setIsSignedIn(!!user && !!data && data.paymentVerified!);
+            } else {
+                setIsSignedIn(!!user && !!data);
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
         if (isAuthenticated && user) {
             handleLogin();
         } else {
@@ -65,8 +65,7 @@ export function AuthProvider({children}: AuthProviderProps) {
             if (!response.ok) {
                 throw new Error("Failed to fetch user data");
             }
-            const data: userDocument = await response.json();
-            return data;
+            return await response.json();
         } catch (e) {
             console.error("Failed to fetch user data: ", e);
         }
@@ -77,7 +76,7 @@ export function AuthProvider({children}: AuthProviderProps) {
             const id = await getIdByEmail(user!.email!);
             // If the ID we get is the authenticated user's ID, this user authenticated
             // with Auth0, and there is no migration to be done
-            if (id == user?.sub)
+            if (id == user?.sub || id == null)
                 return;
 
             const oldProfile = await fetchUserData(id);
@@ -102,7 +101,10 @@ export function AuthProvider({children}: AuthProviderProps) {
                 },
             }
         );
-        if (!response.ok) {
+        if (response.status === 404) {
+            // The user never had an old profile that needed migration
+            return null;
+        } else if (!response.ok) {
             throw Error("Failed to get ID by email")
         }
 
@@ -158,7 +160,8 @@ export function AuthProvider({children}: AuthProviderProps) {
     const value: AuthContextType = {
         userData,
         setUserData,
-        isSignedIn
+        isSignedIn,
+        setIsSignedIn
     };
 
     return (
