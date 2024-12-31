@@ -42,6 +42,7 @@ type eventType = {
   attendee_Ids: string[];
   member_only: boolean;
   maxAttendee: number;
+  eventFormId: string;
 };
 
 type attendeeType = {

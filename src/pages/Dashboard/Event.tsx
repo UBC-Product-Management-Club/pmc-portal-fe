@@ -185,6 +185,7 @@ const Event: React.FC = () => {
                         eventId={event_id ?? ""}
                         memberPrice={event.member_price}
                         nonMemberPrice={event.non_member_price}
+                        formId={event.eventFormId}
                     />
                 </div>
             </div>

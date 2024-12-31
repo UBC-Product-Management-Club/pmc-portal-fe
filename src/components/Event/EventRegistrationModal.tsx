@@ -24,6 +24,7 @@ export function EventRegistrationModal(props: {
     nonMemberPrice: number;
     isModalOpen: boolean;
     setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+    formId: string;
 }) {
     const {user} = useAuth0();
     const {userData, isSignedIn} = useAuth();
@@ -101,7 +102,7 @@ export function EventRegistrationModal(props: {
         }
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/registered`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/${props.eventId}/registered`, {
                     method: "POST",
                     credentials: "include",
                     headers: {
@@ -135,7 +136,10 @@ export function EventRegistrationModal(props: {
             onContinueAsGuest={handleContinueAsGuest}
         />,
         <EventRegistrationGuest onSubmit={handleSubmitGuest}/>,
-        <EventRegistrationForm onSubmit={handleSubmitEventRegInfo}/>,
+        <EventRegistrationForm 
+          onSubmit={(data: Record<string, any>) => handleSubmitEventRegInfo(data as EventRegFormSchema)}
+          formId={props.formId}
+        />,
         <EventPayment
             onPaymentSuccess={handlePaymentSuccess}
             isGuest={isGuest}
