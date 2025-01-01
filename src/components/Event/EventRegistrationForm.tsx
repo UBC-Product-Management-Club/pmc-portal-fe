@@ -22,11 +22,12 @@ export default function EventRegistrationForm({
   onSubmit,
   formId
 }: {
-  onSubmit: (data: EventRegFormSchema) => Promise<void>;
+  onSubmit: (data: EventRegFormSchema, files: File[]) => Promise<void>;
   formId: string;
 }) {
   const [formData, setFormData] = useState<EventForm | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const {
     register,
@@ -53,6 +54,12 @@ export default function EventRegistrationForm({
     return <div style={{ color: 'white' }}>Loading form...</div>;
   }
 
+  const handleFileSelect = (files: File[] | null) => {
+    if (files) {
+      setUploadedFiles(prev => [...prev, ...Array.from(files)]);
+    }
+  };
+
   const renderQuestion = (question: Question) => {
     switch (question.questionType) {
       case 'dropdown':
@@ -72,7 +79,7 @@ export default function EventRegistrationForm({
             name={question.label}
             register={register}
             required={question.required!}
-            onFileSelect={() => {}}
+            onFileSelect={handleFileSelect}
           />
         );
 
@@ -101,7 +108,7 @@ export default function EventRegistrationForm({
   };
 
   return (
-    <form className="form-content form-bg-dark-blue" autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+    <form className="form-content form-bg-dark-blue" autoComplete="off" onSubmit={handleSubmit((data) => onSubmit(data, uploadedFiles))}>
       <h2>{formData.title}</h2>
       {formData.questions.map((question, index) => (
         <div key={index} className="form-field">

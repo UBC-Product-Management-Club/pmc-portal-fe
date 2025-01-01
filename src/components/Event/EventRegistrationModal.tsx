@@ -66,22 +66,26 @@ export function EventRegistrationModal(props: {
       handleClose();
     }
   };
-    const handleSubmitEventRegInfo = async (data: EventRegFormSchema) => {
+    const handleSubmitEventRegInfo = async (data: EventRegFormSchema, files: File[]) => {
         setEventRegInfo(data);
+        if (files.length > 0) {
+            data.files = files;
+        }
         setStep(3);
     };
 
     const handlePaymentSuccess = async (paymentIntent: PaymentIntent | null) => {
-        const attendeeId = generateAttendeeId() // generate attendee uuid here
+        const attendeeId = generateAttendeeId();
+        const { files, ...regInfo } = eventRegInfo!;
         const attendeeInfo: attendeeType = {
-            attendee_Id: attendeeId, // both members and non-members have this
+            attendee_Id: attendeeId,
             is_member: !isGuest,
-            member_Id: user?.sub || "", // if they're not a member this is empty
+            member_Id: user?.sub || "",
             event_Id: props.eventId,
             ...userInfo,
-            ...eventRegInfo!, // eventRegInfo can't be null...?
-            email: user?.email ?? userInfo.email!,  // we don't want to overwrite this. Either provided from user profile or guest input
-        }
+            ...regInfo!,
+            email: user?.email ?? userInfo.email!,
+        };
         const paymentInfo: addTransactionBody = {
             type: "event",
             member_id: user?.sub || "",
@@ -99,27 +103,34 @@ export function EventRegistrationModal(props: {
                     status: 'succeeded',
                     created: new Timestamp(Math.floor(Date.now() / 1000), 0)
                 }
-        }
+        };
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/${props.eventId}/registered`, {
+            const formData = new FormData();
+            
+            formData.append('attendeeInfo', JSON.stringify(attendeeInfo));
+            formData.append('paymentInfo', JSON.stringify(paymentInfo));
+            
+            if (files) {
+                files.forEach((file: File) => {
+                    formData.append('files', file);
+                });
+            }
+
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/api/v1/events/${props.eventId}/registered`,
+                {
                     method: "POST",
                     credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        attendeeInfo: attendeeInfo,
-                        paymentInfo: paymentInfo
-                    })
+                    body: formData
                 }
-            )
+            );
+            
             if (!response.ok) {
-                // this would be pretty bad since the user has already paid at this point.
-                throw Error("Event registration failed. Contact tech@ubcpmc.com for support")
+                throw Error("Event registration failed. Contact tech@ubcpmc.com for support");
             }
         } catch (e) {
-            console.error(e)
+            console.error(e);
         }
     };
 
@@ -137,7 +148,7 @@ export function EventRegistrationModal(props: {
         />,
         <EventRegistrationGuest onSubmit={handleSubmitGuest}/>,
         <EventRegistrationForm 
-          onSubmit={(data: Record<string, any>) => handleSubmitEventRegInfo(data as EventRegFormSchema)}
+          onSubmit={(data: any, files: File[]) => handleSubmitEventRegInfo(data as EventRegFormSchema, files)}
           formId={props.formId}
         />,
         <EventPayment

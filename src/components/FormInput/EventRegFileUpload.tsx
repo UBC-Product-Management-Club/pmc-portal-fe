@@ -9,7 +9,7 @@ import {
 } from './EventRegFileUpload.styles';
 
 interface EventRegFileUploadProps {
-  onFileSelect: (file: File) => void;
+  onFileSelect: (files: File[]) => void;
   name?: string;
   register?: any;
   required?: boolean;
@@ -35,9 +35,9 @@ const EventRegFileUpload: React.FC<EventRegFileUploadProps> = ({ name, onFileSel
           clearInterval(interval);
           setUploadState('completed');
         }
-      }, 200);
+      }, 100);
 
-      onFileSelect(file);
+      onFileSelect([file]);
     }
   };
 

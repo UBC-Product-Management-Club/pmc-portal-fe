@@ -12,6 +12,7 @@ export type EventRegFormInputProps = {
     register: UseFormRegister<any>
     valueAsNumber?: boolean
     required?: boolean
+    onFileSelect?: (fieldName: string, files: FileList | null) => void
 };
 
 const EventRegZodObj = z.object({
@@ -31,7 +32,8 @@ const EventRegZodObj = z.object({
         message: "What do you hope to get out of this event?"
     }).max(300, {
         message: "Maximum 300 characters."
-    })
+    }),
+    files: z.array(z.instanceof(File)).optional()
 })
 
 type EventRegFormSchema = z.infer<typeof EventRegZodObj>
