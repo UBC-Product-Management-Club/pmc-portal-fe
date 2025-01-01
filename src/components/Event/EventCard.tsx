@@ -1,6 +1,7 @@
 import "./EventCard.css";
 import {eventType} from "../../types/api";
 import {useNavigate} from "react-router-dom";
+import moment from "moment";
 
 type EventCardProps = {
     isSignedIn: boolean;
@@ -13,7 +14,7 @@ export function EventCard(props: EventCardProps) {
 
     return (
         <div>
-            <h2>{new Date(props.event.date).toDateString()}</h2>
+            <h2>{moment(props.event.date).format('MMMM D, YYYY')}</h2>
             <div
                 className={`event ${
                     !props.isSignedIn && props.event.non_member_price === undefined
