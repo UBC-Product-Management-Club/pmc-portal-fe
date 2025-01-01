@@ -50,7 +50,7 @@ const Event: React.FC = () => {
             setIsRegistered(isRegisteredData.isRegistered);
             setEvent({
                 ...data,
-                date: new Date(data.date),
+                date: moment(data.date).toDate(),
             });
         } catch (error) {
             console.error("Error fetching event:", error);

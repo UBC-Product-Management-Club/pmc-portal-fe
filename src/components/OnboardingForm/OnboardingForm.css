@@ -39,7 +39,6 @@ select {
 }
 
 select:valid {
-    background-color: var(--pmc-purple);
     color: white;
 }
 
