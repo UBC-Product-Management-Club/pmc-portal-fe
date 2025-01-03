@@ -31,21 +31,23 @@ export default function AttendeeList() {
     };
 
     const exportToCSV = () => {
-        const headers = Object.keys(attendees[0] || {}).filter(key => 
-            typeof attendees[0][key] !== 'function'
-        );
+        const headers = getAllUniqueHeaders();
         
         const csvData = attendees.map((attendee: any) => 
             headers.map(header => {
                 const value = attendee[header];
-                // Handle arrays and escape quotes/commas
+                // If value is undefined or null, return empty string
+                if (value === undefined || value === null) {
+                    return '';
+                }
+                // Handle arrays
                 if (Array.isArray(value)) {
-                    return `"${value.join('; ')}"`;  // Use semicolon instead of comma
+                    return `"${value.join('; ')}"`;
                 }
                 // For non-array values, wrap in quotes if they contain commas or quotes
                 const stringValue = String(value);
                 if (stringValue.includes(',') || stringValue.includes('"')) {
-                    return `"${stringValue.replace(/"/g, '""')}"`;  // Escape quotes by doubling them
+                    return `"${stringValue.replace(/"/g, '""')}"`;
                 }
                 return stringValue;
             })
@@ -67,6 +69,19 @@ export default function AttendeeList() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    };
+
+    const getAllUniqueHeaders = () => {
+        const uniqueHeaders = new Set();
+        attendees.forEach(attendee => {
+            Object.keys(attendee)
+                .filter(key => 
+                    typeof attendee[key] !== 'function' &&
+                    !['attendee_Id', 'is_member', 'member_Id', 'event_Id', 'paymentVerified', 'exists', 'onboarded'].includes(key)
+                )
+                .forEach(key => uniqueHeaders.add(key));
+        });
+        return Array.from(uniqueHeaders) as string[];
     };
 
     useEffect(() => {
@@ -114,47 +129,31 @@ export default function AttendeeList() {
                 <div style={{ minWidth: 'max-content' }}>
                     <div className="table-header" style={{
                         display: 'grid',
-                        gridTemplateColumns: attendees[0] ? 
-                            `repeat(${Object.keys(attendees[0]).filter(key => 
-                                typeof attendees[0][key] !== 'function' &&
-                                !['attendee_Id', 'is_member', 'member_Id', 'event_Id'].includes(key)
-                            ).length}, 200px)` : 'none'
+                        gridTemplateColumns: attendees.length ? 
+                            `repeat(${getAllUniqueHeaders().length}, 200px)` : 'none'
                     }}>
-                        {attendees[0] && Object.keys(attendees[0])
-                            .filter(key => 
-                                typeof attendees[0][key] !== 'function' &&
-                                !['attendee_Id', 'is_member', 'member_Id', 'event_Id'].includes(key)
-                            )
-                            .map(header => (
-                                <div key={header} className="header-cell">
-                                    {header.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
-                                </div>
-                            ))
-                        }
+                        {attendees.length > 0 && getAllUniqueHeaders().map(header => (
+                            <div key={header} className="header-cell">
+                                {header.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                            </div>
+                        ))}
                     </div>
 
                     <div className="table-body">
                         {attendees.map((attendee: any) => (
                             <div key={attendee.id} className="table-row" style={{
                                 display: 'grid',
-                                gridTemplateColumns: `repeat(${Object.keys(attendee).filter(key => 
-                                    typeof attendee[key] !== 'function' &&
-                                    !['attendee_Id', 'is_member', 'member_Id', 'event_Id'].includes(key)
-                                ).length}, 200px)`
+                                gridTemplateColumns: `repeat(${getAllUniqueHeaders().length}, 200px)`
                             }}>
-                                {Object.keys(attendee)
-                                    .filter(key => 
-                                        typeof attendee[key] !== 'function' &&
-                                        !['attendee_Id', 'is_member', 'member_Id', 'event_Id'].includes(key)
-                                    )
-                                    .map(key => (
-                                        <div key={key} className="table-cell">
-                                            {Array.isArray(attendee[key]) 
-                                                ? attendee[key].join(', ')
-                                                : attendee[key]}
-                                        </div>
-                                    ))
-                                }
+                                {getAllUniqueHeaders().map(header => (
+                                    <div key={header} className="table-cell">
+                                        {attendee[header] !== undefined
+                                            ? (Array.isArray(attendee[header])
+                                                ? attendee[header].join(', ')
+                                                : attendee[header])
+                                            : ''}
+                                    </div>
+                                ))}
                             </div>
                         ))}
                     </div>
