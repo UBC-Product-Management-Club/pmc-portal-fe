@@ -32,7 +32,7 @@ export default function EventRegistrationForm({
 
   const {
     register,
-    handleSubmit,
+    handleSubmit
   } = useForm<any>();
 
   useEffect(() => {
@@ -119,14 +119,25 @@ export default function EventRegistrationForm({
   };
 
   return (
-    <form className="form-content form-bg-dark-blue" autoComplete="off" onSubmit={handleSubmit((data) => onSubmit(data, uploadedFiles))}>
+    <form className="form-content form-bg-dark-blue" autoComplete="off" onSubmit={handleSubmit(
+      (data) => onSubmit(data, uploadedFiles),
+      () => {
+        window.alert("Please fill in all required fields");
+      }
+    )}
+    style={{
+      overflowY: 'auto',
+      maxHeight: 'calc(100vh - 150px)'
+    }}
+    >
       <h2>{formData.title}</h2>
+      <small style={{ color: '#999', marginBottom: '16px', display: 'block' }}>* indicates required field</small>
       {formData.questions.map((question, index) => (
         <div key={index} className="form-field">
           {renderQuestion(question)}
         </div>
       ))}
-      <button className="pmc-button pmc-button-white" type="submit">Continue to Payment</button>
+      <button className="pmc-button pmc-button-white" type="submit" style={{ marginTop: '16px' }}>Continue to Payment</button>
     </form>
   );
 }
