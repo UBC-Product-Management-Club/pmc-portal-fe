@@ -6,7 +6,7 @@ type EventCardProps = {
     isSignedIn: boolean;
     event: eventType;
     showRegister?: boolean;
-    handleClick: () => void;
+    handleClick?: () => void;
 };
 
 export function EventCard(props: EventCardProps) {
