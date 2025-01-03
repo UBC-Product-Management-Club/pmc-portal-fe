@@ -1,17 +1,15 @@
 import "./EventCard.css";
 import {eventType} from "../../types/api";
-import {useNavigate} from "react-router-dom";
 import moment from "moment";
 
 type EventCardProps = {
     isSignedIn: boolean;
     event: eventType;
     showRegister?: boolean;
+    handleClick: () => void;
 };
 
 export function EventCard(props: EventCardProps) {
-    const navigateTo = useNavigate()
-
     return (
         <div>
             <h2>{moment(props.event.date).format('MMMM D, YYYY')}</h2>
@@ -35,10 +33,7 @@ export function EventCard(props: EventCardProps) {
                                     ? "disabled-button"
                                     : ""
                                 }`}
-                                onClick={() => {
-                                    navigateTo(`/events/${props.event.event_Id}`);
-                                }
-                                }
+                                onClick={props.handleClick}
 
                             >
                                 See more
