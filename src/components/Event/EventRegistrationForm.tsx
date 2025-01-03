@@ -5,10 +5,11 @@ import EventRegFileUpload from '../FormInput/EventRegFileUpload';
 import EventRegText from '../FormInput/EventRegText';
 import EventRegistrationFormInput from '../FormInput/EventRegFormInput';
 import { EventRegFormSchema } from '../FormInput/EventRegFormUtils';
+import EventRegCheckbox from '../FormInput/EventRegCheckbox';
 
 type Question = {
   label: string;
-  questionType: 'short-answer' | 'long-answer' | 'dropdown' | 'file';
+  questionType: 'short-answer' | 'long-answer' | 'dropdown' | 'file' | 'checkbox';
   options?: string[];
   required?: boolean;
 };
@@ -100,6 +101,16 @@ export default function EventRegistrationForm({
             type="text"
             placeholder={question.label}
             name={question.label}
+            register={register}
+            required={question.required}
+          />
+        );
+
+      case 'checkbox':
+        return (
+          <EventRegCheckbox
+            name={question.label}
+            options={question.options || []}
             register={register}
             required={question.required}
           />
