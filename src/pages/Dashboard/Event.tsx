@@ -10,14 +10,15 @@ import {FaDollarSign} from "react-icons/fa6";
 import moment from 'moment';
 
 const Event: React.FC = () => {
-    const {isSignedIn} = useAuth();
+    const {isSignedIn, userData} = useAuth();
     const [event, setEvent] = useState<eventType | null>(null);
     const {event_id} = useParams<{ event_id: string }>();
     const [loading, setLoading] = useState(true);
     const [isSignUpFormOpen, setIsSignUpFormOpen] = useState(false);
+    const [isRegistered, setIsRegistered] = useState(false);
     let isEventFull = false;
     if (event) {
-        isEventFull = event.maxAttendee !== null && event.attendee_Ids?.length >= event.maxAttendee;
+        isEventFull = event.maxAttendee !== -1 && event.attendee_Ids?.length >= event.maxAttendee;
     }
 
     async function fetchEvent() {
@@ -31,12 +32,26 @@ const Event: React.FC = () => {
                     },
                 }
             );
-
-            if (!response.ok) {
+            const isRegistered = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/${event_id}/attendees/isRegistered`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: userData?.email,
+                }),
+            });
+            
+            if (!response.ok || !isRegistered.ok) {
                 throw new Error("Network response was not ok");
             }
             const data: eventType = await response.json();
-            setEvent(data)
+            const isRegisteredData = await isRegistered.json();
+            setIsRegistered(isRegisteredData.isRegistered);
+            setEvent({
+                ...data,
+                date: moment(data.date).toDate(),
+            });
         } catch (error) {
             console.error("Error fetching event:", error);
         } finally {
@@ -57,6 +72,17 @@ const Event: React.FC = () => {
     useEffect(() => {
         fetchEvent();
     }, [event_id]);
+
+    const getButtonText = () => {
+        switch (true) {
+            case isEventFull:
+                return <span className="signup-button-sorry-text">Sorry, the event is full</span>;
+            case isRegistered:
+                return <span className="signup-button-text">You've already registered</span>;
+            default:
+                return <span className="signup-button-text">Sign up</span>;
+        }
+    };
 
     if (loading) return <p style={{color: "white"}}>Loading...</p>;
     if (!event)
@@ -90,8 +116,13 @@ const Event: React.FC = () => {
                                 <div className="icon"><MdOutlinePeopleAlt/></div>
                                 <div className="text-container">
                                     <div>
-                                        <h3>{event.maxAttendee - event.attendee_Ids.length}/{event.maxAttendee} spots left</h3>
-                                        {event.attendee_Ids.length >= 0 ? (
+                                        <h3>
+                                            {event.maxAttendee === -1 
+                                                ? 'Unlimited spots'
+                                                : `${event.maxAttendee - event.attendee_Ids.length}/${event.maxAttendee} spots left`
+                                            }
+                                        </h3>
+                                        {event.attendee_Ids.length > 0 ? (
                                             <h4>Register now!</h4>
                                         ) : (
                                             <h4>Be the first to sign up!</h4>
@@ -145,9 +176,8 @@ const Event: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <button className="signup-button" disabled={isEventFull} onClick={() => setIsSignUpFormOpen(true)}>
-                        {isEventFull ? <span className="signup-button-sorry-text">Sorry, the event is full</span> :
-                            <span className="signup-button-text">Sign up</span>}
+                    <button className="signup-button" disabled={isEventFull || isRegistered} onClick={() => setIsSignUpFormOpen(true)}>
+                        {getButtonText()}
                     </button>
                     <EventRegistrationModal
                         isModalOpen={isSignUpFormOpen}
@@ -155,6 +185,7 @@ const Event: React.FC = () => {
                         eventId={event_id ?? ""}
                         memberPrice={event.member_price}
                         nonMemberPrice={event.non_member_price}
+                        formId={event.eventFormId}
                     />
                 </div>
             </div>

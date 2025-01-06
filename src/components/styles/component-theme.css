@@ -79,7 +79,6 @@
 }
 
 .form-input:valid {
-    background-color: var(--pmc-purple);
     color: white;
 }
 
@@ -102,6 +101,9 @@
 
 
 .form-select:valid {
-    background-color: var(--pmc-purple);
+    color: white;
+}
+
+input::placeholder {
     color: white;
 }

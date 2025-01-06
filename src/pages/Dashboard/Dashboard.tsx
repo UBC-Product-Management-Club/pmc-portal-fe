@@ -5,12 +5,12 @@ import {eventType} from "../../types/api";
 import {EventCard} from "../../components/Event/EventCard";
 import {useAuth} from "../../providers/Auth/AuthProvider";
 import { useAuth0 } from "@auth0/auth0-react";
-
+import { useNavigate } from "react-router-dom";
 export default function Dashboard() {
     const {userData, isSignedIn} = useAuth();
     const {user} = useAuth0();
     const [allEvents, setAllEvents] = useState<eventType[]>([]);
-
+    const navigateTo = useNavigate();
     async function dashboardComponents() {
         try {
             const response = await fetch(
@@ -82,6 +82,9 @@ export default function Dashboard() {
                 isSignedIn={isSignedIn}
                 event={event}
                 showRegister={true}
+                handleClick={() => {
+                  navigateTo(`/events/${event.event_Id}`);
+                }}
               />
             ))
           ) : (

@@ -26,7 +26,7 @@ export function EventPayment(props: EventPaymentProps) {
                 amt: fee
             }} SuccessOptions={{
             heading: "Payment successful",
-            subheading: `We've processed your $${fee} charge.`,
+            subheading: `We've processed your $${fee} charge. You will receive a confirmation email shortly. Please contact connect@ubcpmc.com if you have any questions.`,
             continueBtnText: "Close"
         }}
         >

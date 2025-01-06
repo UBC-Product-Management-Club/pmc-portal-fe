@@ -12,6 +12,7 @@ type UserDataFormProps = {
     excludeReturningAndWhyPM?: boolean;
     includeEmail?: boolean;
     hasWaiver?: boolean;
+    buttonText?: string;
 };
 
 export function UserDataForm({
@@ -19,6 +20,7 @@ export function UserDataForm({
                                  excludeReturningAndWhyPM,
                                  includeEmail,
                                  hasWaiver,
+                                 buttonText = "Continue to Payment"
                              }: UserDataFormProps) {
     const {
         register,
@@ -240,7 +242,7 @@ export function UserDataForm({
                 )}
 
                 <button className="submit-button pmc-gradient-background" type="submit">
-                    Continue to Payment
+                    {buttonText}
                 </button>
             </div>
         </form>
