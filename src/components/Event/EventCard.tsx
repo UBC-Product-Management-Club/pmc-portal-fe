@@ -22,7 +22,7 @@ export function EventCard(props: EventCardProps) {
             >
                 <div className={"card-container"}>
                     <div className={"event-col"}>
-                        <p className="event-time-loc">7:00 PM | {props.event.location}</p>
+                        <p className="event-time-loc">{props.event.start_time} - {props.event.end_time} | {props.event.location}</p>
                         <p className="event-name">{props.event.name}</p>
                         <p className="event-description">{props.event.description}</p>
 
