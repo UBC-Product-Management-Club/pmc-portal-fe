@@ -15,7 +15,7 @@ interface EventRegDropdownProps {
 
 export default function EventRegDropdown({ name, placeholder, options, register, required }: EventRegDropdownProps) {
     return (
-        <select className={"form-select"} required={required}
+        <select className={"form-select event-form-select"} required={required}
                 {...register(name, {required: "please select a value"})}>
             <option value={""} hidden>{required ? `${placeholder} *` : placeholder}</option>
             {options.map((option) => (
