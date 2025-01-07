@@ -3,7 +3,7 @@ import {AuthContextType, AuthProviderProps} from "./types";
 import {onboardingBody, userDocument} from "../../types/api";
 import AuthContext from "./AuthContext";
 import {useAuth0} from "@auth0/auth0-react";
-import FF from "../../../feature-flag.json";
+// import FF from "../../../feature-flag.json";
 
 export const useAuth = (): AuthContextType => {
     const context = useContext(AuthContext);
@@ -14,41 +14,71 @@ export const useAuth = (): AuthContextType => {
 };
 
 export function AuthProvider({children}: AuthProviderProps) {
-    const {user, isAuthenticated, getIdTokenClaims} = useAuth0();
+    const {user, isAuthenticated, getIdTokenClaims, isLoading: auth0Loading} = useAuth0();
     const [userData, setUserData] = useState<userDocument | null>(null);
     const [isSignedIn, setIsSignedIn] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const handleLogin = async () => {
-        setIsLoading(true);
         try {
             await migrateOldUser();
-
             const data = await fetchUserData(user!.sub!);
+            
             if (data) {
                 setUserData(data);
+                // Store minimal session data in localStorage
+                localStorage.setItem('lastSession', JSON.stringify({
+                    userId: user!.sub,
+                    timestamp: new Date().getTime()
+                }));
             }
 
-            if (!FF.stripePayment) {
-                setIsSignedIn(!!user && !!data && data.paymentVerified!);
-            } else {
-                setIsSignedIn(!!user && !!data);
-            }
+            setIsSignedIn(!!user && !!data);
         } catch (e) {
-            console.error(e);
+            console.error('Login error:', e);
+            setIsSignedIn(false);
         } finally {
             setIsLoading(false);
         }
     }
 
+    // Handle initial load and auth state changes
     useEffect(() => {
-        if (isAuthenticated && user) {
-            handleLogin();
-        } else {
-            setUserData(null);
-            setIsSignedIn(false);
-        }
-    }, [isAuthenticated, user])
+        const initializeAuth = async () => {
+            if (!auth0Loading) {
+                if (isAuthenticated && user) {
+                    await handleLogin();
+                } else {
+                    // Check for existing session
+                    const lastSession = localStorage.getItem('lastSession');
+                    if (lastSession) {
+                        const { timestamp } = JSON.parse(lastSession);
+                        const sessionAge = new Date().getTime() - timestamp;
+                        // If session is less than 24 hours old, try to restore it
+                        if (sessionAge < 24 * 60 * 60 * 1000) {
+                            await getIdTokenClaims(); // This will trigger a token refresh if needed
+                        } else {
+                            localStorage.removeItem('lastSession');
+                            setIsSignedIn(false);
+                            setUserData(null);
+                        }
+                    }
+                    setIsLoading(false);
+                }
+            }
+        };
+
+        initializeAuth();
+    }, [auth0Loading, isAuthenticated, user]);
+
+    // Clear session on unmount if needed
+    useEffect(() => {
+        return () => {
+            if (!isAuthenticated) {
+                localStorage.removeItem('lastSession');
+            }
+        };
+    }, [isAuthenticated]);
 
     const fetchUserData = async (uid: string): Promise<userDocument | undefined> => {
         try {
@@ -157,15 +187,8 @@ export function AuthProvider({children}: AuthProviderProps) {
         }
     }
 
-    const value: AuthContextType = {
-        userData,
-        setUserData,
-        isSignedIn,
-        setIsSignedIn
-    };
-
     return (
-        <AuthContext.Provider value={value}>
+        <AuthContext.Provider value={{userData, setUserData, isSignedIn, setIsSignedIn}}>
             {!isLoading && children}
         </AuthContext.Provider>
     );
