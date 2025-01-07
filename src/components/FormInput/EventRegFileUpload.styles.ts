@@ -24,7 +24,7 @@ export const UploadButton = styled.button`
   border-radius: 24px;
   color: #5C5CFF;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   transition: all 0.2s ease;
 
   &:hover {
