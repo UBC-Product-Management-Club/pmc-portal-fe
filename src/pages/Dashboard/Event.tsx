@@ -5,7 +5,7 @@ import "./Event.css";
 import {useAuth} from "../../providers/Auth/AuthProvider";
 import {EventRegistrationModal} from "../../components/Event/EventRegistrationModal";
 import {CiCalendar, CiLocationOn} from "react-icons/ci";
-import {MdOutlinePeopleAlt} from "react-icons/md";
+// import {MdOutlinePeopleAlt} from "react-icons/md";
 import {FaDollarSign} from "react-icons/fa6";
 import moment from 'moment';
 
@@ -111,7 +111,7 @@ const Event: React.FC = () => {
                                     <h4>Get directions</h4>
                                 </div>
                             </div>
-                            <div className="icon-text">
+                            {/* <div className="icon-text">
                                 <div className="icon"><MdOutlinePeopleAlt/></div>
                                 <div className="text-container">
                                     <div>
@@ -128,7 +128,7 @@ const Event: React.FC = () => {
                                         )}
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                             {/* <div className="icon-text">
                                 <div className="icon"><PiLinkSimpleLight /></div>
                                 <div className="text-container">
