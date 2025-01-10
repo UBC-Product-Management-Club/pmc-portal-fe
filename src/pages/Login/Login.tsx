@@ -25,22 +25,18 @@ export default function Login() {
 
   const handleLogin = () => {
     if (isInAppBrowser()) {
-      // Try Chrome first
-      window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
+      const ua = window.navigator.userAgent.toLowerCase();
+      const hasChrome = ua.includes('crios') || ua.includes('android');
+      const message = hasChrome 
+        ? "For security reasons, we'll redirect you to Chrome to complete the login. In-app browsers are not supported for secure login."
+        : "For security reasons, please open this page in Safari to log in. In-app browsers are not supported for secure login.";
       
-      // For iOS, try sharing the URL if available
-      if (navigator.share) {
-        const shareUrl = `https://${window.location.host}${window.location.pathname}`;
-        navigator.share({
-          url: shareUrl,
-          title: 'Open in Safari',
-        }).catch(() => {
-          // If share fails or user cancels, fallback to direct redirect
-          window.location.href = shareUrl;
-        });
-      } else {
-        // Fallback for browsers without share capability
-        window.location.href = `https://${window.location.host}${window.location.pathname}`;
+      if (window.confirm(message)) {
+        if (hasChrome) {
+          // Redirect to Chrome for both iOS (CriOS) and Android users
+          window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
+        }
+        // For Safari-only users, they'll need to switch manually
       }
     } else {
       loginWithRedirect();
