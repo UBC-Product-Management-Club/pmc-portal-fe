@@ -25,11 +25,12 @@ export default function Login() {
 
   const handleLogin = () => {
     if (isInAppBrowser()) {
+      window.alert("Log in is not supported in this browser. Redirecting to an external browser...");
       // For Chrome on both iOS and Android
       window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
       // Fallback for Safari on iOS
       setTimeout(() => {
-        window.location.href = `safari-https://${window.location.host}${window.location.pathname}`;
+        window.location.href = `safari://${window.location.host}${window.location.pathname}`;
       }, 100);
       // Final fallback
       setTimeout(() => {
