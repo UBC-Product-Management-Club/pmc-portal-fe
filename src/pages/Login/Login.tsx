@@ -25,8 +25,8 @@ export default function Login() {
 
   const handleLogin = () => {
     if (isInAppBrowser()) {
-      // Open in default browser
-      window.open(window.location.href, '_system');
+      // Open in default browser with _blank target
+      window.open(window.location.href, '_blank');
     } else {
       loginWithRedirect();
     }
