@@ -26,10 +26,10 @@ export default function Login() {
   const handleLogin = () => {
     if (isInAppBrowser()) {
       // Force opening in external browser by changing window location
-      window.location.href = `googlechrome://${encodeURIComponent(window.location.href)}`;
+      window.location.href = `googlechrome://navigate?${encodeURIComponent(window.location.href)}`;
       // Fallback for iOS
       setTimeout(() => {
-        window.location.href = `x-web-search://${encodeURIComponent(window.location.href)}`;
+        window.location.href = `x-web-search://?url=${encodeURIComponent(window.location.href)}`;
       }, 100);
       // Final fallback to normal https
       setTimeout(() => {
