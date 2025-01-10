@@ -25,13 +25,24 @@ export default function Login() {
 
   const handleLogin = () => {
     if (isInAppBrowser()) {
-      window.alert("Log in is not supported in this browser. Redirecting to an external browser...");
-      // For Chrome on both iOS and Android
+      // Try Chrome first
       window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
-      // Fallback for Safari on iOS
-      setTimeout(() => {
+      
+      // For iOS, try sharing the URL if available
+      if (navigator.share) {
+        const shareUrl = `https://${window.location.host}${window.location.pathname}`;
+        navigator.share({
+          url: shareUrl,
+          title: 'Open in Safari',
+        }).catch(() => {
+          // If share fails or user cancels, fallback to direct redirect
+          window.location.href = shareUrl;
+        });
+      } else {
+        // Fallback for browsers without share capability
         window.location.href = `https://${window.location.host}${window.location.pathname}`;
-      }, 100);
+      }
+
       // Final fallback
       setTimeout(() => {
         loginWithRedirect();
