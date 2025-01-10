@@ -25,13 +25,24 @@ export default function Login() {
 
   const handleLogin = () => {
     if (isInAppBrowser()) {
+      let redirected = false;
+    
+      // Redirect to Chrome
       window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
-      const message = "For security reasons, please open this page in Safari to log in. In-app browsers are not supported for secure login.";
-      
+    
+      // Wait to detect if page unloads
+      window.addEventListener('beforeunload', () => {
+        redirected = true;
+      });
+    
       setTimeout(() => {
-        window.alert(message);
-      }, 100);
-    } else {
+        if (!redirected) {
+          const message = "For security reasons, please open this page in Safari to log in. In-app browsers are not supported for secure login.";
+          window.alert(message);
+        }
+      }, 200); // Give a half-second for the redirection to succeed
+    }
+     else {
       loginWithRedirect();
     }
   };
