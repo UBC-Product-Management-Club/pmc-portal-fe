@@ -42,11 +42,6 @@ export default function Login() {
         // Fallback for browsers without share capability
         window.location.href = `https://${window.location.host}${window.location.pathname}`;
       }
-
-      // Final fallback
-      setTimeout(() => {
-        loginWithRedirect();
-      }, 200);
     } else {
       loginWithRedirect();
     }
