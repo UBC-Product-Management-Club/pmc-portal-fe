@@ -149,7 +149,7 @@ export function AuthProvider({children}: AuthProviderProps) {
         }
 
         const idToken = claims.__raw;
-        const body: onboardingBody = {
+        const onboardingInfo: onboardingBody = {
             creds: {
                 userUID: user.sub,
                 idToken: idToken
@@ -165,7 +165,7 @@ export function AuthProvider({children}: AuthProviderProps) {
             headers: {
                 'Content-type': 'application/json',
             },
-            body: JSON.stringify(body)
+            body: JSON.stringify({ onboardingInfo })
         })
         if (!onboardUser.ok) {
             throw Error("Failed adding user to database")
