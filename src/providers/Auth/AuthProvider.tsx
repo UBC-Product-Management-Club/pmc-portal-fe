@@ -159,7 +159,7 @@ export function AuthProvider({children}: AuthProviderProps) {
                 onboarded: true
             }
         }
-        const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
+        const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboard`, {
             method: "POST",
             credentials: "include",
             headers: {
