@@ -149,7 +149,7 @@ export function AuthProvider({children}: AuthProviderProps) {
         }
 
         const idToken = claims.__raw;
-        const body: onboardingBody = {
+        const onboardingInfo: onboardingBody = {
             creds: {
                 userUID: user.sub,
                 idToken: idToken
@@ -159,13 +159,13 @@ export function AuthProvider({children}: AuthProviderProps) {
                 onboarded: true
             }
         }
-        const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboarding`, {
+        const onboardUser = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/onboard`, {
             method: "POST",
             credentials: "include",
             headers: {
                 'Content-type': 'application/json',
             },
-            body: JSON.stringify(body)
+            body: JSON.stringify({ onboardingInfo })
         })
         if (!onboardUser.ok) {
             throw Error("Failed adding user to database")
