@@ -27,7 +27,8 @@ export type FormInputProps = {
     error: FieldError | undefined
     valueAsNumber?: boolean
 };
-  
+
 
 export type ValidFieldNames = "first_name" | "last_name" | "pronouns" | "email" | "student_id" | "university" |
-                              "year" | "faculty" | "major" | "why_pm" | "returning_member";
+    "year" | "faculty" | "major" | "why_pm" | "returning_member";
+
