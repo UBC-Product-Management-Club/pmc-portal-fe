@@ -1,4 +1,3 @@
-import PMCLogo from "../../assets/pmclogo.svg";
 import EmailRaffleFormInput from "../../components/FormInput/EmailRaffleFormInput";
 import { useForm } from "react-hook-form";
 import '../Activities/EnterEmail.css';
