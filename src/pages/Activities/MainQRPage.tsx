@@ -57,7 +57,7 @@ export default function MainQRPage() {
 
     if (!email) {
         return (
-            <div className="card-container">
+            <div className="qr-page-container">
                 <EnterEmail onSubmit={submit} />
             </div>
         )
@@ -65,7 +65,7 @@ export default function MainQRPage() {
 
     if (error) {
         return (
-            <div className="card-container">
+            <div className="qr-page-container">
                 <div className="error-x-container">
                     <div className="error-x-circle">
                         <div className="error-x"></div>
@@ -78,7 +78,7 @@ export default function MainQRPage() {
     }
 
     return (
-        <div className="card-container">
+        <div className="qr-page-container">
             {qrCodeId && (
                 <>
                     <div className="checkmark-container">

@@ -2,7 +2,7 @@
     --nav-width: 64vw;
 }
 
-.card-container {
+.qr-page-container {
     width: min(90vw, var(--navbar-width));
     display: flex;
     flex-direction: column;
