@@ -21,23 +21,15 @@ const Event: React.FC = () => {
         isEventFull = event.maxAttendee !== -1 && event.attendee_Ids?.length >= event.maxAttendee;
     }
 
-    const attendeeEmail = localStorage.getItem(event_id!); // attendeeEmail or userEmail
-    const userEmail = userData?.email;
-
-
     async function fetchEvent() {
         try {
             const response = await fetch(
                 `${import.meta.env.VITE_API_URL}/api/v1/events/${event_id}`,
                 {
-                    method: "POST",
+                    method: "GET",
                     headers: {
                         "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ // optional
-                        attendeeEmail,
-                        userEmail,
-                    }),
+                    }
                 }
             );
             const isRegistered = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/${event_id}/attendees/isRegistered`, {
@@ -94,17 +86,6 @@ const Event: React.FC = () => {
     if (loading) return <p style={{color: "white"}}>Loading...</p>;
     if (!event)
         return <p style={{ color: "white" }}>No event details available.</p>;
-
-    const buttonText = (() => {
-        switch (true) {
-            case isEventFull:
-                return <span className="signup-button-sorry-text">Sorry, the event is full</span>;
-            // case event.isRegistered:
-            //     return <span className="signup-button-sorry-text">You've already registered</span>;
-            default:
-                return <span className="signup-button-text">Sign up</span>;
-        }
-    })();
 
     return (
         <div className="background-event">

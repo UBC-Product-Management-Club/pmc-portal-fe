@@ -15,7 +15,6 @@ import AllUsers from "./pages/Admin/AllUsers/AllUsers.tsx";
 import AllEvents from "./pages/Admin/Events/AllEvents.tsx";
 import AttendeeList from "./pages/Admin/Events/AttendeeList.tsx";
 import MainQRPage from "./pages/Activities/MainQRPage.tsx";
-import EnterEmail from "./pages/Activities/EnterEmail.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
@@ -44,7 +43,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                             <Route path="/admin/events" element={<AllEvents/>}/>
                             <Route path="/admin/events/:event_id/attendees" element={<AttendeeList/>}/>
                             <Route path="/pconf/raffle-tracker" element={<MainQRPage />} />
-                            <Route path="/pconf/raffle-tracker/email-pop-up" element={<EnterEmail />} />
                         </Route>
                     </Routes>
                 </AuthProvider>

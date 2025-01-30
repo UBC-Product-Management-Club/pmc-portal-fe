@@ -1,4 +1,3 @@
-import { useParams } from "react-router-dom";
 import PMCLogo from "../../assets/pmclogo.svg";
 import EmailRaffleFormInput from "../../components/FormInput/EmailRaffleFormInput";
 import { useForm } from "react-hook-form";
@@ -6,23 +5,20 @@ import '../Activities/EnterEmail.css';
 
 export const localEmail = localStorage.getItem("email");
 
-type RaffleFormData = {
+export type RaffleFormData = {
     email: string;
 };
 
+interface enterEmailPropType {
+    onSubmit: (data: RaffleFormData) => void;
+}
 
-export default function EnterEmail() {
-    const { email } = useParams<{ email: string }>(); // takes value of email - not used?
+export default function EnterEmail({ onSubmit }: enterEmailPropType) {
     const { register, handleSubmit, formState: { errors } } = useForm<RaffleFormData>();
-    const onSubmit = (data: any) => {
-        localStorage.setItem("email", data.email);
-        console.log("Email sent to main raffle page to continue");
-    };
 
     return (
         <form className="raffle-form" onSubmit={handleSubmit(onSubmit)}>
-            <img src={PMCLogo} className="logo" alt={"PMC Logo"} />
-            <h2>Enter your email address</h2>
+            <h2>Start tracking your raffle by entering your email address</h2>
             <div className="raffle-email-form">
                 <EmailRaffleFormInput
                     type="email"
@@ -32,6 +28,9 @@ export default function EnterEmail() {
                     error={errors.email}
                 />
             </div>
+            <button className="submit-button pmc-gradient-background raffle-button" type="submit">
+                Submit
+            </button>
         </form>
     );
 }

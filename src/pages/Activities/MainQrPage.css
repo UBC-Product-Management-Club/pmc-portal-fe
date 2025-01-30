@@ -5,9 +5,9 @@
 .card-container {
     width: min(90vw, var(--navbar-width));
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 1rem;
-    justify-content: center;
+    align-items: center;
 }
 
 .raffle-card {
@@ -32,6 +32,12 @@
     color: #DDD2FF;
     background: linear-gradient(90deg, #DCE1FF 0%, #DDD7FF 23%, #DDD2FF 59%, #8D9BEB 87%);
     -webkit-background-clip: text;
+    text-align: center;
+}
+
+.raffle-subtext {
+    color: white;
+    text-align: center;
 }
 
 
