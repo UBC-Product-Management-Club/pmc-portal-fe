@@ -1,11 +1,11 @@
-import {useEffect} from "react";
-import {Outlet, useNavigate} from "react-router-dom";
-import {useAuth0} from "@auth0/auth0-react";
-import {useAuth} from "./AuthProvider";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "./AuthProvider";
 
 export default function AuthRedirect() {
-    const {isAuthenticated, isLoading} = useAuth0();
-    const {userData} = useAuth();
+    const { isAuthenticated, isLoading } = useAuth0();
+    const { userData } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,5 +20,5 @@ export default function AuthRedirect() {
         }
     }, [isLoading, isAuthenticated, userData, navigate]);
 
-    return <><Outlet/></>;
+    return <><Outlet /></>;
 }

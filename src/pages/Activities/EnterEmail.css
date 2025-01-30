@@ -1,0 +1,10 @@
+.raffle-form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.raffle-email-form {
+    margin-bottom: 1.5rem;
+}
