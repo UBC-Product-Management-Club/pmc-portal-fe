@@ -4,7 +4,7 @@ import { FaSync, FaFileDownload, FaArrowLeft } from "react-icons/fa";
 import { useParams, useNavigate } from "react-router-dom";
 
 export default function AttendeeList() {
-    const [attendees, setAttendees] = useState([]);
+    const [attendees, setAttendees] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const { event_id } = useParams();
     const navigate = useNavigate();
@@ -35,20 +35,28 @@ export default function AttendeeList() {
         
         const csvData = attendees.map((attendee: any) => 
             headers.map(header => {
-                const value = attendee[header];
-                // If value is undefined or null, return empty string
+                let value = attendee[header];
+        
+                // Convert null or undefined values to an empty string
                 if (value === undefined || value === null) {
                     return '';
                 }
-                // Handle arrays
+        
+                // Convert arrays to a semicolon-separated string
                 if (Array.isArray(value)) {
-                    return `"${value.join('; ')}"`;
+                    value = value.join('; ');
                 }
-                // For non-array values, wrap in quotes if they contain commas or quotes
-                const stringValue = String(value);
-                if (stringValue.includes(',') || stringValue.includes('"')) {
-                    return `"${stringValue.replace(/"/g, '""')}"`;
+        
+                // Convert to string and clean up special characters
+                let stringValue = String(value).trim()
+                    .replace(/"/g, '""')  // Escape double quotes
+                    .replace(/\r\n|\n|\r/g, ' '); // Remove line breaks
+        
+                // Wrap in quotes if it contains a comma, double quote, or new lines
+                if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+                    return `"${stringValue}"`;
                 }
+        
                 return stringValue;
             })
         );
