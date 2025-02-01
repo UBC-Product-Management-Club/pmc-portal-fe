@@ -5,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 
 export default function MainQRPage() {
     const [error, setError] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const [email, setEmail] = useState(localStorage.getItem("attendee-email") || "");
     const [raffleTickets, setRaffleTickets] = useState(0);
@@ -22,6 +23,7 @@ export default function MainQRPage() {
         if (!email) return;
 
         (async () => {
+            setLoading(true);
             try {
                 let url = `${import.meta.env.VITE_API_URL}/api/v1/attendee/${event_id}/${email}/qr`;
                 if (qrCodeId) {
@@ -51,6 +53,8 @@ export default function MainQRPage() {
             } catch (err: any) {
                 setError(true);
                 setErrorMsg(err.message);
+            } finally {
+                setLoading(false);
             }
         })();
     }, [email, qrCodeId]); // Ensure useEffect runs when email changes
@@ -59,6 +63,13 @@ export default function MainQRPage() {
         return (
             <div className="qr-page-container">
                 <EnterEmail onSubmit={submit} />
+            </div>
+        )
+    }
+    if (loading) {
+        return (
+            <div className="qr-page-container">
+                <p className="raffle-subtext">Loading...</p>
             </div>
         )
     }
@@ -72,7 +83,7 @@ export default function MainQRPage() {
                     </div>
                 </div>
                 <p className="raffle-name"> Oooops... something went wrong! </p>
-                <h3 className="raffle-subtext">{errorMsg}</h3>
+                <h3 className="raffle-name">{errorMsg}</h3>
             </div>
         )
     }
