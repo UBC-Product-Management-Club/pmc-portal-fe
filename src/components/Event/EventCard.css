@@ -45,7 +45,6 @@
 }
 
 .event-col {
-    height: 15rem;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -70,7 +69,6 @@
 }
 
 .event-time-loc {
-    height: 19px;
     font-style: normal;
     font-weight: 510;
     font-size: 16px;
@@ -196,7 +194,6 @@
   }
 
   .event-image {
-    width: 100%;
     margin-left: 0;
     align-self: center;
   }
