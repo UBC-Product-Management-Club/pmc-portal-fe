@@ -35,14 +35,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                             <Route path={"/login"} element={<Login />} />
                             <Route path={"/onboarding"} element={<Onboarding />} />
                         </Route>
-                        <Route element={<Layout/>}>
-                            <Route path="/dashboard" element={<Dashboard/>}/>
-                            <Route path="/events/:event_id" element={<Event/>}/>
-                            <Route path="/profile" element={<Profile/>}/>
-                            <Route path="/admin/users" element={<AllUsers/>}/>
-                            <Route path="/admin/events" element={<AllEvents/>}/>
-                            <Route path="/admin/events/:event_id/attendees" element={<AttendeeList/>}/>
-                            <Route path="/pconf/raffle-tracker" element={<MainQRPage />} />
+                        <Route element={<Layout />}>
+                            <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/events/:event_id" element={<Event />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/admin/users" element={<AllUsers />} />
+                            <Route path="/admin/events" element={<AllEvents />} />
+                            <Route path="/admin/events/:event_id/attendees" element={<AttendeeList />} />
+                            <Route path="/psprint/raffle-tracker" element={<MainQRPage />} />
                         </Route>
                     </Routes>
                 </AuthProvider>

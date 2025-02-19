@@ -10,7 +10,7 @@ export default function MainQRPage() {
     const [email, setEmail] = useState(localStorage.getItem("attendee-email") || "");
     const [raffleTickets, setRaffleTickets] = useState(0);
     const [searchParams] = useSearchParams();
-    const event_id = "56c8bfbf-f8c2-4794-9531-d6ad93d750aa"; // Product conference event ID
+    const event_id = "xUIGbhL9btd9Pn0kdda2"; // Product sprint event ID
     const qrCodeId = searchParams.get("qrid");
 
     const submit = (emailData: RaffleFormData) => {

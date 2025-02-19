@@ -39,7 +39,7 @@ export function Navbar() {
             <img src={PMCLogo} className="logo" alt={"PMC Logo"} />
         </a>
         <nav className="navbar-nav">
-            <a href="/pconf/raffle-tracker" className="navbar-link">
+            <a href="/psprint/raffle-tracker" className="navbar-link">
                 Raffle Tracker
             </a>
             <a href="/dashboard" className="navbar-link">
