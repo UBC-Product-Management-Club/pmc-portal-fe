@@ -30,8 +30,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             >
                 <AuthProvider>
                     <Routes>
-                        <Route path={"/"} element={<Login />} />
-                        {/* <Route element={<AuthRedirect />}>
+                        <Route element={<AuthRedirect />}>
                             <Route path={"/"} />
                             <Route path={"/login"} element={<Login />} />
                             <Route path={"/onboarding"} element={<Onboarding />} />
@@ -44,7 +43,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                             <Route path="/admin/events" element={<AllEvents />} />
                             <Route path="/admin/events/:event_id/attendees" element={<AttendeeList />} />
                             <Route path="/psprint/raffle-tracker" element={<MainQRPage />} />
-                        </Route> */}
+                        </Route>
                     </Routes>
                 </AuthProvider>
             </Auth0Provider>
