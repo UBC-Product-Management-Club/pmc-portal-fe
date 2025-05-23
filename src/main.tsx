@@ -3,18 +3,8 @@ import ReactDOM from "react-dom/client";
 import Login from "./pages/Login/Login.tsx";
 import "./index.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Dashboard from "./pages/Dashboard/Dashboard.tsx";
-import Event from "./pages/Dashboard/Event.tsx";
-import { Profile } from "./pages/Profile/Profile";
-import { Layout } from "./layout";
 import { Auth0Provider } from "@auth0/auth0-react";
-import Onboarding from "./components/OnboardingForm/Onboarding";
 import { AuthProvider } from "./providers/Auth/AuthProvider";
-import AuthRedirect from "./providers/Auth/AuthRedirect";
-import AllUsers from "./pages/Admin/AllUsers/AllUsers.tsx";
-import AllEvents from "./pages/Admin/Events/AllEvents.tsx";
-import AttendeeList from "./pages/Admin/Events/AttendeeList.tsx";
-import MainQRPage from "./pages/Activities/MainQRPage.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
