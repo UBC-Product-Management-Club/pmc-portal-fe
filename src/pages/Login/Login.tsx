@@ -42,12 +42,13 @@ export default function Login() {
         <img className="login-content--logo" src={PMCLogo} />
         <h1 className="login-content--header">PMC Membership Portal</h1>
         <div className="login-content--button-container">
-          <button className="login-googlesso" onClick={handleLogin}>
+          <button className="login-googlesso" onClick={() => {console.log("under construction!")}}>
             Log in / sign up
           </button>
           <button
             className="login-continue"
-            onClick={() => navigateTo("/dashboard")}
+            // onClick={() => navigateTo("/dashboard")}
+            onClick={() => {console.log("under construction!")}}
           >
             Continue as a non-member
           </button>
