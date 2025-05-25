@@ -37,7 +37,7 @@ export default function Login() {
   return (
     <div className="login-container">
       <div className="login-content">
-        <img className="login-content--logo" src={PMCLogo} />
+        <img className="login-content--logo" data-testid="logo" src={PMCLogo} />
         <h1 className="login-content--header">PMC Membership Portal</h1>
         <div className="login-content--button-container">
           <button className="login-googlesso" onClick={() => console.log("under construction!")}>
