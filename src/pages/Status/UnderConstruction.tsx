@@ -7,7 +7,7 @@ const Centered = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  overflow: hidden;
+  background-color: var(--pmc-midnight-grey);
 `;
 
 const Container = styled.div`
@@ -18,33 +18,14 @@ const Container = styled.div`
   width: 100%;
   height: 100vh;
   position: relative;
-
-  @media screen and (max-width: 768px) {
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    min-height: 100vh;
-  }
 `;
 
 const Content = styled.div`
-  width: 36rem;
-  height: 27rem;
-  margin: auto;
-  padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   color: var(--pmc-midnight-blue);
-  box-sizing: border-box;
-
-  @media screen and (max-width: 768px) {
-    width: 100%;
-    height: auto;
-    min-height: auto;
-    margin: 0;
-  }
+  font-family: Poppins;
 `;
 
 const Logo = styled.img`
@@ -58,11 +39,7 @@ const Logo = styled.img`
 `;
 
 const Header = styled.h1`
-  text-align: center;
-  font-family: Poppins;
-  line-height: 1.5;
   font-size: 70px;
-  background-clip: text;
   margin: 0;
   @media screen and (max-width: 768px) {
     font-size: 40px;
@@ -71,7 +48,6 @@ const Header = styled.h1`
 
 const SubHeader = styled.p`
   text-align: center;
-  font-family: Poppins;
   font-size: 30px;
   margin: -20px;
   @media screen and (max-width: 768px) {
@@ -82,8 +58,6 @@ const SubHeader = styled.p`
 
 const Paragraph = styled.p`
   font-size: 20px;
-  line-height: 1.6;
-  margin: 0.5rem 0;
   text-align: center;
   @media screen and (max-width: 768px) {
     font-size: 16px;
@@ -92,9 +66,7 @@ const Paragraph = styled.p`
 
 const Link = styled.a`
   color: var(--pmc-midnight-blue);
-  text-decoration: none;
   font-weight: bold;
-  text-decoration: underline;
 `;
 
 export default function UnderConstruction() {
@@ -109,7 +81,7 @@ export default function UnderConstruction() {
             Geary and the team are busy <i>iterating</i>!
             <br />
             In the meantime, visit our{' '}
-            <Link href="https://ubcpmc.com/" className="navbar-link" target="_blank" rel="noopener noreferrer">
+            <Link href="https://ubcpmc.com/" target="_blank" rel="noopener noreferrer">
               existing site
             </Link>
           </Paragraph>

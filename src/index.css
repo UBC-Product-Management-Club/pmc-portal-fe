@@ -20,12 +20,13 @@
   --pmc-midnight-grey: #dce1ff;
   --pmc-midnight-blue: #262d47;
 
-  background-color: var(--pmc-midnight-grey);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  /* min-height: 100vh; */
-  align-items: center;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
 }
 
 .width-fit {
