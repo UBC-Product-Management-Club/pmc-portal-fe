@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Login from './pages/Login/Login.tsx';
 import './index.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Auth0Provider } from '@auth0/auth0-react';
