@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -7,21 +9,24 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --pmc-light-blue: #8D9BEB;
-  --pmc-purple: #AF71AA;
-  --pmc-red: #E33148;
-  --pmc-black: #2E2E2E;
+  --pmc-light-blue: #8d9beb;
+  --pmc-purple: #af71aa;
+  --pmc-red: #e33148;
+  --pmc-black: #2e2e2e;
   --pmc-dark-purple: #445088;
-  --pmc-light-grey: #DEDFE2;
-  --pmc-blue: #333D6C;
-  --pmc-dark-blue: #1D233F;
+  --pmc-light-grey: #dedfe2;
+  --pmc-blue: #333d6c;
+  --pmc-dark-blue: #1d233f;
+  --pmc-midnight-grey: #dce1ff;
+  --pmc-midnight-blue: #262d47;
 
-  background-color: var(--pmc-dark-blue);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  /* min-height: 100vh; */
-  align-items: center;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
 }
 
 .width-fit {
@@ -32,15 +37,13 @@
 }
 
 .container {
-    margin-bottom: 32vh;
+  margin-bottom: 32vh;
 }
 
 .footer {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
-
-
 
 @media only screen and (min-width: 992px) {
   .width-fit {
