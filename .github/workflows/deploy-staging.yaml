@@ -27,7 +27,7 @@ jobs:
         run: |
           touch .secret/.env
           echo VITE_API_URL=${{ secrets.API_URL }} >> .secret/.env
-          echo VITE_STRIPE_KEY=${{ secrets.STRIPE_TEST_KEY }} >> .secret/.env
+          echo VITE_STRIPE_KEY=${{ secrets.STRIPE_KEY }} >> .secret/.env
           echo VITE_AUTH0_API_URL=${{ secrets.AUTH0_API_URL }} >> .secret/.env
           echo VITE_AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} >> .secret/.env
 
