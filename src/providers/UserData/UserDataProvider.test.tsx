@@ -1,11 +1,9 @@
-import { vi, describe, it, expect } from "vitest"
+import { describe, it, expect } from "vitest"
 import { act, render, screen } from "@testing-library/react"
 import { ActionTypes, UserDataContext, UserDataProvider } from "./UserDataProvider"
 import { UserDocument } from "../../types/api"
 import { userEvent } from "@testing-library/user-event"
 import { useContext } from "react"
-
-vi.mock("@auth0/auth0-react")
 
 describe('UserDataProvider', () => {
 
