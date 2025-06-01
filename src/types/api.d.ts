@@ -1,21 +1,21 @@
 // STORE API REQUEST/RESPONSE TYPES HERE
 
-type userDocument = {
-  first_name: string;
-  last_name: string;
+type UserDocument = {
+  firstName: string;
+  lastName: string;
   pronouns: string;
   email: string; // from google
   pfp: string; // from google
   displayName: string; // from Google
   university?: string;
-  student_id?: number;
+  studentId?: number;
   year?: "1" | "2" | "3" | "4" | "5+"; // "5+"
   faculty?: string;
   major?: string;
-  why_pm?: string;
-  returning_member?: "yes" | "no";
-  paymentVerified?: boolean;
-  onboarded?: boolean;
+  whyPm: string;
+  returningMember: "yes" | "no" | undefined;
+  paymentVerified: boolean | undefined;
+  onboarded: boolean | undefined;
 };
 
 type loginBody = {
@@ -81,7 +81,7 @@ type addTransactionBody = {
 };
 
 export {
-  userDocument,
+  UserDocument,
   loginBody,
   onboardingBody,
   eventType,

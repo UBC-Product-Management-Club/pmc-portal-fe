@@ -7,7 +7,6 @@ import PaymentForm from "./PaymentForm";
 import { usePayment } from "../../providers/Payment/PaymentProvider";
 import PaymentSuccess from "./PaymentSuccess";
 import {useAuth0} from "@auth0/auth0-react";
-import {useAuth} from "../../providers/Auth/AuthProvider";
 
 // console.log("stripe key " + import.meta.env.VITE_STRIPE_KEY)
 const stripe_key = loadStripe(import.meta.env.VITE_STRIPE_KEY)
@@ -19,7 +18,6 @@ export default function Payment() {
     // TODO:
     // - Needs a "back" button?
     const { user } = useAuth0()
-    const { isSignedIn } = useAuth()
     const { paid, FormOptions } = usePayment()
     const { type, prompt, eventId, amt, footer } = FormOptions
     const [paymentSecret, setPaymentSecret] = useState<string>("")
@@ -48,7 +46,7 @@ export default function Payment() {
                         method: "POST",
                         headers: {"Content-Type": "application/json"},
                         body: JSON.stringify({
-                            uid: isSignedIn ? user!.sub : null
+                            uid: user ? user!.sub : null
                         })
                     })
                 }

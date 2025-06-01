@@ -5,7 +5,7 @@ import {useEffect} from "react";
 import FormInput from "../FormInput/FormInput";
 import "./UserDataForm.css";
 import {useAuth0} from "@auth0/auth0-react";
-import {useAuth} from "../../providers/Auth/AuthProvider";
+import {useAuth} from "../../providers/UserData/UserDataProvider";
 
 type UserDataFormProps = {
     onSubmit: (data: UserSchema) => Promise<void>;

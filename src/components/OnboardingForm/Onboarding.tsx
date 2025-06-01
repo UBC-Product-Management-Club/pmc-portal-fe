@@ -10,7 +10,7 @@ import {PaymentProvider} from "../../providers/Payment/PaymentProvider"
 import FF from "../../../feature-flag.json"
 import PaymentSuccess from "../Payment/PaymentSuccess"
 import {useAuth0} from "@auth0/auth0-react";
-import {useAuth} from "../../providers/Auth/AuthProvider";
+import {useAuth} from "../../providers/UserData/UserDataProvider";
 import {IoArrowBack} from "react-icons/io5";
 import { PaymentIntent } from "@stripe/stripe-js"
 import { Timestamp } from "firebase/firestore"

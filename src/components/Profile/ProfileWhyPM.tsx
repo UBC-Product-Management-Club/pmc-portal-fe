@@ -1,5 +1,5 @@
 import {ChangeEvent, useEffect, useState} from "react";
-import {useAuth} from "../../providers/Auth/AuthProvider";
+import {useAuth} from "../../providers/UserData/UserDataProvider";
 
 // import {MdOutlineEdit} from "react-icons/md";
 
