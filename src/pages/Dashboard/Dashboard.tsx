@@ -1,14 +1,12 @@
 import "./Dashboard.css";
-import FF from "../../../feature-flag.json";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {eventType} from "../../types/api";
 import {EventCard} from "../../components/Event/EventCard";
-import {useAuth} from "../../providers/Auth/AuthProvider";
-import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
+import { UserDataContext } from "../../providers/UserData/UserDataProvider";
+
 export default function Dashboard() {
-    const {userData, isSignedIn} = useAuth();
-    const {user} = useAuth0();
+    const { user, isMember } = useContext(UserDataContext);
     const [allEvents, setAllEvents] = useState<eventType[]>([]);
     const navigateTo = useNavigate();
     async function dashboardComponents() {
@@ -38,14 +36,14 @@ export default function Dashboard() {
         dashboardComponents();
     }, []);
 
-    const paymentLink = userData?.university === "University of British Columbia" ? 
+    const paymentLink = user?.university === "University of British Columbia" ? 
     "https://ubcpmc.square.site/product/ubc-pmc-membership-24-25/1990" : 
     "https://ubcpmc.square.site/product/ubc-pmc-non-ubc-membership-24-25/1991"
 
     return (
         <div className="dashboard">
             <div className={"dashboard-container"}>
-                {!!!FF.stripePayment && userData && !userData.paymentVerified && (
+                {user && !user.paymentVerified && (
                     <p className="dashboard-top-banner">
                         We've noticed you have signed up as a member,
                         but your payment is not verified. If you haven't paid,
@@ -58,8 +56,8 @@ export default function Dashboard() {
                 <div className="dashboard-header">
                     <h2>Upcoming Events</h2>
                     <h4 className={"welcome-message"}>
-                        {isSignedIn
-                            ? `Welcome ${user?.name}`
+                        {isMember
+                            ? `Welcome ${user?.firstName}`
                             : "Welcome guest"}
                     </h4>
                 </div>
@@ -79,7 +77,7 @@ export default function Dashboard() {
             allEvents.map((event) => (
               <EventCard
                 key={event.event_Id}
-                isSignedIn={isSignedIn}
+                isSignedIn={isMember}
                 event={event}
                 showRegister={true}
                 handleClick={() => {

@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { eventType } from "../../types/api";
 import "./Event.css";
-import {useAuth} from "../../providers/Auth/AuthProvider";
-import {EventRegistrationModal} from "../../components/Event/EventRegistrationModal";
 import {CiCalendar, CiLocationOn} from "react-icons/ci";
-// import {MdOutlinePeopleAlt} from "react-icons/md";
 import {FaDollarSign} from "react-icons/fa6";
 import moment from 'moment';
+import { UserDataContext } from "../../providers/UserData/UserDataProvider";
 
 const Event: React.FC = () => {
-    const {isSignedIn, userData} = useAuth();
+    const { user, isMember } = useContext(UserDataContext);
     const [event, setEvent] = useState<eventType | null>(null);
     const { event_id } = useParams<{ event_id: string }>();
     const [loading, setLoading] = useState(true);
-    const [isSignUpFormOpen, setIsSignUpFormOpen] = useState(false);
     const [isRegistered, setIsRegistered] = useState(false);
     let isEventFull = false;
     if (event) {
@@ -32,22 +29,24 @@ const Event: React.FC = () => {
                     }
                 }
             );
-            const isRegistered = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/${event_id}/attendees/isRegistered`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: userData?.email,
-                }),
-            });
+            if (user) {
+                const isRegistered = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/${event_id}/attendees/isRegistered`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        email: user.email,
+                    }),
+                });
+                const isRegisteredData = await isRegistered.json();
+                setIsRegistered(isRegisteredData.isRegistered);
+            }
             
-            if (!response.ok || !isRegistered.ok) {
+            if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
             const data: eventType = await response.json();
-            const isRegisteredData = await isRegistered.json();
-            setIsRegistered(isRegisteredData.isRegistered);
             setEvent({
                 ...data,
                 date: moment(data.date).toDate(),
@@ -146,7 +145,7 @@ const Event: React.FC = () => {
                                     className="text-container"
                                     style={{ flexDirection: "column" }}
                                 >
-                                    {isSignedIn ? (
+                                    {isMember ? (
                                         <>
                                             <h3>Event Pricing</h3>
                                             <h4>
@@ -175,17 +174,20 @@ const Event: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <button className="signup-button" disabled={isEventFull || isRegistered} onClick={() => setIsSignUpFormOpen(true)}>
+                    <button className="signup-button" disabled={isEventFull || isRegistered} 
+                    onClick={() => {}}
+                    // onClick={() => setIsSignUpFormOpen(true)}
+                    >
                         {getButtonText()}
                     </button>
-                    <EventRegistrationModal
+                    {/* <EventRegistrationModal
                         isModalOpen={isSignUpFormOpen}
                         setIsModalOpen={setIsSignUpFormOpen}
                         eventId={event_id ?? ""}
                         memberPrice={event.member_price}
                         nonMemberPrice={event.non_member_price}
                         formId={event.eventFormId}
-                    />
+                    /> */}
                 </div>
             </div>
             <div className="event-desc">
