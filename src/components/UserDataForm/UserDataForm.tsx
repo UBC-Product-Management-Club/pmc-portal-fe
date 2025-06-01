@@ -1,11 +1,10 @@
 import {UserSchema, UserZodObj} from "../OnboardingForm/types";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {useEffect} from "react";
+import {useContext, useEffect} from "react";
 import FormInput from "../FormInput/FormInput";
 import "./UserDataForm.css";
-import {useAuth0} from "@auth0/auth0-react";
-import {useAuth} from "../../providers/UserData/UserDataProvider";
+import { UserDataContext } from "../../providers/UserData/UserDataProvider";
 
 type UserDataFormProps = {
     onSubmit: (data: UserSchema) => Promise<void>;
@@ -38,10 +37,9 @@ export function UserDataForm({
         resolver: zodResolver(UserZodObj),
     });
 
-    const {user} = useAuth0();
-    const {userData} = useAuth();
-    const userFirstName = userData ? userData.first_name : user?.given_name;
-    const userLastName = userData ? userData.last_name : user?.family_name;
+    const { user } = useContext(UserDataContext)
+    const userFirstName = user?.firstName
+    const userLastName = user?.lastName
 
     const student_status = watch("ubc_student");
     useEffect(() => {

@@ -1,5 +1,4 @@
 import "./Dashboard.css";
-import FF from "../../../feature-flag.json";
 import {useContext, useEffect, useState} from "react";
 import {eventType} from "../../types/api";
 import {EventCard} from "../../components/Event/EventCard";
@@ -44,7 +43,7 @@ export default function Dashboard() {
     return (
         <div className="dashboard">
             <div className={"dashboard-container"}>
-                {!!!FF.stripePayment && user && !user.paymentVerified && (
+                {user && !user.paymentVerified && (
                     <p className="dashboard-top-banner">
                         We've noticed you have signed up as a member,
                         but your payment is not verified. If you haven't paid,
