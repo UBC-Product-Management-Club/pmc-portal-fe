@@ -16,14 +16,15 @@ describe('environmentRenderers', () => {
     });
 
     function renderComponent() {
-        render(<>
-            <DevRenderer>
-                <h1>DevPaths</h1>
-            </DevRenderer>
-            <ProdRenderer>
-                <h1>ProdPaths</h1>
-            </ProdRenderer>
-            <h1>UnwrappedComponent</h1>
+        render(
+            <>
+                <DevRenderer>
+                    <h1>DevPaths</h1>
+                </DevRenderer>
+                <ProdRenderer>
+                    <h1>ProdPaths</h1>
+                </ProdRenderer>
+                <h1>UnwrappedComponent</h1>
             </>
         )
     }
@@ -36,9 +37,10 @@ describe('environmentRenderers', () => {
         renderComponent();
         
         expect(mockUseEnvironment).toHaveBeenCalled();
-        expect(screen.queryByText('DevPaths')).toBeInTheDocument();
+        expect(screen.getByText('UnwrappedComponent')).toBeInTheDocument();
+        expect(screen.getByText('DevPaths')).toBeInTheDocument();
         expect(screen.queryByText('ProdPaths')).not.toBeInTheDocument();
-
+        
     })
 
     it('render components in ProdRenderer component and not in DevRenderer component', () => {
@@ -49,19 +51,10 @@ describe('environmentRenderers', () => {
         renderComponent();
 
         expect(mockUseEnvironment).toHaveBeenCalled();
-        expect(screen.queryByText('ProdPaths')).toBeInTheDocument();
+        expect(screen.getByText('ProdPaths')).toBeInTheDocument();
+        expect(screen.getByText('UnwrappedComponent')).toBeInTheDocument();
         expect(screen.queryByText('DevPaths')).not.toBeInTheDocument();
-    })
 
-    it('render unwrapped components not in prod or dev component', () => {
-        mockUseEnvironment.mockReturnValue({ 
-            isDev: false, 
-        });
-        
-        renderComponent();
-
-        expect(mockUseEnvironment).toHaveBeenCalled();
-        expect(screen.queryByText('UnwrappedComponent')).toBeInTheDocument();
     })
     
 })
