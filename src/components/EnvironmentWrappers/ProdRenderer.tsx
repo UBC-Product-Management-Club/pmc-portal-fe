@@ -5,7 +5,7 @@ interface ProdOnlyProps {
 }
 
 export const ProdRenderer = ({ children} : ProdOnlyProps) => {
-  const { isDev } = useEnvironment();
+  const { isProd } = useEnvironment();
 
-  return isDev ? null : children;
+  return isProd ? children : null;
 };

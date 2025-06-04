@@ -5,7 +5,7 @@ interface DevOnlyProps {
 }
 
 export const DevRenderer = ({ children} : DevOnlyProps) => {
-  const { isDev } = useEnvironment();
+  const { isProd } = useEnvironment();
 
-  return isDev ? children : null;
+  return isProd ? null : children;
 };

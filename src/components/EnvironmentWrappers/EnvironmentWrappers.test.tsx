@@ -31,7 +31,7 @@ describe('environmentRenderers', () => {
 
     it('render components in DevRenderer component and not in ProdRenderer component', () => {
         mockUseEnvironment.mockReturnValue({ 
-            isDev: true, 
+            isProd: false, 
         });
 
         renderComponent();
@@ -45,7 +45,7 @@ describe('environmentRenderers', () => {
 
     it('render components in ProdRenderer component and not in DevRenderer component', () => {
         mockUseEnvironment.mockReturnValue({ 
-            isDev: false, 
+            isProd: true, 
         });
         
         renderComponent();
