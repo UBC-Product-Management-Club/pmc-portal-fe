@@ -153,11 +153,11 @@ export default function Login() {
         <Logo src={PMCLogo} data-testid="logo" alt="PMC Logo"/>
         <Header> PMC Membership Portal</ Header>
         <ButtonContainer>
-          <LoginButton onClick={() => {}}>
+          <LoginButton onClick={() => console.log("implement this")}>
             Log in / sign up
           </LoginButton>
           <ContinueButton
-            onClick={() => {}}
+            onClick={() => console.log("implement this")}
           >
             Continue as a non-member
           </ContinueButton>
