@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { eventType } from "../../types/api";
 import { EventCard } from "../Event/EventCard";
 import { useAuth0 } from "@auth0/auth0-react";
-import {useAuth} from "../../providers/Auth/AuthProvider";
+import { UserDataContext } from "../../providers/UserData/UserDataProvider";
 
 export default function ProfileEvents() {
   const { user } = useAuth0();
-  const { isSignedIn } = useAuth();
+  const { isMember } = useContext(UserDataContext)
   const [isLoading, setIsLoading] = useState(true);
   const [events, setEvents] = useState<eventType[]>([]);
 
   useEffect(() => {
-    if (isLoading && isSignedIn) {
+    if (isLoading && isMember) {
       const fetchEvent = async (eventId: string): Promise<eventType> => {
         const eventResponse = await fetch(
           `${import.meta.env.VITE_API_URL}/api/v1/events/${eventId}`,
@@ -72,7 +72,7 @@ export default function ProfileEvents() {
         events.map((event) => (
           <EventCard
             key={event.event_Id}
-            isSignedIn={isSignedIn}
+            isSignedIn={isMember}
             event={event}
           />
         ))

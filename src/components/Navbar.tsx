@@ -2,10 +2,11 @@ import "./Navbar.css"
 import PMCLogo from "../assets/pmclogo.svg";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useAuth } from "../providers/Auth/AuthProvider";
+import { UserDataContext } from "../providers/UserData/UserDataProvider";
+import { useContext } from "react";
 
 export function Navbar() {
-    const { isSignedIn } = useAuth();
+    const { isMember } = useContext(UserDataContext);
     const { user, isAuthenticated, logout } = useAuth0();
     const navigateTo = useNavigate();
 
@@ -46,7 +47,7 @@ export function Navbar() {
                 Events
             </a>
             <div>
-                {isSignedIn && (
+                {isMember && (
                     <a href="/profile" className="navbar-link">
                         Profile
                     </a>
