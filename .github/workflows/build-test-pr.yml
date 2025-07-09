@@ -10,7 +10,7 @@ env:
 
 jobs:
     checks:
-        name: Build Docker Image
+        name: Build and test PR
         runs-on: ubuntu-latest
         environment: testing
 
