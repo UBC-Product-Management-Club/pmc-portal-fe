@@ -1,23 +1,5 @@
 // STORE API REQUEST/RESPONSE TYPES HERE
 
-type UserDocument = {
-  firstName: string;
-  lastName: string;
-  pronouns: string;
-  email: string; // from google
-  pfp: string; // from google
-  displayName: string; // from Google
-  university?: string;
-  studentId?: number;
-  year?: "1" | "2" | "3" | "4" | "5+"; // "5+"
-  faculty?: string;
-  major?: string;
-  whyPm: string;
-  returningMember: "yes" | "no" | undefined;
-  paymentVerified: boolean | undefined;
-  onboarded: boolean | undefined;
-};
-
 type loginBody = {
   userUID: string;
   idToken: string;
@@ -81,7 +63,6 @@ type addTransactionBody = {
 };
 
 export {
-  UserDocument,
   loginBody,
   onboardingBody,
   eventType,

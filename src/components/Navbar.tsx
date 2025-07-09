@@ -1,63 +1,95 @@
-import "./Navbar.css"
 import PMCLogo from "../assets/pmclogo.svg";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { UserDataContext } from "../providers/UserData/UserDataProvider";
-import { useContext } from "react";
+import { useUserData } from "../providers/UserData/UserDataProvider";
+import { styled } from "styled-components";
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: content-fit;
+    padding: 0.5rem 2rem;
+    margin-top: 30px;
+    border: 1px solid #ffffff;
+    border-radius: 50px;
+`
+const Logo = styled.img`
+  cursor: pointer;
+`
+
+const Links = styled.nav`
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: 0.5s;
+`
+
+const NavButton = styled.div`
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  transition: 0.5s;
+  &:hover {
+    background-image: linear-gradient(134.02deg, #8d9beb 29.24%, #af71aa 57.54%, #e33148 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+  }
+`
+
+const AuthButton = styled.button`
+    background-color: white;
+    padding: 0.5rem 1rem;
+    font-size: medium;
+    font-weight: bold;
+    outline: none;
+    border-radius: 50px;
+
+    &:hover {
+      background: linear-gradient(
+            134.02deg,
+            #8d9beb 29.24%,
+            #af71aa 57.54%,
+            #e33148 100%
+      );
+      color: white;
+      cursor: pointer;
+    }
+`
 
 export function Navbar() {
-    const { isMember } = useContext(UserDataContext);
-    const { user, isAuthenticated, logout } = useAuth0();
+    const { user } = useUserData()
+    const { isAuthenticated, logout } = useAuth0();
     const navigateTo = useNavigate();
 
-    async function authButtonHandler() {
-        try {
-            if (isAuthenticated) {
-                const uid = user?.sub;
-                const displayName = user?.displayName;
-
-                await logout({
-                    logoutParams: {
-                        returnTo: window.location.origin,
-                    },
-                });
-
-                if (uid) {
-                    localStorage.removeItem(uid);
-                }
-                if (displayName) {
-                    localStorage.removeItem(displayName);
-                }
-            }
-            navigateTo("/");
-        } catch (error) {
-            console.error("Error signing out: ", error);
-        }
-    }
-
-    return <div className="navbar">
-        <a href="/" className="navbar-icon">
-            <img src={PMCLogo} className="logo" alt={"PMC Logo"} />
-        </a>
-        <nav className="navbar-nav">
-            <a href="/psprint/raffle-tracker" className="navbar-link">
-                Raffle Tracker
-            </a>
-            <a href="/dashboard" className="navbar-link">
-                Events
-            </a>
-            <div>
-                {isMember && (
-                    <a href="/profile" className="navbar-link">
-                        Profile
-                    </a>
-                )}
-            </div>
-            <div className="navbar-button">
-                <div onClick={authButtonHandler}>
-                    {isAuthenticated ? "Sign out" : "Sign in"}
-                </div>
-            </div>
-        </nav>
-    </div>;
+    return  (
+      <Container>
+          <Logo src={PMCLogo} onClick={() => navigateTo("/dashboard")} alt={"PMC Logo"} />
+          <Links>
+              {/* <Link to="/psprint/raffle-tracker">
+                <NavButton>
+                  Raffle Tracker
+                </NavButton>
+              </Link> */}
+              {user && (<Link to="/profile" style={{"textDecoration" : "none"}}><NavButton>Profile</NavButton></Link>)}
+              {isAuthenticated ? 
+                <AuthButton onClick={async () => await logout()}>
+                   Sign out
+                </AuthButton> :
+                <Link to="/">
+                  <AuthButton>
+                    Sign in
+                  </AuthButton>
+                </Link>
+              }
+          </Links>
+      </Container>
+    )
 }

@@ -1,5 +1,5 @@
-import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { UserDataContext } from "../../providers/UserData/UserDataProvider";
+import { ChangeEvent, useEffect, useState } from "react";
+import { useUserData } from "../../providers/UserData/UserDataProvider";
 import { styled } from "styled-components";
 
 // import {MdOutlineEdit} from "react-icons/md";
@@ -23,11 +23,10 @@ const ProfileWhyPmTextArea = styled.textarea`
 `;
 
 export function ProfileWhyPM() {
-  const [isLoading, setIsLoading] = useState(true);
-  // const {userData} = useAuth();
-  const { user } = useContext(UserDataContext);
-  const [isEditing] = useState(false);
-  const [text, setText] = useState("Why are you interested in Product Management…");
+    const [isLoading, setIsLoading] = useState(true);
+    const { user } = useUserData();
+    const [isEditing] = useState(false);
+    const [text, setText] = useState("Why are you interested in Product Management…")
 
   function handleChange(event: ChangeEvent<HTMLTextAreaElement>) {
     setText(event.target.value);

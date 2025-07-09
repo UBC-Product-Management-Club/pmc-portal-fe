@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from "react";
-import { eventType } from "../../types/api";
-import { EventCard } from "../../components/Event/EventCard";
-import { useNavigate } from "react-router-dom";
-import { UserDataContext } from "../../providers/UserData/UserDataProvider";
+// import { useState } from "react";
+// import { eventType } from "../../types/api";
+// import { EventCard } from "../../components/Event/EventCard";
+// import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useUserData } from "../../providers/UserData/UserDataProvider";
 
 const DashboardContainer = styled.div`
   color: white;
@@ -24,22 +24,6 @@ const DashboardHeader = styled.div`
   align-items: baseline;
 `;
 
-const UserPaymentStatus = styled.p`
-  text-align: center;
-  background-color: #fff;
-  color: var(--pmc-dark-blue);
-  padding: 20px 10px;
-  border-radius: 20px;
-`;
-
-const StyledLink = styled.a`
-  text-decoration: underline;
-
-  &:visited {
-    color: var(--pmc-dark-blue);
-  }
-`;
-
 const WelcomeMessage = styled.h4`
   font-style: italic;
 `;
@@ -52,53 +36,41 @@ const DashboardStayTuned = styled.p`
 `;
 
 export default function Dashboard() {
-  const { user, isMember } = useContext(UserDataContext);
-  const [allEvents, setAllEvents] = useState<eventType[]>([]);
-  const navigateTo = useNavigate();
-  async function dashboardComponents() {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+  const { user } = useUserData()
+//   const [allEvents, setAllEvents] = useState<eventType[]>([]);
+//   const navigateTo = useNavigate();
 
-      if (!response.ok) {
-        throw new Error("Fetching all events was not ok");
-      }
+//   async function dashboardComponents() {
+//     try {
+//       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/`, {
+//         method: "GET",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       });
 
-      const allEvents = await response.json();
-      setAllEvents(allEvents);
-    } catch (error) {
-      console.error("Error fetching events: ", error);
-    }
-  }
+//       if (!response.ok) {
+//         throw new Error("Fetching all events was not ok");
+//       }
 
-  useEffect(() => {
-    dashboardComponents();
-  }, []);
+//       const allEvents = await response.json();
+//       setAllEvents(allEvents);
+//     } catch (error) {
+//       console.error("Error fetching events: ", error);
+//     }
+//   }
 
-  const paymentLink =
-    user?.university === "University of British Columbia"
-      ? "https://ubcpmc.square.site/product/ubc-pmc-membership-24-25/1990"
-      : "https://ubcpmc.square.site/product/ubc-pmc-non-ubc-membership-24-25/1991";
+//   useEffect(() => {
+//     dashboardComponents();
+//   }, []);
+
 
   return (
     <DashboardContainer>
       <DashboardSection>
-        {user && !user.paymentVerified && (
-          <UserPaymentStatus>
-            We've noticed you have signed up as a member, but your payment is not verified. If you haven't paid, please visit our{" "}
-            <StyledLink href={paymentLink} target="_blank">
-              checkout page
-            </StyledLink>
-            . If you've paid already, we will notify you when we've verified your payment. Your account will be activated once you are verified.
-          </UserPaymentStatus>
-        )}
         <DashboardHeader>
           <h2>Upcoming Events</h2>
-          <WelcomeMessage>{isMember ? `Welcome ${user?.firstName}` : "Welcome guest"}</WelcomeMessage>
+          <WelcomeMessage>{user ? `Welcome ${user?.firstName}` : "Welcome guest"}</WelcomeMessage>
         </DashboardHeader>
         <p>
           At PMC, our mission is to empower aspiring product managers by providing valuable insights, hands-on experiences, and opportunities to connect with industry leaders. Check out our upcoming
@@ -107,12 +79,13 @@ export default function Dashboard() {
       </DashboardSection>
 
       <DashboardSection>
+        <DashboardStayTuned>Stay tuned for future events!</DashboardStayTuned>
         <div>
-          {allEvents.length > 0 ? (
+          {/* {allEvents.length > 0 ? (
             allEvents.map((event) => (
               <EventCard
                 key={event.event_Id}
-                isSignedIn={isMember}
+                isSignedIn={!!user}
                 event={event}
                 showRegister={true}
                 handleClick={() => {
@@ -121,8 +94,7 @@ export default function Dashboard() {
               />
             ))
           ) : (
-            <DashboardStayTuned>Stay tuned for future events!</DashboardStayTuned>
-          )}
+          )} */}
         </div>
       </DashboardSection>
     </DashboardContainer>

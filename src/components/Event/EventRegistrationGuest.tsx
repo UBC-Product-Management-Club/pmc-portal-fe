@@ -1,10 +1,10 @@
-import {UserDataForm} from "../UserDataForm/UserDataForm";
-import {UserSchema} from "../OnboardingForm/types";
+import { UserDataFromUser } from "../../types/User";
+import { UserDataForm } from "../UserDataForm/UserDataForm";
 
-export default function EventRegistrationGuest({onSubmit}: {onSubmit: (data: UserSchema) => Promise<void>}) {
-    return (
-        <div className={"form-bg-dark-blue"}>
-            <UserDataForm onSubmit={onSubmit} excludeReturningAndWhyPM={true} includeEmail={true} buttonText="Continue"/>
-        </div>
-    )
-}
+ export default function EventRegistrationGuest({onSubmit}: {onSubmit: (data: UserDataFromUser) => Promise<void>}) {
+     return (
+         <div className={"form-bg-dark-blue"}>
+             <UserDataForm onSubmit={onSubmit} buttonText="Continue" responses={{}}/>
+         </div>
+     )
+ }

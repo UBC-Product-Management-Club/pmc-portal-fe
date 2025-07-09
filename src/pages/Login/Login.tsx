@@ -1,20 +1,10 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import PMCLogo from "../../assets/pmclogo.svg";
 import Footer from "../../components/Footer/Footer";
 import styled from 'styled-components'
-// Helper function to detect in-app browsers
-// const isInAppBrowser = () => {
-//   const ua = window.navigator.userAgent.toLowerCase();
-//   const isIOS = /iphone|ipad|ipod/.test(ua);
-//   return (
-//     ua.includes('wv') || // Android WebView
-//     (isIOS && !ua.includes('safari')) || // iOS WebView
-//     ua.includes('fbav') || // Facebook
-//     ua.includes('instagram') || // Instagram
-//     ua.includes('twitter') || // X (formerly Twitter)
-//     ua.includes('x-client') || // X's new client identifier
-//     ua.includes('linkedin') // LinkedIn
-//   );
-// };
+import { isInAppBrowser } from "../../utils";
+import { useNavigate } from "react-router-dom";
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -131,21 +121,21 @@ const FooterContainer = styled.div`
 `;
  
 export default function Login() {
-//   const { loginWithRedirect } = useAuth0();
-//   const navigateTo = useNavigate();
+  const { loginWithRedirect } = useAuth0();
+  const navigateTo = useNavigate();
 
-//   const handleLogin = () => {
-//     if (isInAppBrowser()) {
-//       const message = "For security reasons, please open this page in an external browser to log in. In-app browsers are not supported for secure login.";
-//       window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
+  function handleLogin() {
+    if (isInAppBrowser()) {
+      const message = "For security reasons, please open this page in an external browser to log in. In-app browsers are not supported for secure login.";
+      window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
       
-//       setTimeout(() => {
-//         window.alert(message);
-//       }, 200);
-//     } else {
-//       loginWithRedirect();
-//     }
-//   };
+      setTimeout(() => {
+        window.alert(message);
+      }, 200);
+    } else {
+      loginWithRedirect();
+    }
+  };
 
   return (
     <Container>
@@ -153,11 +143,11 @@ export default function Login() {
         <Logo src={PMCLogo} data-testid="logo" alt="PMC Logo"/>
         <Header> PMC Membership Portal</ Header>
         <ButtonContainer>
-          <LoginButton onClick={() => console.log("implement this")}>
+          <LoginButton onClick={handleLogin}>
             Log in / sign up
           </LoginButton>
           <ContinueButton
-            onClick={() => console.log("implement this")}
+            onClick={() => navigateTo('/dashboard')}
           >
             Continue as a non-member
           </ContinueButton>
