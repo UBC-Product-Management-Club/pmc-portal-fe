@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { ActionTypes, useUserData } from "../../providers/UserData/UserDataProvider";
 import { useUserService } from "../../hooks/useUserService";
