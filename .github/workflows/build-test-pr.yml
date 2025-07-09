@@ -1,9 +1,7 @@
-name: Build Image on Pull Request
+name: Built and test PRs
 
 on:
   pull_request:
-    branches: 
-      - "*"
     
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
@@ -11,13 +9,7 @@ env:
   REGION: us-west1
 
 jobs:
-  # test:
-    #  run tests here
-
-  # lint:
-    #  run linting here
-  
-    build-verify-test:
+    checks:
         name: Build Docker Image
         runs-on: ubuntu-latest
         environment: testing
@@ -26,24 +18,17 @@ jobs:
           - name: Checkout
             uses: actions/checkout@v4
 
-          - name: Create .secret folder
-            run: mkdir .secret
+          - name: Setup Node
+            uses: actions/setup-node@v4
 
-          - name: Create env file
-            run: |
-              touch .secret/.env
-              echo VITE_API_URL=${{ secrets.VITE_API_URL }} >> .secret/.env
-              echo VITE_STRIPE_KEY=${{ secrets.VITE_STRIPE_KEY }} >> .secret/.env
-              echo VITE_AUTH0_API_URL=${{ secrets.VITE_AUTH0_API_URL}} >> .secret/.env
-              echo VITE_AUTH0_CLIENT_ID=${{ secrets.VITE_AUTH0_CLIENT_ID }} >> .secret/.env
+          - name: Install dependencies
+            run: npm install
 
-          - name: Create Credential JSON
-            id: create-json-1
-            uses: jsdaniell/create-json@v1.2.2
-            with:
-              name: "firebase-config.json"
-              json: ${{ secrets.FIREBASE_CONFIG }}
-              dir: ".secret/"
+          - name: Build
+            run: npm run build
+
+          - name: Run frontend tests
+            run: npm test
           
           - name: Build the Docker image
             run: |
