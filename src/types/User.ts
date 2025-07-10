@@ -63,29 +63,8 @@ const UserDocumentSchema = z.object({
 })
 
 type UserDocumentSchema = z.infer<typeof UserDocumentSchema>
-
-// type UserDataFromAuth = {
-//     id: string | undefined;
-//     email: string | undefined;
-//     pfp: string | undefined;
-//     displayName: string | undefined;
-// }
-
 type UserDataFromAuth = z.infer<typeof UserDataFromAuthSchema>
 type UserDataFromUser = z.infer<typeof UserDataFromUserSchema>
-
-// type UserDataFromUser = {
-//     firstName: string;
-//     lastName: string;
-//     pronouns: string;
-//     university?: string;
-//     studentId?: number;
-//     year?: "1" | "2" | "3" | "4" | "5+"; // "5+"
-//     faculty?: string;
-//     major?: string;
-//     whyPm: string;
-// }
-
 type UserDocument = UserDataFromAuth & UserDataFromUser 
 
 export type { UserDataFromAuth, UserDataFromUser, UserDocument }
