@@ -3,8 +3,7 @@ import { TbSchool } from "react-icons/tb";
 import { ProfileWhyPM } from "../../components/Profile/ProfileWhyPM";
 import ProfileEvents from "../../components/Profile/ProfileEvents";
 import styled from "styled-components";
-import { useContext } from "react";
-import { UserDataContext } from "../../providers/UserData/UserDataProvider";
+import { useUserData } from "../../providers/UserData/UserDataProvider";
 
 const ProfileContainer = styled.div`
   color: white;
@@ -72,7 +71,7 @@ const ProfileText = styled.p`
 `;
 
 export function Profile() {
-  const { user } = useContext(UserDataContext);
+  const { user } = useUserData()
 
   return (
     user && (

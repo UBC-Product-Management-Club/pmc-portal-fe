@@ -1,9 +1,25 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import Login from "./Login";
+import { useNavigate } from "react-router-dom";
+import userEvent from "@testing-library/user-event";
+import { useAuth0 } from "@auth0/auth0-react";
 
+vi.mock("react-router-dom")
+vi.mock("@auth0/auth0-react")
 
 describe('login', () => {
+    let mockUseNavigate: Mock;
+    let mockLogin: Mock;
+
+    beforeEach(() => {
+        mockUseNavigate = vi.fn()
+        mockLogin = vi.fn()
+        vi.mocked(useNavigate).mockReturnValue(mockUseNavigate)
+        vi.mocked(useAuth0, { partial: true }).mockReturnValue({
+            loginWithRedirect: mockLogin
+        })
+    })
 
     function renderComponent() {
         render(
@@ -11,23 +27,30 @@ describe('login', () => {
         )
     }
 
-    it('shows text and logo', () => {
+    it('shows text, logo, and buttons', () => {
         renderComponent();
         
-        screen.debug()
         expect(screen.getByText("PMC Membership Portal")).toBeInTheDocument();
         expect(screen.getByTestId("logo")).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Log in / sign up"}))
+        expect(screen.getByRole("button", { name : "Continue as a non-member"}))
     })
 
-    it('buttons are clickable', async () => {
+    it('can login', async () => {
+        const user = userEvent.setup();
         renderComponent()
 
-        const logInBtn = screen.getByRole("button", { name: "Log in / sign up"});
-        const guestBtn = screen.getByRole("button", { name: "Continue as a non-member"});
-
-        expect(logInBtn).toBeInTheDocument();
-        expect(guestBtn).toBeInTheDocument();
-
+        await act(() => user.click(screen.getByRole("button", { name: "Log in / sign up"})));
+        expect(mockLogin).toHaveBeenCalled()
     }) 
+
+    it('continues to dashboard', async () => {
+        renderComponent()
+
+        fireEvent.click(screen.getByRole("button", { name: "Continue as a non-member"}));
+
+        expect(mockLogin).not.toHaveBeenCalled()
+        expect(mockUseNavigate).toHaveBeenCalledWith("/dashboard")
+    })
     
 })

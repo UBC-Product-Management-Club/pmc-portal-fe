@@ -1,78 +1,68 @@
-import "./Payment.css"
-import { Appearance, loadStripe, StripeElementsOptions } from "@stripe/stripe-js"
-import { useEffect, useState } from "react";
-import { paymentIntentResponse } from "../../types/api";
-import { Elements } from "@stripe/react-stripe-js";
-import PaymentForm from "./PaymentForm";
-import { usePayment } from "../../providers/Payment/PaymentProvider";
-import PaymentSuccess from "./PaymentSuccess";
-import {useAuth0} from "@auth0/auth0-react";
+import { Appearance, loadStripe, PaymentIntent, StripeElementsOptions } from "@stripe/stripe-js"
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { Elements, PaymentElement } from "@stripe/react-stripe-js";
+import { usePayments } from "../../hooks/usePayments";
+import { getElementOptionsOptions } from "../../service/PaymentService";
+import { styled } from "styled-components";
+import { usePaymentService } from "../../hooks/usePaymentService";
 
-// console.log("stripe key " + import.meta.env.VITE_STRIPE_KEY)
 const stripe_key = loadStripe(import.meta.env.VITE_STRIPE_KEY)
 
-/*
-  MUST BE USED INSIDE A PAYMENTCONTEXT
-*/
-export default function Payment() {
-    // TODO:
-    // - Needs a "back" button?
-    const { user } = useAuth0()
-    const { paid, FormOptions } = usePayment()
-    const { type, prompt, eventId, amt, footer } = FormOptions
-    const [paymentSecret, setPaymentSecret] = useState<string>("")
+interface PaymentProps {
+    onPayment: (paymentIntent: PaymentIntent) => void,
+    onError: (e: Error) => void,
+    options: getElementOptionsOptions
+}
+
+type PaymentComponentProps = Omit<PaymentProps, "type" | "options">
+
+const Submit = styled.button`
+    cursor: pointer;
+    display: block;
+    font-family: poppins;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    margin-left: auto;
+    padding: 0.5rem 2rem;
+    border-radius: 0.5rem;
+    color: var(--pmc-midnight-blue);
+`
+
+function PaymentComponent({ onPayment, onError } : PaymentComponentProps) {
+    const { pay, processing } = usePayments()
+    return (
+        <>
+            {processing && <p>processing</p>}
+            <form onSubmit={(e: FormEvent<HTMLFormElement>) => {
+                    e.preventDefault()
+                    pay().then(onPayment).catch((e: Error) => onError(e))
+                }}>
+                <PaymentElement />
+                <Submit type="submit">Continue</Submit>
+            </form>
+        </>
+    )
+}
+
+function Payment({ onPayment, onError, options } : PaymentProps) {
+    const paymentService = usePaymentService() 
+    const [elementsOptions, setElementOptions] = useState<StripeElementsOptions>()
 
     useEffect(() => {
-        if (amt === 0) {
-            setPaymentSecret("free");
-            return;
-        }
+        paymentService.getElementsOptions(options)
+        .then(setElementOptions)
+        .catch(() => console.error("couldn't fetch client secret"))
+    },[])
 
-        // Create PaymentIntent as soon as the page loads
-        const fetchPaymentIntent = async () => {
-            try {
-                // console.log("fetching payment intent")
-                let paymentIntent
-                if (type === "membership") {
-                  paymentIntent = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/payments/membership`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      amt
-                    })
-                  })
-                } else {
-                    paymentIntent = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/payments/event/${eventId}`, {
-                        method: "POST",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify({
-                            uid: user ? user!.sub : null
-                        })
-                    })
-                }
-                const res: paymentIntentResponse = await paymentIntent.json();
-                // console.log("secret: " + res.payment_secret);
-                setPaymentSecret(res.payment_secret)
-            } catch (error) {
-                console.log("Error creating payment intent.")
-            }
-        }
-        fetchPaymentIntent()
-    }, [amt]);
-
-    const appearance : Appearance = {
+    const appearance : Appearance = useMemo(() => ({
         theme: 'stripe',
+        labels: 'floating',
         variables: {
             fontWeightNormal: '500',
-            colorPrimary: '#AF71AA',
-            colorText: '#DEDFE2',
-            tabIconSelectedColor: '#fff',
-            gridRowSpacing: '16px'
           },
           rules: {
             '.Tab, .Input, .Block, .CheckboxInput, .CodeInput': {
-              boxShadow: '0px 3px 10px rgba(18, 42, 66, 0.08)',
-              borderRadius: '99rem'
+              borderRadius: '0.5rem',
             },
             '.Block': {
               borderColor: 'transparent'
@@ -94,28 +84,22 @@ export default function Payment() {
               fontSize: 'small'
             }
           }
-      };
+    }),[])
 
-    const options: StripeElementsOptions = {
-        clientSecret: paymentSecret,
-        appearance
-    };
-    
-    return (
-      <>
-        {paid ? 
-          <PaymentSuccess /> 
-        : 
-          <div className="Payment-container">
-              <span className="Payment-text ">{prompt}</span>
-              {paymentSecret && 
-                  <Elements options={options} stripe={stripe_key}>
-                      <PaymentForm />
-                  </Elements>
-              }
-              <span className="payment-footer">{footer}</span>
-          </div> 
-        }
-      </>
-    )
+   
+    if (elementsOptions) {
+        return (
+            <Elements stripe={stripe_key} options={{appearance, ...elementsOptions}}>
+                <PaymentComponent
+                    onPayment={onPayment}
+                    onError={onError}
+                />
+            </Elements>
+        )
+    } else {
+        return <h1>Loading...</h1>
+    }
 }
+
+export { Payment }
+export type { PaymentProps }

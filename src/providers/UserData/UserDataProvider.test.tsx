@@ -1,37 +1,44 @@
 import { describe, it, expect } from "vitest"
 import { act, render, screen } from "@testing-library/react"
-import { ActionTypes, UserDataContext, UserDataProvider } from "./UserDataProvider"
-import { UserDocument } from "../../types/api"
+import { ActionTypes, UserDataProvider, useUserData } from "./UserDataProvider"
 import { userEvent } from "@testing-library/user-event"
-import { useContext } from "react"
+import { UserDocument } from "../../types/User"
 
-describe('UserDataProvider', () => {
+describe('useUserData', () => {
 
     const exampleUser: UserDocument = {
+        id: "userId",
         firstName: "geary",
-        lastName: "",
+        lastName: "pmc",
         pronouns: "he/him",
         email: "geary@ubcpmc.com",
+        university: "University of British Columbia",
         pfp: "newpfp",
         displayName: "geary is da goat",
-        onboarded: false,
         whyPm: "gear noises",
-        paymentVerified: false,
-        returningMember: undefined
     }
 
     function renderComponent() {
         const TestComponent = () => {
-            const { user, update } = useContext(UserDataContext)
+            const { user, update } = useUserData()
 
             return(
                 <div>
-                    <h1>{user?.displayName}</h1>
-                    <h1>{user?.email}</h1>
-                    {user?.paymentVerified && <h1>is a member</h1>}
+                    {user ? (
+                        <>
+                            <h1>{user?.displayName}</h1>
+                            <h1>{user?.email}</h1>
+                        </>
+                    ) : <h1>user is undefined!</h1>}
+                    <button onClick={() => update({ type: ActionTypes.CREATE, payload: {
+                        id: "userId",
+                        displayName: "geary",
+                        pfp: "newpfp",
+                        email: "geary@ubcpmc.com"
+                    }})}>Create user</button>
                     <button onClick={() => update({ type: ActionTypes.LOAD, payload: exampleUser})}>Load user</button>
                     <button onClick={() => update({ type: ActionTypes.UPDATE,
-                        payload: { displayName: "geary is still da goat", paymentVerified: true  } })}>Update user</button>
+                        payload: { displayName: "geary is still da goat" } })}>Update user</button>
                 </div>
             )
         }
@@ -45,8 +52,7 @@ describe('UserDataProvider', () => {
     it('user is initially undefined', () => {
         renderComponent()
 
-        expect(screen.queryByText("is a member")).not.toBeInTheDocument();
-        screen.getAllByRole("heading").forEach((heading) => expect(heading).toHaveTextContent(""));
+        expect(screen.getByText("user is undefined!")).toBeInTheDocument()
     })
 
     it('returns undefined when updating an undefined user', async () => {
@@ -55,36 +61,41 @@ describe('UserDataProvider', () => {
 
         await act(() => user.click(screen.getByRole("button", { name : "Update user"})))
 
-        expect(screen.queryByText("is a member")).not.toBeInTheDocument();
-        screen.getAllByRole("heading").forEach((heading) => expect(heading).toHaveTextContent(""));
+        expect(screen.getByText("user is undefined!")).toBeInTheDocument()
     })
 
-    describe('provides user data to children', () => {
-        it('when loading user', async () => {
-            const user = userEvent.setup();
-            renderComponent()
+    it('loads an existing user', async () => {
+        const user = userEvent.setup();
+        renderComponent()
 
-            await act(() => user.click(screen.getByRole("button", { name: "Load user"})))
+        await act(() => user.click(screen.getByRole("button", { name: "Load user"})))
 
-            expect(screen.queryByText("is a member")).not.toBeInTheDocument()
-            expect(screen.getByText("geary is da goat")).toBeInTheDocument()
-            expect(screen.getByText("geary@ubcpmc.com")).toBeInTheDocument()
-        })
-
-        it('after updating user info', async () => {
-            const user = userEvent.setup()
-            renderComponent()
-
-            await act(() => user.click(screen.getByRole("button", { name: "Load user"})))
-
-            expect(screen.queryByText("is a member")).not.toBeInTheDocument()
-            expect(screen.getByText('geary is da goat')).toBeInTheDocument()
-
-            await act(() => user.click(screen.getByRole('button', { name : "Update user"})))
-
-            expect(screen.getByText("is a member")).toBeInTheDocument()
-            expect(screen.getByText('geary is still da goat')).toBeInTheDocument()
-            expect(screen.getByText("geary@ubcpmc.com")).toBeInTheDocument()
-        })
+        expect(screen.getByText("geary is da goat")).toBeInTheDocument()
+        expect(screen.getByText("geary@ubcpmc.com")).toBeInTheDocument()
     })
+
+    it('updates user info', async () => {
+        const user = userEvent.setup()
+        renderComponent()
+
+        await act(() => user.click(screen.getByRole("button", { name: "Load user"})))
+
+        expect(screen.getByText('geary is da goat')).toBeInTheDocument()
+
+        await act(() => user.click(screen.getByRole('button', { name : "Update user"})))
+
+        expect(screen.getByText('geary is still da goat')).toBeInTheDocument()
+        expect(screen.getByText("geary@ubcpmc.com")).toBeInTheDocument()
+    })
+
+    it('creates a new user', async () => {
+        const user = userEvent.setup()
+        renderComponent()
+
+        await act(() => user.click(screen.getByRole("button", { name: "Create user"})))
+
+        expect(screen.getByText("geary")).toBeInTheDocument()
+        expect(screen.getByText("geary@ubcpmc.com")).toBeInTheDocument()
+    })
+
 })

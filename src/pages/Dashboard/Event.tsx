@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { eventType } from "../../types/api";
 import "./Event.css";
 import {CiCalendar, CiLocationOn} from "react-icons/ci";
 import {FaDollarSign} from "react-icons/fa6";
 import moment from 'moment';
-import { UserDataContext } from "../../providers/UserData/UserDataProvider";
+import { useUserData } from "../../providers/UserData/UserDataProvider";
 
 const Event: React.FC = () => {
-    const { user, isMember } = useContext(UserDataContext);
+    const { user } = useUserData()
     const [event, setEvent] = useState<eventType | null>(null);
     const { event_id } = useParams<{ event_id: string }>();
     const [loading, setLoading] = useState(true);
@@ -145,7 +145,7 @@ const Event: React.FC = () => {
                                     className="text-container"
                                     style={{ flexDirection: "column" }}
                                 >
-                                    {isMember ? (
+                                    {user ? (
                                         <>
                                             <h3>Event Pricing</h3>
                                             <h4>

@@ -35,13 +35,6 @@
 
 /* Forms */
 
-.form-content {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    gap: 1rem;
-}
 
 .form-bg-dark-blue {
     --form-bg-color: #2E3556;
