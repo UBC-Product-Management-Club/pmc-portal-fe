@@ -77,15 +77,6 @@ const Thumbnail = styled.img`
     }
 `
 
-const DisabledOverlay = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.4); // semi-transparent black
-    border-radius: 1rem;
-    z-index: 1;
-`
-
 export function EventCard({ event, disabled }: EventCardProps) {
 
     const contents = (

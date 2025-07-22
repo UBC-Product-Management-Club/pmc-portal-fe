@@ -1,12 +1,8 @@
-import { useState } from "react";
-import { EventCard } from "../Event/EventCard";
-import { useUserData } from "../../providers/UserData/UserDataProvider";
-import { type EventCard as EventCardType } from "../../types/Event";
 
 export default function ProfileEvents() {
-  const { user } = useUserData()
-  const [isLoading, setIsLoading] = useState(true);
-  const [events, setEvents] = useState<EventCardType[]>([]);
+//   const { user } = useUserData()
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [events, setEvents] = useState<EventCardType[]>([]);
 
 //   useEffect(() => {
 //     if (isLoading && user) {
@@ -66,7 +62,7 @@ export default function ProfileEvents() {
   return (
     <div>
       <h3>Events Registered</h3>
-      {!isLoading && events.length > 0 ? (
+      {/* {!isLoading && events.length > 0 ? (
         events.map((event) => (
           <EventCard
             key={event.eventId}
@@ -76,7 +72,7 @@ export default function ProfileEvents() {
         ))
       ) : (
         <p style={{ color: "white" }}>No events found.</p>
-      )}
+      )} */}
     </div>
   );
 }
