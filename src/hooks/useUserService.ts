@@ -1,12 +1,12 @@
 import { PaymentIntent } from "@stripe/stripe-js"
 import { UserService } from "../service/UserService"
-import { UserDocument } from "../types/User"
+import { UserDocument, UserFromDatabase } from "../types/User"
 
 function useUserService() {
     const userService = new UserService()
 
     async function get(userId: string) : Promise<UserDocument> {
-        const user: UserDocument = await userService.fetch(userId)
+        const user: UserDocument = UserFromDatabase.parse(await userService.fetch(userId))
         return user
     }
 
