@@ -1,67 +1,67 @@
-import { useEffect, useState } from "react";
-import { eventType } from "../../types/api";
+import { useState } from "react";
 import { EventCard } from "../Event/EventCard";
 import { useUserData } from "../../providers/UserData/UserDataProvider";
+import { type EventCard as EventCardType } from "../../types/Event";
 
 export default function ProfileEvents() {
   const { user } = useUserData()
   const [isLoading, setIsLoading] = useState(true);
-  const [events, setEvents] = useState<eventType[]>([]);
+  const [events, setEvents] = useState<EventCardType[]>([]);
 
-  useEffect(() => {
-    if (isLoading && user) {
-      const fetchEvent = async (eventId: string): Promise<eventType> => {
-        const eventResponse = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/v1/events/${eventId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+//   useEffect(() => {
+//     if (isLoading && user) {
+//       const fetchEvent = async (eventId: string): Promise<eventType> => {
+//         const eventResponse = await fetch(
+//           `${import.meta.env.VITE_API_URL}/api/v1/events/${eventId}`,
+//           {
+//             method: "GET",
+//             headers: {
+//               "Content-Type": "application/json",
+//             },
+//           }
+//         );
 
-        if (!eventResponse.ok) {
-          throw new Error(`Failed to fetch details for event ID: ${eventId}`);
-        }
+//         if (!eventResponse.ok) {
+//           throw new Error(`Failed to fetch details for event ID: ${eventId}`);
+//         }
 
-        return eventResponse.json();
-      };
+//         return eventResponse.json();
+//       };
 
-      const fetchEvents = async () => {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/v1/profile/${user?.id}/events`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+//       const fetchEvents = async () => {
+//         const response = await fetch(
+//           `${import.meta.env.VITE_API_URL}/api/v1/profile/${user?.id}/events`,
+//           {
+//             method: "GET",
+//             headers: {
+//               "Content-Type": "application/json",
+//             },
+//           }
+//         );
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
+//         if (!response.ok) {
+//           throw new Error("Failed to fetch user data");
+//         }
 
-        const json = await response.json();
-        const eventIds: string[] = json.events;
+//         const json = await response.json();
+//         const eventIds: string[] = json.events;
 
-        const eventDetailsPromises = eventIds.map((eventId) =>
-          fetchEvent(eventId)
-        );
-        const eventsData: eventType[] = await Promise.all(eventDetailsPromises);
+//         const eventDetailsPromises = eventIds.map((eventId) =>
+//           fetchEvent(eventId)
+//         );
+//         const eventsData: eventType[] = await Promise.all(eventDetailsPromises);
 
-        setEvents(eventsData); // This ensures setEvents is called with a proper EventType[] array
-      };
+//         setEvents(eventsData); // This ensures setEvents is called with a proper EventType[] array
+//       };
 
-      try {
-        fetchEvents();
-      } catch (e) {
-        console.error("Failed to retrieve registered events: ", e);
-      }
-      setIsLoading(false);
-    }
-  }, [user, isLoading]);
+//       try {
+//         fetchEvents();
+//       } catch (e) {
+//         console.error("Failed to retrieve registered events: ", e);
+//       }
+//       setIsLoading(false);
+//     }
+//   }, [user, isLoading]);
 
   return (
     <div>
@@ -69,9 +69,9 @@ export default function ProfileEvents() {
       {!isLoading && events.length > 0 ? (
         events.map((event) => (
           <EventCard
-            key={event.event_Id}
-            isSignedIn={!!user}
+            key={event.eventId}
             event={event}
+            disabled={true}
           />
         ))
       ) : (
