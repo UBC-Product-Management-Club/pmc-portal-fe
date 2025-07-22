@@ -21,6 +21,7 @@ describe("useEvents", () => {
             member_price: 5,
             non_member_price: 10,
             thumbnail: 'https://someurl.com',
+            is_disabled: false
         },
         {
             event_id: '889b13e2-3c59-4757-96a8-10618132e1d5',
@@ -33,6 +34,7 @@ describe("useEvents", () => {
             member_price: 3,
             non_member_price: 50,
             thumbnail: 'https://someurl.com',
+            is_disabled: false
         },
         {
             event_id: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
@@ -45,6 +47,7 @@ describe("useEvents", () => {
             member_price: 8,
             non_member_price: 20,
             thumbnail: 'https://someurl.com',
+            is_disabled: true
         }
     ]
     const parsedEvents = [
@@ -58,7 +61,8 @@ describe("useEvents", () => {
             location: 'sauder building',
             memberPrice: 5,
             nonMemberPrice: 10,
-            thumbnail: 'https://someurl.com'
+            thumbnail: 'https://someurl.com',
+            isDisabled: false
         },
         {
             eventId: '889b13e2-3c59-4757-96a8-10618132e1d5',
@@ -70,7 +74,8 @@ describe("useEvents", () => {
             location: '"AMS Nest"',
             memberPrice: 3,
             nonMemberPrice: 50,
-            thumbnail: 'https://someurl.com'
+            thumbnail: 'https://someurl.com',
+            isDisabled: false
         },
         {
             eventId: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
@@ -82,7 +87,8 @@ describe("useEvents", () => {
             location: 'ubc henry angus',
             memberPrice: 8,
             nonMemberPrice: 20,
-            thumbnail: 'https://someurl.com'
+            thumbnail: 'https://someurl.com',
+            isDisabled: true
         }
     ]
 
