@@ -1,4 +1,4 @@
-import { describe, expect, it, Mock, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 import { EventCard } from "./EventCard";
 import { BrowserRouter } from "react-router-dom";
@@ -6,7 +6,7 @@ import userEvent from "@testing-library/user-event";
 
 vi.mock('moment', () => {
     return {
-      default: (input: string | number | Date) => ({
+      default: (_: string | number | Date) => ({
         format: (fmt: string) => {
           if (fmt === 'MMMM D, YYYY') return 'July 22, 2025';
           if (fmt === 'HH.mm A') return '12.30 PM';
