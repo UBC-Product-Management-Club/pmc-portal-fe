@@ -1,9 +1,10 @@
-// import { useState } from "react";
-// import { eventType } from "../../types/api";
-// import { EventCard } from "../../components/Event/EventCard";
-// import { useNavigate } from "react-router-dom";
 import styled from 'styled-components';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
+import { useEvents } from '../../hooks/useEvents';
+import { useEffect, useState } from 'react';
+import type { EventCard as EventCardType } from '../../types/Event';
+import { EventCard } from '../../components/Event/EventCard';
+import moment from 'moment';
 
 const DashboardContainer = styled.div`
     color: white;
@@ -37,32 +38,18 @@ const DashboardStayTuned = styled.p`
 
 export default function Dashboard() {
     const { user } = useUserData();
-    //   const [allEvents, setAllEvents] = useState<eventType[]>([]);
-    //   const navigateTo = useNavigate();
+    const { getAll } = useEvents();
+    const [events, setEvents] = useState<EventCardType[] | undefined>();
+    const [error, setError] = useState<boolean>(false);
 
-    //   async function dashboardComponents() {
-    //     try {
-    //       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/`, {
-    //         method: "GET",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //       });
-
-    //       if (!response.ok) {
-    //         throw new Error("Fetching all events was not ok");
-    //       }
-
-    //       const allEvents = await response.json();
-    //       setAllEvents(allEvents);
-    //     } catch (error) {
-    //       console.error("Error fetching events: ", error);
-    //     }
-    //   }
-
-    //   useEffect(() => {
-    //     dashboardComponents();
-    //   }, []);
+    useEffect(() => {
+        getAll()
+            .then(setEvents)
+            .catch((e) => {
+                console.error(e);
+                setError(true);
+            });
+    }, []);
 
     return (
         <DashboardContainer>
@@ -70,7 +57,7 @@ export default function Dashboard() {
                 <DashboardHeader>
                     <h2>Upcoming Events</h2>
                     <WelcomeMessage>
-                        {user ? `Welcome ${user?.firstName}` : 'Welcome guest'}
+                        {user ? `Welcome ${user.firstName}` : 'Welcome guest'}
                     </WelcomeMessage>
                 </DashboardHeader>
                 <p>
@@ -83,41 +70,26 @@ export default function Dashboard() {
             </DashboardSection>
 
             <DashboardSection>
-                <DashboardStayTuned>Stay tuned for future events!</DashboardStayTuned>
-                <div>
-                    {/* {allEvents.length > 0 ? (
-            allEvents.map((event) => (
-              <EventCard
-                key={event.event_Id}
-                isSignedIn={!!user}
-                event={event}
-                showRegister={true}
-                handleClick={() => {
-                  navigateTo(`/events/${event.event_Id}`);
-                }}
-              />
-            ))
-          ) : (
-          )} */}
-                </div>
+                {events === undefined ? (
+                    <>{error ? <h1>An error occurred fetching events :( </h1> : <h1>Loading</h1>}</>
+                ) : (
+                    <>
+                        {events.length > 0 ? (
+                            events.map((event) => (
+                                <EventCard
+                                    key={event.eventId}
+                                    event={event}
+                                    disabled={
+                                        event.isDisabled || moment().isAfter(moment(event.date))
+                                    }
+                                />
+                            ))
+                        ) : (
+                            <DashboardStayTuned>Stay tuned for future events!</DashboardStayTuned>
+                        )}
+                    </>
+                )}
             </DashboardSection>
         </DashboardContainer>
     );
 }
-
-// MAIN PRIORITIES:
-// 1. Only display member_only pop-up events in dashboard (if they don't have a non-member price, its member-only!)
-// 2. fix UI of event detail page
-// 3. Change header Sign in UI + functionality to end session for signing out
-
-// CURRENt ISSUES:
-// if logged in as member -> all events are clickable, but some of the cards are still overlaid
-// if not logged in as non-member -> all events are not clickable, but some of the cards are overlaid (which is what we want)
-
-// member + non-member price available = CLICKABLE
-// member + !non-member price = CLICKABLE
-// non member + non-member price available = CLICKABLE
-// non member + !non-member price = NOT CLICKABLE
-
-// logged in as member -> can only see the member price
-// logged in as non-member -> can see both member and non-member price

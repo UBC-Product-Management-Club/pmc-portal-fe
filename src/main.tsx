@@ -10,10 +10,6 @@ import Event from './pages/Dashboard/Event.tsx';
 import { Profile } from './pages/Profile/Profile';
 import { Layout } from './layout';
 import Onboarding from './components/Onboarding/Onboarding.tsx';
-import AllUsers from './pages/Admin/AllUsers/AllUsers.tsx';
-import AllEvents from './pages/Admin/Events/AllEvents.tsx';
-import AttendeeList from './pages/Admin/Events/AttendeeList.tsx';
-import MainQRPage from './pages/Activities/MainQRPage.tsx';
 import { ProdRenderer } from './components/EnvironmentWrappers/ProdRenderer.tsx';
 import { DevRenderer } from './components/EnvironmentWrappers/DevRenderer.tsx';
 import { UserDataProvider } from './providers/UserData/UserDataProvider.tsx';
@@ -38,6 +34,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                         </Routes>
                     </ProdRenderer>
 
+                    <ProdRenderer>
+                        <Routes>
+                            <Route path={'/'} element={<UnderConstruction />} />
+                        </Routes>
+                    </ProdRenderer>
+
                     <DevRenderer>
                         <Routes>
                             <Route path={'/'} element={<Login />} />
@@ -47,13 +49,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                                 <Route path="/dashboard" element={<Dashboard />} />
                                 <Route path="/events/:event_id" element={<Event />} />
                                 <Route path="/profile" element={<Profile />} />
-                                <Route path="/admin/users" element={<AllUsers />} />
-                                <Route path="/admin/events" element={<AllEvents />} />
-                                <Route
-                                    path="/admin/events/:event_id/attendees"
-                                    element={<AttendeeList />}
-                                />
-                                <Route path="/psprint/raffle-tracker" element={<MainQRPage />} />
+                                {/* <Route path="/admin/users" element={<AllUsers />} />
+                    <Route path="/admin/events" element={<AllEvents />} />
+                    <Route path="/admin/events/:event_id/attendees" element={<AttendeeList />} />
+                    <Route path="/psprint/raffle-tracker" element={<MainQRPage />} /> */}
                             </Route>
                         </Routes>
                     </DevRenderer>
