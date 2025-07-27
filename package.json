@@ -10,6 +10,8 @@
         "format": "prettier --write .",
         "lint": "eslint . --ext ts,tsx",
         "lint:fix": "eslint . --ext ts,tsx --fix",
+        "tcheck": "tsc --noEmit",
+        "check": "npm run lint && npm run tcheck",
         "preview": "vite preview",
         "prepare": "husky"
     },

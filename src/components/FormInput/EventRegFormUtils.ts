@@ -8,7 +8,7 @@ import { UseFormRegister } from 'react-hook-form';
 export type EventRegFormInputProps = {
     type: string;
     placeholder: string;
-    name: string;
+    name: keyof EventRegFormSchema;
     register: UseFormRegister<EventRegFormSchema>;
     valueAsNumber?: boolean;
     required?: boolean;

@@ -8,7 +8,7 @@ import { EventRegFormSchema } from '../FormInput/EventRegFormUtils';
 import EventRegCheckbox from '../FormInput/EventRegCheckbox';
 
 type Question = {
-    label: string;
+    label: keyof EventRegFormSchema;
     questionType: 'short-answer' | 'long-answer' | 'dropdown' | 'file' | 'checkbox';
     options?: string[];
     required?: boolean;

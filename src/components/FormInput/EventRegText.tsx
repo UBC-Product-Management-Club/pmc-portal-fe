@@ -1,13 +1,14 @@
 import React from 'react';
 import { TextAreaWrapper, StyledTextArea, CharacterCount } from './EventRegText.styles';
 import { UseFormRegister, FieldValues, FieldError, Merge, FieldErrorsImpl } from 'react-hook-form';
+import { EventRegFormSchema } from './EventRegFormUtils';
 
 interface EventRegTextProps {
     maxLength?: number;
     placeholder?: string;
     error?: FieldError | Merge<FieldError, FieldErrorsImpl<FieldValues>> | undefined;
-    register: UseFormRegister<FieldValues>;
-    name: string;
+    register: UseFormRegister<EventRegFormSchema>;
+    name: keyof EventRegFormSchema;
     required?: boolean;
 }
 

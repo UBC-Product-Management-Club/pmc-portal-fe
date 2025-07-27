@@ -6,7 +6,7 @@ interface DropdownOption {
 }
 
 interface EventRegDropdownProps {
-    name: string;
+    name: keyof EventRegFormSchema;
     placeholder: string;
     options: DropdownOption[];
     register: UseFormRegister<EventRegFormSchema>;

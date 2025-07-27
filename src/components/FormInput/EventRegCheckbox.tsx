@@ -9,7 +9,7 @@ import {
 import { EventRegFormSchema } from './EventRegFormUtils';
 
 interface EventRegCheckboxProps {
-    name: string;
+    name: keyof EventRegFormSchema;
     options: string[];
     register: UseFormRegister<EventRegFormSchema>;
     required?: boolean;
