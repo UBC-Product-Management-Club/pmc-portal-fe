@@ -104,10 +104,10 @@
 
 //         try {
 //             const formData = new FormData();
-            
+
 //             formData.append('attendeeInfo', JSON.stringify(attendeeInfo));
 //             formData.append('paymentInfo', JSON.stringify(paymentInfo));
-            
+
 //             if (files) {
 //                 files.forEach((file: File) => {
 //                     formData.append('files', file);
@@ -122,7 +122,7 @@
 //                     body: formData
 //                 }
 //             );
-            
+
 //             if (!response.ok) {
 //                 throw Error("Event registration failed. Contact tech@ubcpmc.com for support");
 //             }
@@ -144,7 +144,7 @@
 //             onContinueAsGuest={handleContinueAsGuest}
 //         />,
 //         <EventRegistrationGuest onSubmit={handleSubmitGuest}/>,
-//         <EventRegistrationForm 
+//         <EventRegistrationForm
 //           onSubmit={(data: any, files: File[]) => handleSubmitEventRegInfo(data as EventRegFormSchema, files)}
 //           formId={props.formId}
 //         />,

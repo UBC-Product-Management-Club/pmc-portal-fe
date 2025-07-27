@@ -1,6 +1,6 @@
-import "./EventCard.css";
-import {eventType} from "../../types/api";
-import moment from "moment";
+import './EventCard.css';
+import { eventType } from '../../types/api';
+import moment from 'moment';
 
 type EventCardProps = {
     isSignedIn: boolean;
@@ -16,25 +16,28 @@ export function EventCard(props: EventCardProps) {
             <div
                 className={`event ${
                     !props.isSignedIn && props.event.non_member_price === undefined
-                        ? "disabled-card"
-                        : ""
+                        ? 'disabled-card'
+                        : ''
                 }`}
             >
-                <div className={"card-container"}>
-                    <div className={"event-col"}>
-                        <p className="event-time-loc">{props.event.start_time} - {props.event.end_time} | {props.event.location}</p>
+                <div className={'card-container'}>
+                    <div className={'event-col'}>
+                        <p className="event-time-loc">
+                            {props.event.start_time} - {props.event.end_time} |{' '}
+                            {props.event.location}
+                        </p>
                         <p className="event-name">{props.event.name}</p>
                         <p className="event-description">{props.event.description}</p>
 
                         {props.showRegister && (
                             <button
-                                className={`event-button ${props.event.maxAttendee !== null &&
-                                props.event.attendee_Ids?.length >= props.event.maxAttendee
-                                    ? "disabled-button"
-                                    : ""
+                                className={`event-button ${
+                                    props.event.maxAttendee !== null &&
+                                    props.event.attendee_Ids?.length >= props.event.maxAttendee
+                                        ? 'disabled-button'
+                                        : ''
                                 }`}
                                 onClick={props.handleClick}
-
                             >
                                 See more
                             </button>
@@ -42,18 +45,14 @@ export function EventCard(props: EventCardProps) {
                         {props.event.non_member_price === undefined && !props.isSignedIn && (
                             <div className="overlay">
                                 <p className="disabled-comment">
-                                    Please sign in to your PMC account to view the details for
-                                    this event.
+                                    Please sign in to your PMC account to view the details for this
+                                    event.
                                 </p>
                             </div>
                         )}
                     </div>
-                    <div className={"event-col"}>
-                        <img
-                            src={props.event.media[0]}
-                            alt="Event"
-                            className={"event-image"}
-                        ></img>
+                    <div className={'event-col'}>
+                        <img src={props.event.media[0]} alt="Event" className={'event-image'}></img>
                     </div>
                 </div>
             </div>

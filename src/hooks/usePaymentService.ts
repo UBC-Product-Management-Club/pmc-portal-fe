@@ -1,5 +1,5 @@
-import { PaymentService } from "../service/PaymentService";
+import { PaymentService } from '../service/PaymentService';
 
 export function usePaymentService() {
-    return new PaymentService()
+    return new PaymentService();
 }

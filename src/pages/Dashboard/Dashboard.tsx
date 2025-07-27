@@ -2,86 +2,90 @@
 // import { eventType } from "../../types/api";
 // import { EventCard } from "../../components/Event/EventCard";
 // import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { useUserData } from "../../providers/UserData/UserDataProvider";
+import styled from 'styled-components';
+import { useUserData } from '../../providers/UserData/UserDataProvider';
 
 const DashboardContainer = styled.div`
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
 `;
 
 const DashboardSection = styled.div`
-  width: 100%;
+    width: 100%;
 `;
 
 const DashboardHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: baseline;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
 `;
 
 const WelcomeMessage = styled.h4`
-  font-style: italic;
+    font-style: italic;
 `;
 
 const DashboardStayTuned = styled.p`
-  text-align: center;
-  color: white;
-  font-weight: bold;
-  margin-top: 5rem;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    margin-top: 5rem;
 `;
 
 export default function Dashboard() {
-  const { user } = useUserData()
-//   const [allEvents, setAllEvents] = useState<eventType[]>([]);
-//   const navigateTo = useNavigate();
+    const { user } = useUserData();
+    //   const [allEvents, setAllEvents] = useState<eventType[]>([]);
+    //   const navigateTo = useNavigate();
 
-//   async function dashboardComponents() {
-//     try {
-//       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/`, {
-//         method: "GET",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//       });
+    //   async function dashboardComponents() {
+    //     try {
+    //       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/events/`, {
+    //         method: "GET",
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //         },
+    //       });
 
-//       if (!response.ok) {
-//         throw new Error("Fetching all events was not ok");
-//       }
+    //       if (!response.ok) {
+    //         throw new Error("Fetching all events was not ok");
+    //       }
 
-//       const allEvents = await response.json();
-//       setAllEvents(allEvents);
-//     } catch (error) {
-//       console.error("Error fetching events: ", error);
-//     }
-//   }
+    //       const allEvents = await response.json();
+    //       setAllEvents(allEvents);
+    //     } catch (error) {
+    //       console.error("Error fetching events: ", error);
+    //     }
+    //   }
 
-//   useEffect(() => {
-//     dashboardComponents();
-//   }, []);
+    //   useEffect(() => {
+    //     dashboardComponents();
+    //   }, []);
 
+    return (
+        <DashboardContainer>
+            <DashboardSection>
+                <DashboardHeader>
+                    <h2>Upcoming Events</h2>
+                    <WelcomeMessage>
+                        {user ? `Welcome ${user?.firstName}` : 'Welcome guest'}
+                    </WelcomeMessage>
+                </DashboardHeader>
+                <p>
+                    At PMC, our mission is to empower aspiring product managers by providing
+                    valuable insights, hands-on experiences, and opportunities to connect with
+                    industry leaders. Check out our upcoming events to support you on your product
+                    journey and help you grow your skills, expand your network, and explore new
+                    opportunities in the field!
+                </p>
+            </DashboardSection>
 
-  return (
-    <DashboardContainer>
-      <DashboardSection>
-        <DashboardHeader>
-          <h2>Upcoming Events</h2>
-          <WelcomeMessage>{user ? `Welcome ${user?.firstName}` : "Welcome guest"}</WelcomeMessage>
-        </DashboardHeader>
-        <p>
-          At PMC, our mission is to empower aspiring product managers by providing valuable insights, hands-on experiences, and opportunities to connect with industry leaders. Check out our upcoming
-          events to support you on your product journey and help you grow your skills, expand your network, and explore new opportunities in the field!
-        </p>
-      </DashboardSection>
-
-      <DashboardSection>
-        <DashboardStayTuned>Stay tuned for future events!</DashboardStayTuned>
-        <div>
-          {/* {allEvents.length > 0 ? (
+            <DashboardSection>
+                <DashboardStayTuned>Stay tuned for future events!</DashboardStayTuned>
+                <div>
+                    {/* {allEvents.length > 0 ? (
             allEvents.map((event) => (
               <EventCard
                 key={event.event_Id}
@@ -95,10 +99,10 @@ export default function Dashboard() {
             ))
           ) : (
           )} */}
-        </div>
-      </DashboardSection>
-    </DashboardContainer>
-  );
+                </div>
+            </DashboardSection>
+        </DashboardContainer>
+    );
 }
 
 // MAIN PRIORITIES:
