@@ -1,15 +1,15 @@
-import "./EventCard.css";
-import moment from "moment";
-import { type EventCard } from "../../types/Event";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
+import './EventCard.css';
+import moment from 'moment';
+import { type EventCard } from '../../types/Event';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
 type EventCardProps = {
-    event: EventCard
-    disabled: boolean
+    event: EventCard;
+    disabled: boolean;
 };
 
-const Container = styled.div<{disabled: boolean}>`
+const Container = styled.div<{ disabled: boolean }>`
     width: inherit;
     max-height: 18rem;
     display: flex;
@@ -20,20 +20,21 @@ const Container = styled.div<{disabled: boolean}>`
     border-radius: 1rem;
     gap: 1rem;
     color: white;
-    background-color: ${({disabled}) => (disabled ? "var(--pmc-black)" : "var(--pmc-dark-purple)")};
+    background-color: ${({ disabled }) =>
+        disabled ? 'var(--pmc-black)' : 'var(--pmc-dark-purple)'};
     opacity: ${({ disabled }) => (disabled ? 0.8 : 1)};
     @media screen and (max-width: 600px) {
         flex-direction: column-reverse;
         align-items: start;
         gap: 2rem;
     }
-`
+`;
 
 const Column = styled.div`
     max-width: 50%;
     box-sizing: border-box;
     align-self: center;
-`
+`;
 
 const EventTimeAndLocation = styled.p`
     font-style: normal;
@@ -44,12 +45,12 @@ const EventTimeAndLocation = styled.p`
     flex: none;
     order: 0;
     flex-grow: 0;
-`
+`;
 
 const EventName = styled.p`
     font-size: x-large;
     font-weight: bold;
-`
+`;
 
 const EventDescription = styled.p`
     word-wrap: break-word;
@@ -61,7 +62,7 @@ const EventDescription = styled.p`
     line-clamp: 3;
     box-sizing: border-box;
     text-overflow: ellipsis;
-`
+`;
 
 const Thumbnail = styled.img`
     margin-left: 10px;
@@ -75,34 +76,34 @@ const Thumbnail = styled.img`
     @media screen and (max-width: 768px) {
         width: 16rem;
     }
-`
+`;
 
 export function EventCard({ event, disabled }: EventCardProps) {
-
     const contents = (
-                <Container disabled={disabled}>
-                    <Column>
-                        <EventTimeAndLocation>{moment(event.startTime).format("HH.mm A")} | {event.location}</EventTimeAndLocation>
-                        <EventName>{event.name}</EventName>
-                        <EventDescription>{event.description}</EventDescription>
-                    </Column>
-                    <Column>
-                        <Thumbnail
-                            src={event.thumbnail}
-                            alt="Event thumbnail"
-                        />
-                    </Column>
-                </Container>)
+        <Container disabled={disabled}>
+            <Column>
+                <EventTimeAndLocation>
+                    {moment(event.startTime).format('HH.mm A')} | {event.location}
+                </EventTimeAndLocation>
+                <EventName>{event.name}</EventName>
+                <EventDescription>{event.description}</EventDescription>
+            </Column>
+            <Column>
+                <Thumbnail src={event.thumbnail} alt="Event thumbnail" />
+            </Column>
+        </Container>
+    );
 
     return (
         <>
             <h2>{moment(event.date).format('MMMM D, YYYY')}</h2>
-            {disabled ? contents : (
-                    <Link to={`/events/${event.eventId}`} style={{ textDecoration: "none" }}>
-                        {contents}
-                    </Link>
-                )
-            }
+            {disabled ? (
+                contents
+            ) : (
+                <Link to={`/events/${event.eventId}`} style={{ textDecoration: 'none' }}>
+                    {contents}
+                </Link>
+            )}
         </>
     );
 }

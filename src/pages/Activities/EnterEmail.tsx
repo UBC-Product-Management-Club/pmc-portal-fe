@@ -1,8 +1,8 @@
-import EmailRaffleFormInput from "../../components/FormInput/EmailRaffleFormInput";
-import { useForm } from "react-hook-form";
+import EmailRaffleFormInput from '../../components/FormInput/EmailRaffleFormInput';
+import { useForm } from 'react-hook-form';
 import '../Activities/EnterEmail.css';
 
-export const localEmail = localStorage.getItem("email");
+export const localEmail = localStorage.getItem('email');
 
 export type RaffleFormData = {
     email: string;
@@ -13,7 +13,11 @@ interface enterEmailPropType {
 }
 
 export default function EnterEmail({ onSubmit }: enterEmailPropType) {
-    const { register, handleSubmit, formState: { errors } } = useForm<RaffleFormData>();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<RaffleFormData>();
 
     return (
         <form className="raffle-form" onSubmit={handleSubmit(onSubmit)}>
@@ -22,7 +26,7 @@ export default function EnterEmail({ onSubmit }: enterEmailPropType) {
                 <EmailRaffleFormInput
                     type="email"
                     name="email"
-                    placeholder={"Enter your email"}
+                    placeholder={'Enter your email'}
                     register={register}
                     error={errors.email}
                 />

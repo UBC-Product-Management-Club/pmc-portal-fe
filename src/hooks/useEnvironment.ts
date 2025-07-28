@@ -3,5 +3,5 @@ export function useEnvironment() {
 
     return {
         isProd: env === 'PROD',
-  };
+    };
 }

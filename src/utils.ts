@@ -1,17 +1,16 @@
-import { UserDocument } from "./types/User";
-
+import { UserDocument } from './types/User';
 
 const emptyUser: UserDocument = {
-    id: "",
-    displayName: "",
-    email: "",
-    firstName: "",
-    lastName: "",
-    university: "University of British Columbia",
-    pfp: "",
-    pronouns: "",
-    whyPm: "",
-}
+    id: '',
+    displayName: '',
+    email: '',
+    firstName: '',
+    lastName: '',
+    university: 'University of British Columbia',
+    pfp: '',
+    pronouns: '',
+    whyPm: '',
+};
 
 function isInAppBrowser() {
     const ua = window.navigator.userAgent.toLowerCase();
@@ -25,10 +24,10 @@ function isInAppBrowser() {
         ua.includes('x-client') || // X's new client identifier
         ua.includes('linkedin') // LinkedIn
     );
-};
-
-function formatPrice(price: number) {
-    return `$${price/100}`
 }
 
-export { isInAppBrowser, emptyUser, formatPrice }
+function formatPrice(price: number) {
+    return `$${price / 100}`;
+}
+
+export { isInAppBrowser, emptyUser, formatPrice };

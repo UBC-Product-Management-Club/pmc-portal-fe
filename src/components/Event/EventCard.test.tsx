@@ -1,22 +1,22 @@
-import { describe, expect, it, vi } from "vitest";
-import { act, render, screen } from "@testing-library/react";
-import { EventCard } from "./EventCard";
-import { BrowserRouter } from "react-router-dom";
-import userEvent from "@testing-library/user-event";
+import { describe, expect, it, vi } from 'vitest';
+import { act, render, screen } from '@testing-library/react';
+import { EventCard } from './EventCard';
+import { BrowserRouter } from 'react-router-dom';
+import userEvent from '@testing-library/user-event';
 
 vi.mock('moment', () => {
     return {
-      default: (_: string | number | Date) => ({
-        format: (fmt: string) => {
-          if (fmt === 'MMMM D, YYYY') return 'July 22, 2025';
-          if (fmt === 'HH.mm A') return '12.30 PM';
-          return 'Mocked Date';
-        },
-      }),
+        default: () => ({
+            format: (fmt: string) => {
+                if (fmt === 'MMMM D, YYYY') return 'July 22, 2025';
+                if (fmt === 'HH.mm A') return '12.30 PM';
+                return 'Mocked Date';
+            },
+        }),
     };
 });
 
-describe("EventCard", () => {
+describe('EventCard', () => {
     const event = {
         eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
         name: 'test product conference',
@@ -29,41 +29,39 @@ describe("EventCard", () => {
         nonMemberPrice: 10,
         thumbnail: 'url1',
         memberOnly: false,
-        isDisabled: false
-    }
+        isDisabled: false,
+    };
 
     async function renderComponent(disabled?: boolean) {
         return render(
             <BrowserRouter>
-                <EventCard event={event} disabled={disabled ?? false}/>
+                <EventCard event={event} disabled={disabled ?? false} />
             </BrowserRouter>
-        )
+        );
     }
 
+    it('renders event card', async () => {
+        await renderComponent();
 
-    it("renders event card", async () => {
-        await renderComponent()
+        expect(screen.getByText('July 22, 2025')).toBeInTheDocument();
+        expect(screen.getByText('12.30 PM | sauder building')).toBeInTheDocument();
+        expect(screen.getByText(event.name)).toBeInTheDocument();
+        expect(screen.getByText(event.description)).toBeInTheDocument();
+        expect(screen.getByRole('img')).toHaveAttribute('src', event.thumbnail);
+        expect(screen.getByRole('link')).toHaveAttribute('href', `/events/${event.eventId}`);
+    });
 
-        expect(screen.getByText("July 22, 2025")).toBeInTheDocument()
-        expect(screen.getByText("12.30 PM | sauder building")).toBeInTheDocument()
-        expect(screen.getByText(event.name)).toBeInTheDocument()
-        expect(screen.getByText(event.description)).toBeInTheDocument()
-        expect(screen.getByRole("img")).toHaveAttribute("src", event.thumbnail)
-        expect(screen.getByRole("link")).toHaveAttribute("href",`/events/${event.eventId}`)
-    })
+    it('renders event card for disabled event', async () => {
+        await renderComponent(true);
 
-    it("renders event card for disabled event", async () => {
-        await renderComponent(true)
+        expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    });
 
-        expect(screen.queryByRole("link")).not.toBeInTheDocument()
-    })
+    it('goes to the event page', async () => {
+        const user = userEvent.setup();
+        await renderComponent();
 
-    it("goes to the event page", async () => {
-        const user = userEvent.setup()
-        await renderComponent()
-
-        await act(() => user.click(screen.getByRole("link")))
-        expect(window.location.pathname).toBe(`/events/${event.eventId}`)
-    })
-
-})
+        await act(() => user.click(screen.getByRole('link')));
+        expect(window.location.pathname).toBe(`/events/${event.eventId}`);
+    });
+});

@@ -1,11 +1,11 @@
-import { useEnvironment } from "../../hooks/useEnvironment";
+import { useEnvironment } from '../../hooks/useEnvironment';
 
 interface DevOnlyProps {
-  children: React.ReactNode;
+    children: React.ReactNode;
 }
 
-export const DevRenderer = ({ children} : DevOnlyProps) => {
-  const { isProd } = useEnvironment();
+export const DevRenderer = ({ children }: DevOnlyProps) => {
+    const { isProd } = useEnvironment();
 
-  return isProd ? null : children;
+    return isProd ? null : children;
 };

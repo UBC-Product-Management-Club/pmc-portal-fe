@@ -1,14 +1,13 @@
-import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
-import { renderHook } from "@testing-library/react";
-import { useEvents } from "./useEvents";
-import { EventService } from "../service/EventService";
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+import { renderHook } from '@testing-library/react';
+import { useEvents } from './useEvents';
+import { EventService } from '../service/EventService';
 
-vi.mock("../service/EventService");
+vi.mock('../service/EventService');
 
-
-describe("useEvents", () => {
+describe('useEvents', () => {
     let mockEventService: Mock;
-    let mockGetAllEvents: Mock
+    let mockGetAllEvents: Mock;
     const rawEvents = [
         {
             event_id: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
@@ -21,7 +20,7 @@ describe("useEvents", () => {
             member_price: 5,
             non_member_price: 10,
             thumbnail: 'https://someurl.com',
-            is_disabled: false
+            is_disabled: false,
         },
         {
             event_id: '889b13e2-3c59-4757-96a8-10618132e1d5',
@@ -34,7 +33,7 @@ describe("useEvents", () => {
             member_price: 3,
             non_member_price: 50,
             thumbnail: 'https://someurl.com',
-            is_disabled: false
+            is_disabled: false,
         },
         {
             event_id: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
@@ -47,9 +46,9 @@ describe("useEvents", () => {
             member_price: 8,
             non_member_price: 20,
             thumbnail: 'https://someurl.com',
-            is_disabled: true
-        }
-    ]
+            is_disabled: true,
+        },
+    ];
     const parsedEvents = [
         {
             eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
@@ -62,7 +61,7 @@ describe("useEvents", () => {
             memberPrice: 5,
             nonMemberPrice: 10,
             thumbnail: 'https://someurl.com',
-            isDisabled: false
+            isDisabled: false,
         },
         {
             eventId: '889b13e2-3c59-4757-96a8-10618132e1d5',
@@ -75,7 +74,7 @@ describe("useEvents", () => {
             memberPrice: 3,
             nonMemberPrice: 50,
             thumbnail: 'https://someurl.com',
-            isDisabled: false
+            isDisabled: false,
         },
         {
             eventId: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
@@ -88,25 +87,23 @@ describe("useEvents", () => {
             memberPrice: 8,
             nonMemberPrice: 20,
             thumbnail: 'https://someurl.com',
-            isDisabled: true
-        }
-    ]
+            isDisabled: true,
+        },
+    ];
 
     beforeEach(() => {
-        mockGetAllEvents = vi.fn().mockResolvedValue(rawEvents)
-        mockEventService = vi.mocked(EventService)
-    })
+        mockGetAllEvents = vi.fn().mockResolvedValue(rawEvents);
+        mockEventService = vi.mocked(EventService);
+    });
 
-    it("fetches all events", async () => {
+    it('fetches all events', async () => {
         mockEventService.mockReturnValueOnce({
-            getAll: mockGetAllEvents
-        })
-        const { result } = renderHook(() => useEvents())
-        
-        const events = await result.current.getAll()
+            getAll: mockGetAllEvents,
+        });
+        const { result } = renderHook(() => useEvents());
 
-        expect(events).toEqual(parsedEvents)
-    })
+        const events = await result.current.getAll();
 
-
-})
+        expect(events).toEqual(parsedEvents);
+    });
+});

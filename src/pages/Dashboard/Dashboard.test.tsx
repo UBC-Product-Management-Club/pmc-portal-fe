@@ -1,21 +1,20 @@
-import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
-import { useUserData } from "../../providers/UserData/UserDataProvider";
-import { useEvents } from "../../hooks/useEvents";
-import { EventCard } from "../../components/Event/EventCard";
-import { type EventCard as EventCardType } from "../../types/Event";
-import { act, render, screen } from "@testing-library/react";
-import Dashboard from "./Dashboard";
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+import { useUserData } from '../../providers/UserData/UserDataProvider';
+import { useEvents } from '../../hooks/useEvents';
+import { EventCard } from '../../components/Event/EventCard';
+import { type EventCard as EventCardType } from '../../types/Event';
+import { act, render, screen } from '@testing-library/react';
+import Dashboard from './Dashboard';
 
 vi.mock('../../providers/UserData/UserDataProvider', () => ({
-    useUserData: vi.fn()
-}))
-vi.mock("../../hooks/useEvents")
-vi.mock("../../components/Event/EventCard")
+    useUserData: vi.fn(),
+}));
+vi.mock('../../hooks/useEvents');
+vi.mock('../../components/Event/EventCard');
 
-
-describe("Dashboard", () => {
-    let mockUseUserData: Mock
-    let mockGetAllEvents: Mock
+describe('Dashboard', () => {
+    let mockUseUserData: Mock;
+    let mockGetAllEvents: Mock;
     const testEvents = [
         {
             eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
@@ -52,19 +51,18 @@ describe("Dashboard", () => {
             memberPrice: 8,
             nonMemberPrice: 20,
             thumbnail: 'url3',
-        }
-    ]
+        },
+    ];
 
     beforeEach(() => {
         vi.clearAllMocks();
-        mockGetAllEvents = vi.fn().mockResolvedValue(testEvents)
+        mockGetAllEvents = vi.fn().mockResolvedValue(testEvents);
         mockUseUserData = (useUserData as Mock).mockReturnValue({
-            user: undefined
-        })
-        vi.mocked(useEvents, { partial : true}).mockReturnValue({
-            getAll: mockGetAllEvents
-
-        })
+            user: undefined,
+        });
+        vi.mocked(useEvents, { partial: true }).mockReturnValue({
+            getAll: mockGetAllEvents,
+        });
         vi.mocked(EventCard).mockImplementation(({ event }: { event: EventCardType }) => {
             return (
                 <>
@@ -79,59 +77,57 @@ describe("Dashboard", () => {
                     <div>{event.nonMemberPrice}</div>
                     <div>{event.memberPrice}</div>
                 </>
-            )
-        })
-    })
+            );
+        });
+    });
 
     async function renderComponent() {
-        return render(
-            <Dashboard />
-        )
+        return render(<Dashboard />);
     }
 
-    it("renders welcome guest when not logged in", async () => {
-        await renderComponent()
+    it('renders welcome guest when not logged in', async () => {
+        await renderComponent();
 
-        expect(screen.getByText("Welcome guest")).toBeInTheDocument()
-    })
+        expect(screen.getByText('Welcome guest')).toBeInTheDocument();
+    });
 
-    it("renders member name when logged in", async () => {
+    it('renders member name when logged in', async () => {
         mockUseUserData.mockReturnValueOnce({
-            user: { firstName: "geary"}
-        })
-        await renderComponent()
+            user: { firstName: 'geary' },
+        });
+        await renderComponent();
 
-        expect(screen.getByText("Welcome geary")).toBeInTheDocument()
-    })
+        expect(screen.getByText('Welcome geary')).toBeInTheDocument();
+    });
 
     it("renders loading when events haven't loaded", async () => {
-        mockGetAllEvents.mockResolvedValueOnce(new Promise(() => {}))
-        await renderComponent()
+        mockGetAllEvents.mockResolvedValueOnce(new Promise(() => {}));
+        await renderComponent();
 
-        expect(screen.getByText("Loading")).toBeInTheDocument()
-    })
+        expect(screen.getByText('Loading')).toBeInTheDocument();
+    });
 
-    it("renders stay tuned text when no events", async () => {
-        mockGetAllEvents.mockResolvedValueOnce([])
-        await act(() => renderComponent())
+    it('renders stay tuned text when no events', async () => {
+        mockGetAllEvents.mockResolvedValueOnce([]);
+        await act(() => renderComponent());
 
-        expect(screen.getByText("Stay tuned for future events!")).toBeInTheDocument()
-    })
+        expect(screen.getByText('Stay tuned for future events!')).toBeInTheDocument();
+    });
 
-    it("renders error message when events fail to fetch", async () => {
-        mockGetAllEvents.mockRejectedValueOnce(new Error("Error fetching events"))
-        await act(() => renderComponent())
+    it('renders error message when events fail to fetch', async () => {
+        mockGetAllEvents.mockRejectedValueOnce(new Error('Error fetching events'));
+        await act(() => renderComponent());
 
-        expect(screen.getByText("An error occurred fetching events :(")).toBeInTheDocument()
-    })
+        expect(screen.getByText('An error occurred fetching events :(')).toBeInTheDocument();
+    });
 
-    it("renders events correctly", async () => {
-        await act(() => renderComponent())
+    it('renders events correctly', async () => {
+        await act(() => renderComponent());
 
         testEvents.map((event) => {
             Object.values(event).map((value) => {
-                expect(screen.getByText(value)).toBeInTheDocument()
-            })
-        })
-    })
-})
+                expect(screen.getByText(value)).toBeInTheDocument();
+            });
+        });
+    });
+});

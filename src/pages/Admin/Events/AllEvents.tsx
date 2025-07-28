@@ -47,7 +47,7 @@
 //       ) : (
 //         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
 //           {allEvents.map((event) => (
-//             <EventCard 
+//             <EventCard
 //               key={event.event_Id}
 //               event={event}
 //               isSignedIn={true}
