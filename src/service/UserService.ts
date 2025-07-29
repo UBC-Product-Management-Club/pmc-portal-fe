@@ -6,7 +6,7 @@ class UserService {
     private client: RestClient;
 
     constructor(client?: RestClient) {
-        this.client = client ?? new RestClient(`${import.meta.env.VITE_API_URL}/api/v1/auth`);
+        this.client = client ?? new RestClient(`${import.meta.env.VITE_API_URL}/api/v2/auth`);
     }
 
     create(userToCreate: Partial<UserDocument>, payment: PaymentIntent) {

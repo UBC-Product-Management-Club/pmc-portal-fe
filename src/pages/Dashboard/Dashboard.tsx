@@ -49,7 +49,7 @@ export default function Dashboard() {
                 console.error(e);
                 setError(true);
             });
-    }, []);
+    }, [getAll]);
 
     return (
         <DashboardContainer>

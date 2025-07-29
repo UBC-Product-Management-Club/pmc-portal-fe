@@ -2,19 +2,24 @@ import { describe, it, expect } from 'vitest';
 import { act, render, screen } from '@testing-library/react';
 import { ActionTypes, UserDataProvider, useUserData } from './UserDataProvider';
 import { userEvent } from '@testing-library/user-event';
-import { UserDocument } from '../../types/User';
+import { UserFromDatabase } from '../../types/User';
 
 describe('useUserData', () => {
-    const exampleUser: UserDocument = {
-        id: 'userId',
-        firstName: 'geary',
-        lastName: 'pmc',
-        pronouns: 'he/him',
+    const mockUser: UserFromDatabase = {
+        userId: 'user123',
         email: 'geary@ubcpmc.com',
         university: 'University of British Columbia',
-        pfp: 'newpfp',
-        displayName: 'geary is da goat',
-        whyPm: 'gear noises',
+        displayName: 'geary',
+        firstName: 'geary',
+        lastName: 'abc',
+        pfp: 'https://url.com',
+        pronouns: '',
+        whyPm: 'abc',
+        isPaymentVerified: false,
+        faculty: 'faculty',
+        major: 'major',
+        studentId: 12345678,
+        year: '3',
     };
 
     function renderComponent() {
@@ -46,16 +51,14 @@ describe('useUserData', () => {
                     >
                         Create user
                     </button>
-                    <button
-                        onClick={() => update({ type: ActionTypes.LOAD, payload: exampleUser })}
-                    >
+                    <button onClick={() => update({ type: ActionTypes.LOAD, payload: mockUser })}>
                         Load user
                     </button>
                     <button
                         onClick={() =>
                             update({
                                 type: ActionTypes.UPDATE,
-                                payload: { displayName: 'geary is still da goat' },
+                                payload: { displayName: 'geary is da goat' },
                             })
                         }
                     >
@@ -92,7 +95,7 @@ describe('useUserData', () => {
 
         await act(() => user.click(screen.getByRole('button', { name: 'Load user' })));
 
-        expect(screen.getByText('geary is da goat')).toBeInTheDocument();
+        expect(screen.getByText('geary')).toBeInTheDocument();
         expect(screen.getByText('geary@ubcpmc.com')).toBeInTheDocument();
     });
 
@@ -102,11 +105,11 @@ describe('useUserData', () => {
 
         await act(() => user.click(screen.getByRole('button', { name: 'Load user' })));
 
-        expect(screen.getByText('geary is da goat')).toBeInTheDocument();
+        expect(screen.getByText('geary')).toBeInTheDocument();
 
         await act(() => user.click(screen.getByRole('button', { name: 'Update user' })));
 
-        expect(screen.getByText('geary is still da goat')).toBeInTheDocument();
+        expect(screen.getByText('geary is da goat')).toBeInTheDocument();
         expect(screen.getByText('geary@ubcpmc.com')).toBeInTheDocument();
     });
 

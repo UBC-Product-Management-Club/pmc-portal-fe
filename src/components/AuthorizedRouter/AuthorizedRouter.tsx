@@ -1,7 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { useUserService } from '../../hooks/useUserService';
 import { ActionTypes, useUserData } from '../../providers/UserData/UserDataProvider';
-import { UserDocument } from '../../types/User';
+import { UserFromDatabase } from '../../types/User';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ export default function AuthorizedRouter() {
         if (auth0User && auth0User.sub) {
             userService
                 .get(auth0User.sub)
-                .then((user: UserDocument) => {
+                .then((user: UserFromDatabase) => {
                     update({ type: ActionTypes.LOAD, payload: user });
                     navigateTo('/dashboard');
                 })
@@ -30,8 +30,7 @@ export default function AuthorizedRouter() {
                         },
                     });
                     navigateTo('/onboarding');
-                })
-                .catch(() => {});
+                });
         }
     }, [auth0User]);
 

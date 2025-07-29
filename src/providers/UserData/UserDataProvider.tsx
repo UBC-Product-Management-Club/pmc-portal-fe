@@ -1,10 +1,10 @@
 import { ActionDispatch, createContext, ReactNode, useContext, useReducer } from 'react';
-import { UserDataFromAuth, UserDocument } from '../../types/User';
+import { UserDataFromAuth, UserDocument, UserFromDatabase } from '../../types/User';
 
 type UpdateUserFunction = ActionDispatch<[Action]>;
 
 interface UserDataContextType {
-    user?: Partial<UserDocument>;
+    user?: Partial<UserDocument> | UserFromDatabase;
     update: UpdateUserFunction;
 }
 
@@ -16,7 +16,7 @@ enum ActionTypes {
 
 type Action =
     | { type: ActionTypes.UPDATE; payload: Partial<UserDocument> }
-    | { type: ActionTypes.LOAD; payload: UserDocument }
+    | { type: ActionTypes.LOAD; payload: UserFromDatabase }
     | { type: ActionTypes.CREATE; payload: UserDataFromAuth };
 
 const UserDataContext = createContext<UserDataContextType>({
@@ -29,15 +29,15 @@ function useUserData() {
 }
 
 function UserDataProvider({ children }: { children: ReactNode }) {
-    const [user, update] = useReducer<Partial<UserDocument> | undefined, [Action]>(
-        reducer,
-        undefined
-    );
+    const [user, update] = useReducer<
+        Partial<UserDocument> | UserFromDatabase | undefined,
+        [Action]
+    >(reducer, undefined);
 
     function reducer(
-        prevState: Partial<UserDocument> | undefined,
+        prevState: Partial<UserDocument> | UserFromDatabase | undefined,
         action: Action
-    ): Partial<UserDocument> | undefined {
+    ): Partial<UserDocument> | UserFromDatabase | undefined {
         switch (action.type) {
             case ActionTypes.UPDATE:
                 if (prevState) {

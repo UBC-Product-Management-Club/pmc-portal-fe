@@ -1,10 +1,9 @@
 import { act, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
-import { UserDocument } from '../../types/User';
+import { UserFromDatabase } from '../../types/User';
 import AuthorizedRouter from './AuthorizedRouter';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useUserService } from '../../hooks/useUserService';
-import { emptyUser } from '../../utils';
 import { useNavigate } from 'react-router-dom';
 import { ActionTypes, useUserData } from '../../providers/UserData/UserDataProvider';
 
@@ -16,7 +15,24 @@ vi.mock('../../providers/UserData/UserDataProvider');
 describe('AuthorizedRouter', () => {
     let mockUpdateFn: Mock;
     let navigateTo: Mock<() => void>;
-    let mockGetUser: Mock<() => Promise<UserDocument>>;
+    let mockGetUser: Mock<() => Promise<UserFromDatabase>>;
+
+    const mockUser: UserFromDatabase = {
+        userId: 'user123',
+        email: 'test@example.com',
+        university: 'University of British Columbia',
+        displayName: 'geary',
+        firstName: 'geary',
+        lastName: 'abc',
+        pfp: 'https://url.com',
+        pronouns: '',
+        whyPm: 'abc',
+        isPaymentVerified: false,
+        faculty: 'faculty',
+        major: 'major',
+        studentId: 12345678,
+        year: '3',
+    };
 
     async function renderComponent() {
         render(<AuthorizedRouter />);
@@ -65,19 +81,13 @@ describe('AuthorizedRouter', () => {
     });
 
     it('goes to dashboard when existing user logs in', async () => {
-        mockGetUser.mockResolvedValueOnce({
-            ...emptyUser,
-            displayName: 'geary',
-        });
+        mockGetUser.mockResolvedValueOnce(mockUser);
 
         await act(() => renderComponent());
 
         expect(mockUpdateFn).toHaveBeenCalledWith({
             type: ActionTypes.LOAD,
-            payload: {
-                ...emptyUser,
-                displayName: 'geary',
-            },
+            payload: mockUser,
         });
         expect(navigateTo).toHaveBeenCalledWith('/dashboard');
     });

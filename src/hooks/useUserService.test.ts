@@ -2,7 +2,6 @@ import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useUserService } from './useUserService';
 import type { PaymentIntent } from '@stripe/stripe-js';
-import type { UserDocument } from '../types/User';
 
 const mockFetch = vi.fn();
 const mockCreate = vi.fn();
@@ -21,16 +20,38 @@ describe('useUserService', () => {
         vi.clearAllMocks();
     });
 
-    const mockUser: UserDocument = {
-        id: 'user123',
+    const rawMockUser = {
+        user_id: 'user123',
+        email: 'test@example.com',
+        university: 'University of British Columbia',
+        display_name: 'geary',
+        first_name: 'geary',
+        last_name: 'abc',
+        pfp: 'https://url.com',
+        pronouns: '',
+        why_pm: 'abc',
+        is_payment_verified: false,
+        faculty: 'faculty',
+        major: 'major',
+        student_id: 12345678,
+        year: '3',
+    };
+
+    const mockUser = {
+        userId: 'user123',
         email: 'test@example.com',
         university: 'University of British Columbia',
         displayName: 'geary',
         firstName: 'geary',
         lastName: 'abc',
-        pfp: 'url',
+        pfp: 'https://url.com',
         pronouns: '',
         whyPm: 'abc',
+        isPaymentVerified: false,
+        faculty: 'faculty',
+        major: 'major',
+        studentId: 12345678,
+        year: '3',
     };
 
     const mockPayment: PaymentIntent = {
@@ -41,7 +62,7 @@ describe('useUserService', () => {
     } as PaymentIntent;
 
     it('fetches user with userId', async () => {
-        mockFetch.mockResolvedValueOnce(mockUser);
+        mockFetch.mockResolvedValueOnce(rawMockUser);
 
         const { result } = renderHook(() => useUserService());
         const res = await result.current.get('user123');

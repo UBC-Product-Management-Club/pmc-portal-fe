@@ -194,7 +194,7 @@ export default function Onboarding() {
                                         return;
                                     }
                                     try {
-                                        userService.create(user, payment);
+                                        userService.create(user as UserDataFromUser, payment);
                                         setCurrPage(Pages.PAYMENT_SUCCESS);
                                     } catch (error: unknown) {
                                         // we're fucked. maybe this can notify us or something
