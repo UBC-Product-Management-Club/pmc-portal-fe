@@ -4,7 +4,6 @@ import { UserFromDatabase } from '../../types/User';
 import AuthorizedRouter from './AuthorizedRouter';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useUserService } from '../../hooks/useUserService';
-import { emptyUser } from '../../utils';
 import { useNavigate } from 'react-router-dom';
 import { ActionTypes, useUserData } from '../../providers/UserData/UserDataProvider';
 
@@ -88,10 +87,7 @@ describe('AuthorizedRouter', () => {
 
         expect(mockUpdateFn).toHaveBeenCalledWith({
             type: ActionTypes.LOAD,
-            payload: {
-                ...emptyUser,
-                displayName: 'geary',
-            },
+            payload: mockUser,
         });
         expect(navigateTo).toHaveBeenCalledWith('/dashboard');
     });
