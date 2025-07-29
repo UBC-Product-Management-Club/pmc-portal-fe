@@ -31,6 +31,10 @@ describe('useUserService', () => {
         pronouns: '',
         why_pm: 'abc',
         is_payment_verified: false,
+        faculty: 'faculty',
+        major: 'major',
+        student_id: 12345678,
+        year: '3',
     };
 
     const mockUser = {
@@ -44,6 +48,10 @@ describe('useUserService', () => {
         pronouns: '',
         whyPm: 'abc',
         isPaymentVerified: false,
+        faculty: 'faculty',
+        major: 'major',
+        studentId: 12345678,
+        year: '3',
     };
 
     const mockPayment: PaymentIntent = {
