@@ -107,7 +107,7 @@ describe('UserDataForm', () => {
             pronouns: 'he/hee',
             university: 'University of British Columbia',
             year: '5+',
-            studentId: 12345678,
+            studentId: '12345678',
             faculty: 'sauder',
             major: 'product management',
             whyPm: 'gear noises',

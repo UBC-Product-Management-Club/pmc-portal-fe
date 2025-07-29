@@ -33,7 +33,7 @@ describe('useUserService', () => {
         is_payment_verified: false,
         faculty: 'faculty',
         major: 'major',
-        student_id: 12345678,
+        student_id: '12345678',
         year: '3',
     };
 
@@ -50,7 +50,7 @@ describe('useUserService', () => {
         isPaymentVerified: false,
         faculty: 'faculty',
         major: 'major',
-        studentId: 12345678,
+        studentId: '12345678',
         year: '3',
     };
 

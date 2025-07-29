@@ -18,7 +18,7 @@ describe('useUserData', () => {
         isPaymentVerified: false,
         faculty: 'faculty',
         major: 'major',
-        studentId: 12345678,
+        studentId: '12345678',
         year: '3',
     };
 

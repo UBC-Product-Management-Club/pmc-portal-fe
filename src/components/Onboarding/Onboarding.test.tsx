@@ -166,7 +166,7 @@ describe('Onboarding Component', () => {
                 lastName: 'pmc',
                 pronouns: 'he/him',
                 university: 'University of British Columbia',
-                studentId: 12345667,
+                studentId: '12345667',
                 year: '5+',
                 faculty: 'sauder',
                 major: 'product management',

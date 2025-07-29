@@ -32,16 +32,16 @@ const UserDataFromUserSchema = z.object({
 
     university: z.enum(Universities),
 
-    studentId: z.coerce
-        .number()
-        .int({
-            message: 'Student IDs must not have decimal points!',
+    studentId: z
+        .string()
+        .min(1, {
+            message: 'Please enter your student ID.',
         })
-        .gte(10000000, {
-            message: 'Please enter a valid 8-digit student ID.',
+        .max(8, {
+            message: 'Student ID is too long. Maxiumum 8 characters.',
         })
-        .lte(99999999, {
-            message: 'Please enter a valid 8-digit student ID.',
+        .regex(/^\d+/, {
+            message: 'Please enter a valid student ID.',
         })
         .optional(),
 
@@ -94,7 +94,7 @@ const RawUserFromDatabase = z.object({
     faculty: z.string().nullable(),
     year: z.enum(years).nullable(),
     major: z.string().nullable(),
-    student_id: z.number().nullable(),
+    student_id: z.string().nullable(),
 });
 
 const UserFromDatabaseSchema = RawUserFromDatabase.transform((user) => ({
