@@ -1,12 +1,14 @@
+import { useCallback, useMemo } from 'react';
 import { EventService } from '../service/EventService';
 import { EventCard, EventCardsSchema } from '../types/Event';
 
 function useEvents() {
-    const eventService = new EventService();
+    const eventService = useMemo(() => new EventService(), []);
 
-    async function getAll(): Promise<EventCard[]> {
-        return EventCardsSchema.parse(await eventService.getAll());
-    }
+    const getAll = useCallback(async (): Promise<EventCard[]> => {
+        const data = await eventService.getAll();
+        return EventCardsSchema.parse(data);
+    }, [eventService]);
 
     return { getAll };
 }
