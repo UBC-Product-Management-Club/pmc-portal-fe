@@ -30,7 +30,7 @@ const UserDataFromUserSchema = z.object({
         message: 'Please enter your pronouns.',
     }),
 
-    university: z.enum(Universities),
+    university: z.enum(Universities).nullable(),
 
     studentId: z
         .string()
@@ -43,27 +43,27 @@ const UserDataFromUserSchema = z.object({
         .regex(/^\d+/, {
             message: 'Please enter a valid student ID.',
         })
-        .optional(),
+        .optional().nullable(),
 
     year: z
         .enum(years, {
             message: 'Please select a value.',
         })
-        .optional(),
+        .optional().nullable(),
 
     faculty: z
         .string()
         .min(1, {
             message: 'Please enter a valid faculty.',
         })
-        .optional(),
+        .optional().nullable(),
 
     major: z
         .string()
         .min(1, {
             message: 'Please enter a valid major.',
         })
-        .optional(),
+        .optional().nullable(),
 
     whyPm: z
         .string()
@@ -123,7 +123,7 @@ const UserFromDatabaseSchema = RawUserFromDatabase.transform((user) => ({
 type UserDocumentSchema = z.infer<typeof UserDocumentSchema>;
 type UserDataFromAuth = z.infer<typeof UserDataFromAuthSchema>;
 type UserDataFromUser = z.infer<typeof UserDataFromUserSchema>;
-type UserDocument = UserDataFromAuth & UserDataFromUser;
+type UserDocument = UserDataFromAuth & UserDataFromUser & UserDocumentSchema;
 type UserFromDatabase = z.infer<typeof UserFromDatabaseSchema>;
 
 export type { UserDataFromAuth, UserDataFromUser, UserDocument, UserFromDatabase };

@@ -54,13 +54,6 @@ describe('useUserService', () => {
         year: '3',
     };
 
-    const mockPayment: PaymentIntent = {
-        id: 'pi_123',
-        client_secret: 'secret_abc',
-        amount: 1000,
-        currency: 'usd',
-    } as PaymentIntent;
-
     it('fetches user with userId', async () => {
         mockFetch.mockResolvedValueOnce(rawMockUser);
 
