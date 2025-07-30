@@ -85,14 +85,16 @@ type UserDataFormProps = {
     buttonText?: string;
 };
 
+
+
 export function UserDataForm({
     responses,
-                                 onSubmit,
-                                 hasWaiver,
-                                 buttonText = "Continue"
-                             }: UserDataFormProps) {
-    const form = useForm({
-        resolver: zodResolver(UserDataFromUserSchema),
+    onSubmit,
+    hasWaiver,
+    buttonText = "Continue"
+}: UserDataFormProps) {
+    const form = useForm<UserDataFromUser>({
+        resolver: zodResolver(UserDataFromUserSchema as any),
     });
 
     const university = form.watch('university');

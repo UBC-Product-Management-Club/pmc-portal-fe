@@ -10,6 +10,7 @@ const emptyUser: UserDocument = {
     pfp: '',
     pronouns: '',
     whyPm: '',
+    isPaymentVerified: false,
 };
 
 function isInAppBrowser() {

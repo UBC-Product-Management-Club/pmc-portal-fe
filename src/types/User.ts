@@ -30,7 +30,7 @@ const UserDataFromUserSchema = z.object({
         message: 'Please enter your pronouns.',
     }),
 
-    university: z.enum(Universities).nullable(),
+    university: z.enum(Universities),
 
     studentId: z
         .string()
@@ -43,27 +43,27 @@ const UserDataFromUserSchema = z.object({
         .regex(/^\d+/, {
             message: 'Please enter a valid student ID.',
         })
-        .optional().nullable(),
+        .optional(),
 
     year: z
         .enum(years, {
             message: 'Please select a value.',
         })
-        .optional().nullable(),
+        .optional(),
 
     faculty: z
         .string()
         .min(1, {
             message: 'Please enter a valid faculty.',
         })
-        .optional().nullable(),
+        .optional(),
 
     major: z
         .string()
         .min(1, {
             message: 'Please enter a valid major.',
         })
-        .optional().nullable(),
+        .optional(),
 
     whyPm: z
         .string()
@@ -110,14 +110,14 @@ const UserFromDatabaseSchema = RawUserFromDatabase.transform((user) => ({
     displayName: user.display_name,
     whyPm: user.why_pm,
     pronouns: user.pronouns,
-    university: user.university,
-    faculty: user.faculty,
+    university: user.university ?? undefined,
+    faculty: user.faculty ?? undefined,
     email: user.email,
-    year: user.year,
-    major: user.major,
+    year: user.year ?? undefined,
+    major: user.major ?? undefined,
     pfp: user.pfp,
     isPaymentVerified: user.is_payment_verified,
-    studentId: user.student_id,
+    studentId: user.student_id ?? undefined,
 }));
 
 type UserDocumentSchema = z.infer<typeof UserDocumentSchema>;

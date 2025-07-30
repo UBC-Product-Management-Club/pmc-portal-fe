@@ -1,7 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useUserService } from './useUserService';
-import type { PaymentIntent } from '@stripe/stripe-js';
 
 const mockFetch = vi.fn();
 const mockCreate = vi.fn();
