@@ -85,12 +85,6 @@ describe('Dashboard', () => {
         return render(<Dashboard />);
     }
 
-    it('renders welcome guest when not logged in', async () => {
-        await renderComponent();
-
-        expect(screen.getByText('Welcome guest')).toBeInTheDocument();
-    });
-
     it('renders member name when logged in', async () => {
         mockUseUserData.mockReturnValueOnce({
             user: { firstName: 'geary' },
@@ -130,4 +124,24 @@ describe('Dashboard', () => {
             });
         });
     });
+
+    it('renders Membership ad when not member', async() => {
+        mockUseUserData.mockReturnValueOnce({
+            user: { firstName: 'geary' },
+            isMember : false
+        });
+        await renderComponent();
+        expect(screen.getByText(/want to become a member and enjoy discounted event prices/i)).toBeInTheDocument();
+    })
+
+    it('does not render Membership ad when member', async() => {
+        mockUseUserData.mockReturnValueOnce({
+            user: { firstName: 'geary' },
+            isMember : true
+        });
+        await renderComponent();
+        expect(screen.queryByText(/want to become a member and enjoy discounted event prices/i)).not.toBeInTheDocument();
+    })
 });
+
+

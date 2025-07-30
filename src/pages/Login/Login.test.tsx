@@ -31,7 +31,6 @@ describe('login', () => {
         expect(screen.getByText('PMC Membership Portal')).toBeInTheDocument();
         expect(screen.getByTestId('logo')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Log in / sign up' }));
-        expect(screen.getByRole('button', { name: 'Continue as a non-member' }));
     });
 
     it('can login', async () => {
@@ -40,14 +39,5 @@ describe('login', () => {
 
         await act(() => user.click(screen.getByRole('button', { name: 'Log in / sign up' })));
         expect(mockLogin).toHaveBeenCalled();
-    });
-
-    it('continues to dashboard', async () => {
-        renderComponent();
-
-        fireEvent.click(screen.getByRole('button', { name: 'Continue as a non-member' }));
-
-        expect(mockLogin).not.toHaveBeenCalled();
-        expect(mockUseNavigate).toHaveBeenCalledWith('/dashboard');
     });
 });

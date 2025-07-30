@@ -75,9 +75,14 @@ const UserDataFromUserSchema = z.object({
         }),
 });
 
+const UserMetaInfoSchema = z.object({
+    isPaymentVerified: z.boolean()
+})
+
 const UserDocumentSchema = z.object({
     ...UserDataFromAuthSchema.shape,
     ...UserDataFromUserSchema.shape,
+    ...UserMetaInfoSchema.shape,
 });
 
 const RawUserFromDatabase = z.object({
@@ -96,6 +101,7 @@ const RawUserFromDatabase = z.object({
     major: z.string().nullable(),
     student_id: z.string().nullable(),
 });
+
 
 const UserFromDatabaseSchema = RawUserFromDatabase.transform((user) => ({
     userId: user.user_id,

@@ -80,8 +80,8 @@ describe('useUserService', () => {
 
     it('calls create with user and payment', async () => {
         const { result } = renderHook(() => useUserService());
-        await result.current.create({ email: 'x@example.com' }, mockPayment);
+        await result.current.create({ email: 'x@example.com' });
 
-        expect(mockCreate).toHaveBeenCalledWith({ email: 'x@example.com' }, mockPayment);
+        expect(mockCreate).toHaveBeenCalledWith({ email: 'x@example.com' });
     });
 });
