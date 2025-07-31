@@ -104,7 +104,6 @@ const LoginButton = styled.button`
     border: 0;
 `;
 
-
 const FooterContainer = styled.div`
     width: 100%;
     position: absolute;
@@ -128,25 +127,18 @@ export default function Login() {
         }
     }
 
-  return (
-    <Container>
-      <Content>
-        <Logo src={PMCLogo} data-testid="logo" alt="PMC Logo"/>
-        <Header> PMC Membership Portal</ Header>
-        <ButtonContainer>
-          <LoginButton onClick={handleLogin}>
-            Log in / sign up
-          </LoginButton>
-          {/* <ContinueButton
-            onClick={() => navigateTo('/dashboard')}
-          >
-            Continue as a non-member
-          </ContinueButton> */}
-        </ButtonContainer>
-      </Content>
-      <FooterContainer>
-        <Footer />
-      </FooterContainer>
-    </Container>
-  );
+    return (
+        <Container>
+            <Content>
+                <Logo src={PMCLogo} data-testid="logo" alt="PMC Logo" />
+                <Header> PMC Membership Portal</Header>
+                <ButtonContainer>
+                    <LoginButton onClick={handleLogin}>Log in / sign up</LoginButton>
+                </ButtonContainer>
+            </Content>
+            <FooterContainer>
+                <Footer />
+            </FooterContainer>
+        </Container>
+    );
 }
