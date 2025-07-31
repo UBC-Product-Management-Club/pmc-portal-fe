@@ -95,11 +95,11 @@ const RawUserFromDatabase = z.object({
     email: z.email(),
     pfp: z.url(),
     is_payment_verified: z.boolean(),
-    university: z.enum(Universities).nullish(),
-    faculty: z.string().nullish(),
-    year: z.enum(years).nullish(),
-    major: z.string().nullish(),
-    student_id: z.string().nullish(),
+    university: z.enum(Universities).nullable(),
+    faculty: z.string().nullable(),
+    year: z.enum(years).nullable(),
+    major: z.string().nullable(),
+    student_id: z.string().nullable(),
 });
 
 const UserFromDatabaseSchema = RawUserFromDatabase.transform((user) => ({
