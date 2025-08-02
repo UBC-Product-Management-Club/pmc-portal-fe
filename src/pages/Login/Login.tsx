@@ -3,7 +3,6 @@ import PMCLogo from '../../assets/pmclogo.svg';
 import Footer from '../../components/Footer/Footer';
 import styled from 'styled-components';
 import { isInAppBrowser } from '../../utils';
-import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
     display: flex;
@@ -105,15 +104,6 @@ const LoginButton = styled.button`
     border: 0;
 `;
 
-const ContinueButton = styled.button`
-    background: transparent;
-    border: solid;
-    border-width: 0.2rem;
-    border-color: white;
-    color: white;
-    font-size: medium;
-`;
-
 const FooterContainer = styled.div`
     width: 100%;
     position: absolute;
@@ -122,7 +112,6 @@ const FooterContainer = styled.div`
 
 export default function Login() {
     const { loginWithRedirect } = useAuth0();
-    const navigateTo = useNavigate();
 
     function handleLogin() {
         if (isInAppBrowser()) {
@@ -145,9 +134,6 @@ export default function Login() {
                 <Header> PMC Membership Portal</Header>
                 <ButtonContainer>
                     <LoginButton onClick={handleLogin}>Log in / sign up</LoginButton>
-                    <ContinueButton onClick={() => navigateTo('/dashboard')}>
-                        Continue as a non-member
-                    </ContinueButton>
                 </ButtonContainer>
             </Content>
             <FooterContainer>

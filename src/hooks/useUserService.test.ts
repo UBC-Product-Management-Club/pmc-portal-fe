@@ -1,7 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useUserService } from './useUserService';
-import type { PaymentIntent } from '@stripe/stripe-js';
 
 const mockFetch = vi.fn();
 const mockCreate = vi.fn();
@@ -54,13 +53,6 @@ describe('useUserService', () => {
         year: '3',
     };
 
-    const mockPayment: PaymentIntent = {
-        id: 'pi_123',
-        client_secret: 'secret_abc',
-        amount: 1000,
-        currency: 'usd',
-    } as PaymentIntent;
-
     it('fetches user with userId', async () => {
         mockFetch.mockResolvedValueOnce(rawMockUser);
 
@@ -80,8 +72,8 @@ describe('useUserService', () => {
 
     it('calls create with user and payment', async () => {
         const { result } = renderHook(() => useUserService());
-        await result.current.create({ email: 'x@example.com' }, mockPayment);
+        await result.current.create({ email: 'x@example.com' });
 
-        expect(mockCreate).toHaveBeenCalledWith({ email: 'x@example.com' }, mockPayment);
+        expect(mockCreate).toHaveBeenCalledWith({ email: 'x@example.com' });
     });
 });

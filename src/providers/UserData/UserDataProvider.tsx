@@ -6,6 +6,7 @@ type UpdateUserFunction = ActionDispatch<[Action]>;
 interface UserDataContextType {
     user?: Partial<UserDocument> | UserFromDatabase;
     update: UpdateUserFunction;
+    isMember: boolean;
 }
 
 enum ActionTypes {
@@ -22,6 +23,7 @@ type Action =
 const UserDataContext = createContext<UserDataContextType>({
     user: undefined,
     update: () => undefined,
+    isMember: false,
 });
 
 function useUserData() {
@@ -52,7 +54,11 @@ function UserDataProvider({ children }: { children: ReactNode }) {
         }
     }
 
-    return <UserDataContext.Provider value={{ user, update }}>{children}</UserDataContext.Provider>;
+    return (
+        <UserDataContext.Provider value={{ user, update, isMember: !!(user && user.isPaymentVerified) }}>
+            {children}
+        </UserDataContext.Provider>
+    );
 }
 
 export { UserDataProvider, useUserData, ActionTypes };

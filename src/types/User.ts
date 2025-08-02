@@ -75,9 +75,14 @@ const UserDataFromUserSchema = z.object({
         }),
 });
 
+const UserMetaInfoSchema = z.object({
+    isPaymentVerified: z.boolean(),
+});
+
 const UserDocumentSchema = z.object({
     ...UserDataFromAuthSchema.shape,
     ...UserDataFromUserSchema.shape,
+    ...UserMetaInfoSchema.shape,
 });
 
 const RawUserFromDatabase = z.object({
@@ -104,20 +109,20 @@ const UserFromDatabaseSchema = RawUserFromDatabase.transform((user) => ({
     displayName: user.display_name,
     whyPm: user.why_pm,
     pronouns: user.pronouns,
-    university: user.university,
-    faculty: user.faculty,
+    university: user.university ?? undefined,
+    faculty: user.faculty ?? undefined,
     email: user.email,
-    year: user.year,
-    major: user.major,
+    year: user.year ?? undefined,
+    major: user.major ?? undefined,
     pfp: user.pfp,
     isPaymentVerified: user.is_payment_verified,
-    studentId: user.student_id,
+    studentId: user.student_id ?? undefined,
 }));
 
 type UserDocumentSchema = z.infer<typeof UserDocumentSchema>;
 type UserDataFromAuth = z.infer<typeof UserDataFromAuthSchema>;
 type UserDataFromUser = z.infer<typeof UserDataFromUserSchema>;
-type UserDocument = UserDataFromAuth & UserDataFromUser;
+type UserDocument = UserDataFromAuth & UserDataFromUser & UserDocumentSchema;
 type UserFromDatabase = z.infer<typeof UserFromDatabaseSchema>;
 
 export type { UserDataFromAuth, UserDataFromUser, UserDocument, UserFromDatabase };
