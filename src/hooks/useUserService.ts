@@ -8,8 +8,8 @@ function useUserService() {
         return UserFromDatabaseSchema.parse(await userService.fetch(userId));
     }
 
-    async function create(user: Partial<UserDocument>) : Promise<void> {
-        userService.create(user)
+    async function create(user: Partial<UserDocument>): Promise<void> {
+        userService.create({ ...user, isPaymentVerified: false });
     }
 
     return { get, create };
