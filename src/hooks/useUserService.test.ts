@@ -69,4 +69,14 @@ describe('useUserService', () => {
         const { result } = renderHook(() => useUserService());
         await expect(result.current.get('unknown-user')).rejects.toThrowError('User not found!');
     });
+
+    it('calls create with user', async () => {
+        const { result } = renderHook(() => useUserService());
+        await result.current.create({ email: 'x@example.com' });
+
+        expect(mockCreate).toHaveBeenCalledWith({
+            email: 'x@example.com',
+            isPaymentVerified: false,
+        });
+    });
 });
