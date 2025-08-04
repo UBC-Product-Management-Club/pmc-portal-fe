@@ -93,7 +93,7 @@ export default function Dashboard() {
 
             <DashboardSection>
                 {events === undefined ? (
-                    <>{error ? <h1>An error occurred fetching events : </h1> : <h1>Loading</h1>}</>
+                    <>{error ? <h1>An error occurred fetching events :(</h1> : <h1>Loading</h1>}</>
                 ) : (
                     <>
                         {events.length > 0 ? (
