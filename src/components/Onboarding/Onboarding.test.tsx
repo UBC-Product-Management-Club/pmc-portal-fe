@@ -77,7 +77,7 @@ describe('Onboarding Component', () => {
 
         vi.mocked(useUserData).mockReturnValue({
             user: {
-                id: 'userId',
+                userId: 'userId',
                 displayName: 'geary',
                 email: 'geary@ubcpmc.com',
             },
