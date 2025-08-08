@@ -15,6 +15,7 @@ const RawEventSchema = z.object({
     max_attendees: z.number(),
     event_form_questions: z.json(),
     is_disabled: z.boolean(),
+    registered: z.number(),
 });
 
 const EventSchema = RawEventSchema.transform((event) => ({
@@ -29,9 +30,10 @@ const EventSchema = RawEventSchema.transform((event) => ({
     memberPrice: event.member_price,
     nonMemberPrice: event.non_member_price,
     maxAttendees: event.max_attendees,
-    eventRegistrationquestions: event.event_form_questions,
+    eventFormQuestions: event.event_form_questions,
     media: event.media,
     isDisabled: event.is_disabled,
+    registered: event.registered,
 }));
 
 const EventCardSchema = RawEventSchema.pick({

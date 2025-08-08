@@ -77,12 +77,12 @@ describe('Onboarding Component', () => {
 
         vi.mocked(useUserData).mockReturnValue({
             user: {
-                id: 'userId',
+                userId: 'userId',
                 displayName: 'geary',
                 email: 'geary@ubcpmc.com',
             },
             update: mockUpdateUser,
-            isMember: true
+            isMember: true,
         });
 
         vi.mocked(usePaymentService).mockReturnValue({
@@ -200,7 +200,7 @@ describe('Onboarding Component', () => {
                 whyPm: 'products go brr',
             },
         });
-        await user.click(screen.getByRole('button', { name: 'Yes, continue to payments'}));
+        await user.click(screen.getByRole('button', { name: 'Yes, continue to payments' }));
         expect(screen.getByTestId('mock-payment')).toBeInTheDocument();
 
         await user.click(screen.getByRole('button', { name: 'Mock Pay' }));
