@@ -125,23 +125,25 @@ describe('Dashboard', () => {
         });
     });
 
-    it('renders Membership ad when not member', async() => {
+    it('renders Membership ad when not member', async () => {
         mockUseUserData.mockReturnValueOnce({
             user: { firstName: 'geary' },
-            isMember : false
+            isMember: false,
         });
         await renderComponent();
-        expect(screen.getByText(/want to become a member and enjoy discounted event prices/i)).toBeInTheDocument();
-    })
+        expect(
+            screen.getByText(/want to become a member and enjoy discounted event prices/i)
+        ).toBeInTheDocument();
+    });
 
-    it('does not render Membership ad when member', async() => {
+    it('does not render Membership ad when member', async () => {
         mockUseUserData.mockReturnValueOnce({
             user: { firstName: 'geary' },
-            isMember : true
+            isMember: true,
         });
         await renderComponent();
-        expect(screen.queryByText(/want to become a member and enjoy discounted event prices/i)).not.toBeInTheDocument();
-    })
+        expect(
+            screen.queryByText(/want to become a member and enjoy discounted event prices/i)
+        ).not.toBeInTheDocument();
+    });
 });
-
-

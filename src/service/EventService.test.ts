@@ -48,6 +48,36 @@ describe('EventService', () => {
         },
     ];
 
+    const mockEvent = {
+        eventId: 'aj',
+        name: 'Product Conference',
+        date: '2025-01-01',
+        description: 'sdsd',
+        startTime: '2025-07-21T21:30:00+00',
+        endTime: '2025-07-21T22:30:00+00',
+        location: 'UBC Sauder Building',
+        thumbnail:
+            'https://dthvbanipvldaiabgvuc.supabase.co/storage/v1/object/public/event-media/events/75f6ef8e-12d7-48f3-a0a8-96443ae5d1f7/media/umm-nocturnaltrashposts-and-then-uhh.jpeg',
+        memberPrice: 1,
+        nonMemberPrice: 2,
+        maxAttendees: 100,
+        eventFormQuestions: {},
+        media: [],
+        isDisabled: false,
+        registered: 1,
+    };
+
+    const mockAttendee = {
+        userId: 'user_id',
+        eventId: 'event_id',
+        eventFormAnswers: {},
+        attendeeId: 'attendee_id',
+        registrationTime: 'reg_time',
+        isPaymentVerified: true,
+        status: 'registered',
+        paymentId: 'payment_id',
+    };
+
     it('fetches all events', async () => {
         mockClient.get.mockResolvedValueOnce(testEvents);
 
@@ -55,5 +85,23 @@ describe('EventService', () => {
 
         expect(events).toEqual(testEvents);
         expect(mockClient.get).toHaveBeenCalledWith('/');
+    });
+
+    it('fetches an event', async () => {
+        mockClient.get.mockResolvedValueOnce(mockEvent);
+
+        const event = await service.getById('event_id');
+
+        expect(event).toEqual(mockEvent);
+        expect(mockClient.get).toHaveBeenCalledWith('/event_id');
+    });
+
+    it('fetches an attendee', async () => {
+        mockClient.get.mockResolvedValueOnce(mockAttendee);
+
+        const attendee = await service.getAttendee('event_id', 'user_id');
+
+        expect(attendee).toEqual(mockAttendee);
+        expect(mockClient.get).toHaveBeenCalledWith(`/event_id?userId=user_id`);
     });
 });

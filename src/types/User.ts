@@ -11,7 +11,7 @@ const Universities = [
 const years = ['1', '2', '3', '4', '5+'] as const;
 
 const UserDataFromAuthSchema = z.object({
-    id: z.string(),
+    userId: z.string(),
     email: z.email(),
     pfp: z.url(),
     displayName: z.string(),
