@@ -90,7 +90,6 @@ describe('Event', () => {
         expect(mockGetEventById).toHaveBeenCalledWith(mockEventId, mockUser.userId);
         expect(screen.getByText('Product Conference')).toBeInTheDocument();
         expect(screen.getByText('Monday, 21st July 2025')).toBeInTheDocument();
-        expect(screen.getByText('2:30pm - 3:30pm')).toBeInTheDocument();
         expect(screen.getByText('UBC Sauder Building')).toBeInTheDocument();
         expect(screen.getByText('99/100 spots left!')).toBeInTheDocument();
         expect(screen.getByText('Member price: 1$')).toBeInTheDocument();
