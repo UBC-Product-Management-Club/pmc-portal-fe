@@ -166,6 +166,7 @@ export default function Event(props: EventProps) {
                     setIsRegistered(response.registered);
                 })
                 .catch((e: { message: string }) => {
+                    console.error(e);
                     setError(e);
                 })
                 .finally(() => setLoading(false));
