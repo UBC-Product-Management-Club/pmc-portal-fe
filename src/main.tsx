@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Auth0Provider } from '@auth0/auth0-react';
 import UnderConstruction from './pages/Status/UnderConstruction.tsx';
 import Dashboard from './pages/Dashboard/Dashboard.tsx';
-import Event from './pages/Dashboard/Event.tsx';
+import Event from './pages/Event/Event.tsx';
 import { Profile } from './pages/Profile/Profile';
 import { Layout } from './layout';
 import Onboarding from './components/Onboarding/Onboarding.tsx';
@@ -28,12 +28,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 cacheLocation="localstorage"
             >
                 <UserDataProvider>
-                    <ProdRenderer>
-                        <Routes>
-                            <Route path={'/'} element={<UnderConstruction />} />
-                        </Routes>
-                    </ProdRenderer>
-
                     <ProdRenderer>
                         <Routes>
                             <Route path={'/'} element={<UnderConstruction />} />

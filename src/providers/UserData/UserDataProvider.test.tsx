@@ -42,7 +42,7 @@ describe('useUserData', () => {
                             update({
                                 type: ActionTypes.CREATE,
                                 payload: {
-                                    id: 'userId',
+                                    userId: 'userId',
                                     displayName: 'geary',
                                     pfp: 'newpfp',
                                     email: 'geary@ubcpmc.com',

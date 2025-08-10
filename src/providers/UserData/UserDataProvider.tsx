@@ -55,7 +55,9 @@ function UserDataProvider({ children }: { children: ReactNode }) {
     }
 
     return (
-        <UserDataContext.Provider value={{ user, update, isMember: !!(user && user.isPaymentVerified) }}>
+        <UserDataContext.Provider
+            value={{ user, update, isMember: !!(user && user.isPaymentVerified) }}
+        >
             {children}
         </UserDataContext.Provider>
     );
