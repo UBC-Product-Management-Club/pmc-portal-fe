@@ -16,6 +16,7 @@ const RawEventSchema = z.object({
     event_form_questions: z.json(),
     is_disabled: z.boolean(),
     registered: z.number(),
+    needs_review: z.boolean(),
 });
 
 const EventSchema = RawEventSchema.transform((event) => ({
@@ -34,6 +35,7 @@ const EventSchema = RawEventSchema.transform((event) => ({
     media: event.media,
     isDisabled: event.is_disabled,
     registered: event.registered,
+    needsReview: event.needs_review,
 }));
 
 const EventCardSchema = RawEventSchema.pick({

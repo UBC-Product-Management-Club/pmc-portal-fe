@@ -109,6 +109,7 @@ describe('useEvents', () => {
         max_attendees: 100,
         event_form_questions: {},
         registered: 0,
+        needs_review: false,
     };
     const parsedEvent = {
         eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
@@ -126,6 +127,7 @@ describe('useEvents', () => {
         maxAttendees: 100,
         eventFormQuestions: {},
         registered: 0,
+        needsReview: false,
     };
 
     beforeEach(() => {

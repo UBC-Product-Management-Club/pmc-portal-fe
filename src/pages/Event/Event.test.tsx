@@ -39,6 +39,7 @@ describe('Event', () => {
                 media: [],
                 isDisabled: false,
                 registered: 1,
+                needsReview: false,
             },
             registered: false,
         };
