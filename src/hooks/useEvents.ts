@@ -10,7 +10,15 @@ function useEvents() {
         return EventCardsSchema.parse(data);
     }, [eventService]);
 
-    return { getAll };
+    const getUserCurrentEvents = useCallback(
+        async (userId: string): Promise<EventCard[]> => {
+            const data = await eventService.getUserCurrentEvents(userId);
+            return EventCardsSchema.parse(data);
+        },
+        [eventService]
+    );
+
+    return { getAll, getUserCurrentEvents };
 }
 
 export { useEvents };

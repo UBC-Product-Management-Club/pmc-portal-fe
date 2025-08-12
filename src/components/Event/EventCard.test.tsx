@@ -35,7 +35,7 @@ describe('EventCard', () => {
     async function renderComponent(disabled?: boolean) {
         return render(
             <BrowserRouter>
-                <EventCard event={event} disabled={disabled ?? false} />
+                <EventCard event={event} disabled={disabled ?? false} isEventDashboard={false} />
             </BrowserRouter>
         );
     }
@@ -48,7 +48,10 @@ describe('EventCard', () => {
         expect(screen.getByText(event.name)).toBeInTheDocument();
         expect(screen.getByText(event.description)).toBeInTheDocument();
         expect(screen.getByRole('img')).toHaveAttribute('src', event.thumbnail);
-        expect(screen.getByRole('link')).toHaveAttribute('href', `/events/${event.eventId}`);
+        expect(screen.getByRole('link')).toHaveAttribute(
+            'href',
+            `/events/${event.eventId}/register`
+        );
     });
 
     it('renders event card for disabled event', async () => {
@@ -62,6 +65,6 @@ describe('EventCard', () => {
         await renderComponent();
 
         await act(() => user.click(screen.getByRole('link')));
-        expect(window.location.pathname).toBe(`/events/${event.eventId}`);
+        expect(window.location.pathname).toBe(`/events/${event.eventId}/register`);
     });
 });

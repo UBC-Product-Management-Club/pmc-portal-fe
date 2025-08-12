@@ -7,12 +7,13 @@ import styled from 'styled-components';
 type EventCardProps = {
     event: EventCard;
     disabled: boolean;
+    isEventDashboard: boolean;
 };
 
 const Container = styled.div<{ disabled: boolean }>`
     width: inherit;
-    max-height: 18rem;
     display: flex;
+    height: 280px;
     flex-direction: row;
     justify-content: space-between;
     padding: 1rem 2rem;
@@ -23,6 +24,8 @@ const Container = styled.div<{ disabled: boolean }>`
     background-color: ${({ disabled }) =>
         disabled ? 'var(--pmc-black)' : 'var(--pmc-dark-purple)'};
     opacity: ${({ disabled }) => (disabled ? 0.8 : 1)};
+    overflow: hidden;
+
     @media screen and (max-width: 600px) {
         flex-direction: column-reverse;
         align-items: start;
@@ -65,20 +68,21 @@ const EventDescription = styled.p`
 `;
 
 const Thumbnail = styled.img`
-    margin-left: 10px;
+    width: 100%;
+    max-width: 15rem;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
     border-radius: 13px;
-    width: 15rem;
-    height: 15rem;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    margin-left: 0;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     align-self: center;
 
     @media screen and (max-width: 768px) {
-        width: 16rem;
+        max-width: 100%;
     }
 `;
 
-export function EventCard({ event, disabled }: EventCardProps) {
+export function EventCard({ event, disabled, isEventDashboard }: EventCardProps) {
     const contents = (
         <Container disabled={disabled}>
             <Column>
@@ -96,11 +100,15 @@ export function EventCard({ event, disabled }: EventCardProps) {
 
     return (
         <>
-            <h2>{moment(event.date).format('MMMM D, YYYY')}</h2>
+            <h3>{moment(event.date).format('MMMM D, YYYY')}</h3>
             {disabled ? (
                 contents
-            ) : (
+            ) : isEventDashboard ? (
                 <Link to={`/events/${event.eventId}`} style={{ textDecoration: 'none' }}>
+                    {contents}
+                </Link>
+            ) : (
+                <Link to={`/events/${event.eventId}/register`} style={{ textDecoration: 'none' }}>
                     {contents}
                 </Link>
             )}

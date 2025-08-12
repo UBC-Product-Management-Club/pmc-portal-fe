@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import type { EventCard as EventCardType } from '../../types/Event';
 import { EventCard } from '../../components/Event/EventCard';
 import moment from 'moment';
+import { Carousel } from '../../components/Dashboard/Carousel';
 
 const DashboardContainer = styled.div`
     color: white;
@@ -27,6 +28,7 @@ const DashboardHeader = styled.div`
 
 const WelcomeMessage = styled.h4`
     font-style: italic;
+    margin-left: 'auto';
 `;
 
 const DashboardStayTuned = styled.p`
@@ -45,7 +47,7 @@ const Membership = styled.div`
     line-height: 1.5;
     color: #333;
     a {
-        color: #2563eb; /* link color */
+        color: #2563eb;
         text-decoration: none;
         font-weight: 500;
     }
@@ -56,7 +58,8 @@ const Membership = styled.div`
 
 export default function Dashboard() {
     const { user, isMember } = useUserData();
-    const { getAll } = useEvents();
+    const { getAll, getUserCurrentEvents } = useEvents();
+    const [userEvents, setUserEvents] = useState<EventCardType[] | undefined>();
     const [events, setEvents] = useState<EventCardType[] | undefined>();
     const [error, setError] = useState<boolean>(false);
 
@@ -69,6 +72,17 @@ export default function Dashboard() {
             });
     }, [getAll]);
 
+    useEffect(() => {
+        if (!user || typeof user !== 'object' || !('userId' in user) || !user.userId) return;
+
+        getUserCurrentEvents(user.userId)
+            .then(setUserEvents)
+            .catch((e) => {
+                console.error(e);
+                setError(true);
+            });
+    }, [getUserCurrentEvents]);
+
     return (
         <DashboardContainer>
             <DashboardSection>
@@ -79,7 +93,7 @@ export default function Dashboard() {
                     </Membership>
                 )}
                 <DashboardHeader>
-                    <h2>Upcoming Events</h2>
+                    <h2>PMC Dashboard</h2>
                     <WelcomeMessage>{`Welcome ${user?.firstName}`}</WelcomeMessage>
                 </DashboardHeader>
                 <p>
@@ -92,20 +106,47 @@ export default function Dashboard() {
             </DashboardSection>
 
             <DashboardSection>
+                <DashboardHeader>
+                    <h2>Your Events</h2>
+                </DashboardHeader>
+                {userEvents === undefined || userEvents.length == 0 ? (
+                    <>Register below</>
+                ) : (
+                    <Carousel
+                        items={userEvents}
+                        showArrows={false}
+                        renderItem={(event) => (
+                            <EventCard
+                                event={event}
+                                disabled={event.isDisabled || moment().isAfter(moment(event.date))}
+                                isEventDashboard={true}
+                            />
+                        )}
+                    />
+                )}
+            </DashboardSection>
+
+            <DashboardSection>
+                <DashboardHeader>
+                    <h2>Upcoming Events</h2>
+                </DashboardHeader>
                 {events === undefined ? (
                     <>{error ? <h1>An error occurred fetching events :(</h1> : <h1>Loading</h1>}</>
                 ) : (
                     <>
                         {events.length > 0 ? (
-                            events.map((event) => (
-                                <EventCard
-                                    key={event.eventId}
-                                    event={event}
-                                    disabled={
-                                        event.isDisabled || moment().isAfter(moment(event.date))
-                                    }
-                                />
-                            ))
+                            <Carousel
+                                items={events}
+                                renderItem={(event) => (
+                                    <EventCard
+                                        event={event}
+                                        disabled={
+                                            event.isDisabled || moment().isAfter(moment(event.date))
+                                        }
+                                        isEventDashboard={false}
+                                    />
+                                )}
+                            />
                         ) : (
                             <DashboardStayTuned>Stay tuned for future events!</DashboardStayTuned>
                         )}
