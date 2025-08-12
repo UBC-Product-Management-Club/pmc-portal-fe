@@ -23,7 +23,7 @@ export default function AuthorizedRouter() {
                     update({
                         type: ActionTypes.CREATE,
                         payload: {
-                            id: auth0User.sub!,
+                            userId: auth0User.sub!,
                             email: auth0User.email!,
                             pfp: auth0User.picture!,
                             displayName: auth0User.name!,

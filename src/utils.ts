@@ -1,7 +1,7 @@
 import { UserDocument } from './types/User';
 
 const emptyUser: UserDocument = {
-    id: '',
+    userId: '',
     displayName: '',
     email: '',
     firstName: '',
