@@ -4,7 +4,7 @@ import { type EventCard } from '../../types/Event';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-type EventCardProps = {
+type YourEventCardProps = {
     event: EventCard;
     disabled: boolean;
 };
@@ -81,7 +81,7 @@ const Thumbnail = styled.img`
     }
 `;
 
-export function EventCard({ event, disabled }: EventCardProps) {
+export function YourEventCard({ event, disabled }: YourEventCardProps) {
     const contents = (
         <Container disabled={disabled}>
             <Column>
@@ -103,7 +103,7 @@ export function EventCard({ event, disabled }: EventCardProps) {
             {disabled ? (
                 contents
             ) : (
-                <Link to={`/events/${event.eventId}/register`} style={{ textDecoration: 'none' }}>
+                <Link to={`/events/${event.eventId}`} style={{ textDecoration: 'none' }}>
                     {contents}
                 </Link>
             )}

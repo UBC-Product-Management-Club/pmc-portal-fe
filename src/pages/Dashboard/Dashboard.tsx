@@ -6,6 +6,7 @@ import type { EventCard as EventCardType } from '../../types/Event';
 import { EventCard } from '../../components/Event/EventCard';
 import moment from 'moment';
 import { Carousel } from '../../components/Dashboard/Carousel';
+import { YourEventCard } from '../../components/Event/YourEventCard';
 
 const DashboardContainer = styled.div`
     color: white;
@@ -116,10 +117,9 @@ export default function Dashboard() {
                         items={userEvents}
                         showArrows={false}
                         renderItem={(event) => (
-                            <EventCard
+                            <YourEventCard
                                 event={event}
                                 disabled={event.isDisabled || moment().isAfter(moment(event.date))}
-                                isEventDashboard={true}
                             />
                         )}
                     />
@@ -143,7 +143,6 @@ export default function Dashboard() {
                                         disabled={
                                             event.isDisabled || moment().isAfter(moment(event.date))
                                         }
-                                        isEventDashboard={false}
                                     />
                                 )}
                             />

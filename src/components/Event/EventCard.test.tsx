@@ -35,7 +35,7 @@ describe('EventCard', () => {
     async function renderComponent(disabled?: boolean) {
         return render(
             <BrowserRouter>
-                <EventCard event={event} disabled={disabled ?? false} isEventDashboard={false} />
+                <EventCard event={event} disabled={disabled ?? false} />
             </BrowserRouter>
         );
     }
