@@ -13,6 +13,7 @@ const Event: React.FC = () => {
     const { event_id } = useParams<{ event_id: string }>();
     const [loading, setLoading] = useState(true);
     const [isRegistered, setIsRegistered] = useState(false);
+
     let isEventFull = false;
     if (event) {
         isEventFull = event.maxAttendee !== -1 && event.attendee_Ids?.length >= event.maxAttendee;

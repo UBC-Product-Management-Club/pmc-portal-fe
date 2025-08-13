@@ -5,6 +5,42 @@ import { useEffect, useState } from 'react';
 import type { EventCard as EventCardType } from '../../types/Event';
 import { EventCard } from '../../components/Event/EventCard';
 import moment from 'moment';
+import { EventQuestionRenderer } from '../../components/EnvironmentWrappers/EventQuestionRenderer';
+import { Question } from '../../types/Question';
+
+// Test questions
+const testQuestions: Question[] = [
+  {
+    id: "q1",
+    label: "What is your name?",
+    required: true,
+    type: "short-answer",
+  },
+  {
+    id: "q2",
+    label: "Tell us about yourself",
+    required: false,
+    type: "long-answer",
+  },
+  {
+    id: "q3",
+    label: "Select your favorite fruit",
+    required: true,
+    type: "dropdown",
+    options: ["Apple", "Banana", "Cherry"],
+  },
+  {
+    id: "q4",
+    label: "Upload your profile picture",
+    required: false,
+    type: "file",
+  },
+];
+
+// Test onSubmit
+const handleSubmit = (data: any) => {
+  console.log("Form submission data:", data);
+};
 
 const DashboardContainer = styled.div`
     color: white;
@@ -71,7 +107,7 @@ export default function Dashboard() {
 
             <DashboardSection>
                 {events === undefined ? (
-                    <>{error ? <h1>An error occurred fetching events :( </h1> : <h1>Loading</h1>}</>
+                    <>{error ? <h1>An error occurred fetching events :(</h1> : <h1>Loading</h1>} </>
                 ) : (
                     <>
                         {events.length > 0 ? (
@@ -89,6 +125,12 @@ export default function Dashboard() {
                         )}
                     </>
                 )}
+            </DashboardSection>
+            <DashboardSection>
+                <EventQuestionRenderer
+                    onSubmit={handleSubmit}
+                    questions={testQuestions}
+                />
             </DashboardSection>
         </DashboardContainer>
     );
