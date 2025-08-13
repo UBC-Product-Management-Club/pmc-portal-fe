@@ -3,7 +3,7 @@ import { Question } from './types/Question';
 import { z } from 'zod/v4';
 
 const emptyUser: UserDocument = {
-    id: '',
+    userId: '',
     displayName: '',
     email: '',
     firstName: '',
@@ -12,6 +12,7 @@ const emptyUser: UserDocument = {
     pfp: '',
     pronouns: '',
     whyPm: '',
+    isPaymentVerified: false,
 };
 
 function isInAppBrowser() {

@@ -71,7 +71,7 @@ describe('AuthorizedRouter', () => {
         expect(mockUpdateFn).toHaveBeenCalledWith({
             type: ActionTypes.CREATE,
             payload: {
-                id: 'userId',
+                userId: 'userId',
                 email: 'geary@ubcpmc.com',
                 pfp: 'link_to_pfp',
                 displayName: 'geary',

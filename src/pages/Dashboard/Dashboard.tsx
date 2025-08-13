@@ -5,42 +5,6 @@ import { useEffect, useState } from 'react';
 import type { EventCard as EventCardType } from '../../types/Event';
 import { EventCard } from '../../components/Event/EventCard';
 import moment from 'moment';
-import { EventQuestionRenderer } from '../../components/EnvironmentWrappers/EventQuestionRenderer';
-import { Question } from '../../types/Question';
-
-// Test questions
-const testQuestions: Question[] = [
-  {
-    id: "q1",
-    label: "What is your name?",
-    required: true,
-    type: "short-answer",
-  },
-  {
-    id: "q2",
-    label: "Tell us about yourself",
-    required: false,
-    type: "long-answer",
-  },
-  {
-    id: "q3",
-    label: "Select your favorite fruit",
-    required: true,
-    type: "dropdown",
-    options: ["Apple", "Banana", "Cherry"],
-  },
-  {
-    id: "q4",
-    label: "Upload your profile picture",
-    required: false,
-    type: "file",
-  },
-];
-
-// Test onSubmit
-const handleSubmit = (data: any) => {
-  console.log("Form submission data:", data);
-};
 
 const DashboardContainer = styled.div`
     color: white;
@@ -72,8 +36,26 @@ const DashboardStayTuned = styled.p`
     margin-top: 5rem;
 `;
 
+const Membership = styled.div`
+    background-color: #f9fafb;
+    padding: 20px 24px;
+    border-radius: 10px;
+    border: 1px solid #d1d1d1;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    a {
+        color: #2563eb; /* link color */
+        text-decoration: none;
+        font-weight: 500;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+`;
+
 export default function Dashboard() {
-    const { user } = useUserData();
+    const { user, isMember } = useUserData();
     const { getAll } = useEvents();
     const [events, setEvents] = useState<EventCardType[] | undefined>();
     const [error, setError] = useState<boolean>(false);
@@ -90,11 +72,15 @@ export default function Dashboard() {
     return (
         <DashboardContainer>
             <DashboardSection>
+                {!isMember && (
+                    <Membership>
+                        Want to become a member and enjoy discounted event prices? Click{' '}
+                        <a href="LINK TO PAYMENT">here</a> to join.
+                    </Membership>
+                )}
                 <DashboardHeader>
                     <h2>Upcoming Events</h2>
-                    <WelcomeMessage>
-                        {user ? `Welcome ${user.firstName}` : 'Welcome guest'}
-                    </WelcomeMessage>
+                    <WelcomeMessage>{`Welcome ${user?.firstName}`}</WelcomeMessage>
                 </DashboardHeader>
                 <p>
                     At PMC, our mission is to empower aspiring product managers by providing
@@ -125,12 +111,6 @@ export default function Dashboard() {
                         )}
                     </>
                 )}
-            </DashboardSection>
-            <DashboardSection>
-                <EventQuestionRenderer
-                    onSubmit={handleSubmit}
-                    questions={testQuestions}
-                />
             </DashboardSection>
         </DashboardContainer>
     );

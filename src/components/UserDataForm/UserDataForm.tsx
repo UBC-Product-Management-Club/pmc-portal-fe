@@ -51,6 +51,7 @@ const Dropdown = styled.select<{ width?: number; $error: boolean }>`
 const TextArea = styled.textarea<{ $error: boolean }>`
     border-radius: 1rem;
     padding: 0.5rem 0.75rem;
+    resize: none;
 
     &::placeholder {
         font-family: 'poppins';
@@ -68,6 +69,7 @@ const WaiverLink = styled.a`
     color: white;
 `;
 const Submit = styled.button`
+    cursor: pointer;
     font-family: poppins;
     font-weight: 600;
     margin-left: auto;
@@ -87,7 +89,7 @@ export function UserDataForm({
     responses,
     onSubmit,
     hasWaiver,
-    buttonText = 'Continue to Payment',
+    buttonText = 'Continue',
 }: UserDataFormProps) {
     const form = useForm({
         resolver: zodResolver(UserDataFromUserSchema),

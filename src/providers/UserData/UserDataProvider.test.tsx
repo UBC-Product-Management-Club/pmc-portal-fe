@@ -15,7 +15,7 @@ describe('useUserData', () => {
         pfp: 'https://url.com',
         pronouns: '',
         whyPm: 'abc',
-        isPaymentVerified: false,
+        isPaymentVerified: true,
         faculty: 'faculty',
         major: 'major',
         studentId: '12345678',
@@ -24,7 +24,7 @@ describe('useUserData', () => {
 
     function renderComponent() {
         const TestComponent = () => {
-            const { user, update } = useUserData();
+            const { user, update, isMember } = useUserData();
 
             return (
                 <div>
@@ -36,12 +36,13 @@ describe('useUserData', () => {
                     ) : (
                         <h1>user is undefined!</h1>
                     )}
+                    <p>isMember: {String(isMember)}</p>
                     <button
                         onClick={() =>
                             update({
                                 type: ActionTypes.CREATE,
                                 payload: {
-                                    id: 'userId',
+                                    userId: 'userId',
                                     displayName: 'geary',
                                     pfp: 'newpfp',
                                     email: 'geary@ubcpmc.com',
@@ -121,5 +122,16 @@ describe('useUserData', () => {
 
         expect(screen.getByText('geary')).toBeInTheDocument();
         expect(screen.getByText('geary@ubcpmc.com')).toBeInTheDocument();
+    });
+
+    it('correctly sets isMember after loading user', async () => {
+        const user = userEvent.setup();
+        renderComponent();
+
+        expect(screen.getByText('isMember: false')).toBeInTheDocument();
+
+        await act(() => user.click(screen.getByRole('button', { name: 'Load user' })));
+
+        expect(screen.getByText('isMember: true')).toBeInTheDocument();
     });
 });

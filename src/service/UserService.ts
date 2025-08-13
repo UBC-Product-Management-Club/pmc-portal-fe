@@ -1,4 +1,3 @@
-import { PaymentIntent } from '@stripe/stripe-js';
 import { UserDocument, UserDocumentSchema } from '../types/User';
 import { RestClient } from './RestClient';
 
@@ -9,12 +8,9 @@ class UserService {
         this.client = client ?? new RestClient(`${import.meta.env.VITE_API_URL}/api/v2/auth`);
     }
 
-    create(userToCreate: Partial<UserDocument>, payment: PaymentIntent) {
+    create(userToCreate: Partial<UserDocument>) {
         const user: UserDocumentSchema = UserDocumentSchema.parse(userToCreate);
-        this.client.post<UserDocument>(
-            '/onboard',
-            JSON.stringify({ user: user, payment: payment })
-        );
+        this.client.post<UserDocument>('/onboard', JSON.stringify({ user: user }));
     }
 
     fetch(userId: string): Promise<UserDocument> {

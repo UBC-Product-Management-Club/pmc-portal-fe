@@ -77,11 +77,12 @@ describe('Onboarding Component', () => {
 
         vi.mocked(useUserData).mockReturnValue({
             user: {
-                id: 'userId',
+                userId: 'userId',
                 displayName: 'geary',
                 email: 'geary@ubcpmc.com',
             },
             update: mockUpdateUser,
+            isMember: true,
         });
 
         vi.mocked(usePaymentService).mockReturnValue({
@@ -132,7 +133,7 @@ describe('Onboarding Component', () => {
         const whyPmInput = screen.getByPlaceholderText('Why Product Management?');
         await user.type(whyPmInput, 'products go brr');
 
-        const submitButton = screen.getByRole('button', { name: 'Continue to Payment' });
+        const submitButton = screen.getByRole('button', { name: 'Continue' });
         await user.click(submitButton);
     }
 
@@ -173,6 +174,7 @@ describe('Onboarding Component', () => {
                 whyPm: 'products go brr',
             },
         });
+        await user.click(screen.getByRole('button', { name: 'Yes, continue to payments' }));
         expect(screen.getByTestId('mock-payment')).toBeInTheDocument();
 
         await user.click(screen.getByRole('button', { name: 'Mock Pay' }));
@@ -198,6 +200,7 @@ describe('Onboarding Component', () => {
                 whyPm: 'products go brr',
             },
         });
+        await user.click(screen.getByRole('button', { name: 'Yes, continue to payments' }));
         expect(screen.getByTestId('mock-payment')).toBeInTheDocument();
 
         await user.click(screen.getByRole('button', { name: 'Mock Pay' }));

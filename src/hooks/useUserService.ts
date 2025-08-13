@@ -1,4 +1,3 @@
-import { PaymentIntent } from '@stripe/stripe-js';
 import { UserService } from '../service/UserService';
 import { UserDocument, UserFromDatabase, UserFromDatabaseSchema } from '../types/User';
 
@@ -9,8 +8,8 @@ function useUserService() {
         return UserFromDatabaseSchema.parse(await userService.fetch(userId));
     }
 
-    async function create(user: Partial<UserDocument>, payment: PaymentIntent): Promise<void> {
-        userService.create(user, payment);
+    async function create(user: Partial<UserDocument>): Promise<void> {
+        userService.create({ ...user, isPaymentVerified: false });
     }
 
     return { get, create };
