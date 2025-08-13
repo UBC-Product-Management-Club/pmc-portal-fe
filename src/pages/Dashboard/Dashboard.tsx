@@ -74,14 +74,14 @@ export default function Dashboard() {
     }, [getAll]);
 
     useEffect(() => {
-        if (!user || typeof user !== 'object' || !('userId' in user) || !user.userId) return;
-
-        getUserCurrentEvents(user.userId)
-            .then(setUserEvents)
-            .catch((e) => {
-                console.error(e);
-                setError(true);
-            });
+        if (user) {
+            getUserCurrentEvents(user.userId!)
+                .then(setUserEvents)
+                .catch((e) => {
+                    console.error(e);
+                    setError(true);
+                });
+        }
     }, [getUserCurrentEvents]);
 
     return (
