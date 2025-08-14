@@ -74,8 +74,8 @@ export default function Dashboard() {
     }, [getAll]);
 
     useEffect(() => {
-        if (user) {
-            getUserCurrentEvents(user.userId!)
+        if (user && user.userId) {
+            getUserCurrentEvents(user.userId)
                 .then(setUserEvents)
                 .catch((e) => {
                     console.error(e);

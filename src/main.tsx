@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import Login from './pages/Login/Login.tsx';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Auth0Provider } from '@auth0/auth0-react';
 import UnderConstruction from './pages/Status/UnderConstruction.tsx';
 import Dashboard from './pages/Dashboard/Dashboard.tsx';
@@ -46,9 +46,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                                 <Route path="/profile" element={<Profile />} />
                                 <Route
                                     path="/events/3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45"
-                                    element={<Navigate to="/events/product-sprint" replace />}
+                                    element={<ProductSprint />}
                                 />
-                                <Route path="/events/product-sprint" element={<ProductSprint />} />
 
                                 {/* <Route path="/admin/users" element={<AllUsers />} />
                     <Route path="/admin/events" element={<AllEvents />} />
