@@ -14,6 +14,7 @@ import { ProdRenderer } from './components/EnvironmentWrappers/ProdRenderer.tsx'
 import { DevRenderer } from './components/EnvironmentWrappers/DevRenderer.tsx';
 import { UserDataProvider } from './providers/UserData/UserDataProvider.tsx';
 import AuthorizedRouter from './components/AuthorizedRouter/AuthorizedRouter.tsx';
+import ProductSprint from './pages/Events/ProductSprint.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
@@ -41,8 +42,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                             <Route path={'/onboarding'} element={<Onboarding />} />
                             <Route element={<Layout />}>
                                 <Route path="/dashboard" element={<Dashboard />} />
-                                <Route path="/events/:event_id" element={<Event />} />
+                                <Route path="/events/:event_id/register" element={<Event />} />
                                 <Route path="/profile" element={<Profile />} />
+                                <Route
+                                    path="/events/3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45"
+                                    element={<ProductSprint />}
+                                />
+
                                 {/* <Route path="/admin/users" element={<AllUsers />} />
                     <Route path="/admin/events" element={<AllEvents />} />
                     <Route path="/admin/events/:event_id/attendees" element={<AttendeeList />} />

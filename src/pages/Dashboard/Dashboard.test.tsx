@@ -5,6 +5,7 @@ import { EventCard } from '../../components/Event/EventCard';
 import { type EventCard as EventCardType } from '../../types/Event';
 import { act, render, screen } from '@testing-library/react';
 import Dashboard from './Dashboard';
+import { MemoryRouter } from 'react-router-dom';
 
 vi.mock('../../providers/UserData/UserDataProvider', () => ({
     useUserData: vi.fn(),
@@ -15,6 +16,8 @@ vi.mock('../../components/Event/EventCard');
 describe('Dashboard', () => {
     let mockUseUserData: Mock;
     let mockGetAllEvents: Mock;
+    let mockGetUserCurrentEvents: Mock;
+
     const testEvents = [
         {
             eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
@@ -53,6 +56,44 @@ describe('Dashboard', () => {
             thumbnail: 'url3',
         },
     ];
+    const testUserEvents = [
+        {
+            eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
+            name: 'test your event',
+            description: 'test desc',
+            date: '2025-08-02',
+            startTime: '2025-08-02t15:30:00+00:00',
+            endTime: '2025-08-03t00:00:00+00:00',
+            location: 'sauder building',
+            memberPrice: 5,
+            nonMemberPrice: 10,
+            thumbnail: 'url1',
+        },
+        {
+            eventId: '889b13e2-3c59-4757-96a8-10618132e1d5',
+            name: 'your sample event',
+            description: 'your desc',
+            date: '2025-08-01',
+            startTime: '2025-08-01T09:00:00+00:00',
+            endTime: '2025-08-01T17:00:00+00:00',
+            location: '"AMS Nest"',
+            memberPrice: 3,
+            nonMemberPrice: 50,
+            thumbnail: 'url2',
+        },
+        {
+            eventId: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
+            name: 'your product',
+            description: 'desc',
+            date: '2026-09-01',
+            startTime: '2026-09-01T20:30:00+00:00',
+            endTime: '2026-09-02T08:00:00+00:00',
+            location: 'ubc henry angus',
+            memberPrice: 8,
+            nonMemberPrice: 20,
+            thumbnail: 'url3',
+        },
+    ];
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -60,9 +101,12 @@ describe('Dashboard', () => {
         mockUseUserData = (useUserData as Mock).mockReturnValue({
             user: undefined,
         });
+        mockGetUserCurrentEvents = vi.fn().mockResolvedValue(testUserEvents);
         vi.mocked(useEvents, { partial: true }).mockReturnValue({
             getAll: mockGetAllEvents,
+            getUserCurrentEvents: mockGetUserCurrentEvents,
         });
+
         vi.mocked(EventCard).mockImplementation(({ event }: { event: EventCardType }) => {
             return (
                 <>
@@ -82,7 +126,11 @@ describe('Dashboard', () => {
     });
 
     async function renderComponent() {
-        return render(<Dashboard />);
+        return render(
+            <MemoryRouter>
+                <Dashboard />
+            </MemoryRouter>
+        );
     }
 
     it('renders member name when logged in', async () => {
@@ -145,5 +193,24 @@ describe('Dashboard', () => {
         expect(
             screen.queryByText(/want to become a member and enjoy discounted event prices/i)
         ).not.toBeInTheDocument();
+    });
+
+    it('your events renders register below when no registered events', async () => {
+        mockGetUserCurrentEvents.mockReturnValueOnce([]);
+        await renderComponent();
+        expect(screen.getByText(/Register Below/i)).toBeInTheDocument();
+    });
+
+    it('renders events when user has registered events', async () => {
+        mockUseUserData.mockReturnValueOnce({
+            user: { firstName: 'geary', userId: '123' },
+        });
+        await act(() => renderComponent());
+
+        testUserEvents.map((event) => {
+            Object.values(event).map((value) => {
+                expect(screen.getByText(value)).toBeInTheDocument();
+            });
+        });
     });
 });

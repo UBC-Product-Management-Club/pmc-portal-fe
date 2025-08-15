@@ -13,6 +13,10 @@ class EventService {
         return this.client.get<EventCard[]>('/');
     }
 
+    getUserCurrentEvents(userId: string): Promise<EventCard[]> {
+        return this.client.get<EventCard[]>(`/user-events/${userId}`);
+    }
+
     getById(eventId: string): Promise<Event> {
         return this.client.get<Event>(`/${eventId}`);
     }
