@@ -131,7 +131,7 @@ export default function Dashboard() {
                     <h2>Upcoming Events</h2>
                 </DashboardHeader>
                 {events === undefined ? (
-                    <>{error ? <h1>An error occurred fetching events :( </h1> : <h1>Loading</h1>}</>
+                    <>{error ? <h1>An error occurred fetching events :(</h1> : <h1>Loading</h1>} </>
                 ) : (
                     <>
                         {events.length > 0 ? (

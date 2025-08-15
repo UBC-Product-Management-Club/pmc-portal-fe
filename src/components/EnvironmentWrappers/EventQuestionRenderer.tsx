@@ -1,0 +1,322 @@
+import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Question } from '../../types/Question';
+import { styled } from 'styled-components';
+import { buildEventFormResponseSchema } from '../../utils.ts'
+import React from 'react';
+import z from 'zod/v4';
+
+const Content = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 1rem;
+`;
+
+const Dropdown = styled.select<{ $hasError: boolean }>`
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    flex: 1;
+    font-family: 'poppins';
+
+    &::placeholder {
+        color: var(--pmc-midnight-blue);
+    }
+
+    border: ${(props) => props.$hasError && '0.2rem solid red'};
+`;
+
+const Submit = styled.button`
+    font-family: poppins;
+    font-weight: 600;
+    margin-left: auto;
+    padding: 0.5rem 2rem;
+    border-radius: 0.5rem;
+    color: var(--pmc-midnight-blue);
+`;
+
+const RequiredMark = styled.span`
+  color: red;
+  margin-left: 0.25rem;
+`;
+
+const ErrorMessage = styled.span`
+    font-family: poppins;
+    font-weight: 600;
+    color: red;
+`;
+
+const DefaultTextInput = styled.input<{ $hasError: boolean }>`
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    flex: ${(props) => (props.width ? '' : 1)};
+    font-family: 'poppins';
+
+    &::placeholder {
+        color: var(--pmc-midnight-blue);
+    }
+
+    border: ${(props) => props.$hasError && '0.2rem solid red'};
+`;
+
+const TextArea = styled.textarea<{ $hasError: boolean }>`
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+
+    &::placeholder {
+        font-family: 'poppins';
+        color: var(--pmc-midnight-blue);
+    }
+
+    border: ${(props) => props.$hasError && '0.2rem solid red'};
+`;
+
+const StyledQuestionWrapper = styled.div`
+  display: flex;
+  flex-direction: column;  /* stack label + input vertically */
+  gap: 0.25rem;            /* small spacing */
+`;
+
+const Label = styled.label`
+  display: block;
+  margin-bottom: 0.25rem; /* add space below label */
+  font-weight: 600;
+`;
+
+const HiddenFileInput = styled.input`
+  display: none;
+`;
+
+const FileUploadButton = styled.button`
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: #ffffffff;
+  color: black;
+  cursor: pointer;
+  font-weight: 600;
+  border: none;
+
+  &:hover {
+    background-color: #d9fbdcff;
+  }
+`;
+
+const FileNameText = styled.span`
+  font-style: italic;
+  color: white;
+`;
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;  // adjust spacing here
+`;
+
+type EventFormProps = {
+    onSubmit: (data: any) => void; 
+    questions: Question[]
+};
+
+type StyledInputProps = React.ComponentProps<typeof DefaultTextInput>;
+
+type TextBasedQuestion = Extract<Question, { type: "short-answer" | "long-answer" }>;
+
+type TextBasedInputProps = {
+    question: TextBasedQuestion;
+    StyledComponent: React.ComponentType<StyledInputProps>;
+};
+
+type FileBasedInputProps = {
+    question: Extract<Question, {type: 'file'}>;
+};
+
+type DropdownInputProps = {
+    question: Extract<Question, {type: 'dropdown'}>;
+    StyledComponent: React.ComponentType<StyledInputProps>;
+};
+
+type QuestionWrapperProps = {
+    id: string;
+    label: string;
+    required: boolean;
+    error?: string;
+    placeholder?: string;
+    children: React.ReactNode
+};
+
+// General question layout, taking input element as children
+const QuestionWrapper = ({
+    id,
+    label,
+    required,
+    error,
+    children,
+}: QuestionWrapperProps) => (
+    <StyledQuestionWrapper>
+        <Label htmlFor={id}>
+            {label}
+            {required && <RequiredMark>*</RequiredMark>}
+        </Label>
+        {children}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+    </StyledQuestionWrapper>
+);
+
+// Form control for long and short answers
+const TextBasedInput = ({
+    question,
+    StyledComponent,
+}: TextBasedInputProps) => {
+    const {
+        register,
+        formState: { errors },
+    } = useFormContext();
+    const hasError = !!errors[question.id];
+    const FinalInput = StyledComponent
+    return (
+        <FinalInput
+            id={question.id}
+            type="text"
+            $hasError={!!hasError}
+            {...register(question.id, {required: question.required && "This field is required"})}>
+        </FinalInput>
+    );
+};
+
+// Allows for single file uploads (add multiple attribute if needed)
+// Does not yet support previewing and file deletion 
+const FileBasedInput = ({ question }: FileBasedInputProps) => {
+    const {
+        control,
+        watch
+    } = useFormContext();
+
+    const file = watch(question.id);
+
+    return (
+        <Controller
+            name={question.id}
+            control={control}
+            rules={{ required: question.required && "This field is required" }}
+            render={({field}) => {
+                const { value, ...restField } = field;
+                return (
+                    <>
+                        <HiddenFileInput
+                            {...restField}
+                            type="file"
+                            id={question.id}
+                            onChange={(e) => {
+                                field.onChange(e.target.files?.[0]);
+                            }}
+                        />
+                        <FileUploadButton onClick={() => document.getElementById(question.id)?.click()}>
+                            Choose file
+                        </FileUploadButton>
+                        <FileNameText>
+                            {file ? file.name : "No file chosen"}
+                        </FileNameText>
+                    
+                    </>
+                );
+            }}
+        />
+    );
+};
+
+const DropdownInput = ({question, StyledComponent}: DropdownInputProps) => {
+    const {
+        formState: { errors },
+        register
+    } = useFormContext();
+    const hasError = !!errors[question.id];
+    const FinalInput = StyledComponent;
+    return (
+        <FinalInput
+            id={question.id}
+            $hasError={!!hasError}
+            {...register(question.id, {
+                required: question.required && "This field is required",
+            })}
+            defaultValue=""
+        >
+            <option value="" disabled>
+                Select an option
+            </option>
+            {question.options?.map((opt, idx) => (
+                <option key={idx} value={opt}>
+                    {opt}
+                </option>
+            ))}
+        </FinalInput>
+    );
+};
+
+const RenderQuestion = ({ question }: { question: Question }) => {
+  const { formState: { errors } } = useFormContext();
+  const errorMessage = errors?.[question.id]?.message as string;
+
+  return (
+    <QuestionWrapper
+      id={question.id}
+      label={question.label}
+      required={question.required}
+      error={errorMessage}
+    >
+      {(() => {
+        switch (question.type) {
+          case 'short-answer':
+            return (
+              <TextBasedInput
+                question={question}
+                StyledComponent={DefaultTextInput}
+              />
+            );
+          case 'long-answer':
+            return (
+              <TextBasedInput
+                question={question}
+                StyledComponent={TextArea}
+              />
+            );
+          case 'dropdown':
+            return (
+              <DropdownInput
+                question={question}
+                StyledComponent={Dropdown}
+              />
+            );
+          case 'file':
+            return <FileBasedInput question={question} />;
+          default:
+            return <div />;
+        }
+      })()}
+    </QuestionWrapper>
+  );
+};
+
+
+export const EventQuestionRenderer = ({ onSubmit, questions }: EventFormProps) => {
+    const responseSchema = buildEventFormResponseSchema(questions);
+    type ResponseData = z.infer<typeof responseSchema>;
+    const methods = useForm<ResponseData>({
+        resolver: zodResolver(responseSchema),
+    });
+
+    return (
+            <Content>
+                <FormProvider {...methods}>
+                    <StyledForm autoComplete="off" onSubmit={methods.handleSubmit(onSubmit)}>
+                        {questions.map(q => (
+                            <RenderQuestion key={q.id} question={q} />
+                        ))}
+                        <Submit type="submit">Submit</Submit>
+                    </StyledForm>
+                </FormProvider>
+            </Content>
+    );
+};
+
+
