@@ -7,6 +7,7 @@ import { EventCard } from '../../components/Event/EventCard';
 import moment from 'moment';
 import { Carousel } from '../../components/Dashboard/Carousel';
 import { YourEventCard } from '../../components/Event/YourEventCard';
+import { usePaymentService } from '../../hooks/usePaymentService';
 
 const DashboardContainer = styled.div`
     color: white;
@@ -59,9 +60,11 @@ const Membership = styled.div`
 
 export default function Dashboard() {
     const { user, isMember } = useUserData();
+    const paymentService = usePaymentService();
     const { getAll, getUserCurrentEvents } = useEvents();
     const [userEvents, setUserEvents] = useState<EventCardType[] | undefined>();
     const [events, setEvents] = useState<EventCardType[] | undefined>();
+    const [checkoutUrl, setCheckoutUrl] = useState<string>();
     const [error, setError] = useState<boolean>(false);
 
     useEffect(() => {
@@ -84,13 +87,27 @@ export default function Dashboard() {
         }
     }, [getUserCurrentEvents]);
 
+    useEffect(() => {
+        if (user && user.userId) {
+            paymentService
+                .createStripeSessionUrl(user.userId)
+                .then((resp) => {
+                    setCheckoutUrl(resp.url);
+                })
+                .catch((e) => {
+                    console.error(e);
+                    setError(true);
+                });
+        }
+    }, [user]);
+
     return (
         <DashboardContainer>
             <DashboardSection>
                 {!isMember && (
                     <Membership>
                         Want to become a member and enjoy discounted event prices? Click{' '}
-                        <a href="LINK TO PAYMENT">here</a> to join.
+                        <a href={checkoutUrl}>here</a> to join.
                     </Membership>
                 )}
                 <DashboardHeader>
