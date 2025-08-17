@@ -11,6 +11,10 @@ interface CreatePaymentIntentResponse {
     clientSecret: string;
 }
 
+interface CheckoutSessionResponse {
+    url: string;
+}
+
 interface FetchFeeResponse {
     ubcPrice: number;
     nonUbcPrice: number;
@@ -24,7 +28,7 @@ class PaymentService {
     private client: RestClient;
 
     constructor(client?: RestClient) {
-        this.client = client ?? new RestClient(`${import.meta.env.VITE_API_URL}/api/v1/payments`);
+        this.client = client ?? new RestClient(`${import.meta.env.VITE_API_URL}/api/v2/payments`);
     }
 
     getPaymentElementOptions(): StripePaymentElementOptions {
@@ -59,6 +63,14 @@ class PaymentService {
             default:
                 throw new Error('invalid payment type');
         }
+    }
+
+    async createStripeSessionUrl(userId: string): Promise<CheckoutSessionResponse> {
+        const response = await this.client.post<CheckoutSessionResponse>(
+            '/checkout-session/membership',
+            JSON.stringify({ userId: userId })
+        );
+        return response;
     }
 
     private async getMembershipFeeElementsOptions(ubc: boolean): Promise<StripeElementsOptions> {

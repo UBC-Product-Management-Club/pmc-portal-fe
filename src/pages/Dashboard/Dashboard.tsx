@@ -7,6 +7,7 @@ import { EventCard } from '../../components/Event/EventCard';
 import moment from 'moment';
 import { Carousel } from '../../components/Dashboard/Carousel';
 import { YourEventCard } from '../../components/Event/YourEventCard';
+import { usePaymentService } from '../../hooks/usePaymentService';
 
 const DashboardContainer = styled.div`
     color: white;
@@ -59,6 +60,7 @@ const Membership = styled.div`
 
 export default function Dashboard() {
     const { user, isMember } = useUserData();
+    const paymentService = usePaymentService();
     const { getAll, getUserCurrentEvents } = useEvents();
     const [userEvents, setUserEvents] = useState<EventCardType[] | undefined>();
     const [events, setEvents] = useState<EventCardType[] | undefined>();
@@ -84,13 +86,26 @@ export default function Dashboard() {
         }
     }, [getUserCurrentEvents]);
 
+    const navigateToStripeMembershipPayment = async () => {
+        if (user && user.userId) {
+            const resp = await paymentService.createStripeSessionUrl(user.userId);
+            window.location.href = resp.url;
+        }
+    };
+
     return (
         <DashboardContainer>
             <DashboardSection>
                 {!isMember && (
                     <Membership>
                         Want to become a member and enjoy discounted event prices? Click{' '}
-                        <a href="LINK TO PAYMENT">here</a> to join.
+                        <a
+                            onClick={navigateToStripeMembershipPayment}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            here
+                        </a>{' '}
+                        to join.
                     </Membership>
                 )}
                 <DashboardHeader>
