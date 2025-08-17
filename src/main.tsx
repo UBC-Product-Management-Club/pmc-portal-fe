@@ -15,6 +15,8 @@ import { DevRenderer } from './components/EnvironmentWrappers/DevRenderer.tsx';
 import { UserDataProvider } from './providers/UserData/UserDataProvider.tsx';
 import AuthorizedRouter from './components/AuthorizedRouter/AuthorizedRouter.tsx';
 import ProductSprint from './pages/Events/ProductSprint.tsx';
+import PaymentSuccess from './components/Payment/PaymentSuccess.tsx';
+import PaymentCanceled from './components/Payment/PaymentCanceled.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
@@ -48,6 +50,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                                     path="/events/3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45"
                                     element={<ProductSprint />}
                                 />
+
+                                <Route
+                                    path="/dashboard/success"
+                                    element={<PaymentSuccess />}
+                                ></Route>
+                                <Route
+                                    path="/dashboard/canceled"
+                                    element={<PaymentCanceled />}
+                                ></Route>
 
                                 {/* <Route path="/admin/users" element={<AllUsers />} />
                     <Route path="/admin/events" element={<AllEvents />} />

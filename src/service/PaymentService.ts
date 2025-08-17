@@ -67,7 +67,7 @@ class PaymentService {
 
     async createStripeSessionUrl(userId: string): Promise<CheckoutSessionResponse> {
         const response = await this.client.post<CheckoutSessionResponse>(
-            '/create-checkout-session',
+            '/checkout-session/membership',
             JSON.stringify({ userId: userId })
         );
         return response;

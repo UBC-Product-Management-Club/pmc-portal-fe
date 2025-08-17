@@ -64,7 +64,6 @@ export default function Dashboard() {
     const { getAll, getUserCurrentEvents } = useEvents();
     const [userEvents, setUserEvents] = useState<EventCardType[] | undefined>();
     const [events, setEvents] = useState<EventCardType[] | undefined>();
-    const [checkoutUrl, setCheckoutUrl] = useState<string>();
     const [error, setError] = useState<boolean>(false);
 
     useEffect(() => {
@@ -87,19 +86,12 @@ export default function Dashboard() {
         }
     }, [getUserCurrentEvents]);
 
-    useEffect(() => {
+    const navigateToStripeMembershipPayment = async () => {
         if (user && user.userId) {
-            paymentService
-                .createStripeSessionUrl(user.userId)
-                .then((resp) => {
-                    setCheckoutUrl(resp.url);
-                })
-                .catch((e) => {
-                    console.error(e);
-                    setError(true);
-                });
+            const resp = await paymentService.createStripeSessionUrl(user.userId);
+            window.location.href = resp.url;
         }
-    }, [user]);
+    };
 
     return (
         <DashboardContainer>
@@ -107,7 +99,13 @@ export default function Dashboard() {
                 {!isMember && (
                     <Membership>
                         Want to become a member and enjoy discounted event prices? Click{' '}
-                        <a href={checkoutUrl}>here</a> to join.
+                        <a
+                            onClick={navigateToStripeMembershipPayment}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            here
+                        </a>{' '}
+                        to join.
                     </Membership>
                 )}
                 <DashboardHeader>
