@@ -1,6 +1,5 @@
 import { StripeElementsOptions, StripePaymentElementOptions } from '@stripe/stripe-js';
 import { RestClient } from './RestClient';
-import { Universities } from '../types/User';
 
 enum PaymentType {
     MEMBERSHIP = 'membership',
@@ -21,7 +20,7 @@ interface FetchFeeResponse {
 }
 
 type getElementOptionsOptions =
-    | { type: PaymentType.MEMBERSHIP; university: string }
+    | { type: PaymentType.MEMBERSHIP; userId: string }
     | { type: PaymentType.EVENT; eventId: string };
 
 class PaymentService {
@@ -57,7 +56,7 @@ class PaymentService {
     async getElementsOptions(options: getElementOptionsOptions): Promise<StripeElementsOptions> {
         switch (options.type) {
             case PaymentType.MEMBERSHIP:
-                return this.getMembershipFeeElementsOptions(options.university === Universities[0]);
+                return this.getMembershipFeeElementsOptions(options.userId);
             case PaymentType.EVENT:
                 return this.getEventRegFeeElementsOptions(options.eventId);
             default:
@@ -73,10 +72,12 @@ class PaymentService {
         return response;
     }
 
-    private async getMembershipFeeElementsOptions(ubc: boolean): Promise<StripeElementsOptions> {
+    private async getMembershipFeeElementsOptions(userId: string): Promise<StripeElementsOptions> {
         return {
             clientSecret: (
-                await this.client.get<CreatePaymentIntentResponse>(`/create/membership?ubc=${ubc}`)
+                await this.client.get<CreatePaymentIntentResponse>(
+                    `/create/membership?userId=${userId}`
+                )
             ).clientSecret,
         };
     }

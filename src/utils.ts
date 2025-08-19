@@ -34,6 +34,7 @@ function formatPrice(price: number) {
 }
 
 function buildEventFormResponseSchema(questions: Question[]) {
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
     const shape: Record<string, z.ZodType<any>> = {};
     // Dynamically generate schema for each question's input
     for (const q of questions) {
@@ -45,16 +46,20 @@ function buildEventFormResponseSchema(questions: Question[]) {
             fieldSchema = z.string();
 
             if (q.required) {
-                fieldSchema = fieldSchema.min(1, {message: `${q.label} is cannot be left empty.`});
-            } 
+                fieldSchema = fieldSchema.min(1, {
+                    message: `${q.label} is cannot be left empty.`,
+                });
+            }
 
             if (q.type === 'dropdown' && q.options) {
-                fieldSchema = fieldSchema.refine((val) => q.options!.includes(val), {message: `Invalid selection for ${q.label}`});
+                fieldSchema = fieldSchema.refine((val) => q.options!.includes(val), {
+                    message: `Invalid selection for ${q.label}`,
+                });
             }
         }
         shape[q.id] = fieldSchema;
-    };
+    }
     return z.object(shape);
-};
+}
 
-export { isInAppBrowser, emptyUser, formatPrice, buildEventFormResponseSchema};
+export { isInAppBrowser, emptyUser, formatPrice, buildEventFormResponseSchema };

@@ -3,7 +3,7 @@ import { z } from 'zod/v4';
 const baseQuestionSchema = z.object({
     id: z.string(),
     label: z.string(),
-    required: z.boolean()
+    required: z.boolean(),
 });
 
 const shortAnsQuestionSchema = baseQuestionSchema.extend({
@@ -34,5 +34,3 @@ type Question = z.infer<typeof questionSchema>;
 
 export type { Question };
 export const questionsSchema = z.array(questionSchema);
-
-

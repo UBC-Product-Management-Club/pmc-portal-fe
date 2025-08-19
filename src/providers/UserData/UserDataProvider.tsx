@@ -1,5 +1,7 @@
-import { ActionDispatch, createContext, ReactNode, useContext, useReducer } from 'react';
+import { ActionDispatch, createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { UserDataFromAuth, UserDocument, UserFromDatabase } from '../../types/User';
+import { useLocation } from 'react-router-dom';
+import { useUserService } from '../../hooks/useUserService';
 
 type UpdateUserFunction = ActionDispatch<[Action]>;
 
@@ -35,6 +37,20 @@ function UserDataProvider({ children }: { children: ReactNode }) {
         Partial<UserDocument> | UserFromDatabase | undefined,
         [Action]
     >(reducer, undefined);
+    const userService = useUserService();
+    const location = useLocation();
+
+    useEffect(() => {
+        // change this to hit /me endpoint when its implemented (tobs)
+        console.log(location.pathname);
+        if (location.pathname.includes('dashboard')) {
+            if (user && user.userId) {
+                userService
+                    .get(user.userId!)
+                    .then((user) => update({ type: ActionTypes.LOAD, payload: user }));
+            }
+        }
+    }, [location.pathname]);
 
     function reducer(
         prevState: Partial<UserDocument> | UserFromDatabase | undefined,

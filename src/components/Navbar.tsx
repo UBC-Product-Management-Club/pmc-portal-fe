@@ -79,7 +79,17 @@ export function Navbar() {
                     </Link>
                 )}
                 {isAuthenticated ? (
-                    <AuthButton onClick={async () => await logout()}>Sign out</AuthButton>
+                    <AuthButton
+                        onClick={async () =>
+                            await logout({
+                                logoutParams: {
+                                    returnTo: window.location.origin,
+                                },
+                            })
+                        }
+                    >
+                        Sign out
+                    </AuthButton>
                 ) : (
                     <Link to="/">
                         <AuthButton>Sign in</AuthButton>
