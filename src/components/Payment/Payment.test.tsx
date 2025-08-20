@@ -6,7 +6,6 @@ import {
     PaymentService,
     PaymentType,
 } from '../../service/PaymentService';
-import { Universities } from '../../types/User';
 import userEvent from '@testing-library/user-event';
 import { usePayments } from '../../hooks/usePayments';
 import { PaymentIntent, StripeElementsOptions } from '@stripe/stripe-js';
@@ -79,31 +78,11 @@ describe('Payment component', () => {
         render(<Payment onPayment={onPayment} onError={onError} options={options} />);
     }
 
-    it('renders payment form and submission for ubc student', async () => {
+    it('renders payment form and submission', async () => {
         const user = userEvent.setup();
         const options: getElementOptionsOptions = {
             type: PaymentType.MEMBERSHIP,
-            university: Universities[0],
-        };
-
-        await act(() => renderComponent(options));
-
-        await waitFor(() => {
-            expect(screen.getByTestId('payment-element')).toBeInTheDocument();
-        });
-
-        await act(() => user.click(screen.getByRole('button', { name: 'Continue' })));
-
-        expect(onPayment).toHaveBeenCalledWith({ id: 'pi_123' });
-        expect(onError).not.toHaveBeenCalled();
-        expect(mockGetElementOptions).toHaveBeenCalledWith(options);
-    });
-
-    it('renders payment form and submission for non ubc student', async () => {
-        const user = userEvent.setup();
-        const options: getElementOptionsOptions = {
-            type: PaymentType.MEMBERSHIP,
-            university: Universities[4],
+            userId: 'user-id',
         };
 
         await act(() => renderComponent(options));
@@ -123,9 +102,7 @@ describe('Payment component', () => {
         mockPay.mockRejectedValue(Error('payment error occurred'));
         const user = userEvent.setup();
 
-        await act(() =>
-            renderComponent({ type: PaymentType.MEMBERSHIP, university: Universities[0] })
-        );
+        await act(() => renderComponent({ type: PaymentType.MEMBERSHIP, userId: 'user-id' }));
 
         await waitFor(() => {
             expect(screen.getByTestId('payment-element')).toBeInTheDocument();
@@ -140,7 +117,7 @@ describe('Payment component', () => {
     it('renders a spinner when loading', async () => {
         mockGetElementOptions.mockReturnValueOnce(new Promise(() => {}));
 
-        await renderComponent({ type: PaymentType.MEMBERSHIP, university: Universities[0] });
+        await renderComponent({ type: PaymentType.MEMBERSHIP, userId: 'user-id' });
 
         expect(screen.getByText('Loading...')).toBeInTheDocument();
     });
@@ -153,9 +130,7 @@ describe('Payment component', () => {
         });
         const user = userEvent.setup();
 
-        await act(() =>
-            renderComponent({ type: PaymentType.MEMBERSHIP, university: Universities[0] })
-        );
+        await act(() => renderComponent({ type: PaymentType.MEMBERSHIP, userId: 'user-id' }));
 
         await act(() => user.click(screen.getByRole('button', { name: 'Continue' })));
 

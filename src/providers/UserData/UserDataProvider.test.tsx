@@ -3,6 +3,7 @@ import { act, render, screen } from '@testing-library/react';
 import { ActionTypes, UserDataProvider, useUserData } from './UserDataProvider';
 import { userEvent } from '@testing-library/user-event';
 import { UserFromDatabase } from '../../types/User';
+import { BrowserRouter } from 'react-router-dom';
 
 describe('useUserData', () => {
     const mockUser: UserFromDatabase = {
@@ -69,9 +70,11 @@ describe('useUserData', () => {
             );
         };
         return render(
-            <UserDataProvider>
-                <TestComponent />
-            </UserDataProvider>
+            <BrowserRouter>
+                <UserDataProvider>
+                    <TestComponent />
+                </UserDataProvider>
+            </BrowserRouter>
         );
     }
 

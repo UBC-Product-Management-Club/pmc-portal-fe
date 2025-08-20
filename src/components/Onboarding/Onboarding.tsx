@@ -279,7 +279,7 @@ export default function Onboarding() {
                                 onError={(e) => console.error(e)}
                                 options={{
                                     type: PaymentType.MEMBERSHIP,
-                                    university: user.university!,
+                                    userId: user.userId!,
                                 }}
                             />
                         </>
