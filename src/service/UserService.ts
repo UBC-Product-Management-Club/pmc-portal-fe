@@ -13,8 +13,8 @@ class UserService {
         this.client.post<UserDocument>('/onboard', JSON.stringify({ user: user }));
     }
 
-    fetch(userId: string): Promise<UserDocument> {
-        return this.client.post<UserDocument>('/login', JSON.stringify({ userId: userId }));
+    me(): Promise<UserDocument> {
+        return this.client.get<UserDocument>('/me');
     }
 }
 

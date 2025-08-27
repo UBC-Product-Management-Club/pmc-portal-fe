@@ -8,18 +8,20 @@ import { useNavigate } from 'react-router-dom';
 export default function AuthorizedRouter() {
     const navigateTo = useNavigate();
     const { update } = useUserData();
-    const { user: auth0User } = useAuth0();
+    const { user: auth0User, getAccessTokenSilently } = useAuth0();
     const userService = useUserService();
 
     useEffect(() => {
         if (auth0User && auth0User.sub) {
+            getAccessTokenSilently().then((token) => localStorage.setItem('id_token', token));
             userService
-                .get(auth0User.sub)
+                .me()
                 .then((user: UserFromDatabase) => {
                     update({ type: ActionTypes.LOAD, payload: user });
                     navigateTo('/dashboard');
                 })
-                .catch(() => {
+                .catch((err) => {
+                    console.error(err);
                     update({
                         type: ActionTypes.CREATE,
                         payload: {

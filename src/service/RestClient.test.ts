@@ -1,5 +1,5 @@
 // RestClient.test.ts
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
 import { RestClient } from './RestClient';
 
 // Global fetch mock
@@ -34,9 +34,12 @@ describe('RestClient', () => {
         expect(fetchMock).toHaveBeenCalledWith(`${baseUrl}/test`, {
             method: 'GET',
             credentials: 'include',
-            headers: {},
+            headers: {
+                Authorization: '',
+                'Content-Type': 'application/json',
+            },
         });
-
+        expect(localStorage.getItem).toHaveBeenCalledWith('id_token');
         expect(response).toEqual({ data: 'test' });
     });
 
@@ -62,11 +65,13 @@ describe('RestClient', () => {
                 body: payload,
                 credentials: 'include',
                 headers: expect.objectContaining({
+                    Authorization: '',
                     'Content-Type': 'application/json',
                 }),
             })
         );
 
+        expect(localStorage.getItem).toHaveBeenCalledWith('id_token');
         expect(response).toEqual({ success: true });
     });
 
@@ -83,6 +88,7 @@ describe('RestClient', () => {
 
         const result = await client.get<unknown>('/plain');
         expect(result).toBeNull(); // since non-JSON returns null
+        expect(localStorage.getItem).toHaveBeenCalledWith('id_token');
     });
 
     it('should throw on HTTP errors', async () => {
@@ -123,6 +129,7 @@ describe('RestClient', () => {
             })
         );
 
+        expect(localStorage.getItem).toHaveBeenCalledWith('id_token');
         expect(result).toEqual({ updated: true });
     });
 
@@ -142,9 +149,41 @@ describe('RestClient', () => {
         expect(fetchMock).toHaveBeenCalledWith(`${baseUrl}/remove`, {
             method: 'DELETE',
             credentials: 'include',
-            headers: {},
+            headers: {
+                Authorization: '',
+                'Content-Type': 'application/json',
+            },
         });
 
+        expect(localStorage.getItem).toHaveBeenCalledWith('id_token');
         expect(response).toBeNull();
+    });
+
+    describe('with JWT', () => {
+        it('GET', async () => {
+            (localStorage.getItem as Mock).mockReturnValueOnce('jwt');
+            fetchMock.mockResolvedValueOnce({
+                ok: true,
+                status: 200,
+                statusText: 'OK',
+                headers: {
+                    get: () => 'application/json',
+                },
+                json: async () => ({ data: 'test' }),
+            });
+
+            const response = await client.get<{ data: string }>('/test');
+
+            expect(fetchMock).toHaveBeenCalledWith(`${baseUrl}/test`, {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    Authorization: 'Bearer jwt',
+                    'Content-Type': 'application/json',
+                },
+            });
+            expect(localStorage.getItem).toHaveBeenCalledWith('id_token');
+            expect(response).toEqual({ data: 'test' });
+        });
     });
 });

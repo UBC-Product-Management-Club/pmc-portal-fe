@@ -110,7 +110,7 @@ export default function Dashboard() {
                 )}
                 <DashboardHeader>
                     <h2>PMC Dashboard</h2>
-                    <WelcomeMessage>{`Welcome ${user?.firstName}`}</WelcomeMessage>
+                    <WelcomeMessage>{`Welcome ${user ? user.firstName : '...'}`}</WelcomeMessage>
                 </DashboardHeader>
                 <p>
                     At PMC, our mission is to empower aspiring product managers by providing

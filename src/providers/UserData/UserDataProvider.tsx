@@ -1,7 +1,16 @@
-import { ActionDispatch, createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
+import {
+    ActionDispatch,
+    createContext,
+    ReactNode,
+    useContext,
+    useEffect,
+    useMemo,
+    useReducer,
+} from 'react';
 import { UserDataFromAuth, UserDocument, UserFromDatabase } from '../../types/User';
 import { useLocation } from 'react-router-dom';
 import { useUserService } from '../../hooks/useUserService';
+import { useAuth0 } from '@auth0/auth0-react';
 
 type UpdateUserFunction = ActionDispatch<[Action]>;
 
@@ -37,18 +46,25 @@ function UserDataProvider({ children }: { children: ReactNode }) {
         Partial<UserDocument> | UserFromDatabase | undefined,
         [Action]
     >(reducer, undefined);
+    const auth0 = useAuth0();
     const userService = useUserService();
     const location = useLocation();
+    const requiresFreshData = useMemo(() => new Set(['/dashboard', '/events']), []);
 
     useEffect(() => {
-        // change this to hit /me endpoint when its implemented (tobs)
-        console.log(location.pathname);
-        if (location.pathname.includes('dashboard')) {
-            if (user && user.userId) {
-                userService
-                    .get(user.userId!)
-                    .then((user) => update({ type: ActionTypes.LOAD, payload: user }));
-            }
+        if (requiresFreshData.has(location.pathname)) {
+            userService
+                .me()
+                .then((user) => update({ type: ActionTypes.LOAD, payload: user }))
+                .catch(() => {
+                    // invalid jwt (expired)
+                    console.log('your session has expired!');
+                    auth0.logout({
+                        logoutParams: {
+                            returnTo: window.location.origin,
+                        },
+                    });
+                });
         }
     }, [location.pathname]);
 
