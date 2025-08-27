@@ -10,17 +10,14 @@ function useEvents() {
         return EventCardsSchema.parse(data);
     }, [eventService]);
 
-    const getUserCurrentEvents = useCallback(
-        async (userId: string): Promise<EventCard[]> => {
-            const data = await eventService.getUserCurrentEvents(userId);
-            return EventCardsSchema.parse(data);
-        },
-        [eventService]
-    );
+    const getUserCurrentEvents = useCallback(async (): Promise<EventCard[]> => {
+        const data = await eventService.getUserCurrentEvents();
+        return EventCardsSchema.parse(data);
+    }, [eventService]);
     const getById = useCallback(
-        async (eventId: string, userId: string) => {
+        async (eventId: string) => {
             const event = EventSchema.parse(await eventService.getById(eventId));
-            const attendee = await eventService.getAttendee(eventId, userId);
+            const attendee = await eventService.getAttendee(eventId);
             return { event, registered: attendee !== null };
         },
         [eventService]

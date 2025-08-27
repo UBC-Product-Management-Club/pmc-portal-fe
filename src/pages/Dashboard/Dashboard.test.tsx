@@ -173,6 +173,17 @@ describe('Dashboard', () => {
         });
     });
 
+    it('doesnt render Membership ad when isMember undefined', async () => {
+        mockUseUserData.mockReturnValueOnce({
+            user: { firstName: 'geary' },
+            isMember: undefined,
+        });
+        await renderComponent();
+        expect(
+            screen.queryByText(/want to become a member and enjoy discounted event prices/i)
+        ).not.toBeInTheDocument();
+    });
+
     it('renders Membership ad when not member', async () => {
         mockUseUserData.mockReturnValueOnce({
             user: { firstName: 'geary' },
