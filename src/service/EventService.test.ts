@@ -99,9 +99,9 @@ describe('EventService', () => {
     it('fetches an attendee', async () => {
         mockClient.get.mockResolvedValueOnce(mockAttendee);
 
-        const attendee = await service.getAttendee('event_id', 'user_id');
+        const attendee = await service.getAttendee('event_id');
 
         expect(attendee).toEqual(mockAttendee);
-        expect(mockClient.get).toHaveBeenCalledWith(`/event_id?userId=user_id`);
+        expect(mockClient.get).toHaveBeenCalledWith(`/event_id`);
     });
 });

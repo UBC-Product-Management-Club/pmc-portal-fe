@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { CiCalendar, CiLocationOn } from 'react-icons/ci';
 import { FaDollarSign } from 'react-icons/fa6';
 import moment from 'moment';
-import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { type Event } from '../../types/Event';
 import { useEvents } from '../../hooks/useEvents';
 import { styled } from 'styled-components';
@@ -132,7 +131,6 @@ interface EventProps {
 }
 
 export default function Event(props: EventProps) {
-    const { user } = useUserData();
     const eventService = useEvents();
     const [event, setEvent] = useState<Event | undefined>();
     const { event_id } = useParams<{ event_id: string }>();
@@ -159,7 +157,7 @@ export default function Event(props: EventProps) {
         console.log(event_id);
         if (event_id) {
             eventService
-                .getById(event_id, user ? user.userId! : '')
+                .getById(event_id)
                 .then((response) => {
                     console.log(response);
                     setEvent(response.event);

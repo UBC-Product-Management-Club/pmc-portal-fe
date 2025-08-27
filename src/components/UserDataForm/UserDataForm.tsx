@@ -97,10 +97,15 @@ export function UserDataForm({
 
     const university = form.watch('university');
 
-    const isUbcStudent: boolean = university === Universities[0];
     const isStudent: boolean = university && university !== Universities[4];
+    const isUbcStudent: boolean = isStudent && university === Universities[0];
 
     useEffect(() => {
+        // if not a ubc student
+        if (university !== Universities[0]) {
+            form.unregister('studentId');
+        }
+        // if not a student
         if (university === Universities[4]) {
             form.unregister('faculty');
             form.unregister('year');

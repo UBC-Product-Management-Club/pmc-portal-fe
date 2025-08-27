@@ -49,9 +49,10 @@ describe('AuthorizedRouter', () => {
                 email: 'geary@ubcpmc.com',
                 picture: 'link_to_pfp',
             },
+            getAccessTokenSilently: vi.fn().mockResolvedValue('jwt'),
         });
         vi.mocked(useUserService, { partial: true }).mockReturnValue({
-            get: mockGetUser,
+            me: mockGetUser,
         });
         vi.mocked(useNavigate).mockReturnValue(navigateTo);
         vi.mocked(useUserData, { partial: true }).mockReturnValue({
@@ -78,6 +79,7 @@ describe('AuthorizedRouter', () => {
             },
         });
         expect(navigateTo).toHaveBeenCalledWith('/onboarding');
+        expect(localStorage.setItem).toHaveBeenCalledWith('id_token', 'jwt');
     });
 
     it('goes to dashboard when existing user logs in', async () => {
@@ -90,6 +92,7 @@ describe('AuthorizedRouter', () => {
             payload: mockUser,
         });
         expect(navigateTo).toHaveBeenCalledWith('/dashboard');
+        expect(localStorage.setItem).toHaveBeenCalledWith('id_token', 'jwt');
     });
 
     it('is loading when auth0User hasnt loaded', async () => {
