@@ -8,6 +8,10 @@ import { type Event } from '../../types/Event';
 import { useEvents } from '../../hooks/useEvents';
 import { styled } from 'styled-components';
 import { MdOutlinePeopleAlt } from 'react-icons/md';
+import { EventRegistrationModal } from '../../components/Event/EventRegistrationModal';
+import { Question, questionsSchema } from '../../types/Question';
+import { usePaymentService } from '../../hooks/usePaymentService';
+import { AttendeeSchema } from '../../types/Attendee';
 
 const EventHeader = styled.div`
     display: flex;
@@ -134,44 +138,110 @@ interface EventProps {
 export default function Event(props: EventProps) {
     const { user } = useUserData();
     const eventService = useEvents();
-    const [event, setEvent] = useState<Event | undefined>();
+    const paymentService = usePaymentService();
     const { event_id } = useParams<{ event_id: string }>();
+
+    const [event, setEvent] = useState<Event | undefined>();
+    const [parsedQuestions, setParsedQuestions] = useState<Question[]>([]);
+    const [paid, setPaid] = useState<boolean | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [isRegistered, setIsRegistered] = useState(false);
+    const [error, setError] = useState(false);
+
     const mapRef = useRef<HTMLIFrameElement | null>(null);
     const scrollToMap = () => mapRef!.current!.scrollIntoView({ behavior: 'smooth' });
 
-    const [loading, setLoading] = useState(true);
-    const [isRegistered, setIsRegistered] = useState(false);
-    const [error, setError] = useState<{ message: string }>();
+    // Modal UI state
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const getButtonText = useCallback(() => {
-        if (event) {
-            if (event.registered === event.maxAttendees) {
-                return 'Sorry! This event is full';
-            } else if (isRegistered) {
-                return "You're already registered.";
-            } else {
-                return 'Register now!';
-            }
-        }
-    }, [event, isRegistered]);
-
+    // Fetch event and parses event form questions
     useEffect(() => {
-        console.log(event_id);
-        if (event_id) {
-            eventService
-                .getById(event_id, user ? user.userId! : '')
-                .then((response) => {
-                    console.log(response);
-                    setEvent(response.event);
-                    setIsRegistered(response.registered);
-                })
-                .catch((e: { message: string }) => {
-                    console.error(e);
-                    setError(e);
-                })
-                .finally(() => setLoading(false));
+        if (!event_id) return;
+
+        eventService
+            .getById(event_id, user ? user.userId! : '')
+            .then((response) => {
+                setEvent(response.event);
+                console.log('Effect ran', event_id, user?.userId);
+                //setIsRegistered(response.registered); [Still Fucked]
+
+                //Parse event questions
+                if (
+                    response.event.eventFormQuestions && 
+                    typeof response.event.eventFormQuestions === "object" &&
+                    "questions" in response.event.eventFormQuestions
+                ) {
+                const result = questionsSchema.safeParse(response.event.eventFormQuestions.questions);
+                    if (result.success) {
+                        setParsedQuestions(result.data);
+                    } 
+                }
+            })
+            .catch(() => setError(true))
+            .finally(() => setLoading(false));
+    }, [event_id, user?.userId]);
+
+    // Display payment message and delete temp attendee record [WIP]
+    useEffect(() => {
+        const query = new URLSearchParams(window.location.search);
+        const attendeeId = query.get("attendeeId");
+
+        if (query.get("success")) {
+            setPaid(true);
+        } else if (query.get("canceled") && attendeeId) {
+            //attendeeService.deleteAttendee(attendeeId); [WIP]
+            setPaid(false);
         }
-    }, []);
+        
+        window.history.replaceState({}, document.title, `/events/${event_id}`);
+    }, [event_id]);
+
+
+    // Create stripe session and redirects user
+    const navigateToStripeEventPayment = async (userId: string, eventId: string, attendeeId: string) => {
+        try {
+            const resp = await paymentService.createStripeSessionEventUrl(userId, eventId, attendeeId);
+            if (!resp.url) {
+                throw new Error("Stripe session did not return a URL");
+            }
+            window.location.href = resp.url;
+        } catch (err) {
+            console.error("Stripe checkout failed", err);
+            setError(true);
+        }
+    };
+
+    // Adds attendee response then redirect to stripe checkout
+    const onFormSubmit = async (formData: Record<string, any>) => {
+        if (!user?.userId || !event?.eventId) return;
+
+        try {
+            const resp = await eventService.addAttendee(event.eventId, user.userId, formData);
+            const parsed = AttendeeSchema.safeParse(resp.attendee);
+
+            if (!parsed.success) {
+                console.log("Validation errors:", parsed.error.issues);
+                throw new Error("Attendee validation failed");
+            }
+
+            const attendeeId = parsed.data.attendeeId;
+            if(!attendeeId) {
+                throw new Error("No attendeeId returned");
+            }
+            await navigateToStripeEventPayment(user.userId, event.eventId, attendeeId);
+        } catch (err) {
+            console.error("Error submitting attendee form:", err);
+            setError(true);
+        }
+    };
+
+    // Updates button display
+    const getButtonText = useCallback(() => {
+        if (!event) return "";
+        if (event.registered === event.maxAttendees) return 'Sorry! This event is full';
+        if (isRegistered) return "You're already registered.";
+        return "Register now!";
+    }, [event, isRegistered]);
 
     if (loading) return <p style={{ color: 'white' }}>Loading...</p>;
     if (error) return <p>an error occurred fetching event details... try refreshing.</p>;
@@ -210,13 +280,19 @@ export default function Event(props: EventProps) {
                         />
                     </Details>
                     <RegisterButton
-                        disabled={event.registered === event.maxAttendees || isRegistered}
-                        onClick={() => {}}
+                        disabled={event.registered === event.maxAttendees}
+                        onClick={() => { if (!isModalOpen) setIsModalOpen(true); }}
                     >
                         {getButtonText()}
                     </RegisterButton>
                 </DetailsContainer>
             </EventHeader>
+            <EventRegistrationModal
+                isModalOpen={isModalOpen}
+                questions={parsedQuestions}
+                onClose={() => setIsModalOpen(false)}
+                onFormSubmit={onFormSubmit}
+            />
             <Description>
                 <h1>About the event</h1>
                 {props.eventInfo ? props.eventInfo : <p>{event.description}</p>}
@@ -231,6 +307,10 @@ export default function Event(props: EventProps) {
         </>
     );
 }
+
+//TODO Payment Message need to be restyled shit is ugly af [change that shit into a toast]
+//Figure out how to persist data
+//Figure out how to keep users logged in
 
 // <EventDetails>
 //     <div className="event-details-container">

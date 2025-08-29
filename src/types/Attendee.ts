@@ -6,9 +6,9 @@ const RawAttendee = z.object({
     event_form_answers: z.json(),
     attendee_id: z.uuid(),
     registration_time: z.iso.datetime(),
-    is_payment_verified: z.boolean(),
+    is_payment_verified: z.boolean().nullable(),
     status: z.string(),
-    payment_id: z.string(),
+    payment_id: z.string().nullable(),
 });
 
 const AttendeeSchema = RawAttendee.transform((attendee) => ({

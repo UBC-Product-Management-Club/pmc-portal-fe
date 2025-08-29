@@ -2,6 +2,11 @@ import { Attendee } from '../types/Attendee';
 import { Event, EventCard } from '../types/Event';
 import { RestClient } from './RestClient';
 
+export type AddAttendeeResponse = {
+  message: string;
+  attendee: Attendee;
+};
+
 class EventService {
     private client: RestClient;
 
@@ -23,6 +28,14 @@ class EventService {
 
     getAttendee(eventId: string, userId: string): Promise<Attendee> {
         return this.client.get<Attendee>(`/${eventId}?userId=${userId}`);
+    }
+
+    addAttendee(eventId: string, userId: string, eventFormAnswers: Record<string, any>): Promise<AddAttendeeResponse> {
+        const payload = {
+            userId,
+            eventFormAnswers,
+        };
+        return this.client.post<AddAttendeeResponse>(`/${eventId}/register/member`, JSON.stringify(payload))
     }
 }
 

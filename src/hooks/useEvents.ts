@@ -20,12 +20,19 @@ function useEvents() {
     const getById = useCallback(
         async (eventId: string, userId: string) => {
             const event = EventSchema.parse(await eventService.getById(eventId));
-            const attendee = await eventService.getAttendee(eventId, userId);
+            const attendee = await eventService.getAttendee(eventId, userId); //IDK if this is working as intended. (jeff)
             return { event, registered: attendee !== null };
         },
         [eventService]
     );
 
-    return { getAll, getUserCurrentEvents, getById };
+    const addAttendee = useCallback(
+        async (eventId: string, userId: string, eventFormAnswers: Record<string, any>) => {
+            return await eventService.addAttendee(eventId, userId, eventFormAnswers);
+        },
+        [eventService]
+    );
+
+    return { getAll, getUserCurrentEvents, getById, addAttendee};
 }
 export { useEvents };
