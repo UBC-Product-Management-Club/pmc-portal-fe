@@ -56,7 +56,7 @@ class PaymentService {
     async getElementsOptions(options: getElementOptionsOptions): Promise<StripeElementsOptions> {
         switch (options.type) {
             case PaymentType.MEMBERSHIP:
-                return this.getMembershipFeeElementsOptions(options.userId);
+                return this.getMembershipFeeElementsOptions();
             case PaymentType.EVENT:
                 return this.getEventRegFeeElementsOptions(options.eventId);
             default:
@@ -64,31 +64,27 @@ class PaymentService {
         }
     }
 
-    async createStripeSessionUrl(userId: string): Promise<CheckoutSessionResponse> {
-        const response = await this.client.post<CheckoutSessionResponse>(
-            '/checkout-session/membership',
-            JSON.stringify({ userId: userId })
+    async createStripeSessionUrl(): Promise<CheckoutSessionResponse> {
+        const response = await this.client.get<CheckoutSessionResponse>(
+            '/checkout-session/membership'
         );
         return response;
     }
 
     // Post request for creating event payment session
-    async createStripeSessionEventUrl(userId: string, eventId: string, attendeeId: string): Promise<CheckoutSessionResponse> {
+    async createStripeSessionEventUrl(eventId: string, attendeeId: string): Promise<CheckoutSessionResponse> {
         const endpoint = `/checkout-session/event/${eventId}`;
         const response = await this.client.post<CheckoutSessionResponse>( 
             endpoint,
-            JSON.stringify({ userId: userId, attendeeId: attendeeId })
+            JSON.stringify({attendeeId: attendeeId })
         );
         return response;
     }
 
-    private async getMembershipFeeElementsOptions(userId: string): Promise<StripeElementsOptions> {
+    private async getMembershipFeeElementsOptions(): Promise<StripeElementsOptions> {
         return {
-            clientSecret: (
-                await this.client.get<CreatePaymentIntentResponse>(
-                    `/create/membership?userId=${userId}`
-                )
-            ).clientSecret,
+            clientSecret: (await this.client.get<CreatePaymentIntentResponse>(`/create/membership`))
+                .clientSecret,
         };
     }
 

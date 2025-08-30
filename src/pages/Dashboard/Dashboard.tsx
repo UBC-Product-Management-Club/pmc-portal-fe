@@ -77,7 +77,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         if (user && user.userId) {
-            getUserCurrentEvents(user.userId)
+            getUserCurrentEvents()
                 .then(setUserEvents)
                 .catch((e) => {
                     console.error(e);
@@ -88,7 +88,7 @@ export default function Dashboard() {
 
     const navigateToStripeMembershipPayment = async () => {
         if (user && user.userId) {
-            const resp = await paymentService.createStripeSessionUrl(user.userId);
+            const resp = await paymentService.createStripeSessionUrl();
             window.location.href = resp.url;
         }
     };
@@ -96,7 +96,7 @@ export default function Dashboard() {
     return (
         <DashboardContainer>
             <DashboardSection>
-                {!isMember && (
+                {isMember === false && (
                     <Membership>
                         Want to become a member and enjoy discounted event prices? Click{' '}
                         <a
@@ -110,7 +110,7 @@ export default function Dashboard() {
                 )}
                 <DashboardHeader>
                     <h2>PMC Dashboard</h2>
-                    <WelcomeMessage>{`Welcome ${user?.firstName}`}</WelcomeMessage>
+                    <WelcomeMessage>{`Welcome ${user ? user.firstName : '...'}`}</WelcomeMessage>
                 </DashboardHeader>
                 <p>
                     At PMC, our mission is to empower aspiring product managers by providing

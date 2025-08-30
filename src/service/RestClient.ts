@@ -2,7 +2,8 @@ export class RestClient {
     public constructor(private readonly baseUrl: string) {}
 
     public async request<TResponse>(path: string, options: RequestInit = {}): Promise<TResponse> {
-        const response = await fetch(`${this.baseUrl}${path}`, options);
+        const headers = { ...(options.headers || {}), ...(await this.buildHeaders()) };
+        const response = await fetch(`${this.baseUrl}${path}`, { ...options, headers });
 
         if (!response.ok) {
             // Optionally log or throw a custom error
@@ -64,5 +65,13 @@ export class RestClient {
             credentials: 'include',
             headers,
         });
+    }
+
+    private async buildHeaders(): Promise<HeadersInit> {
+        const token = localStorage.getItem('id_token');
+        return {
+            Authorization: token ? `Bearer ${token}` : '',
+            'Content-Type': 'application/json',
+        };
     }
 }

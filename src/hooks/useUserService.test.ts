@@ -8,7 +8,7 @@ const mockCreate = vi.fn();
 vi.mock('../service/UserService', () => {
     return {
         UserService: vi.fn().mockImplementation(() => ({
-            fetch: mockFetch,
+            me: mockFetch,
             create: mockCreate,
         })),
     };
@@ -57,9 +57,8 @@ describe('useUserService', () => {
         mockFetch.mockResolvedValueOnce(rawMockUser);
 
         const { result } = renderHook(() => useUserService());
-        const res = await result.current.get('user123');
+        const res = await result.current.me();
 
-        expect(mockFetch).toHaveBeenCalledWith('user123');
         expect(res).toEqual(mockUser);
     });
 
@@ -67,7 +66,7 @@ describe('useUserService', () => {
         mockFetch.mockRejectedValueOnce(new Error('User not found!'));
 
         const { result } = renderHook(() => useUserService());
-        await expect(result.current.get('unknown-user')).rejects.toThrowError('User not found!');
+        await expect(result.current.me()).rejects.toThrowError('User not found!');
     });
 
     it('calls create with user', async () => {

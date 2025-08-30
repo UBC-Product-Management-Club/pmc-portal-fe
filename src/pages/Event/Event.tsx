@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { CiCalendar, CiLocationOn } from 'react-icons/ci';
 import { FaDollarSign } from 'react-icons/fa6';
 import moment from 'moment';
-import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { type Event } from '../../types/Event';
 import { useEvents } from '../../hooks/useEvents';
 import { styled } from 'styled-components';
@@ -136,7 +135,6 @@ interface EventProps {
 }
 
 export default function Event(props: EventProps) {
-    const { user } = useUserData();
     const eventService = useEvents();
     const paymentService = usePaymentService();
     const { event_id } = useParams<{ event_id: string }>();
@@ -159,10 +157,9 @@ export default function Event(props: EventProps) {
         if (!event_id) return;
 
         eventService
-            .getById(event_id, user ? user.userId! : '')
+            .getById(event_id)
             .then((response) => {
                 setEvent(response.event);
-                console.log('Effect ran', event_id, user?.userId);
                 //setIsRegistered(response.registered); [Still Fucked]
 
                 //Parse event questions
@@ -179,7 +176,7 @@ export default function Event(props: EventProps) {
             })
             .catch(() => setError(true))
             .finally(() => setLoading(false));
-    }, [event_id, user?.userId]);
+    }, [event_id]);
 
     // Display payment message and delete temp attendee record [WIP]
     useEffect(() => {
@@ -198,9 +195,9 @@ export default function Event(props: EventProps) {
 
 
     // Create stripe session and redirects user
-    const navigateToStripeEventPayment = async (userId: string, eventId: string, attendeeId: string) => {
+    const navigateToStripeEventPayment = async (eventId: string, attendeeId: string) => {
         try {
-            const resp = await paymentService.createStripeSessionEventUrl(userId, eventId, attendeeId);
+            const resp = await paymentService.createStripeSessionEventUrl(eventId, attendeeId);
             if (!resp.url) {
                 throw new Error("Stripe session did not return a URL");
             }
@@ -213,10 +210,10 @@ export default function Event(props: EventProps) {
 
     // Adds attendee response then redirect to stripe checkout
     const onFormSubmit = async (formData: Record<string, any>) => {
-        if (!user?.userId || !event?.eventId) return;
+        if (!event?.eventId) return;
 
         try {
-            const resp = await eventService.addAttendee(event.eventId, user.userId, formData);
+            const resp = await eventService.addAttendee(event.eventId, formData);
             const parsed = AttendeeSchema.safeParse(resp.attendee);
 
             if (!parsed.success) {
@@ -228,7 +225,7 @@ export default function Event(props: EventProps) {
             if(!attendeeId) {
                 throw new Error("No attendeeId returned");
             }
-            await navigateToStripeEventPayment(user.userId, event.eventId, attendeeId);
+            await navigateToStripeEventPayment(event.eventId, attendeeId);
         } catch (err) {
             console.error("Error submitting attendee form:", err);
             setError(true);

@@ -204,14 +204,16 @@ export default function Onboarding() {
                             <ContentHeader>Let's get you signed up!</ContentHeader>
                             <UserDataForm
                                 responses={responses}
-                                onSubmit={(data: UserDataFromUser) => {
+                                onSubmit={async (data: UserDataFromUser) => {
                                     try {
+                                        const responses = UserDataFromUserSchema.parse(data);
                                         update({
                                             type: ActionTypes.UPDATE,
-                                            payload: UserDataFromUserSchema.parse(data),
+                                            payload: responses,
                                         });
-                                        console.log(UserDataFromUserSchema.parse(data));
-                                        setResponses(data);
+                                        console.log(user);
+                                        setResponses(responses);
+                                        await userService.create({ ...user, ...responses });
                                         setCurrPage(Pages.MEMBERSHIP);
                                     } catch (error: unknown) {
                                         if (error instanceof ZodError) {
@@ -226,7 +228,7 @@ export default function Onboarding() {
                             />
                         </>
                     )}
-                    {currPage === Pages.MEMBERSHIP && fee && user && (
+                    {currPage === Pages.MEMBERSHIP && fee && (
                         <>
                             <PaymentHeader>
                                 To become a PMC member for the 2025/2026 academic year, a {charge}{' '}
@@ -235,19 +237,13 @@ export default function Onboarding() {
                             <ButtonRow>
                                 <StyledButton
                                     onClick={() => {
-                                        userService.create(user);
                                         setCurrPage(Pages.PAYMENT);
                                     }}
                                 >
                                     Yes, continue to payments
                                 </StyledButton>
 
-                                <StyledLinkButton
-                                    to="/dashboard"
-                                    onClick={() => {
-                                        userService.create(user);
-                                    }}
-                                >
+                                <StyledLinkButton to="/dashboard">
                                     No, continue as non-member
                                 </StyledLinkButton>
                             </ButtonRow>
@@ -267,19 +263,12 @@ export default function Onboarding() {
                                         console.warn('Payment failed. No charge has been applied');
                                         return;
                                     }
-                                    try {
-                                        setCurrPage(Pages.PAYMENT_SUCCESS);
-                                    } catch (error: unknown) {
-                                        // we're fucked. maybe this can notify us or something
-                                        if (error instanceof ZodError) {
-                                            console.error('Parsing error.');
-                                        }
-                                    }
+                                    setCurrPage(Pages.PAYMENT_SUCCESS);
                                 }}
                                 onError={(e) => console.error(e)}
                                 options={{
                                     type: PaymentType.MEMBERSHIP,
-                                    userId: user.userId!,
+                                    userId: user.userId ?? '',
                                 }}
                             />
                         </>

@@ -156,7 +156,7 @@ describe('useEvents', () => {
 
         const { result } = renderHook(() => useEvents());
 
-        const events = await result.current.getById('event_id', 'user_id');
+        const events = await result.current.getById('event_id');
         expect(events.registered).toEqual(false);
         expect(events.event).toEqual(parsedEvent);
     });
@@ -178,7 +178,7 @@ describe('useEvents', () => {
         });
 
         const { result } = renderHook(() => useEvents());
-        const events = await result.current.getById('event_id', 'user_id');
+        const events = await result.current.getById('event_id');
 
         expect(events.registered).toEqual(true);
         expect(events.event).toEqual(parsedEvent);

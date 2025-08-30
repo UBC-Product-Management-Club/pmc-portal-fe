@@ -88,7 +88,7 @@ describe('Event', () => {
     it('shows event information', async () => {
         await renderComponent();
 
-        expect(mockGetEventById).toHaveBeenCalledWith(mockEventId, mockUser.userId);
+        expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
         expect(screen.getByText('Product Conference')).toBeInTheDocument();
         expect(screen.getByText('Monday, 21st July 2025')).toBeInTheDocument();
         expect(screen.getByText('UBC Sauder Building')).toBeInTheDocument();
@@ -107,7 +107,7 @@ describe('Event', () => {
             });
 
             await renderComponent();
-            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId, mockUser.userId);
+            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
             expect(screen.getByText('0/100 spots left!')).toBeInTheDocument();
             expect(screen.getByRole('button')).toHaveTextContent('Sorry! This event is full');
         });
@@ -119,7 +119,7 @@ describe('Event', () => {
             });
 
             await renderComponent();
-            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId, mockUser.userId);
+            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
             expect(screen.getByText('50/100 spots left!')).toBeInTheDocument();
             expect(screen.getByRole('button')).toHaveTextContent("You're already registered.");
         });

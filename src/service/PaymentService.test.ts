@@ -44,7 +44,7 @@ describe('PaymentService', () => {
                 userId: 'user-id',
             });
 
-            expect(mockClient.get).toHaveBeenCalledWith('/create/membership?userId=user-id');
+            expect(mockClient.get).toHaveBeenCalledWith('/create/membership');
             expect(result).toEqual({
                 clientSecret: 'client_secret',
             });

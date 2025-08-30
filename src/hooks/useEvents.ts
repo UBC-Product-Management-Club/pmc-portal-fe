@@ -10,25 +10,22 @@ function useEvents() {
         return EventCardsSchema.parse(data);
     }, [eventService]);
 
-    const getUserCurrentEvents = useCallback(
-        async (userId: string): Promise<EventCard[]> => {
-            const data = await eventService.getUserCurrentEvents(userId);
-            return EventCardsSchema.parse(data);
-        },
-        [eventService]
-    );
+    const getUserCurrentEvents = useCallback(async (): Promise<EventCard[]> => {
+        const data = await eventService.getUserCurrentEvents();
+        return EventCardsSchema.parse(data);
+    }, [eventService]);
     const getById = useCallback(
-        async (eventId: string, userId: string) => {
+        async (eventId: string) => {
             const event = EventSchema.parse(await eventService.getById(eventId));
-            const attendee = await eventService.getAttendee(eventId, userId); //IDK if this is working as intended. (jeff)
+            const attendee = await eventService.getAttendee(eventId);
             return { event, registered: attendee !== null };
         },
         [eventService]
     );
 
     const addAttendee = useCallback(
-        async (eventId: string, userId: string, eventFormAnswers: Record<string, any>) => {
-            return await eventService.addAttendee(eventId, userId, eventFormAnswers);
+        async (eventId: string, eventFormAnswers: Record<string, any>) => {
+            return await eventService.addAttendee(eventId, eventFormAnswers);
         },
         [eventService]
     );

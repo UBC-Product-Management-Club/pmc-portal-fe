@@ -18,21 +18,20 @@ class EventService {
         return this.client.get<EventCard[]>('/');
     }
 
-    getUserCurrentEvents(userId: string): Promise<EventCard[]> {
-        return this.client.get<EventCard[]>(`/user-events/${userId}`);
+    getUserCurrentEvents(): Promise<EventCard[]> {
+        return this.client.get<EventCard[]>(`/events/registered`);
     }
 
     getById(eventId: string): Promise<Event> {
         return this.client.get<Event>(`/${eventId}`);
     }
 
-    getAttendee(eventId: string, userId: string): Promise<Attendee> {
-        return this.client.get<Attendee>(`/${eventId}?userId=${userId}`);
+    getAttendee(eventId: string): Promise<Attendee> {
+        return this.client.get<Attendee>(`/${eventId}`);
     }
 
-    addAttendee(eventId: string, userId: string, eventFormAnswers: Record<string, any>): Promise<AddAttendeeResponse> {
+    addAttendee(eventId: string, eventFormAnswers: Record<string, any>): Promise<AddAttendeeResponse> {
         const payload = {
-            userId,
             eventFormAnswers,
         };
         return this.client.post<AddAttendeeResponse>(`/${eventId}/register/member`, JSON.stringify(payload))
