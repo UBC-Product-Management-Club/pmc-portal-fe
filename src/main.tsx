@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import Modal from 'react-modal';
 import './index.css';
 import Login from './pages/Login/Login.tsx';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -18,6 +19,7 @@ import ProductSprint from './pages/Events/ProductSprint.tsx';
 import PaymentSuccess from './components/Payment/PaymentSuccess.tsx';
 import PaymentCanceled from './components/Payment/PaymentCanceled.tsx';
 
+Modal.setAppElement('#root');
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <Router>

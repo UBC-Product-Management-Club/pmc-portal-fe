@@ -52,24 +52,26 @@ const DefaultTextInput = styled.input<{ $hasError: boolean }>`
     padding: 0.5rem 0.75rem;
     flex: ${(props) => (props.width ? '' : 1)};
     font-family: 'poppins';
+    border: 1px solid ${(props) => (props.$hasError ? 'red' : '#ccc')};
+    outline: none;
+    box-sizing: border-box;
 
     &::placeholder {
         color: var(--pmc-midnight-blue);
     }
-
-    border: ${(props) => props.$hasError && '0.2rem solid red'};
 `;
 
 const TextArea = styled.textarea<{ $hasError: boolean }>`
     border-radius: 0.5rem;
     padding: 0.5rem 0.75rem;
+    border: 1px solid ${(props) => (props.$hasError ? 'red' : '#ccc')};
+    outline: none;
+    box-sizing: border-box;
 
     &::placeholder {
         font-family: 'poppins';
         color: var(--pmc-midnight-blue);
     }
-
-    border: ${(props) => props.$hasError && '0.2rem solid red'};
 `;
 
 const StyledQuestionWrapper = styled.div`
@@ -91,20 +93,20 @@ const HiddenFileInput = styled.input`
 const FileUploadButton = styled.button`
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
-    background-color: #ffffffff;
-    color: black;
+    background-color: var(--pmc-midnight-blue);
+    color: white;
     cursor: pointer;
     font-weight: 600;
     border: none;
 
     &:hover {
-        background-color: #d9fbdcff;
+        background-color: #08062bff;
     }
 `;
 
 const FileNameText = styled.span`
     font-style: italic;
-    color: white;
+    color: black;
 `;
 
 const StyledForm = styled.form`
@@ -114,7 +116,6 @@ const StyledForm = styled.form`
 `;
 
 type EventFormProps = {
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
     onSubmit: (data: any) => void;
     questions: Question[];
 };
@@ -178,10 +179,11 @@ const TextBasedInput = ({ question, StyledComponent }: TextBasedInputProps) => {
 
 // Allows for single file uploads (add multiple attribute if needed)
 // Does not yet support previewing and file deletion
+
 const FileBasedInput = ({ question }: FileBasedInputProps) => {
     const { control, watch } = useFormContext();
-
     const file = watch(question.id);
+    const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
     return (
         <Controller
@@ -189,23 +191,23 @@ const FileBasedInput = ({ question }: FileBasedInputProps) => {
             control={control}
             rules={{ required: question.required && 'This field is required' }}
             render={({ field }) => {
-                const { ...restField } = field;
+                const { value, ...restField } = field; // exclude `value` completely
                 return (
                     <>
                         <HiddenFileInput
                             {...restField}
+                            ref={fileInputRef}
                             type="file"
                             id={question.id}
-                            onChange={(e) => {
-                                field.onChange(e.target.files?.[0]);
-                            }}
+                            onChange={(e) => field.onChange(e.target.files?.[0])} // manually update RHF state
                         />
                         <FileUploadButton
-                            onClick={() => document.getElementById(question.id)?.click()}
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
                         >
                             Choose file
                         </FileUploadButton>
-                        <FileNameText>{file ? file.name : 'No file chosen'}</FileNameText>
+                        <FileNameText>{file ? `File selected: ${file.name}` : 'No file chosen'}</FileNameText>
                     </>
                 );
             }}
@@ -229,7 +231,7 @@ const DropdownInput = ({ question, StyledComponent }: DropdownInputProps) => {
             })}
             defaultValue=""
         >
-            <option value="" disabled>
+            <option value="" hidden>
                 Select an option
             </option>
             {question.options?.map((opt, idx) => (
@@ -291,7 +293,7 @@ export const EventQuestionRenderer = ({ onSubmit, questions }: EventFormProps) =
                     {questions.map((q) => (
                         <RenderQuestion key={q.id} question={q} />
                     ))}
-                    <Submit type="submit">Submit</Submit>
+                    <Submit type="submit">Submit & Pay</Submit>
                 </StyledForm>
             </FormProvider>
         </Content>

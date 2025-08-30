@@ -47,13 +47,13 @@ function buildEventFormResponseSchema(questions: Question[]) {
 
             if (q.required) {
                 fieldSchema = fieldSchema.min(1, {
-                    message: `${q.label} is cannot be left empty.`,
+                    message: `This field is required.`,
                 });
             }
 
             if (q.type === 'dropdown' && q.options) {
                 fieldSchema = fieldSchema.refine((val) => q.options!.includes(val), {
-                    message: `Invalid selection for ${q.label}`,
+                    message: `Selection is invalid.`,
                 });
             }
         }
