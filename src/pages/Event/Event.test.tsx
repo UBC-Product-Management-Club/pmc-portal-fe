@@ -12,6 +12,11 @@ vi.mock('../../providers/UserData/UserDataProvider', () => ({
 vi.mock('react-router-dom');
 vi.mock('../../hooks/useEvents');
 
+const mockUseAuth0 = vi.fn();
+vi.mock('@auth0/auth0-react', () => ({
+    useAuth0: () => mockUseAuth0(),
+}));
+
 describe('Event', () => {
     let mockGetEventById: Mock;
     let mockEvent: { event: EventType; registered: boolean };
@@ -53,6 +58,7 @@ describe('Event', () => {
         vi.mocked(useParams, { partial: true }).mockReturnValue({
             event_id: mockEventId,
         });
+        mockUseAuth0.mockReturnValue({ isAuthenticated: true });
     });
 
     async function renderComponent() {
@@ -122,6 +128,18 @@ describe('Event', () => {
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
             expect(screen.getByText('50/100 spots left!')).toBeInTheDocument();
             expect(screen.getByRole('button')).toHaveTextContent("You're already registered.");
+        });
+
+        it('user not signed in', async () => {
+            mockGetEventById.mockResolvedValueOnce({
+                event: { ...mockEvent.event, registered: 50 },
+                registered: true,
+            });
+            mockUseAuth0.mockReturnValue({ isAuthenticated: false });
+            await renderComponent();
+            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
+            expect(screen.getByText('50/100 spots left!')).toBeInTheDocument();
+            expect(screen.getByRole('button')).toHaveTextContent('Please sign in to register.');
         });
     });
 });
