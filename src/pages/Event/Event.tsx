@@ -7,6 +7,7 @@ import { type Event } from '../../types/Event';
 import { useEvents } from '../../hooks/useEvents';
 import { styled } from 'styled-components';
 import { MdOutlinePeopleAlt } from 'react-icons/md';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const EventHeader = styled.div`
     display: flex;
@@ -131,6 +132,7 @@ interface EventProps {
 }
 
 export default function Event(props: EventProps) {
+    const { isAuthenticated } = useAuth0();
     const eventService = useEvents();
     const [event, setEvent] = useState<Event | undefined>();
     const { event_id } = useParams<{ event_id: string }>();
@@ -144,7 +146,9 @@ export default function Event(props: EventProps) {
     const getButtonText = useCallback(() => {
         if (event) {
             if (event.registered === event.maxAttendees) {
-                return 'Sorry! This event is full';
+                return 'Sorry! This event is full.';
+            } else if (!isAuthenticated) {
+                return 'Please sign in to register.';
             } else if (isRegistered) {
                 return "You're already registered.";
             } else {
@@ -162,6 +166,7 @@ export default function Event(props: EventProps) {
                     console.log(response);
                     setEvent(response.event);
                     setIsRegistered(response.registered);
+                    console.log(response.registered);
                 })
                 .catch((e: { message: string }) => {
                     console.error(e);
