@@ -204,7 +204,7 @@ export default function Onboarding() {
                             <ContentHeader>Let's get you signed up!</ContentHeader>
                             <UserDataForm
                                 responses={responses}
-                                onSubmit={async (data: UserDataFromUser) => {
+                                onSubmit={(data: UserDataFromUser) => {
                                     try {
                                         const responses = UserDataFromUserSchema.parse(data);
                                         update({
@@ -213,8 +213,9 @@ export default function Onboarding() {
                                         });
                                         console.log(user);
                                         setResponses(responses);
-                                        await userService.create({ ...user, ...responses });
-                                        setCurrPage(Pages.MEMBERSHIP);
+                                        userService
+                                            .create({ ...user, ...responses })
+                                            .then(() => setCurrPage(Pages.MEMBERSHIP));
                                     } catch (error: unknown) {
                                         if (error instanceof ZodError) {
                                             // TODO: Notify the user
