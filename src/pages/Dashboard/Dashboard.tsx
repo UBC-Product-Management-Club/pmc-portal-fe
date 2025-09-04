@@ -122,22 +122,24 @@ export default function Dashboard() {
             </DashboardSection>
 
             <DashboardSection>
-                <DashboardHeader>
-                    <h2>Your Events</h2>
-                </DashboardHeader>
-                {userEvents === undefined || userEvents.length == 0 ? (
-                    <>Register below</>
-                ) : (
-                    <Carousel
-                        items={userEvents}
-                        showArrows={false}
-                        renderItem={(event) => (
-                            <YourEventCard
-                                event={event}
-                                disabled={event.isDisabled || moment().isAfter(moment(event.date))}
-                            />
-                        )}
-                    />
+                {userEvents && userEvents.length > 0 && (
+                    <>
+                        <DashboardHeader>
+                            <h2>Your Events</h2>
+                        </DashboardHeader>
+                        <Carousel
+                            items={userEvents}
+                            showArrows={false}
+                            renderItem={(event) => (
+                                <YourEventCard
+                                    event={event}
+                                    disabled={
+                                        event.isDisabled || moment().isAfter(moment(event.date))
+                                    }
+                                />
+                            )}
+                        />
+                    </>
                 )}
             </DashboardSection>
 
