@@ -1,9 +1,9 @@
 import { useAuth0 } from '@auth0/auth0-react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUserService } from '../../hooks/useUserService';
 import { ActionTypes, useUserData } from '../../providers/UserData/UserDataProvider';
 import { UserFromDatabase } from '../../types/User';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 export default function AuthorizedRouter() {
     const navigateTo = useNavigate();
@@ -40,5 +40,17 @@ export default function AuthorizedRouter() {
     }, [auth0User]);
 
     // TODO: Design a loading page
-    return <h1 style={{ color: 'white' }}>loading...</h1>;
+    return (
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100dvh', // full viewport height
+                width: '100dvw',
+            }}
+        >
+            <h1 style={{ color: 'white' }}>Loading...</h1>;
+        </div>
+    );
 }
