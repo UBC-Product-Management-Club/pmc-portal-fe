@@ -1,6 +1,7 @@
 import { UserDocument } from './types/User';
 import { Question } from './types/Question';
 import { z } from 'zod/v4';
+import {toast} from 'react-hot-toast';
 
 const emptyUser: UserDocument = {
     userId: '',
@@ -62,4 +63,21 @@ function buildEventFormResponseSchema(questions: Question[]) {
     return z.object(shape);
 }
 
-export { isInAppBrowser, emptyUser, formatPrice, buildEventFormResponseSchema };
+function showToast(type: 'success' | 'error', message: string, duration: number = 4000) {
+    const options = {
+        style: {
+            borderRadius: '10px',
+            background: '#ffffffff',
+            color: '#000000ff',
+        },
+        duration: duration,
+    }
+
+    if (type === 'success') {
+        toast.success(message, options);
+    } else if (type === 'error') {
+        toast.error(message, options);
+    }
+}
+
+export { isInAppBrowser, emptyUser, formatPrice, buildEventFormResponseSchema, showToast};

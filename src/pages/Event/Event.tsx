@@ -5,12 +5,14 @@ import { FaDollarSign } from 'react-icons/fa6';
 import moment from 'moment';
 import { type Event } from '../../types/Event';
 import { useEvents } from '../../hooks/useEvents';
+import { useAttendee } from '../../hooks/useAttendee';
 import { styled } from 'styled-components';
 import { MdOutlinePeopleAlt } from 'react-icons/md';
 import { EventRegistrationModal } from '../../components/Event/EventRegistrationModal';
 import { Question, questionsSchema } from '../../types/Question';
 import { usePaymentService } from '../../hooks/usePaymentService';
 import { AttendeeSchema } from '../../types/Attendee';
+import { showToast } from '../../utils';
 
 const EventHeader = styled.div`
     display: flex;
@@ -136,12 +138,12 @@ interface EventProps {
 
 export default function Event(props: EventProps) {
     const eventService = useEvents();
+    const attendeeService = useAttendee();
     const paymentService = usePaymentService();
     const { event_id } = useParams<{ event_id: string }>();
 
     const [event, setEvent] = useState<Event | undefined>();
     const [parsedQuestions, setParsedQuestions] = useState<Question[]>([]);
-    const [paid, setPaid] = useState<boolean | null>(null);
     const [loading, setLoading] = useState(true);
     const [isRegistered, setIsRegistered] = useState(false);
     const [error, setError] = useState(false);
@@ -160,7 +162,7 @@ export default function Event(props: EventProps) {
             .getById(event_id)
             .then((response) => {
                 setEvent(response.event);
-                //setIsRegistered(response.registered); [Still Fucked]
+                setIsRegistered(response.registered);
 
                 //Parse event questions
                 if (
@@ -182,12 +184,14 @@ export default function Event(props: EventProps) {
     useEffect(() => {
         const query = new URLSearchParams(window.location.search);
         const attendeeId = query.get("attendeeId");
+        console.log("attendeeId", attendeeId);
 
         if (query.get("success")) {
-            setPaid(true);
+            showToast('success', 'Payment successful! You are registered for the event.');
+            setIsRegistered(true);
         } else if (query.get("canceled") && attendeeId) {
-            //attendeeService.deleteAttendee(attendeeId); [WIP]
-            setPaid(false);
+            attendeeService.deleteAttendee(attendeeId);
+            showToast('error', 'Payment canceled, you have not been charged.');
         }
         
         window.history.replaceState({}, document.title, `/events/${event_id}`);
@@ -208,12 +212,28 @@ export default function Event(props: EventProps) {
         }
     };
 
+    const constructFormData = (data: Record<string, any>) => {
+        const formData = new FormData();
+
+        for (const [key, value] of Object.entries(data)) {
+            if (value instanceof File) {
+                formData.append(key, value);
+            } else if (typeof value === 'object') {
+                formData.append(key, JSON.stringify(value));
+            } else {
+                formData.append(key, value);
+            }
+        }
+        return formData;
+    }
+
     // Adds attendee response then redirect to stripe checkout
     const onFormSubmit = async (formData: Record<string, any>) => {
         if (!event?.eventId) return;
 
         try {
-            const resp = await eventService.addAttendee(event.eventId, formData);
+            const payload = constructFormData(formData);
+            const resp = await eventService.addAttendee(event.eventId, payload);
             const parsed = AttendeeSchema.safeParse(resp.attendee);
 
             if (!parsed.success) {
@@ -226,6 +246,7 @@ export default function Event(props: EventProps) {
                 throw new Error("No attendeeId returned");
             }
             await navigateToStripeEventPayment(event.eventId, attendeeId);
+
         } catch (err) {
             console.error("Error submitting attendee form:", err);
             setError(true);
@@ -277,7 +298,7 @@ export default function Event(props: EventProps) {
                         />
                     </Details>
                     <RegisterButton
-                        disabled={event.registered === event.maxAttendees}
+                        disabled={event.registered === event.maxAttendees || isRegistered}
                         onClick={() => { if (!isModalOpen) setIsModalOpen(true); }}
                     >
                         {getButtonText()}
@@ -412,3 +433,7 @@ export default function Event(props: EventProps) {
 //         formId={event.eventFormId}
 //     /> */}
 // </EventDetails>
+
+/*
+http://localhost:5173/events/3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45?attendeeId=deae1f06-6a3d-49e3-993e-c2facb6117c2&success=true
+*/

@@ -9,7 +9,7 @@ const CarouselWrapper = styled.div`
 const CarouselTrack = styled.div`
     display: flex;
     overflow-x: auto;
-    scroll-behavior: smooth;
+    scroll-snap-type: smooth;
     gap: 1rem;
     padding-bottom: 1rem;
 
@@ -77,6 +77,7 @@ export function Carousel<T>({ items, renderItem, showArrows = true }: CarouselPr
             left: direction === 'right' ? cardWidth + 16 : -cardWidth - 16,
             behavior: 'smooth',
         });
+
     };
 
     return (

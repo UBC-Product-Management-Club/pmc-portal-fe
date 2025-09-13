@@ -14,6 +14,7 @@ function useEvents() {
         const data = await eventService.getUserCurrentEvents();
         return EventCardsSchema.parse(data);
     }, [eventService]);
+    
     const getById = useCallback(
         async (eventId: string) => {
             const event = EventSchema.parse(await eventService.getById(eventId));
@@ -24,7 +25,7 @@ function useEvents() {
     );
 
     const addAttendee = useCallback(
-        async (eventId: string, eventFormAnswers: Record<string, any>) => {
+        async (eventId: string, eventFormAnswers: FormData) => {
             return await eventService.addAttendee(eventId, eventFormAnswers);
         },
         [eventService]

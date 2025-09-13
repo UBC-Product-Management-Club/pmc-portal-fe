@@ -27,14 +27,11 @@ class EventService {
     }
 
     getAttendee(eventId: string): Promise<Attendee> {
-        return this.client.get<Attendee>(`/${eventId}`);
+        return this.client.get<Attendee>(`/${eventId}/attendee`);
     }
 
-    addAttendee(eventId: string, eventFormAnswers: Record<string, any>): Promise<AddAttendeeResponse> {
-        const payload = {
-            eventFormAnswers,
-        };
-        return this.client.post<AddAttendeeResponse>(`/${eventId}/register/member`, JSON.stringify(payload))
+    addAttendee(eventId: string, eventFormAnswers: FormData): Promise<AddAttendeeResponse> {
+        return this.client.post<AddAttendeeResponse>(`/${eventId}/register`, eventFormAnswers)
     }
 }
 
