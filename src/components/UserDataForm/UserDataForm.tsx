@@ -116,7 +116,6 @@ export function UserDataForm({
     const isStudent: boolean = university && university !== Universities[4];
     const isUbcStudent: boolean = isStudent && university === Universities[0];
     const { isInAppBrowser, isMobile } = useInAppBrowser();
-    console.log(isMobile);
 
     useEffect(() => {
         // if not a ubc student
@@ -134,12 +133,15 @@ export function UserDataForm({
     return (
         <>
             {isMobile || isInAppBrowser ? (
-                <form autoComplete="off" onSubmit={form.handleSubmit(onSubmit)}>
+                <form
+                    autoComplete="off"
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    data-testid="mobile-form"
+                >
                     <Content>
                         <Input
                             placeholder="First name"
                             defaultValue={responses.firstName}
-                            width={40}
                             required
                             {...form.register('firstName')}
                             $error={!!form.formState.errors.firstName}
@@ -147,7 +149,6 @@ export function UserDataForm({
                         <Input
                             placeholder="Last name"
                             defaultValue={responses.lastName}
-                            width={40}
                             required
                             {...form.register('lastName')}
                             $error={!!form.formState.errors.lastName}
@@ -155,7 +156,6 @@ export function UserDataForm({
                         <Input
                             placeholder="Pronouns"
                             defaultValue={responses.pronouns}
-                            width={20}
                             required
                             {...form.register('pronouns')}
                             $error={!!form.formState.errors.pronouns}
