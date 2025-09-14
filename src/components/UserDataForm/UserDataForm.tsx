@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { Universities, UserDataFromUser, UserDataFromUserSchema, years } from '../../types/User';
 import { styled } from 'styled-components';
+import { useInAppBrowser } from '../../utils';
 
 const Content = styled.div`
     width: 100%;
@@ -32,6 +33,11 @@ const Input = styled.input<{ width?: number; $error: boolean }>`
     }
 
     border: ${(props) => props.$error && '0.2rem solid red'};
+    @media (max-width: 600px) {
+        width: 100%;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
 `;
 
 const Dropdown = styled.select<{ width?: number; $error: boolean }>`
@@ -46,6 +52,11 @@ const Dropdown = styled.select<{ width?: number; $error: boolean }>`
     }
 
     border: ${(props) => props.$error && '0.2rem solid red'};
+    @media (max-width: 600px) {
+        width: 100%;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
 `;
 
 const TextArea = styled.textarea<{ $error: boolean }>`
@@ -59,6 +70,11 @@ const TextArea = styled.textarea<{ $error: boolean }>`
     }
 
     border: ${(props) => props.$error && '0.2rem solid red'};
+    @media (max-width: 600px) {
+        width: 100%;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
 `;
 
 const Waiver = styled.div`
@@ -99,6 +115,8 @@ export function UserDataForm({
 
     const isStudent: boolean = university && university !== Universities[4];
     const isUbcStudent: boolean = isStudent && university === Universities[0];
+    const { isInAppBrowser, isMobile } = useInAppBrowser();
+    console.log(isMobile);
 
     useEffect(() => {
         // if not a ubc student
@@ -114,133 +132,260 @@ export function UserDataForm({
     }, [university]);
 
     return (
-        <form autoComplete="off" onSubmit={form.handleSubmit(onSubmit)}>
-            <Content>
-                <Group>
-                    <Input
-                        placeholder="First name"
-                        defaultValue={responses.firstName}
-                        width={40}
-                        required
-                        {...form.register('firstName')}
-                        $error={!!form.formState.errors.firstName}
-                    />
-                    <Input
-                        placeholder="Last name"
-                        defaultValue={responses.lastName}
-                        width={40}
-                        required
-                        {...form.register('lastName')}
-                        $error={!!form.formState.errors.lastName}
-                    />
-                    <Input
-                        placeholder="Pronouns"
-                        defaultValue={responses.pronouns}
-                        width={20}
-                        required
-                        {...form.register('pronouns')}
-                        $error={!!form.formState.errors.pronouns}
-                    />
-                </Group>
-
-                <Dropdown
-                    data-testid="university-dropdown"
-                    required
-                    {...form.register('university', { required: 'please select a value' })}
-                    $error={!!form.formState.errors.university}
-                    defaultValue={responses.university}
-                >
-                    <option value="" hidden>
-                        What university do you go to?
-                    </option>
-                    {Universities.map((uni) => {
-                        return (
-                            <option value={uni} key={uni}>
-                                {uni}
-                            </option>
-                        );
-                    })}
-                </Dropdown>
-
-                {isUbcStudent && (
-                    <Input
-                        placeholder="Student ID"
-                        defaultValue={responses.studentId}
-                        required
-                        {...form.register('studentId')}
-                        $error={!!form.formState.errors.studentId}
-                    />
-                )}
-
-                {isStudent && (
-                    <Group>
+        <>
+            {isMobile || isInAppBrowser ? (
+                <form autoComplete="off" onSubmit={form.handleSubmit(onSubmit)}>
+                    <Content>
                         <Input
-                            placeholder="Faculty"
-                            defaultValue={responses.faculty}
-                            width={45}
+                            placeholder="First name"
+                            defaultValue={responses.firstName}
+                            width={40}
                             required
-                            {...form.register('faculty')}
-                            $error={!!form.formState.errors.faculty}
+                            {...form.register('firstName')}
+                            $error={!!form.formState.errors.firstName}
                         />
                         <Input
-                            placeholder="Major"
-                            defaultValue={responses.major}
-                            width={45}
+                            placeholder="Last name"
+                            defaultValue={responses.lastName}
+                            width={40}
                             required
-                            {...form.register('major')}
-                            $error={!!form.formState.errors.major}
+                            {...form.register('lastName')}
+                            $error={!!form.formState.errors.lastName}
+                        />
+                        <Input
+                            placeholder="Pronouns"
+                            defaultValue={responses.pronouns}
+                            width={20}
+                            required
+                            {...form.register('pronouns')}
+                            $error={!!form.formState.errors.pronouns}
                         />
                         <Dropdown
-                            data-testid="year-dropdown"
-                            defaultValue={responses.year}
+                            data-testid="university-dropdown"
                             required
-                            {...form.register('year')}
-                            $error={!!form.formState.errors.year}
+                            {...form.register('university', { required: 'please select a value' })}
+                            $error={!!form.formState.errors.university}
+                            defaultValue={responses.university}
                         >
                             <option value="" hidden>
-                                Year
+                                What university do you go to?
                             </option>
-                            {years.map((year) => {
+                            {Universities.map((uni) => {
                                 return (
-                                    <option value={year} key={year}>
-                                        {year}
+                                    <option value={uni} key={uni}>
+                                        {uni}
                                     </option>
                                 );
                             })}
                         </Dropdown>
-                    </Group>
-                )}
+                        {isUbcStudent && (
+                            <Input
+                                placeholder="Student ID"
+                                defaultValue={responses.studentId}
+                                required
+                                {...form.register('studentId')}
+                                $error={!!form.formState.errors.studentId}
+                            />
+                        )}
+                        {isStudent && (
+                            <>
+                                <Input
+                                    placeholder="Faculty"
+                                    defaultValue={responses.faculty}
+                                    required
+                                    {...form.register('faculty')}
+                                    $error={!!form.formState.errors.faculty}
+                                />
+                                <Input
+                                    placeholder="Major"
+                                    defaultValue={responses.major}
+                                    required
+                                    {...form.register('major')}
+                                    $error={!!form.formState.errors.major}
+                                />
+                                <Dropdown
+                                    data-testid="year-dropdown"
+                                    defaultValue={responses.year}
+                                    required
+                                    {...form.register('year')}
+                                    $error={!!form.formState.errors.year}
+                                >
+                                    <option value="" hidden>
+                                        Year
+                                    </option>
+                                    {years.map((year) => {
+                                        return (
+                                            <option value={year} key={year}>
+                                                {year}
+                                            </option>
+                                        );
+                                    })}
+                                </Dropdown>
+                                <TextArea
+                                    placeholder="Why Product Management?"
+                                    defaultValue={responses.whyPm}
+                                    rows={5}
+                                    required
+                                    {...form.register('whyPm')}
+                                    $error={!!form.formState.errors.whyPm}
+                                />
 
-                <TextArea
-                    placeholder="Why Product Management?"
-                    defaultValue={responses.whyPm}
-                    rows={5}
-                    required
-                    {...form.register('whyPm')}
-                    $error={!!form.formState.errors.whyPm}
-                />
+                                {hasWaiver && isUbcStudent && (
+                                    <Waiver>
+                                        <div>
+                                            Please sign the following form:
+                                            <WaiverLink
+                                                href="https://www.ams.ubc.ca/student-life/clubs/operating-a-club/club-constituency-general-membership-waiver/"
+                                                target="_blank"
+                                            >
+                                                {' '}
+                                                Insurance/Liability Waiver.
+                                            </WaiverLink>
+                                        </div>
+                                        <div>
+                                            I have signed the Insurance/Liability Waiver form.&nbsp;
+                                            <input type="checkbox" required />
+                                        </div>
+                                    </Waiver>
+                                )}
 
-                {hasWaiver && isUbcStudent && (
-                    <Waiver>
-                        <div>
-                            Please sign the following form:
-                            <WaiverLink
-                                href="https://www.ams.ubc.ca/student-life/clubs/operating-a-club/club-constituency-general-membership-waiver/"
-                                target="_blank"
-                            >
-                                {' '}
-                                Insurance/Liability Waiver.
-                            </WaiverLink>
-                        </div>
-                        <div>
-                            I have signed the Insurance/Liability Waiver form.&nbsp;
-                            <input type="checkbox" required />
-                        </div>
-                    </Waiver>
-                )}
+                                <Submit type="submit">{buttonText}</Submit>
+                            </>
+                        )}
+                    </Content>
+                </form>
+            ) : (
+                <form autoComplete="off" onSubmit={form.handleSubmit(onSubmit)}>
+                    <Content>
+                        <Group>
+                            <Input
+                                placeholder="First name"
+                                defaultValue={responses.firstName}
+                                width={40}
+                                required
+                                {...form.register('firstName')}
+                                $error={!!form.formState.errors.firstName}
+                            />
+                            <Input
+                                placeholder="Last name"
+                                defaultValue={responses.lastName}
+                                width={40}
+                                required
+                                {...form.register('lastName')}
+                                $error={!!form.formState.errors.lastName}
+                            />
+                            <Input
+                                placeholder="Pronouns"
+                                defaultValue={responses.pronouns}
+                                width={20}
+                                required
+                                {...form.register('pronouns')}
+                                $error={!!form.formState.errors.pronouns}
+                            />
+                        </Group>
 
-                <Submit type="submit">{buttonText}</Submit>
-            </Content>
-        </form>
+                        <Dropdown
+                            data-testid="university-dropdown"
+                            required
+                            {...form.register('university', { required: 'please select a value' })}
+                            $error={!!form.formState.errors.university}
+                            defaultValue={responses.university}
+                        >
+                            <option value="" hidden>
+                                What university do you go to?
+                            </option>
+                            {Universities.map((uni) => {
+                                return (
+                                    <option value={uni} key={uni}>
+                                        {uni}
+                                    </option>
+                                );
+                            })}
+                        </Dropdown>
+
+                        {isUbcStudent && (
+                            <Group>
+                                <Input
+                                    placeholder="Student ID"
+                                    defaultValue={responses.studentId}
+                                    required
+                                    {...form.register('studentId')}
+                                    $error={!!form.formState.errors.studentId}
+                                />
+                            </Group>
+                        )}
+
+                        {isStudent && (
+                            <Group>
+                                <Input
+                                    placeholder="Faculty"
+                                    defaultValue={responses.faculty}
+                                    width={45}
+                                    required
+                                    {...form.register('faculty')}
+                                    $error={!!form.formState.errors.faculty}
+                                />
+                                <Input
+                                    placeholder="Major"
+                                    defaultValue={responses.major}
+                                    width={45}
+                                    required
+                                    {...form.register('major')}
+                                    $error={!!form.formState.errors.major}
+                                />
+                                <Dropdown
+                                    data-testid="year-dropdown"
+                                    defaultValue={responses.year}
+                                    required
+                                    {...form.register('year')}
+                                    $error={!!form.formState.errors.year}
+                                >
+                                    <option value="" hidden>
+                                        Year
+                                    </option>
+                                    {years.map((year) => {
+                                        return (
+                                            <option value={year} key={year}>
+                                                {year}
+                                            </option>
+                                        );
+                                    })}
+                                </Dropdown>
+                            </Group>
+                        )}
+
+                        <TextArea
+                            placeholder="Why Product Management?"
+                            defaultValue={responses.whyPm}
+                            rows={5}
+                            required
+                            {...form.register('whyPm')}
+                            $error={!!form.formState.errors.whyPm}
+                        />
+
+                        {hasWaiver && isUbcStudent && (
+                            <Waiver>
+                                <div>
+                                    Please sign the following form:
+                                    <WaiverLink
+                                        href="https://www.ams.ubc.ca/student-life/clubs/operating-a-club/club-constituency-general-membership-waiver/"
+                                        target="_blank"
+                                    >
+                                        {' '}
+                                        Insurance/Liability Waiver.
+                                    </WaiverLink>
+                                </div>
+                                <div>
+                                    I have signed the Insurance/Liability Waiver form.&nbsp;
+                                    <input type="checkbox" required />
+                                </div>
+                            </Waiver>
+                        )}
+
+                        <Submit type="submit">{buttonText}</Submit>
+                    </Content>
+                </form>
+            )}
+        </>
     );
 }

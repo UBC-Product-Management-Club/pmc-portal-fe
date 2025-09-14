@@ -16,18 +16,22 @@ const emptyUser: UserDocument = {
     isPaymentVerified: false,
 };
 
-function isInAppBrowser() {
+function useInAppBrowser() {
     const ua = window.navigator.userAgent.toLowerCase();
     const isIOS = /iphone|ipad|ipod/.test(ua);
-    return (
+    const isAndroid = /android/.test(ua);
+
+    const isMobile = isIOS || isAndroid;
+    const isInAppBrowser =
         ua.includes('wv') || // Android WebView
         (isIOS && !ua.includes('safari')) || // iOS WebView
         ua.includes('fbav') || // Facebook
         ua.includes('instagram') || // Instagram
         ua.includes('twitter') || // X (formerly Twitter)
         ua.includes('x-client') || // X's new client identifier
-        ua.includes('linkedin') // LinkedIn
-    );
+        ua.includes('linkedin'); // LinkedIn
+
+    return { isInAppBrowser, isMobile };
 }
 
 function formatPrice(price: number) {
@@ -80,4 +84,4 @@ function showToast(type: 'success' | 'error', message: string, duration: number 
     }
 }
 
-export { isInAppBrowser, emptyUser, formatPrice, buildEventFormResponseSchema, showToast};
+export { useInAppBrowser, emptyUser, formatPrice, buildEventFormResponseSchema, showToast};

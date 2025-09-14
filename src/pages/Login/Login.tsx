@@ -2,7 +2,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import PMCLogo from '../../assets/pmclogo.svg';
 import Footer from '../../components/Footer/Footer';
 import styled from 'styled-components';
-import { isInAppBrowser } from '../../utils';
+import { useInAppBrowser } from '../../utils';
 
 const Container = styled.div`
     display: flex;
@@ -112,9 +112,10 @@ const FooterContainer = styled.div`
 
 export default function Login() {
     const { loginWithRedirect } = useAuth0();
+    const { isInAppBrowser } = useInAppBrowser();
 
     function handleLogin() {
-        if (isInAppBrowser()) {
+        if (isInAppBrowser) {
             const message =
                 'For security reasons, please open this page in an external browser to log in. In-app browsers are not supported for secure login.';
             window.location.href = `googlechrome://${window.location.host}${window.location.pathname}`;
