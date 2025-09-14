@@ -215,7 +215,10 @@ export default function Onboarding() {
                                         setResponses(responses);
                                         userService
                                             .create({ ...user, ...responses })
-                                            .then(() => setCurrPage(Pages.MEMBERSHIP));
+                                            .then(() => setCurrPage(Pages.MEMBERSHIP))
+                                            .catch(() => {
+                                                // handle this!
+                                            });
                                     } catch (error: unknown) {
                                         if (error instanceof ZodError) {
                                             // TODO: Notify the user
