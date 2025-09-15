@@ -1,6 +1,7 @@
 import { UserDocument } from './types/User';
 import { Question } from './types/Question';
 import { z } from 'zod/v4';
+import { toast } from 'react-hot-toast';
 
 const emptyUser: UserDocument = {
     userId: '',
@@ -51,13 +52,13 @@ function buildEventFormResponseSchema(questions: Question[]) {
 
             if (q.required) {
                 fieldSchema = fieldSchema.min(1, {
-                    message: `${q.label} is cannot be left empty.`,
+                    message: `This field is required.`,
                 });
             }
 
             if (q.type === 'dropdown' && q.options) {
                 fieldSchema = fieldSchema.refine((val) => q.options!.includes(val), {
-                    message: `Invalid selection for ${q.label}`,
+                    message: `Selection is invalid.`,
                 });
             }
         }
@@ -66,4 +67,21 @@ function buildEventFormResponseSchema(questions: Question[]) {
     return z.object(shape);
 }
 
-export { useInAppBrowser, emptyUser, formatPrice, buildEventFormResponseSchema };
+function showToast(type: 'success' | 'error', message: string, duration: number = 4000) {
+    const options = {
+        style: {
+            borderRadius: '10px',
+            background: '#ffffffff',
+            color: '#000000ff',
+        },
+        duration: duration,
+    };
+
+    if (type === 'success') {
+        toast.success(message, options);
+    } else if (type === 'error') {
+        toast.error(message, options);
+    }
+}
+
+export { useInAppBrowser, emptyUser, formatPrice, buildEventFormResponseSchema, showToast };

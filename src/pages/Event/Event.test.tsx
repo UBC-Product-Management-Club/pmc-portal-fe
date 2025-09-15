@@ -82,7 +82,9 @@ describe('Event', () => {
 
         await renderComponent();
 
-        expect(screen.getByText('No event details available.')).toBeInTheDocument();
+        expect(
+            screen.getByText('an error occurred fetching event details... try refreshing.')
+        ).toBeInTheDocument();
     });
 
     it('shows event information', async () => {

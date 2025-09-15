@@ -2,7 +2,7 @@ export class RestClient {
     public constructor(private readonly baseUrl: string) {}
 
     public async request<TResponse>(path: string, options: RequestInit = {}): Promise<TResponse> {
-        const headers = { ...(options.headers || {}), ...(await this.buildHeaders()) };
+        const headers = { ...(await this.buildHeaders(options.body)), ...(options.headers || {}) };
         const response = await fetch(`${this.baseUrl}${path}`, { ...options, headers });
 
         if (!response.ok) {
@@ -32,11 +32,12 @@ export class RestClient {
         body: BodyInit,
         headers: HeadersInit = {}
     ): Promise<TResponse> {
+        const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
         return this.request<TResponse>(path, {
             method: 'POST',
             credentials: 'include',
             headers: {
-                'Content-Type': 'application/json',
+                ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
                 ...headers,
             },
             body,
@@ -67,11 +68,15 @@ export class RestClient {
         });
     }
 
-    private async buildHeaders(): Promise<HeadersInit> {
+    private async buildHeaders(body?: unknown): Promise<HeadersInit> {
         const token = localStorage.getItem('id_token');
-        return {
-            Authorization: token ? `Bearer ${token}` : '',
-            'Content-Type': 'application/json',
-        };
+        const headers: HeadersInit = {};
+        headers.Authorization = token ? `Bearer ${token}` : '';
+
+        if (!(body instanceof FormData)) {
+            headers['Content-Type'] = 'application/json';
+        }
+
+        return headers;
     }
 }
