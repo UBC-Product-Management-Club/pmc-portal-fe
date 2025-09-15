@@ -1,7 +1,7 @@
 import { UserDocument } from './types/User';
 import { Question } from './types/Question';
 import { z } from 'zod/v4';
-import {toast} from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 const emptyUser: UserDocument = {
     userId: '',
@@ -75,7 +75,7 @@ function showToast(type: 'success' | 'error', message: string, duration: number 
             color: '#000000ff',
         },
         duration: duration,
-    }
+    };
 
     if (type === 'success') {
         toast.success(message, options);
@@ -84,4 +84,4 @@ function showToast(type: 'success' | 'error', message: string, duration: number 
     }
 }
 
-export { useInAppBrowser, emptyUser, formatPrice, buildEventFormResponseSchema, showToast};
+export { useInAppBrowser, emptyUser, formatPrice, buildEventFormResponseSchema, showToast };
