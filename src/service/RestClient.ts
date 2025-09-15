@@ -32,7 +32,6 @@ export class RestClient {
         body: BodyInit,
         headers: HeadersInit = {}
     ): Promise<TResponse> {
-
         const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
         return this.request<TResponse>(path, {
             method: 'POST',
@@ -69,10 +68,10 @@ export class RestClient {
         });
     }
 
-    private async buildHeaders(body?: any): Promise<HeadersInit> {
+    private async buildHeaders(body?: unknown): Promise<HeadersInit> {
         const token = localStorage.getItem('id_token');
         const headers: HeadersInit = {};
-        if (token) headers.Authorization = `Bearer ${token}`;
+        headers.Authorization = token ? `Bearer ${token}` : '';
 
         if (!(body instanceof FormData)) {
             headers['Content-Type'] = 'application/json';

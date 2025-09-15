@@ -166,14 +166,16 @@ export default function Event(props: EventProps) {
 
                 //Parse event questions
                 if (
-                    response.event.eventFormQuestions && 
-                    typeof response.event.eventFormQuestions === "object" &&
-                    "questions" in response.event.eventFormQuestions
+                    response.event.eventFormQuestions &&
+                    typeof response.event.eventFormQuestions === 'object' &&
+                    'questions' in response.event.eventFormQuestions
                 ) {
-                const result = questionsSchema.safeParse(response.event.eventFormQuestions.questions);
+                    const result = questionsSchema.safeParse(
+                        response.event.eventFormQuestions.questions
+                    );
                     if (result.success) {
                         setParsedQuestions(result.data);
-                    } 
+                    }
                 }
             })
             .catch(() => setError(true))
@@ -183,52 +185,53 @@ export default function Event(props: EventProps) {
     // Display payment message and delete temp attendee record [WIP]
     useEffect(() => {
         const query = new URLSearchParams(window.location.search);
-        const attendeeId = query.get("attendeeId");
-        console.log("attendeeId", attendeeId);
+        const attendeeId = query.get('attendeeId');
+        console.log('attendeeId', attendeeId);
 
-        if (query.get("success")) {
+        if (query.get('success')) {
             showToast('success', 'Payment successful! You are registered for the event.');
             setIsRegistered(true);
-        } else if (query.get("canceled") && attendeeId) {
+        } else if (query.get('canceled') && attendeeId) {
             attendeeService.deleteAttendee(attendeeId);
             showToast('error', 'Payment canceled, you have not been charged.');
         }
-        
+
         window.history.replaceState({}, document.title, `/events/${event_id}`);
     }, [event_id]);
-
 
     // Create stripe session and redirects user
     const navigateToStripeEventPayment = async (eventId: string, attendeeId: string) => {
         try {
             const resp = await paymentService.createStripeSessionEventUrl(eventId, attendeeId);
             if (!resp.url) {
-                throw new Error("Stripe session did not return a URL");
+                throw new Error('Stripe session did not return a URL');
             }
             window.location.href = resp.url;
         } catch (err) {
-            console.error("Stripe checkout failed", err);
+            console.error('Stripe checkout failed', err);
             setError(true);
         }
     };
 
-    const constructFormData = (data: Record<string, any>) => {
+    const constructFormData = (data: Record<string, unknown>) => {
         const formData = new FormData();
 
         for (const [key, value] of Object.entries(data)) {
             if (value instanceof File) {
                 formData.append(key, value);
-            } else if (typeof value === 'object') {
+            } else if (typeof value === 'object' && value !== null) {
                 formData.append(key, JSON.stringify(value));
+            } else if (value === undefined || value === null) {
+                formData.append(key, '');
             } else {
-                formData.append(key, value);
+                formData.append(key, String(value));
             }
         }
         return formData;
-    }
+    };
 
     // Adds attendee response then redirect to stripe checkout
-    const onFormSubmit = async (formData: Record<string, any>) => {
+    const onFormSubmit = async (formData: Record<string, unknown>) => {
         if (!event?.eventId) return;
 
         try {
@@ -237,28 +240,27 @@ export default function Event(props: EventProps) {
             const parsed = AttendeeSchema.safeParse(resp.attendee);
 
             if (!parsed.success) {
-                console.log("Validation errors:", parsed.error.issues);
-                throw new Error("Attendee validation failed");
+                console.log('Validation errors:', parsed.error.issues);
+                throw new Error('Attendee validation failed');
             }
 
             const attendeeId = parsed.data.attendeeId;
-            if(!attendeeId) {
-                throw new Error("No attendeeId returned");
+            if (!attendeeId) {
+                throw new Error('No attendeeId returned');
             }
             await navigateToStripeEventPayment(event.eventId, attendeeId);
-
         } catch (err) {
-            console.error("Error submitting attendee form:", err);
+            console.error('Error submitting attendee form:', err);
             setError(true);
         }
     };
 
     // Updates button display
     const getButtonText = useCallback(() => {
-        if (!event) return "";
+        if (!event) return '';
         if (event.registered === event.maxAttendees) return 'Sorry! This event is full';
         if (isRegistered) return "You're already registered.";
-        return "Register now!";
+        return 'Register now!';
     }, [event, isRegistered]);
 
     if (loading) return <p style={{ color: 'white' }}>Loading...</p>;
@@ -299,7 +301,9 @@ export default function Event(props: EventProps) {
                     </Details>
                     <RegisterButton
                         disabled={event.registered === event.maxAttendees || isRegistered}
-                        onClick={() => { if (!isModalOpen) setIsModalOpen(true); }}
+                        onClick={() => {
+                            if (!isModalOpen) setIsModalOpen(true);
+                        }}
                     >
                         {getButtonText()}
                     </RegisterButton>
@@ -325,115 +329,3 @@ export default function Event(props: EventProps) {
         </>
     );
 }
-
-//TODO Payment Message need to be restyled shit is ugly af [change that shit into a toast]
-//Figure out how to persist data
-//Figure out how to keep users logged in
-
-// <EventDetails>
-//     <div className="event-details-container">
-//         <div className="event-details">
-//             <div className="icon-text">
-//                 <div className="icon">
-//                     <CiCalendar />
-//                 </div>
-//                 <div className="text-container">
-//                     {/* Will display date as "Sun, December 1" or "Sat, November 30" */}
-//                     <h3>{moment(event.date).format('ddd, MMMM D')}</h3>
-//                     {/* Displays time in 24 hours as hh:mm - hh:mm*/}
-//                     <h4>{toTimeString(event.start_time, event.end_time)}</h4>
-//                 </div>
-//             </div>
-//             <div className="icon-text">
-//                 <div className="icon">
-//                     <CiLocationOn />
-//                 </div>
-//                 <div className="text-container">
-//                     <h3>{event.location}</h3>
-//                     <h4>Get directions</h4>
-//                 </div>
-//             </div>
-//             {/* <div className="icon-text">
-//                 <div className="icon"><MdOutlinePeopleAlt/></div>
-//                 <div className="text-container">
-//                     <div>
-//                         <h3>
-//                             {event.maxAttendee === -1
-//                                 ? 'Unlimited spots'
-//                                 : `${event.maxAttendee - event.attendee_Ids.length}/${event.maxAttendee} spots left`
-//                             }
-//                         </h3>
-//                         {event.attendee_Ids.length > 0 ? (
-//                             <h4>Register now!</h4>
-//                         ) : (
-//                             <h4>Be the first to sign up!</h4>
-//                         )}
-//                     </div>
-//                 </div>
-//             </div> */}
-//             {/* <div className="icon-text">
-//                 <div className="icon"><PiLinkSimpleLight /></div>
-//                 <div className="text-container">
-//                     <h3>{event.name} Page</h3>
-//                     <h4>www.{event.name}.com</h4>
-//                 </div>
-//             </div> */}
-//         </div>
-//     </div>
-//     <div className="event-details-container">
-//         <div className="event-details">
-//             <div className="icon-text">
-//                 <div className="icon">
-//                     <FaDollarSign />
-//                 </div>
-//                 <div className="text-container" style={{ flexDirection: 'column' }}>
-//                     {user ? (
-//                         <>
-//                             <h3>Event Pricing</h3>
-//                             <h4>
-//                                 Member: $
-//                                 {event.member_price !== undefined
-//                                     ? event.member_price.toFixed(2)
-//                                     : 'N/A'}
-//                             </h4>
-//                         </>
-//                     ) : (
-//                         <>
-//                             <h3>Event Pricing</h3>
-//                             <h4>
-//                                 Member: $
-//                                 {event.member_price !== undefined
-//                                     ? event.member_price.toFixed(2)
-//                                     : 'N/A'}
-//                                 , Non-member: $
-//                                 {event.non_member_price !== undefined
-//                                     ? event.non_member_price.toFixed(2)
-//                                     : 'N/A'}
-//                             </h4>
-//                         </>
-//                     )}
-//                 </div>
-//             </div>
-//         </div>
-//     </div>
-//     <button
-//         className="signup-button"
-//         disabled={isEventFull || isRegistered}
-//         onClick={() => {}}
-//         // onClick={() => setIsSignUpFormOpen(true)}
-//     >
-//         {getButtonText()}
-//     </button>
-//     {/* <EventRegistrationModal
-//         isModalOpen={isSignUpFormOpen}
-//         setIsModalOpen={setIsSignUpFormOpen}
-//         eventId={event_id ?? ""}
-//         memberPrice={event.member_price}
-//         nonMemberPrice={event.non_member_price}
-//         formId={event.eventFormId}
-//     /> */}
-// </EventDetails>
-
-/*
-http://localhost:5173/events/3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45?attendeeId=deae1f06-6a3d-49e3-993e-c2facb6117c2&success=true
-*/
