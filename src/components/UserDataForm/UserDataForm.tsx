@@ -130,18 +130,139 @@ export function UserDataForm({
         }
     }, [university]);
 
-    return (
-        <>
-            {isMobile || isInAppBrowser ? (
-                <form
-                    autoComplete="off"
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    data-testid="mobile-form"
-                >
-                    <Content>
+    if (isMobile || isInAppBrowser) {
+        return (
+            <form
+                autoComplete="off"
+                onSubmit={form.handleSubmit(onSubmit)}
+                data-testid="mobile-form"
+            >
+                <Content>
+                    <Input
+                        placeholder="First name"
+                        defaultValue={responses.firstName}
+                        required
+                        {...form.register('firstName')}
+                        $error={!!form.formState.errors.firstName}
+                    />
+                    <Input
+                        placeholder="Last name"
+                        defaultValue={responses.lastName}
+                        required
+                        {...form.register('lastName')}
+                        $error={!!form.formState.errors.lastName}
+                    />
+                    <Input
+                        placeholder="Pronouns"
+                        defaultValue={responses.pronouns}
+                        required
+                        {...form.register('pronouns')}
+                        $error={!!form.formState.errors.pronouns}
+                    />
+                    <Dropdown
+                        data-testid="university-dropdown"
+                        required
+                        {...form.register('university', { required: 'please select a value' })}
+                        $error={!!form.formState.errors.university}
+                        defaultValue={responses.university}
+                    >
+                        <option value="" hidden>
+                            What university do you go to?
+                        </option>
+                        {Universities.map((uni) => {
+                            return (
+                                <option value={uni} key={uni}>
+                                    {uni}
+                                </option>
+                            );
+                        })}
+                    </Dropdown>
+                    {isUbcStudent && (
+                        <Input
+                            placeholder="Student ID"
+                            defaultValue={responses.studentId}
+                            required
+                            {...form.register('studentId')}
+                            $error={!!form.formState.errors.studentId}
+                        />
+                    )}
+                    {isStudent && (
+                        <>
+                            <Input
+                                placeholder="Faculty"
+                                defaultValue={responses.faculty}
+                                required
+                                {...form.register('faculty')}
+                                $error={!!form.formState.errors.faculty}
+                            />
+                            <Input
+                                placeholder="Major"
+                                defaultValue={responses.major}
+                                required
+                                {...form.register('major')}
+                                $error={!!form.formState.errors.major}
+                            />
+                            <Dropdown
+                                data-testid="year-dropdown"
+                                defaultValue={responses.year}
+                                required
+                                {...form.register('year')}
+                                $error={!!form.formState.errors.year}
+                            >
+                                <option value="" hidden>
+                                    Year
+                                </option>
+                                {years.map((year) => {
+                                    return (
+                                        <option value={year} key={year}>
+                                            {year}
+                                        </option>
+                                    );
+                                })}
+                            </Dropdown>
+                        </>
+                    )}
+                    <TextArea
+                        placeholder="Why Product Management?"
+                        defaultValue={responses.whyPm}
+                        rows={5}
+                        required
+                        {...form.register('whyPm')}
+                        $error={!!form.formState.errors.whyPm}
+                    />
+
+                    {hasWaiver && isUbcStudent && (
+                        <Waiver>
+                            <div>
+                                Please sign the following form:
+                                <WaiverLink
+                                    href="https://www.ams.ubc.ca/student-life/clubs/operating-a-club/club-constituency-general-membership-waiver/"
+                                    target="_blank"
+                                >
+                                    {' '}
+                                    Insurance/Liability Waiver.
+                                </WaiverLink>
+                            </div>
+                            <div>
+                                I have signed the Insurance/Liability Waiver form.&nbsp;
+                                <input type="checkbox" required />
+                            </div>
+                        </Waiver>
+                    )}
+
+                    <Submit type="submit">{buttonText}</Submit>
+                </Content>
+            </form>
+        );
+    } else {
+        return (
+            <form autoComplete="off" onSubmit={form.handleSubmit(onSubmit)}>
+                <Content>
+                    <Group>
                         <Input
                             placeholder="First name"
                             defaultValue={responses.firstName}
+                            width={40}
                             required
                             {...form.register('firstName')}
                             $error={!!form.formState.errors.firstName}
@@ -149,6 +270,7 @@ export function UserDataForm({
                         <Input
                             placeholder="Last name"
                             defaultValue={responses.lastName}
+                            width={40}
                             required
                             {...form.register('lastName')}
                             $error={!!form.formState.errors.lastName}
@@ -156,29 +278,34 @@ export function UserDataForm({
                         <Input
                             placeholder="Pronouns"
                             defaultValue={responses.pronouns}
+                            width={20}
                             required
                             {...form.register('pronouns')}
                             $error={!!form.formState.errors.pronouns}
                         />
-                        <Dropdown
-                            data-testid="university-dropdown"
-                            required
-                            {...form.register('university', { required: 'please select a value' })}
-                            $error={!!form.formState.errors.university}
-                            defaultValue={responses.university}
-                        >
-                            <option value="" hidden>
-                                What university do you go to?
-                            </option>
-                            {Universities.map((uni) => {
-                                return (
-                                    <option value={uni} key={uni}>
-                                        {uni}
-                                    </option>
-                                );
-                            })}
-                        </Dropdown>
-                        {isUbcStudent && (
+                    </Group>
+
+                    <Dropdown
+                        data-testid="university-dropdown"
+                        required
+                        {...form.register('university', { required: 'please select a value' })}
+                        $error={!!form.formState.errors.university}
+                        defaultValue={responses.university}
+                    >
+                        <option value="" hidden>
+                            What university do you go to?
+                        </option>
+                        {Universities.map((uni) => {
+                            return (
+                                <option value={uni} key={uni}>
+                                    {uni}
+                                </option>
+                            );
+                        })}
+                    </Dropdown>
+
+                    {isUbcStudent && (
+                        <Group>
                             <Input
                                 placeholder="Student ID"
                                 defaultValue={responses.studentId}
@@ -186,206 +313,79 @@ export function UserDataForm({
                                 {...form.register('studentId')}
                                 $error={!!form.formState.errors.studentId}
                             />
-                        )}
-                        {isStudent && (
-                            <>
-                                <Input
-                                    placeholder="Faculty"
-                                    defaultValue={responses.faculty}
-                                    required
-                                    {...form.register('faculty')}
-                                    $error={!!form.formState.errors.faculty}
-                                />
-                                <Input
-                                    placeholder="Major"
-                                    defaultValue={responses.major}
-                                    required
-                                    {...form.register('major')}
-                                    $error={!!form.formState.errors.major}
-                                />
-                                <Dropdown
-                                    data-testid="year-dropdown"
-                                    defaultValue={responses.year}
-                                    required
-                                    {...form.register('year')}
-                                    $error={!!form.formState.errors.year}
-                                >
-                                    <option value="" hidden>
-                                        Year
-                                    </option>
-                                    {years.map((year) => {
-                                        return (
-                                            <option value={year} key={year}>
-                                                {year}
-                                            </option>
-                                        );
-                                    })}
-                                </Dropdown>
-                                <TextArea
-                                    placeholder="Why Product Management?"
-                                    defaultValue={responses.whyPm}
-                                    rows={5}
-                                    required
-                                    {...form.register('whyPm')}
-                                    $error={!!form.formState.errors.whyPm}
-                                />
+                        </Group>
+                    )}
 
-                                {hasWaiver && isUbcStudent && (
-                                    <Waiver>
-                                        <div>
-                                            Please sign the following form:
-                                            <WaiverLink
-                                                href="https://www.ams.ubc.ca/student-life/clubs/operating-a-club/club-constituency-general-membership-waiver/"
-                                                target="_blank"
-                                            >
-                                                {' '}
-                                                Insurance/Liability Waiver.
-                                            </WaiverLink>
-                                        </div>
-                                        <div>
-                                            I have signed the Insurance/Liability Waiver form.&nbsp;
-                                            <input type="checkbox" required />
-                                        </div>
-                                    </Waiver>
-                                )}
-
-                                <Submit type="submit">{buttonText}</Submit>
-                            </>
-                        )}
-                    </Content>
-                </form>
-            ) : (
-                <form autoComplete="off" onSubmit={form.handleSubmit(onSubmit)}>
-                    <Content>
+                    {isStudent && (
                         <Group>
                             <Input
-                                placeholder="First name"
-                                defaultValue={responses.firstName}
-                                width={40}
+                                placeholder="Faculty"
+                                defaultValue={responses.faculty}
+                                width={45}
                                 required
-                                {...form.register('firstName')}
-                                $error={!!form.formState.errors.firstName}
+                                {...form.register('faculty')}
+                                $error={!!form.formState.errors.faculty}
                             />
                             <Input
-                                placeholder="Last name"
-                                defaultValue={responses.lastName}
-                                width={40}
+                                placeholder="Major"
+                                defaultValue={responses.major}
+                                width={45}
                                 required
-                                {...form.register('lastName')}
-                                $error={!!form.formState.errors.lastName}
+                                {...form.register('major')}
+                                $error={!!form.formState.errors.major}
                             />
-                            <Input
-                                placeholder="Pronouns"
-                                defaultValue={responses.pronouns}
-                                width={20}
+                            <Dropdown
+                                data-testid="year-dropdown"
+                                defaultValue={responses.year}
                                 required
-                                {...form.register('pronouns')}
-                                $error={!!form.formState.errors.pronouns}
-                            />
+                                {...form.register('year')}
+                                $error={!!form.formState.errors.year}
+                            >
+                                <option value="" hidden>
+                                    Year
+                                </option>
+                                {years.map((year) => {
+                                    return (
+                                        <option value={year} key={year}>
+                                            {year}
+                                        </option>
+                                    );
+                                })}
+                            </Dropdown>
                         </Group>
+                    )}
 
-                        <Dropdown
-                            data-testid="university-dropdown"
-                            required
-                            {...form.register('university', { required: 'please select a value' })}
-                            $error={!!form.formState.errors.university}
-                            defaultValue={responses.university}
-                        >
-                            <option value="" hidden>
-                                What university do you go to?
-                            </option>
-                            {Universities.map((uni) => {
-                                return (
-                                    <option value={uni} key={uni}>
-                                        {uni}
-                                    </option>
-                                );
-                            })}
-                        </Dropdown>
+                    <TextArea
+                        placeholder="Why Product Management?"
+                        defaultValue={responses.whyPm}
+                        rows={5}
+                        required
+                        {...form.register('whyPm')}
+                        $error={!!form.formState.errors.whyPm}
+                    />
 
-                        {isUbcStudent && (
-                            <Group>
-                                <Input
-                                    placeholder="Student ID"
-                                    defaultValue={responses.studentId}
-                                    required
-                                    {...form.register('studentId')}
-                                    $error={!!form.formState.errors.studentId}
-                                />
-                            </Group>
-                        )}
-
-                        {isStudent && (
-                            <Group>
-                                <Input
-                                    placeholder="Faculty"
-                                    defaultValue={responses.faculty}
-                                    width={45}
-                                    required
-                                    {...form.register('faculty')}
-                                    $error={!!form.formState.errors.faculty}
-                                />
-                                <Input
-                                    placeholder="Major"
-                                    defaultValue={responses.major}
-                                    width={45}
-                                    required
-                                    {...form.register('major')}
-                                    $error={!!form.formState.errors.major}
-                                />
-                                <Dropdown
-                                    data-testid="year-dropdown"
-                                    defaultValue={responses.year}
-                                    required
-                                    {...form.register('year')}
-                                    $error={!!form.formState.errors.year}
+                    {hasWaiver && isUbcStudent && (
+                        <Waiver>
+                            <div>
+                                Please sign the following form:
+                                <WaiverLink
+                                    href="https://www.ams.ubc.ca/student-life/clubs/operating-a-club/club-constituency-general-membership-waiver/"
+                                    target="_blank"
                                 >
-                                    <option value="" hidden>
-                                        Year
-                                    </option>
-                                    {years.map((year) => {
-                                        return (
-                                            <option value={year} key={year}>
-                                                {year}
-                                            </option>
-                                        );
-                                    })}
-                                </Dropdown>
-                            </Group>
-                        )}
+                                    {' '}
+                                    Insurance/Liability Waiver.
+                                </WaiverLink>
+                            </div>
+                            <div>
+                                I have signed the Insurance/Liability Waiver form.&nbsp;
+                                <input type="checkbox" required />
+                            </div>
+                        </Waiver>
+                    )}
 
-                        <TextArea
-                            placeholder="Why Product Management?"
-                            defaultValue={responses.whyPm}
-                            rows={5}
-                            required
-                            {...form.register('whyPm')}
-                            $error={!!form.formState.errors.whyPm}
-                        />
-
-                        {hasWaiver && isUbcStudent && (
-                            <Waiver>
-                                <div>
-                                    Please sign the following form:
-                                    <WaiverLink
-                                        href="https://www.ams.ubc.ca/student-life/clubs/operating-a-club/club-constituency-general-membership-waiver/"
-                                        target="_blank"
-                                    >
-                                        {' '}
-                                        Insurance/Liability Waiver.
-                                    </WaiverLink>
-                                </div>
-                                <div>
-                                    I have signed the Insurance/Liability Waiver form.&nbsp;
-                                    <input type="checkbox" required />
-                                </div>
-                            </Waiver>
-                        )}
-
-                        <Submit type="submit">{buttonText}</Submit>
-                    </Content>
-                </form>
-            )}
-        </>
-    );
+                    <Submit type="submit">{buttonText}</Submit>
+                </Content>
+            </form>
+        );
+    }
 }
