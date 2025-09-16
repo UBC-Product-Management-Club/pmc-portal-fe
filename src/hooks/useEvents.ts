@@ -14,7 +14,7 @@ function useEvents() {
         const data = await eventService.getUserCurrentEvents();
         return EventCardsSchema.parse(data);
     }, [eventService]);
-    
+
     const getById = useCallback(
         async (eventId: string) => {
             const event = EventSchema.parse(await eventService.getById(eventId));
@@ -31,6 +31,6 @@ function useEvents() {
         [eventService]
     );
 
-    return { getAll, getUserCurrentEvents, getById, addAttendee};
+    return { getAll, getUserCurrentEvents, getById, addAttendee };
 }
 export { useEvents };

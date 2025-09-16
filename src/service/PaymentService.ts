@@ -72,11 +72,14 @@ class PaymentService {
     }
 
     // Post request for creating event payment session
-    async createStripeSessionEventUrl(eventId: string, attendeeId: string): Promise<CheckoutSessionResponse> {
+    async createStripeSessionEventUrl(
+        eventId: string,
+        attendeeId: string
+    ): Promise<CheckoutSessionResponse> {
         const endpoint = `/checkout-session/event/${eventId}`;
-        const response = await this.client.post<CheckoutSessionResponse>( 
+        const response = await this.client.post<CheckoutSessionResponse>(
             endpoint,
-            JSON.stringify({attendeeId: attendeeId })
+            JSON.stringify({ attendeeId: attendeeId })
         );
         return response;
     }

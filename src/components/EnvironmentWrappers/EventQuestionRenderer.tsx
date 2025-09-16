@@ -93,29 +93,31 @@ const HiddenFileInput = styled.input`
 const FileUploadButton = styled.button`
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
-    background-color: var(--pmc-midnight-blue);
+    background-color: var(--pmc-light-blue);
     color: white;
     cursor: pointer;
     font-weight: 600;
     border: none;
 
     &:hover {
-        background-color: #08062bff;
+        background-color: var(--pmc-dark-purple);
     }
 `;
 
 const FileNameText = styled.span`
     font-style: italic;
-    color: black;
+    color: var(--pmc-midnight-grey);
 `;
 
 const StyledForm = styled.form`
     display: flex;
+    color: var(--pmc-light-grey);
     flex-direction: column;
     gap: 2rem; // adjust spacing here
 `;
 
 type EventFormProps = {
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
     onSubmit: (data: any) => void;
     questions: Question[];
 };
@@ -191,6 +193,7 @@ const FileBasedInput = ({ question }: FileBasedInputProps) => {
             control={control}
             rules={{ required: question.required && 'This field is required' }}
             render={({ field }) => {
+                /* eslint-disable  @typescript-eslint/no-unused-vars */
                 const { value, ...restField } = field; // exclude `value` completely
                 return (
                     <>
@@ -207,7 +210,9 @@ const FileBasedInput = ({ question }: FileBasedInputProps) => {
                         >
                             Choose file
                         </FileUploadButton>
-                        <FileNameText>{file ? `File selected: ${file.name}` : 'No file chosen'}</FileNameText>
+                        <FileNameText>
+                            {file ? `File selected: ${file.name}` : 'No file chosen'}
+                        </FileNameText>
                     </>
                 );
             }}

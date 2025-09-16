@@ -77,7 +77,6 @@ export function Carousel<T>({ items, renderItem, showArrows = true }: CarouselPr
             left: direction === 'right' ? cardWidth + 16 : -cardWidth - 16,
             behavior: 'smooth',
         });
-
     };
 
     return (

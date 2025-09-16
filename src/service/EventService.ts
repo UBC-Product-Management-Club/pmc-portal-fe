@@ -3,8 +3,8 @@ import { Event, EventCard } from '../types/Event';
 import { RestClient } from './RestClient';
 
 export type AddAttendeeResponse = {
-  message: string;
-  attendee: Attendee;
+    message: string;
+    attendee: Attendee;
 };
 
 class EventService {
@@ -31,7 +31,7 @@ class EventService {
     }
 
     addAttendee(eventId: string, eventFormAnswers: FormData): Promise<AddAttendeeResponse> {
-        return this.client.post<AddAttendeeResponse>(`/${eventId}/register`, eventFormAnswers)
+        return this.client.post<AddAttendeeResponse>(`/${eventId}/register`, eventFormAnswers);
     }
 }
 

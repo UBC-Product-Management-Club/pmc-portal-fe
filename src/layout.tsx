@@ -9,8 +9,8 @@ export function Layout() {
     return (
         <div className={'width-fit'}>
             {!isLoading && (
-                <>  
-                    <Toaster position='top-center'/>
+                <>
+                    <Toaster position="top-center" />
                     <Navbar />
                     <div className={'container'}>
                         <Outlet />
