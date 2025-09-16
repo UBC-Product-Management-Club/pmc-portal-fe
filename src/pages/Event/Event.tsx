@@ -162,7 +162,7 @@ export default function Event(props: EventProps) {
             .getById(event_id)
             .then((response) => {
                 setEvent(response.event);
-                setIsRegistered(response.registered);
+                setIsRegistered(response.isRegistered);
 
                 //Parse event questions
                 if (
@@ -191,12 +191,11 @@ export default function Event(props: EventProps) {
         if (query.get('success')) {
             showToast('success', 'Payment successful! You are registered for the event.');
             setIsRegistered(true);
+            window.history.replaceState({}, document.title, `/events/${event_id}`);
         } else if (query.get('canceled') && attendeeId) {
             attendeeService.deleteAttendee(attendeeId);
             showToast('error', 'Payment canceled, you have not been charged.');
         }
-
-        window.history.replaceState({}, document.title, `/events/${event_id}`);
     }, [event_id]);
 
     // Create stripe session and redirects user
