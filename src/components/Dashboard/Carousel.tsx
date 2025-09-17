@@ -9,7 +9,7 @@ const CarouselWrapper = styled.div`
 const CarouselTrack = styled.div`
     display: flex;
     overflow-x: auto;
-    scroll-behavior: smooth;
+    scroll-snap-type: smooth;
     gap: 1rem;
     padding-bottom: 1rem;
 

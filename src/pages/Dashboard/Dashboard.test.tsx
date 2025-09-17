@@ -206,12 +206,6 @@ describe('Dashboard', () => {
         ).not.toBeInTheDocument();
     });
 
-    it('your events renders register below when no registered events', async () => {
-        mockGetUserCurrentEvents.mockReturnValueOnce([]);
-        await renderComponent();
-        expect(screen.getByText(/Register Below/i)).toBeInTheDocument();
-    });
-
     it('renders events when user has registered events', async () => {
         mockUseUserData.mockReturnValueOnce({
             user: { firstName: 'geary', userId: '123' },

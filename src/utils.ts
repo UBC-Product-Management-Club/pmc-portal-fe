@@ -1,6 +1,7 @@
 import { UserDocument } from './types/User';
 import { Question } from './types/Question';
 import { z } from 'zod/v4';
+import { toast } from 'react-hot-toast';
 
 const emptyUser: UserDocument = {
     userId: '',
@@ -15,18 +16,22 @@ const emptyUser: UserDocument = {
     isPaymentVerified: false,
 };
 
-function isInAppBrowser() {
+function useInAppBrowser() {
     const ua = window.navigator.userAgent.toLowerCase();
     const isIOS = /iphone|ipad|ipod/.test(ua);
-    return (
+    const isAndroid = /android/.test(ua);
+
+    const isMobile = isIOS || isAndroid;
+    const isInAppBrowser =
         ua.includes('wv') || // Android WebView
         (isIOS && !ua.includes('safari')) || // iOS WebView
         ua.includes('fbav') || // Facebook
         ua.includes('instagram') || // Instagram
         ua.includes('twitter') || // X (formerly Twitter)
         ua.includes('x-client') || // X's new client identifier
-        ua.includes('linkedin') // LinkedIn
-    );
+        ua.includes('linkedin'); // LinkedIn
+
+    return { isInAppBrowser, isMobile };
 }
 
 function formatPrice(price: number) {
@@ -47,13 +52,13 @@ function buildEventFormResponseSchema(questions: Question[]) {
 
             if (q.required) {
                 fieldSchema = fieldSchema.min(1, {
-                    message: `${q.label} is cannot be left empty.`,
+                    message: `This field is required.`,
                 });
             }
 
             if (q.type === 'dropdown' && q.options) {
                 fieldSchema = fieldSchema.refine((val) => q.options!.includes(val), {
-                    message: `Invalid selection for ${q.label}`,
+                    message: `Selection is invalid.`,
                 });
             }
         }
@@ -62,4 +67,21 @@ function buildEventFormResponseSchema(questions: Question[]) {
     return z.object(shape);
 }
 
-export { isInAppBrowser, emptyUser, formatPrice, buildEventFormResponseSchema };
+function showToast(type: 'success' | 'error', message: string, duration: number = 4000) {
+    const options = {
+        style: {
+            borderRadius: '10px',
+            background: '#ffffffff',
+            color: '#000000ff',
+        },
+        duration: duration,
+    };
+
+    if (type === 'success') {
+        toast.success(message, options);
+    } else if (type === 'error') {
+        toast.error(message, options);
+    }
+}
+
+export { useInAppBrowser, emptyUser, formatPrice, buildEventFormResponseSchema, showToast };

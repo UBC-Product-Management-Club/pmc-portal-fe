@@ -3,10 +3,16 @@ import { UserDataForm } from './UserDataForm';
 import { fireEvent, screen } from '@testing-library/dom';
 import { render } from '@testing-library/react';
 import { UserDataFromUser } from '../../types/User';
+import { useInAppBrowser } from '../../utils';
+
+vi.mock('../../utils', () => ({
+    useInAppBrowser: vi.fn(),
+}));
+
+const mockUseInAppBrowser = vi.mocked(useInAppBrowser);
 
 describe('UserDataForm', () => {
     let mockSubmit: Mock;
-
     async function renderComponent(hasWaiver: boolean, responses?: UserDataFromUser) {
         render(
             <UserDataForm responses={responses ?? {}} onSubmit={mockSubmit} hasWaiver={hasWaiver} />
@@ -15,6 +21,20 @@ describe('UserDataForm', () => {
 
     beforeEach(() => {
         mockSubmit = vi.fn();
+        mockUseInAppBrowser.mockReturnValue({
+            isInAppBrowser: false,
+            isMobile: false,
+        });
+    });
+
+    it('renders mobile form if isMobile', async () => {
+        mockUseInAppBrowser.mockReturnValue({
+            isInAppBrowser: true,
+            isMobile: true,
+        });
+        await renderComponent(true);
+
+        expect(screen.getByTestId('mobile-form')).toBeInTheDocument();
     });
 
     it('renders the form initial state', async () => {
@@ -25,6 +45,7 @@ describe('UserDataForm', () => {
         expect(screen.getByPlaceholderText('Pronouns')).toBeInTheDocument();
         expect(screen.getByTestId('university-dropdown')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('Why Product Management?')).toBeInTheDocument();
+        expect(screen.queryByTestId('mobile-form')).not.toBeInTheDocument();
     });
 
     describe('conditionally renders', () => {

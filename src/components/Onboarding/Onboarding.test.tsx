@@ -155,6 +155,7 @@ describe('Onboarding Component', () => {
     });
 
     it('for ubc students', async () => {
+        mockCreateUser.mockResolvedValueOnce(undefined);
         const user = userEvent.setup();
         await renderComponent();
 
@@ -185,6 +186,7 @@ describe('Onboarding Component', () => {
     });
 
     it('for non students', async () => {
+        mockCreateUser.mockResolvedValueOnce(undefined);
         const user = userEvent.setup();
         await renderComponent();
 
@@ -223,6 +225,7 @@ describe('Onboarding Component', () => {
     });
 
     it('navigates back correctly from payment', async () => {
+        mockCreateUser.mockResolvedValueOnce(undefined);
         const user = userEvent.setup();
         await renderComponent();
         const backBtn = screen.getByRole('button', { name: 'Back' });
