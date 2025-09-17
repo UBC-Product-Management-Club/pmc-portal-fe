@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { CiCalendar, CiLocationOn } from 'react-icons/ci';
 import { FaDollarSign } from 'react-icons/fa6';
 import moment from 'moment';
@@ -143,6 +143,7 @@ export default function Event(props: EventProps) {
     const attendeeService = useAttendee();
     const paymentService = usePaymentService();
     const { event_id } = useParams<{ event_id: string }>();
+    const navigateTo = useNavigate();
 
     const [event, setEvent] = useState<Event | undefined>();
     const [parsedQuestions, setParsedQuestions] = useState<Question[]>([]);
@@ -261,7 +262,7 @@ export default function Event(props: EventProps) {
     const getButtonText = useCallback(() => {
         if (!event) return '';
         if (event.registered === event.maxAttendees) return 'Sorry! This event is full';
-        if (!isAuthenticated) return "Please sign in to register.";
+        if (!isAuthenticated) return 'Please sign in to register.';
         if (isRegistered) return "You're already registered.";
         return 'Register now!';
     }, [event, isRegistered]);
@@ -305,7 +306,11 @@ export default function Event(props: EventProps) {
                     <RegisterButton
                         disabled={event.registered === event.maxAttendees || isRegistered}
                         onClick={() => {
-                            if (!isModalOpen) setIsModalOpen(true);
+                            if (!isAuthenticated) {
+                                navigateTo('/');
+                            } else if (!isModalOpen) {
+                                setIsModalOpen(true);
+                            }
                         }}
                     >
                         {getButtonText()}
