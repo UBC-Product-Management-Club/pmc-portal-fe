@@ -12,7 +12,6 @@ vi.mock('../../providers/UserData/UserDataProvider', () => ({
 }));
 vi.mock('react-router-dom');
 vi.mock('../../hooks/useEvents');
-vi.mock('@auth0/auth0-react');
 
 const mockUseAuth0 = vi.fn();
 vi.mock('@auth0/auth0-react', () => ({
