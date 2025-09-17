@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { useEvents } from '../../hooks/useEvents';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { act, render, screen } from '@testing-library/react';
 import Event from './Event';
 import { type Event as EventType } from '../../types/Event';
+import userEvent from '@testing-library/user-event';
 
 vi.mock('../../providers/UserData/UserDataProvider', () => ({
     useUserData: vi.fn(),
@@ -12,8 +13,14 @@ vi.mock('../../providers/UserData/UserDataProvider', () => ({
 vi.mock('react-router-dom');
 vi.mock('../../hooks/useEvents');
 
+const mockUseAuth0 = vi.fn();
+vi.mock('@auth0/auth0-react', () => ({
+    useAuth0: () => mockUseAuth0(),
+}));
+
 describe('Event', () => {
     let mockGetEventById: Mock;
+    let mockNavigateTo: Mock;
     let mockEvent: { event: EventType; registered: boolean };
     const mockUser = {
         userId: 'user_id',
@@ -21,6 +28,7 @@ describe('Event', () => {
     const mockEventId = 'event_id';
 
     beforeEach(() => {
+        mockNavigateTo = vi.fn();
         mockEvent = {
             event: {
                 eventId: 'aj',
@@ -53,6 +61,8 @@ describe('Event', () => {
         vi.mocked(useParams, { partial: true }).mockReturnValue({
             event_id: mockEventId,
         });
+        vi.mocked(useNavigate).mockReturnValue(mockNavigateTo);
+        mockUseAuth0.mockReturnValue({ isAuthenticated: true });
     });
 
     async function renderComponent() {
@@ -112,6 +122,7 @@ describe('Event', () => {
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
             expect(screen.getByText('0/100 spots left!')).toBeInTheDocument();
             expect(screen.getByRole('button')).toHaveTextContent('Sorry! This event is full');
+            expect(screen.getByRole('button')).toHaveAttribute('disabled');
         });
 
         it('when already registered', async () => {
@@ -124,6 +135,24 @@ describe('Event', () => {
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
             expect(screen.getByText('50/100 spots left!')).toBeInTheDocument();
             expect(screen.getByRole('button')).toHaveTextContent("You're already registered.");
+            expect(screen.getByRole('button')).toHaveAttribute('disabled');
+        });
+
+        it('user not signed in', async () => {
+            const user = userEvent.setup();
+            mockGetEventById.mockResolvedValueOnce({
+                event: { ...mockEvent.event, registered: 50 },
+                registered: false,
+            });
+            mockUseAuth0.mockReturnValue({ isAuthenticated: false });
+            await renderComponent();
+            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
+            expect(screen.getByText('50/100 spots left!')).toBeInTheDocument();
+            expect(screen.getByRole('button')).toHaveTextContent('Please sign in to register.');
+
+            await act(() => user.click(screen.getByRole('button')));
+
+            expect(mockNavigateTo).toHaveBeenCalledWith('/');
         });
     });
 });

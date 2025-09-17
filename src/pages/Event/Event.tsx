@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { CiCalendar, CiLocationOn } from 'react-icons/ci';
 import { FaDollarSign } from 'react-icons/fa6';
 import moment from 'moment';
@@ -8,6 +8,7 @@ import { useEvents } from '../../hooks/useEvents';
 import { useAttendee } from '../../hooks/useAttendee';
 import { styled } from 'styled-components';
 import { MdOutlinePeopleAlt } from 'react-icons/md';
+import { useAuth0 } from '@auth0/auth0-react';
 import { EventRegistrationModal } from '../../components/Event/EventRegistrationModal';
 import { Question, questionsSchema } from '../../types/Question';
 import { usePaymentService } from '../../hooks/usePaymentService';
@@ -137,10 +138,12 @@ interface EventProps {
 }
 
 export default function Event(props: EventProps) {
+    const { isAuthenticated } = useAuth0();
     const eventService = useEvents();
     const attendeeService = useAttendee();
     const paymentService = usePaymentService();
     const { event_id } = useParams<{ event_id: string }>();
+    const navigateTo = useNavigate();
 
     const [event, setEvent] = useState<Event | undefined>();
     const [parsedQuestions, setParsedQuestions] = useState<Question[]>([]);
@@ -259,6 +262,7 @@ export default function Event(props: EventProps) {
     const getButtonText = useCallback(() => {
         if (!event) return '';
         if (event.registered === event.maxAttendees) return 'Sorry! This event is full';
+        if (!isAuthenticated) return 'Please sign in to register.';
         if (isRegistered) return "You're already registered.";
         return 'Register now!';
     }, [event, isRegistered]);
@@ -302,7 +306,11 @@ export default function Event(props: EventProps) {
                     <RegisterButton
                         disabled={event.registered === event.maxAttendees || isRegistered}
                         onClick={() => {
-                            if (!isModalOpen) setIsModalOpen(true);
+                            if (!isAuthenticated) {
+                                navigateTo('/');
+                            } else if (!isModalOpen) {
+                                setIsModalOpen(true);
+                            }
                         }}
                     >
                         {getButtonText()}
