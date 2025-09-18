@@ -14,7 +14,6 @@ type EventRegistrationModalProps = {
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
     max-width: 600px;
     max-height: 90vh;
     background: white;
