@@ -19,7 +19,7 @@ function useEvents() {
         async (eventId: string) => {
             const event = EventSchema.parse(await eventService.getById(eventId));
             const attendee = await eventService.getAttendee(eventId);
-            return { event, registered: attendee !== null };
+            return { event, isRegistered: attendee !== null };
         },
         [eventService]
     );

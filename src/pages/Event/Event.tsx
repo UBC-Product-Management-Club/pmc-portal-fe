@@ -165,7 +165,7 @@ export default function Event(props: EventProps) {
             .getById(event_id)
             .then((response) => {
                 setEvent(response.event);
-                setIsRegistered(response.registered);
+                setIsRegistered(response.isRegistered);
 
                 //Parse event questions
                 if (
@@ -198,8 +198,7 @@ export default function Event(props: EventProps) {
             attendeeService.deleteAttendee(attendeeId);
             showToast('error', 'Payment canceled, you have not been charged.');
         }
-
-        window.history.replaceState({}, document.title, `/events/${event_id}`);
+        window.history.replaceState({}, document.title, `/events/${event_id}/register`);
     }, [event_id]);
 
     // Create stripe session and redirects user
@@ -281,7 +280,7 @@ export default function Event(props: EventProps) {
                         <Detail
                             icon={<CiCalendar size={30} />}
                             text={moment(event.startTime).format('dddd, Do MMMM yyyy')}
-                            subtext={`${moment(event.startTime).format('h:ma')} - ${moment(event.endTime).format('h:ma')}`}
+                            subtext={`${moment(event.startTime).format('h:mm a')} - ${moment(event.endTime).format('h:mm a')}`}
                         />
                         <Detail
                             icon={<CiLocationOn size={30} />}
@@ -299,7 +298,7 @@ export default function Event(props: EventProps) {
                         />
                         <Detail
                             icon={<FaDollarSign size={30} />}
-                            text={`Member price: ${event.memberPrice}$`}
+                            text={`Member price: ${event.memberPrice === 0 ? 'Free!' : event.memberPrice + '$'}`}
                             subtext={`Non-member price: ${event.nonMemberPrice}$`}
                         />
                     </Details>

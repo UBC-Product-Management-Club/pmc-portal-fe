@@ -49,10 +49,10 @@ function UserDataProvider({ children }: { children: ReactNode }) {
     const auth0 = useAuth0();
     const userService = useUserService();
     const location = useLocation();
-    const requiresFreshData = useMemo(() => new Set(['/dashboard', '/events']), []);
+    const requiresFreshData = useMemo(() => [/\/dashboard/, /\/events/], []); // probably a better way to do this..
 
     useEffect(() => {
-        if (requiresFreshData.has(location.pathname)) {
+        if (requiresFreshData.some((pattern) => location.pathname.match(pattern))) {
             userService
                 .me()
                 .then((user) => update({ type: ActionTypes.LOAD, payload: user }))

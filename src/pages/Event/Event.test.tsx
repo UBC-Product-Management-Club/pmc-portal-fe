@@ -128,7 +128,7 @@ describe('Event', () => {
         it('when already registered', async () => {
             mockGetEventById.mockResolvedValueOnce({
                 event: { ...mockEvent.event, registered: 50 },
-                registered: true,
+                isRegistered: true,
             });
 
             await renderComponent();

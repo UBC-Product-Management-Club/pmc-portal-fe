@@ -34,6 +34,7 @@ const Submit = styled.button`
     padding: 0.5rem 2rem;
     border-radius: 0.5rem;
     color: var(--pmc-midnight-blue);
+    cursor: pointer;
 `;
 
 const RequiredMark = styled.span`
