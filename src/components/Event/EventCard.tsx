@@ -3,6 +3,7 @@ import moment from 'moment';
 import { type EventCard } from '../../types/Event';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { useInAppBrowser } from '../../utils';
 
 type EventCardProps = {
     event: EventCard;
@@ -25,15 +26,17 @@ const Container = styled.div<{ disabled: boolean }>`
     opacity: ${({ disabled }) => (disabled ? 0.8 : 1)};
     overflow: hidden;
 
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 768px) {
+        justify-content: space-evenly;
+        height: 500px;
+        padding: 1rem 0;
         flex-direction: column-reverse;
         align-items: start;
-        gap: 2rem;
     }
 `;
 
-const Column = styled.div`
-    max-width: 50%;
+const Group = styled.div`
+    width: 80%;
     box-sizing: border-box;
     align-self: center;
 `;
@@ -67,8 +70,7 @@ const EventDescription = styled.p`
 `;
 
 const Thumbnail = styled.img`
-    width: 100%;
-    max-width: 15rem;
+    width: 40%;
     height: auto;
     aspect-ratio: 1 / 1;
     object-fit: cover;
@@ -77,23 +79,22 @@ const Thumbnail = styled.img`
     align-self: center;
 
     @media screen and (max-width: 768px) {
-        max-width: 100%;
+        width: 80%;
     }
 `;
 
 export function EventCard({ event, disabled }: EventCardProps) {
+    const { isMobile } = useInAppBrowser();
     const contents = (
         <Container disabled={disabled}>
-            <Column>
+            <Group>
                 <EventTimeAndLocation>
-                    {moment(event.startTime).format('HH.mm A')} | {event.location}
+                    {moment(event.startTime).format('HH.mm')} | {event.location}
                 </EventTimeAndLocation>
                 <EventName>{event.name}</EventName>
-                <EventDescription>{event.description}</EventDescription>
-            </Column>
-            <Column>
-                <Thumbnail src={event.thumbnail} alt="Event thumbnail" />
-            </Column>
+                {!isMobile && <EventDescription>{event.description}</EventDescription>}
+            </Group>
+            <Thumbnail src={event.thumbnail} alt="Event thumbnail" />
         </Container>
     );
 

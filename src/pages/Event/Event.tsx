@@ -148,7 +148,7 @@ export default function Event(props: EventProps) {
     const [event, setEvent] = useState<Event | undefined>();
     const [parsedQuestions, setParsedQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isRegistered, setIsRegistered] = useState(false);
+    const [isRegistered, setIsRegistered] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState(false);
 
     const mapRef = useRef<HTMLIFrameElement | null>(null);
@@ -163,19 +163,16 @@ export default function Event(props: EventProps) {
 
         eventService
             .getById(event_id)
-            .then((response) => {
-                setEvent(response.event);
-                setIsRegistered(response.isRegistered);
+            .then((event) => {
+                setEvent(event);
 
                 //Parse event questions
                 if (
-                    response.event.eventFormQuestions &&
-                    typeof response.event.eventFormQuestions === 'object' &&
-                    'questions' in response.event.eventFormQuestions
+                    event.eventFormQuestions &&
+                    typeof event.eventFormQuestions === 'object' &&
+                    'questions' in event.eventFormQuestions
                 ) {
-                    const result = questionsSchema.safeParse(
-                        response.event.eventFormQuestions.questions
-                    );
+                    const result = questionsSchema.safeParse(event.eventFormQuestions.questions);
                     if (result.success) {
                         setParsedQuestions(result.data);
                     }
@@ -183,6 +180,12 @@ export default function Event(props: EventProps) {
             })
             .catch(() => setError(true))
             .finally(() => setLoading(false));
+        if (isAuthenticated) {
+            eventService
+                .getAttendee(event_id)
+                .then((attendee) => setIsRegistered(attendee !== null))
+                .catch(() => {});
+        }
     }, [event_id]);
 
     // Display payment message and delete temp attendee record [WIP]
@@ -260,8 +263,9 @@ export default function Event(props: EventProps) {
     // Updates button display
     const getButtonText = useCallback(() => {
         if (!event) return '';
+        if (!isAuthenticated && isRegistered === undefined) return 'Please sign in to register.';
+        if (isRegistered === undefined) return 'Loading...';
         if (event.registered === event.maxAttendees) return 'Sorry! This event is full';
-        if (!isAuthenticated) return 'Please sign in to register.';
         if (isRegistered) return "You're already registered.";
         return 'Register now!';
     }, [event, isRegistered]);

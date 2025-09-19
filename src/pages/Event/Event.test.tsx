@@ -20,8 +20,9 @@ vi.mock('@auth0/auth0-react', () => ({
 
 describe('Event', () => {
     let mockGetEventById: Mock;
+    let mockGetAttendee: Mock;
     let mockNavigateTo: Mock;
-    let mockEvent: { event: EventType; registered: boolean };
+    let mockEvent: EventType;
     const mockUser = {
         userId: 'user_id',
     };
@@ -30,33 +31,32 @@ describe('Event', () => {
     beforeEach(() => {
         mockNavigateTo = vi.fn();
         mockEvent = {
-            event: {
-                eventId: 'aj',
-                name: 'Product Conference',
-                date: '2025-01-01',
-                description: 'sdsd',
-                startTime: '2025-07-21T21:30:00+00',
-                endTime: '2025-07-21T22:30:00+00',
-                location: 'UBC Sauder Building',
-                thumbnail:
-                    'https://dthvbanipvldaiabgvuc.supabase.co/storage/v1/object/public/event-media/events/75f6ef8e-12d7-48f3-a0a8-96443ae5d1f7/media/umm-nocturnaltrashposts-and-then-uhh.jpeg',
-                memberPrice: 1,
-                nonMemberPrice: 2,
-                maxAttendees: 100,
-                eventFormQuestions: {},
-                media: [],
-                isDisabled: false,
-                registered: 1,
-                needsReview: false,
-            },
-            registered: false,
+            eventId: 'aj',
+            name: 'Product Conference',
+            date: '2025-01-01',
+            description: 'sdsd',
+            startTime: '2025-07-21T21:30:00+00',
+            endTime: '2025-07-21T22:30:00+00',
+            location: 'UBC Sauder Building',
+            thumbnail:
+                'https://dthvbanipvldaiabgvuc.supabase.co/storage/v1/object/public/event-media/events/75f6ef8e-12d7-48f3-a0a8-96443ae5d1f7/media/umm-nocturnaltrashposts-and-then-uhh.jpeg',
+            memberPrice: 1,
+            nonMemberPrice: 2,
+            maxAttendees: 100,
+            eventFormQuestions: {},
+            media: [],
+            isDisabled: false,
+            registered: 1,
+            needsReview: false,
         };
         (useUserData as Mock).mockReturnValue({
             user: mockUser,
         });
         mockGetEventById = vi.fn().mockResolvedValue(mockEvent);
+        mockGetAttendee = vi.fn().mockResolvedValue({});
         vi.mocked(useEvents, { partial: true }).mockReturnValue({
             getById: mockGetEventById,
+            getAttendee: mockGetAttendee,
         });
         vi.mocked(useParams, { partial: true }).mockReturnValue({
             event_id: mockEventId,
@@ -88,7 +88,7 @@ describe('Event', () => {
     });
 
     it('no event details', async () => {
-        mockGetEventById.mockResolvedValueOnce({});
+        mockGetEventById.mockResolvedValueOnce(undefined);
 
         await renderComponent();
 
@@ -107,16 +107,30 @@ describe('Event', () => {
         expect(screen.getByText('99/100 spots left!')).toBeInTheDocument();
         expect(screen.getByText('Member price: 1$')).toBeInTheDocument();
         expect(screen.getByText('Non-member price: 2$')).toBeInTheDocument();
-        expect(screen.getByText(mockEvent.event.description)).toBeInTheDocument();
-        expect(screen.getByRole('img')).toHaveAttribute('src', mockEvent.event.thumbnail);
+        expect(screen.getByText(mockEvent.description)).toBeInTheDocument();
+        expect(screen.getByRole('img')).toHaveAttribute('src', mockEvent.thumbnail);
+    });
+
+    it('shows event info when not authenticated', async () => {
+        mockGetAttendee.mockResolvedValueOnce(null);
+        mockUseAuth0.mockReturnValueOnce({ isAuthenticated: false });
+        await renderComponent();
+
+        expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
+        expect(screen.getByText('Product Conference')).toBeInTheDocument();
+        expect(screen.getByText('Monday, 21st July 2025')).toBeInTheDocument();
+        expect(screen.getByText('UBC Sauder Building')).toBeInTheDocument();
+        expect(screen.getByText('99/100 spots left!')).toBeInTheDocument();
+        expect(screen.getByText('Member price: 1$')).toBeInTheDocument();
+        expect(screen.getByText('Non-member price: 2$')).toBeInTheDocument();
+        expect(screen.getByText(mockEvent.description)).toBeInTheDocument();
+        expect(screen.getByRole('button')).toHaveTextContent('Loading...');
+        expect(screen.getByRole('img')).toHaveAttribute('src', mockEvent.thumbnail);
     });
 
     describe('register button text', () => {
         it('when full', async () => {
-            mockGetEventById.mockResolvedValueOnce({
-                event: { ...mockEvent.event, registered: 100 },
-                registered: mockEvent.registered,
-            });
+            mockGetEventById.mockResolvedValueOnce({ ...mockEvent, registered: 100 });
 
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
@@ -126,28 +140,20 @@ describe('Event', () => {
         });
 
         it('when already registered', async () => {
-            mockGetEventById.mockResolvedValueOnce({
-                event: { ...mockEvent.event, registered: 50 },
-                isRegistered: true,
-            });
-
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
-            expect(screen.getByText('50/100 spots left!')).toBeInTheDocument();
+            expect(screen.getByText('99/100 spots left!')).toBeInTheDocument();
             expect(screen.getByRole('button')).toHaveTextContent("You're already registered.");
             expect(screen.getByRole('button')).toHaveAttribute('disabled');
         });
 
         it('user not signed in', async () => {
             const user = userEvent.setup();
-            mockGetEventById.mockResolvedValueOnce({
-                event: { ...mockEvent.event, registered: 50 },
-                registered: false,
-            });
+            // mockGetAttendee.mockResolvedValueOnce(null)
             mockUseAuth0.mockReturnValue({ isAuthenticated: false });
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
-            expect(screen.getByText('50/100 spots left!')).toBeInTheDocument();
+            expect(screen.getByText('99/100 spots left!')).toBeInTheDocument();
             expect(screen.getByRole('button')).toHaveTextContent('Please sign in to register.');
 
             await act(() => user.click(screen.getByRole('button')));

@@ -10,7 +10,6 @@ function useUserService() {
 
     async function me() {
         const user = await userService.me();
-        console.log(user);
         if (user) {
             return UserFromDatabaseSchema.parse(user);
         } else {

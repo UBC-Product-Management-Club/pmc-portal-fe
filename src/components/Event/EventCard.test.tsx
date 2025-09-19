@@ -9,7 +9,7 @@ vi.mock('moment', () => {
         default: () => ({
             format: (fmt: string) => {
                 if (fmt === 'MMMM D, YYYY') return 'July 22, 2025';
-                if (fmt === 'HH.mm A') return '12.30 PM';
+                if (fmt === 'HH.mm') return '12:30';
                 return 'Mocked Date';
             },
         }),
@@ -44,7 +44,7 @@ describe('EventCard', () => {
         await renderComponent();
 
         expect(screen.getByText('July 22, 2025')).toBeInTheDocument();
-        expect(screen.getByText('12.30 PM | sauder building')).toBeInTheDocument();
+        expect(screen.getByText('12:30 | sauder building')).toBeInTheDocument();
         expect(screen.getByText(event.name)).toBeInTheDocument();
         expect(screen.getByText(event.description)).toBeInTheDocument();
         expect(screen.getByRole('img')).toHaveAttribute('src', event.thumbnail);

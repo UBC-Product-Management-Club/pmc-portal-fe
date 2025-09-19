@@ -1,12 +1,4 @@
-import {
-    ActionDispatch,
-    createContext,
-    ReactNode,
-    useContext,
-    useEffect,
-    useMemo,
-    useReducer,
-} from 'react';
+import { ActionDispatch, createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { UserDataFromAuth, UserDocument, UserFromDatabase } from '../../types/User';
 import { useLocation } from 'react-router-dom';
 import { useUserService } from '../../hooks/useUserService';
@@ -41,6 +33,11 @@ function useUserData() {
     return useContext(UserDataContext);
 }
 
+const requiresFreshData = [
+    /\/dashboard/,
+    /\/events\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/?$/,
+];
+
 function UserDataProvider({ children }: { children: ReactNode }) {
     const [user, update] = useReducer<
         Partial<UserDocument> | UserFromDatabase | undefined,
@@ -49,7 +46,6 @@ function UserDataProvider({ children }: { children: ReactNode }) {
     const auth0 = useAuth0();
     const userService = useUserService();
     const location = useLocation();
-    const requiresFreshData = useMemo(() => [/\/dashboard/, /\/events/], []); // probably a better way to do this..
 
     useEffect(() => {
         if (requiresFreshData.some((pattern) => location.pathname.match(pattern))) {
@@ -57,7 +53,6 @@ function UserDataProvider({ children }: { children: ReactNode }) {
                 .me()
                 .then((user) => update({ type: ActionTypes.LOAD, payload: user }))
                 .catch(() => {
-                    // invalid jwt (expired)
                     console.log('your session has expired!');
                     auth0.logout({
                         logoutParams: {
