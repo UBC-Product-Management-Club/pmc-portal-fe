@@ -14,7 +14,7 @@ describe('useEvents', () => {
         {
             event_id: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
             name: 'Test Product Conference',
-            description: 'test event product conference',
+            blurb: 'test event product conference',
             date: '2025-08-02',
             start_time: '2025-08-02T15:30:00+00:00',
             end_time: '2025-08-03T00:00:00+00:00',
@@ -27,7 +27,7 @@ describe('useEvents', () => {
         {
             event_id: '889b13e2-3c59-4757-96a8-10618132e1d5',
             name: '"Sample Event"',
-            description: '"Test event"',
+            blurb: '"Test event"',
             date: '2025-08-01',
             start_time: '2025-08-01T09:00:00+00:00',
             end_time: '2025-08-01T17:00:00+00:00',
@@ -41,7 +41,7 @@ describe('useEvents', () => {
         {
             event_id: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
             name: 'test product sprint',
-            description: 'product sprint yay',
+            blurb: 'product sprint yay',
             date: '2026-09-01',
             start_time: '2026-09-01T20:30:00+00:00',
             end_time: '2026-09-02T08:00:00+00:00',
@@ -56,7 +56,7 @@ describe('useEvents', () => {
         {
             eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
             name: 'Test Product Conference',
-            description: 'test event product conference',
+            blurb: 'test event product conference',
             date: '2025-08-02',
             startTime: '2025-08-02T15:30:00+00:00',
             endTime: '2025-08-03T00:00:00+00:00',
@@ -69,7 +69,7 @@ describe('useEvents', () => {
         {
             eventId: '889b13e2-3c59-4757-96a8-10618132e1d5',
             name: '"Sample Event"',
-            description: '"Test event"',
+            blurb: '"Test event"',
             date: '2025-08-01',
             startTime: '2025-08-01T09:00:00+00:00',
             endTime: '2025-08-01T17:00:00+00:00',
@@ -82,7 +82,7 @@ describe('useEvents', () => {
         {
             eventId: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
             name: 'test product sprint',
-            description: 'product sprint yay',
+            blurb: 'product sprint yay',
             date: '2026-09-01',
             startTime: '2026-09-01T20:30:00+00:00',
             endTime: '2026-09-02T08:00:00+00:00',
@@ -96,6 +96,7 @@ describe('useEvents', () => {
     const event = {
         event_id: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
         name: 'Test Product Conference',
+        blurb: 'test event product conference',
         description: 'test event product conference',
         date: '2025-08-02',
         start_time: '2025-08-02T15:30:00+00:00',
@@ -114,6 +115,7 @@ describe('useEvents', () => {
     const parsedEvent = {
         eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
         name: 'Test Product Conference',
+        blurb: 'test event product conference',
         description: 'test event product conference',
         date: '2025-08-02',
         startTime: '2025-08-02T15:30:00+00:00',

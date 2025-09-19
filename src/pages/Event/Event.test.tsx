@@ -34,6 +34,7 @@ describe('Event', () => {
             eventId: 'aj',
             name: 'Product Conference',
             date: '2025-01-01',
+            blurb: 'sdsd',
             description: 'sdsd',
             startTime: '2025-07-21T21:30:00+00',
             endTime: '2025-07-21T22:30:00+00',

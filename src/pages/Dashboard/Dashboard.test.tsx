@@ -114,7 +114,7 @@ describe('Dashboard', () => {
                     <div>{event.name}</div>
                     <div>{event.date}</div>
                     <div>{event.location}</div>
-                    <div>{event.description}</div>
+                    <div>{event.blurb}</div>
                     <div>{event.startTime}</div>
                     <div>{event.endTime}</div>
                     <div>{event.thumbnail}</div>

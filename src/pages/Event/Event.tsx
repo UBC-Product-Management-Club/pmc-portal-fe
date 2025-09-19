@@ -14,6 +14,7 @@ import { Question, questionsSchema } from '../../types/Question';
 import { usePaymentService } from '../../hooks/usePaymentService';
 import { AttendeeSchema } from '../../types/Attendee';
 import { showToast } from '../../utils';
+import ReactMarkdown from 'react-markdown';
 
 const EventHeader = styled.div`
     display: flex;
@@ -111,7 +112,7 @@ const Description = styled.div`
     }
 
     & > p {
-        color: var(--pmc-midnight-grey);
+        color: white;
     }
 `;
 
@@ -133,11 +134,11 @@ function Detail(props: DetailRow) {
     );
 }
 
-interface EventProps {
-    eventInfo?: ReactNode;
-}
+// interface EventProps {
+//     eventInfo?: ReactNode;
+// }
 
-export default function Event(props: EventProps) {
+export default function Event() {
     const { isAuthenticated } = useAuth0();
     const eventService = useEvents();
     const attendeeService = useAttendee();
@@ -328,7 +329,8 @@ export default function Event(props: EventProps) {
             />
             <Description>
                 <h1>About the event</h1>
-                {props.eventInfo ? props.eventInfo : <p>{event.description}</p>}
+                <ReactMarkdown>{event.description}</ReactMarkdown>
+                {/* {props.eventInfo ? (<ReactMarkdown>{props.eventInfo}</ReactMarkdown>) :  <p>{event.description}</p>} */}
                 <h1>Location</h1>
                 <iframe
                     ref={mapRef}

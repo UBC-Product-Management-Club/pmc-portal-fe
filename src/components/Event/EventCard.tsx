@@ -4,6 +4,7 @@ import { type EventCard } from '../../types/Event';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useInAppBrowser } from '../../utils';
+import ReactMarkdown from 'react-markdown';
 
 type EventCardProps = {
     event: EventCard;
@@ -57,17 +58,17 @@ const EventName = styled.p`
     font-weight: bold;
 `;
 
-const EventDescription = styled.p`
-    word-wrap: break-word;
-    height: 4.5rem;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    line-clamp: 3;
-    box-sizing: border-box;
-    text-overflow: ellipsis;
-`;
+// const EventDescription = styled.p`
+//     word-wrap: break-word;
+//     height: 4.5rem;
+//     overflow: hidden;
+//     display: -webkit-box;
+//     -webkit-line-clamp: 3;
+//     -webkit-box-orient: vertical;
+//     line-clamp: 3;
+//     box-sizing: border-box;
+//     text-overflow: ellipsis;
+// `;
 
 const Thumbnail = styled.img`
     width: 40%;
@@ -92,7 +93,7 @@ export function EventCard({ event, disabled }: EventCardProps) {
                     {moment(event.startTime).format('HH.mm')} | {event.location}
                 </EventTimeAndLocation>
                 <EventName>{event.name}</EventName>
-                {!isMobile && <EventDescription>{event.description}</EventDescription>}
+                {!isMobile && <ReactMarkdown>{event.blurb}</ReactMarkdown>}
             </Group>
             <Thumbnail src={event.thumbnail} alt="Event thumbnail" />
         </Container>
