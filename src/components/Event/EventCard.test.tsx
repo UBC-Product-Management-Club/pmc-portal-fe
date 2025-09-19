@@ -9,7 +9,7 @@ vi.mock('moment', () => {
         default: () => ({
             format: (fmt: string) => {
                 if (fmt === 'MMMM D, YYYY') return 'July 22, 2025';
-                if (fmt === 'HH.mm A') return '12.30 PM';
+                if (fmt === 'HH.mm') return '12:30';
                 return 'Mocked Date';
             },
         }),
@@ -20,7 +20,7 @@ describe('EventCard', () => {
     const event = {
         eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
         name: 'test product conference',
-        description: 'test event product conference',
+        blurb: 'test event product conference',
         date: '2025-08-02',
         startTime: '2025-08-02T15:30:00+00:00',
         endTime: '2025-08-03t00:00:00+00:00',
@@ -44,9 +44,9 @@ describe('EventCard', () => {
         await renderComponent();
 
         expect(screen.getByText('July 22, 2025')).toBeInTheDocument();
-        expect(screen.getByText('12.30 PM | sauder building')).toBeInTheDocument();
+        expect(screen.getByText('12:30 | sauder building')).toBeInTheDocument();
         expect(screen.getByText(event.name)).toBeInTheDocument();
-        expect(screen.getByText(event.description)).toBeInTheDocument();
+        expect(screen.getByText(event.blurb)).toBeInTheDocument();
         expect(screen.getByRole('img')).toHaveAttribute('src', event.thumbnail);
         expect(screen.getByRole('link')).toHaveAttribute(
             'href',

@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { EventService } from '../service/EventService';
 import { EventCard, EventCardsSchema, EventSchema } from '../types/Event';
+import { AttendeeSchema } from '../types/Attendee';
 
 function useEvents() {
     const eventService = useMemo(() => new EventService(), []);
@@ -17,9 +18,7 @@ function useEvents() {
 
     const getById = useCallback(
         async (eventId: string) => {
-            const event = EventSchema.parse(await eventService.getById(eventId));
-            const attendee = await eventService.getAttendee(eventId);
-            return { event, isRegistered: attendee !== null };
+            return EventSchema.parse(await eventService.getById(eventId));
         },
         [eventService]
     );
@@ -31,6 +30,14 @@ function useEvents() {
         [eventService]
     );
 
-    return { getAll, getUserCurrentEvents, getById, addAttendee };
+    const getAttendee = useCallback(
+        async (eventId: string) => {
+            const attendee = await eventService.getAttendee(eventId);
+            return attendee !== null ? AttendeeSchema.parse(attendee) : null;
+        },
+        [eventService]
+    );
+
+    return { getAll, getUserCurrentEvents, getById, addAttendee, getAttendee };
 }
 export { useEvents };

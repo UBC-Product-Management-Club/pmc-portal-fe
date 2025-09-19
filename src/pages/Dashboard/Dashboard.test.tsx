@@ -22,7 +22,7 @@ describe('Dashboard', () => {
         {
             eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
             name: 'test product conference',
-            description: 'test event product conference',
+            blurb: 'test event product conference',
             date: '2025-08-02',
             startTime: '2025-08-02t15:30:00+00:00',
             endTime: '2025-08-03t00:00:00+00:00',
@@ -34,7 +34,7 @@ describe('Dashboard', () => {
         {
             eventId: '889b13e2-3c59-4757-96a8-10618132e1d5',
             name: '"Sample Event"',
-            description: '"Test event"',
+            blurb: '"Test event"',
             date: '2025-08-01',
             startTime: '2025-08-01T09:00:00+00:00',
             endTime: '2025-08-01T17:00:00+00:00',
@@ -46,7 +46,7 @@ describe('Dashboard', () => {
         {
             eventId: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
             name: 'test product sprint',
-            description: 'product sprint yay',
+            blurb: 'product sprint yay',
             date: '2026-09-01',
             startTime: '2026-09-01T20:30:00+00:00',
             endTime: '2026-09-02T08:00:00+00:00',
@@ -60,7 +60,7 @@ describe('Dashboard', () => {
         {
             eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
             name: 'test your event',
-            description: 'test desc',
+            blurb: 'test desc',
             date: '2025-08-02',
             startTime: '2025-08-02t15:30:00+00:00',
             endTime: '2025-08-03t00:00:00+00:00',
@@ -72,7 +72,7 @@ describe('Dashboard', () => {
         {
             eventId: '889b13e2-3c59-4757-96a8-10618132e1d5',
             name: 'your sample event',
-            description: 'your desc',
+            blurb: 'your desc',
             date: '2025-08-01',
             startTime: '2025-08-01T09:00:00+00:00',
             endTime: '2025-08-01T17:00:00+00:00',
@@ -84,7 +84,7 @@ describe('Dashboard', () => {
         {
             eventId: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
             name: 'your product',
-            description: 'desc',
+            blurb: 'desc',
             date: '2026-09-01',
             startTime: '2026-09-01T20:30:00+00:00',
             endTime: '2026-09-02T08:00:00+00:00',
@@ -114,7 +114,7 @@ describe('Dashboard', () => {
                     <div>{event.name}</div>
                     <div>{event.date}</div>
                     <div>{event.location}</div>
-                    <div>{event.description}</div>
+                    <div>{event.blurb}</div>
                     <div>{event.startTime}</div>
                     <div>{event.endTime}</div>
                     <div>{event.thumbnail}</div>

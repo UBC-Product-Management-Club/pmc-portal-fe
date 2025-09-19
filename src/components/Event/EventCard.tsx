@@ -3,6 +3,8 @@ import moment from 'moment';
 import { type EventCard } from '../../types/Event';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { useInAppBrowser } from '../../utils';
+import ReactMarkdown from 'react-markdown';
 
 type EventCardProps = {
     event: EventCard;
@@ -25,15 +27,17 @@ const Container = styled.div<{ disabled: boolean }>`
     opacity: ${({ disabled }) => (disabled ? 0.8 : 1)};
     overflow: hidden;
 
-    @media screen and (max-width: 600px) {
+    @media screen and (max-width: 768px) {
+        justify-content: space-evenly;
+        height: 500px;
+        padding: 1rem 0;
         flex-direction: column-reverse;
         align-items: start;
-        gap: 2rem;
     }
 `;
 
-const Column = styled.div`
-    max-width: 50%;
+const Group = styled.div`
+    width: 80%;
     box-sizing: border-box;
     align-self: center;
 `;
@@ -54,21 +58,20 @@ const EventName = styled.p`
     font-weight: bold;
 `;
 
-const EventDescription = styled.p`
-    word-wrap: break-word;
-    height: 4.5rem;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    line-clamp: 3;
-    box-sizing: border-box;
-    text-overflow: ellipsis;
-`;
+// const EventDescription = styled.p`
+//     word-wrap: break-word;
+//     height: 4.5rem;
+//     overflow: hidden;
+//     display: -webkit-box;
+//     -webkit-line-clamp: 3;
+//     -webkit-box-orient: vertical;
+//     line-clamp: 3;
+//     box-sizing: border-box;
+//     text-overflow: ellipsis;
+// `;
 
 const Thumbnail = styled.img`
-    width: 100%;
-    max-width: 15rem;
+    width: 40%;
     height: auto;
     aspect-ratio: 1 / 1;
     object-fit: cover;
@@ -77,23 +80,22 @@ const Thumbnail = styled.img`
     align-self: center;
 
     @media screen and (max-width: 768px) {
-        max-width: 100%;
+        width: 80%;
     }
 `;
 
 export function EventCard({ event, disabled }: EventCardProps) {
+    const { isMobile } = useInAppBrowser();
     const contents = (
         <Container disabled={disabled}>
-            <Column>
+            <Group>
                 <EventTimeAndLocation>
-                    {moment(event.startTime).format('HH.mm A')} | {event.location}
+                    {moment(event.startTime).format('HH.mm')} | {event.location}
                 </EventTimeAndLocation>
                 <EventName>{event.name}</EventName>
-                <EventDescription>{event.description}</EventDescription>
-            </Column>
-            <Column>
-                <Thumbnail src={event.thumbnail} alt="Event thumbnail" />
-            </Column>
+                {!isMobile && <ReactMarkdown>{event.blurb}</ReactMarkdown>}
+            </Group>
+            <Thumbnail src={event.thumbnail} alt="Event thumbnail" />
         </Container>
     );
 

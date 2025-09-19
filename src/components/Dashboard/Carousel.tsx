@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const CarouselWrapper = styled.div`
     position: relative;
@@ -9,7 +9,7 @@ const CarouselWrapper = styled.div`
 const CarouselTrack = styled.div`
     display: flex;
     overflow-x: auto;
-    scroll-snap-type: smooth;
+    scroll-snap-type: x mandatory;
     gap: 1rem;
     padding-bottom: 1rem;
 
@@ -49,16 +49,16 @@ const ArrowButton = styled.button`
 `;
 
 const LeftArrow = styled(ArrowButton)`
-    left: -20px;
+    left: 3px;
 `;
 
 const RightArrow = styled(ArrowButton)`
-    right: -20px;
+    right: 3px;
 `;
 
 const CardWrapper = styled.div`
-    flex: 0 0 auto;
-    width: 380px;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
 `;
 
 type CarouselProps<T> = {
@@ -69,25 +69,46 @@ type CarouselProps<T> = {
 
 export function Carousel<T>({ items, renderItem, showArrows = true }: CarouselProps<T>) {
     const scrollRef = useRef<HTMLDivElement>(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(false);
+
+    const updateScrollButtons = () => {
+        if (!scrollRef.current) return;
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        setCanScrollLeft(scrollLeft > 0);
+        setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1); // -1 for rounding
+    };
+
+    useEffect(() => {
+        updateScrollButtons(); // initial check
+    }, [items]);
 
     const scrollByCard = (direction: 'left' | 'right') => {
         if (!scrollRef.current) return;
-        const cardWidth = scrollRef.current.querySelector('div')?.clientWidth || 300;
+        const containerWidth = scrollRef.current.clientWidth;
         scrollRef.current.scrollBy({
-            left: direction === 'right' ? cardWidth + 16 : -cardWidth - 16,
+            left: direction === 'right' ? containerWidth : -containerWidth,
             behavior: 'smooth',
         });
     };
 
     return (
         <CarouselWrapper>
-            {showArrows && <LeftArrow onClick={() => scrollByCard('left')}>←</LeftArrow>}
-            <CarouselTrack ref={scrollRef}>
+            {showArrows && canScrollLeft && (
+                <LeftArrow onClick={() => scrollByCard('left')}>←</LeftArrow>
+            )}
+            <CarouselTrack
+                data-testid={'carousel-track'}
+                ref={scrollRef}
+                onScroll={updateScrollButtons}
+            >
                 {items.map((item, idx) => (
                     <CardWrapper key={idx}>{renderItem(item)}</CardWrapper>
                 ))}
             </CarouselTrack>
-            {showArrows && <RightArrow onClick={() => scrollByCard('right')}>→</RightArrow>}
+            {showArrows && canScrollRight && (
+                <RightArrow onClick={() => scrollByCard('right')}>→</RightArrow>
+            )}
         </CarouselWrapper>
     );
 }

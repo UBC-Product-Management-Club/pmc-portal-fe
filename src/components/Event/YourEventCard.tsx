@@ -89,7 +89,7 @@ export function YourEventCard({ event, disabled }: YourEventCardProps) {
                     {moment(event.startTime).format('HH.mm A')} | {event.location}
                 </EventTimeAndLocation>
                 <EventName>{event.name}</EventName>
-                <EventDescription>{event.description}</EventDescription>
+                <EventDescription>{event.blurb}</EventDescription>
             </Column>
             <Column>
                 <Thumbnail src={event.thumbnail} alt="Event thumbnail" />

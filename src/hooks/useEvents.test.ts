@@ -14,7 +14,7 @@ describe('useEvents', () => {
         {
             event_id: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
             name: 'Test Product Conference',
-            description: 'test event product conference',
+            blurb: 'test event product conference',
             date: '2025-08-02',
             start_time: '2025-08-02T15:30:00+00:00',
             end_time: '2025-08-03T00:00:00+00:00',
@@ -27,7 +27,7 @@ describe('useEvents', () => {
         {
             event_id: '889b13e2-3c59-4757-96a8-10618132e1d5',
             name: '"Sample Event"',
-            description: '"Test event"',
+            blurb: '"Test event"',
             date: '2025-08-01',
             start_time: '2025-08-01T09:00:00+00:00',
             end_time: '2025-08-01T17:00:00+00:00',
@@ -41,7 +41,7 @@ describe('useEvents', () => {
         {
             event_id: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
             name: 'test product sprint',
-            description: 'product sprint yay',
+            blurb: 'product sprint yay',
             date: '2026-09-01',
             start_time: '2026-09-01T20:30:00+00:00',
             end_time: '2026-09-02T08:00:00+00:00',
@@ -56,7 +56,7 @@ describe('useEvents', () => {
         {
             eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
             name: 'Test Product Conference',
-            description: 'test event product conference',
+            blurb: 'test event product conference',
             date: '2025-08-02',
             startTime: '2025-08-02T15:30:00+00:00',
             endTime: '2025-08-03T00:00:00+00:00',
@@ -69,7 +69,7 @@ describe('useEvents', () => {
         {
             eventId: '889b13e2-3c59-4757-96a8-10618132e1d5',
             name: '"Sample Event"',
-            description: '"Test event"',
+            blurb: '"Test event"',
             date: '2025-08-01',
             startTime: '2025-08-01T09:00:00+00:00',
             endTime: '2025-08-01T17:00:00+00:00',
@@ -82,7 +82,7 @@ describe('useEvents', () => {
         {
             eventId: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
             name: 'test product sprint',
-            description: 'product sprint yay',
+            blurb: 'product sprint yay',
             date: '2026-09-01',
             startTime: '2026-09-01T20:30:00+00:00',
             endTime: '2026-09-02T08:00:00+00:00',
@@ -96,6 +96,7 @@ describe('useEvents', () => {
     const event = {
         event_id: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
         name: 'Test Product Conference',
+        blurb: 'test event product conference',
         description: 'test event product conference',
         date: '2025-08-02',
         start_time: '2025-08-02T15:30:00+00:00',
@@ -114,6 +115,7 @@ describe('useEvents', () => {
     const parsedEvent = {
         eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
         name: 'Test Product Conference',
+        blurb: 'test event product conference',
         description: 'test event product conference',
         date: '2025-08-02',
         startTime: '2025-08-02T15:30:00+00:00',
@@ -128,6 +130,16 @@ describe('useEvents', () => {
         eventFormQuestions: {},
         registered: 0,
         needsReview: false,
+    };
+    const rawAttendee = {
+        user_id: '00000000-0000-0000-0000-000000000000',
+        event_id: '00000000-0000-0000-0000-000000000000',
+        event_form_answers: {},
+        attendee_id: '00000000-0000-0000-0000-000000000000',
+        registration_time: new Date().toISOString(),
+        is_payment_verified: true,
+        status: '',
+        payment_id: '',
     };
 
     beforeEach(() => {
@@ -148,7 +160,7 @@ describe('useEvents', () => {
         expect(events).toEqual(parsedEvents);
     });
 
-    it('fetches an event user hasnt registered for', async () => {
+    it('fetches an event', async () => {
         mockEventService.mockReturnValueOnce({
             getById: mockGetById,
             getAttendee: mockGetAttendee,
@@ -156,31 +168,33 @@ describe('useEvents', () => {
 
         const { result } = renderHook(() => useEvents());
 
-        const events = await result.current.getById('event_id');
-        expect(events.isRegistered).toEqual(false);
-        expect(events.event).toEqual(parsedEvent);
+        const event = await result.current.getById('event_id');
+        expect(event).toEqual(parsedEvent);
     });
 
-    it('fetches an event user has registered for', async () => {
-        mockGetAttendee = vi.fn().mockResolvedValueOnce({
-            user_id: 'user',
-            event_id: 'event',
-            event_form_answers: {},
-            attendee_id: 'attendee_id',
-            registration_time: '2025-08-02T15:30:00+00:00',
-            is_payment_verified: false,
-            status: 'registered',
-            payment_id: 'payment_id',
-        });
+    it('fetches a registered attendee for an event', async () => {
+        mockGetAttendee.mockResolvedValueOnce(rawAttendee);
         mockEventService.mockReturnValueOnce({
             getById: mockGetById,
             getAttendee: mockGetAttendee,
         });
 
         const { result } = renderHook(() => useEvents());
-        const events = await result.current.getById('event_id');
+        const attendee = await result.current.getAttendee('event_id');
 
-        expect(events.isRegistered).toEqual(true);
-        expect(events.event).toEqual(parsedEvent);
+        expect(Object.values(attendee!)).toEqual(Object.values(rawAttendee));
+    });
+
+    it('fetches a non-registered attendee for an event', async () => {
+        mockGetAttendee.mockResolvedValueOnce(null);
+        mockEventService.mockReturnValueOnce({
+            getById: mockGetById,
+            getAttendee: mockGetAttendee,
+        });
+
+        const { result } = renderHook(() => useEvents());
+        const attendee = await result.current.getAttendee('event_id');
+
+        expect(attendee).toEqual(null);
     });
 });
