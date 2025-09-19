@@ -71,7 +71,7 @@ const EventName = styled.p`
 // `;
 
 const Thumbnail = styled.img`
-    width: 40%;
+    width: 15rem;
     height: auto;
     aspect-ratio: 1 / 1;
     object-fit: cover;
@@ -80,7 +80,7 @@ const Thumbnail = styled.img`
     align-self: center;
 
     @media screen and (max-width: 768px) {
-        width: 80%;
+        width: 17rem;
     }
 `;
 
