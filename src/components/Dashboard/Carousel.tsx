@@ -49,11 +49,11 @@ const ArrowButton = styled.button`
 `;
 
 const LeftArrow = styled(ArrowButton)`
-    left: 10px;
+    left: 3px;
 `;
 
 const RightArrow = styled(ArrowButton)`
-    right: 10px;
+    right: 3px;
 `;
 
 const CardWrapper = styled.div`
