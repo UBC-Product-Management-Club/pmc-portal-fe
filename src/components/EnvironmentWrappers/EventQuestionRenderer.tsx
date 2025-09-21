@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Question } from '../../types/Question';
 import { styled } from 'styled-components';
 import { buildEventFormResponseSchema } from '../../utils.ts';
-import React from 'react';
+import React, { useState } from 'react';
 import z from 'zod/v4';
 
 const Content = styled.div`
@@ -291,6 +291,7 @@ export const EventQuestionRenderer = ({ onSubmit, questions }: EventFormProps) =
     const methods = useForm<ResponseData>({
         resolver: zodResolver(responseSchema),
     });
+    const [loading, setLoading] = useState(false);
 
     return (
         <Content>
@@ -299,7 +300,9 @@ export const EventQuestionRenderer = ({ onSubmit, questions }: EventFormProps) =
                     {questions.map((q) => (
                         <RenderQuestion key={q.id} question={q} />
                     ))}
-                    <Submit type="submit">Submit & Pay</Submit>
+                    <Submit disabled={loading} onClick={() => setLoading(true)} type="submit">
+                        {loading ? 'Loading...' : 'Submit & Pay'}
+                    </Submit>
                 </StyledForm>
             </FormProvider>
         </Content>

@@ -81,18 +81,6 @@ describe('Dashboard', () => {
             nonMemberPrice: 50,
             thumbnail: 'url2',
         },
-        {
-            eventId: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
-            name: 'your product',
-            blurb: 'desc',
-            date: '2026-09-01',
-            startTime: '2026-09-01T20:30:00+00:00',
-            endTime: '2026-09-02T08:00:00+00:00',
-            location: 'ubc henry angus',
-            memberPrice: 8,
-            nonMemberPrice: 20,
-            thumbnail: 'url3',
-        },
     ];
 
     beforeEach(() => {
@@ -101,7 +89,7 @@ describe('Dashboard', () => {
         mockUseUserData = (useUserData as Mock).mockReturnValue({
             user: undefined,
         });
-        mockGetUserCurrentEvents = vi.fn().mockResolvedValue(testUserEvents);
+        mockGetUserCurrentEvents = vi.fn().mockResolvedValue([]);
         vi.mocked(useEvents, { partial: true }).mockReturnValue({
             getAll: mockGetAllEvents,
             getUserCurrentEvents: mockGetUserCurrentEvents,
@@ -166,6 +154,8 @@ describe('Dashboard', () => {
     it('renders events correctly', async () => {
         await act(() => renderComponent());
 
+        expect(screen.queryByText('Your Events')).not.toBeInTheDocument();
+        expect(screen.getByText('Upcoming Events')).toBeInTheDocument();
         testEvents.map((event) => {
             Object.values(event).map((value) => {
                 expect(screen.getByText(value)).toBeInTheDocument();
@@ -210,12 +200,17 @@ describe('Dashboard', () => {
         mockUseUserData.mockReturnValueOnce({
             user: { firstName: 'geary', userId: '123' },
         });
+        mockGetUserCurrentEvents.mockResolvedValueOnce(testUserEvents);
+
         await act(() => renderComponent());
 
-        testUserEvents.map((event) => {
-            Object.values(event).map((value) => {
-                expect(screen.getByText(value)).toBeInTheDocument();
-            });
+        expect(screen.getByText('Your Events')).toBeInTheDocument();
+        expect(screen.getByText('Upcoming Events')).toBeInTheDocument();
+        testUserEvents.forEach((event) => {
+            expect(screen.getByText(event.name)).toBeInTheDocument();
+        });
+        testEvents.forEach((event) => {
+            expect(screen.getByText(event.name)).toBeInTheDocument();
         });
     });
 });

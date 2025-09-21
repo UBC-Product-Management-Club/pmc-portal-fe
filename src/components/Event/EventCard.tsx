@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 type EventCardProps = {
     event: EventCard;
     disabled: boolean;
+    link: string;
 };
 
 const Container = styled.div<{ disabled: boolean }>`
@@ -84,7 +85,7 @@ const Thumbnail = styled.img`
     }
 `;
 
-export function EventCard({ event, disabled }: EventCardProps) {
+export function EventCard({ event, disabled, link }: EventCardProps) {
     const { isMobile } = useInAppBrowser();
     const contents = (
         <Container disabled={disabled}>
@@ -105,7 +106,7 @@ export function EventCard({ event, disabled }: EventCardProps) {
             {disabled ? (
                 contents
             ) : (
-                <Link to={`/events/${event.eventId}/register`} style={{ textDecoration: 'none' }}>
+                <Link to={link} style={{ textDecoration: 'none' }}>
                     {contents}
                 </Link>
             )}

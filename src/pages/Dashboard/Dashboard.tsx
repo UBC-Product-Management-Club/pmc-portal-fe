@@ -6,7 +6,6 @@ import type { EventCard as EventCardType } from '../../types/Event';
 import { EventCard } from '../../components/Event/EventCard';
 import moment from 'moment';
 import { Carousel } from '../../components/Dashboard/Carousel';
-import { YourEventCard } from '../../components/Event/YourEventCard';
 import { usePaymentService } from '../../hooks/usePaymentService';
 
 const DashboardContainer = styled.div`
@@ -73,7 +72,7 @@ export default function Dashboard() {
                 console.error(e);
                 setError(true);
             });
-    }, [getAll]);
+    }, []);
 
     useEffect(() => {
         if (user && user.userId) {
@@ -84,7 +83,7 @@ export default function Dashboard() {
                     setError(true);
                 });
         }
-    }, [getUserCurrentEvents]);
+    }, [user]);
 
     const navigateToStripeMembershipPayment = async () => {
         if (user && user.userId) {
@@ -131,11 +130,13 @@ export default function Dashboard() {
                             items={userEvents}
                             showArrows={false}
                             renderItem={(event) => (
-                                <YourEventCard
+                                <EventCard
+                                    data-testid={`registered-${event.eventId}`}
                                     event={event}
                                     disabled={
                                         event.isDisabled || moment().isAfter(moment(event.date))
                                     }
+                                    link={`/events/${event.eventId}`}
                                 />
                             )}
                         />
@@ -156,10 +157,12 @@ export default function Dashboard() {
                                 items={events}
                                 renderItem={(event) => (
                                     <EventCard
+                                        data-testid={event.eventId}
                                         event={event}
                                         disabled={
                                             event.isDisabled || moment().isAfter(moment(event.date))
                                         }
+                                        link={`/events/${event.eventId}/register`}
                                     />
                                 )}
                             />
