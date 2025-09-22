@@ -14,7 +14,6 @@ import { UserDataProvider } from './providers/UserData/UserDataProvider.tsx';
 import AuthorizedRouter from './components/AuthorizedRouter/AuthorizedRouter.tsx';
 import PaymentSuccess from './components/Payment/PaymentSuccess.tsx';
 import PaymentCanceled from './components/Payment/PaymentCanceled.tsx';
-import UnderConstruction from './pages/Status/UnderConstruction.tsx';
 
 Modal.setAppElement('#root');
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -39,10 +38,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                             <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/events/:event_id/register" element={<Event />} />
                             <Route path="/profile" element={<Profile />} />
-                            <Route
-                                path="/events/3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45"
-                                element={<UnderConstruction />}
-                            />
                             <Route path="/dashboard/success" element={<PaymentSuccess />}></Route>
                             <Route path="/dashboard/canceled" element={<PaymentCanceled />}></Route>
                         </Route>

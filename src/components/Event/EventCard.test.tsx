@@ -30,6 +30,7 @@ describe('EventCard', () => {
         thumbnail: 'url1',
         memberOnly: false,
         isDisabled: false,
+        externalPage: null,
     };
 
     async function renderComponent(disabled?: boolean) {
@@ -56,6 +57,21 @@ describe('EventCard', () => {
             'href',
             `/events/${event.eventId}/register`
         );
+    });
+
+    it('renders event card with external url', async () => {
+        render(
+            <BrowserRouter>
+                <EventCard event={event} disabled={false} link="https://external_page.com" />
+            </BrowserRouter>
+        );
+
+        expect(screen.getByText('July 22, 2025')).toBeInTheDocument();
+        expect(screen.getByText('12:30 | sauder building')).toBeInTheDocument();
+        expect(screen.getByText(event.name)).toBeInTheDocument();
+        expect(screen.getByText(event.blurb)).toBeInTheDocument();
+        expect(screen.getByRole('img')).toHaveAttribute('src', event.thumbnail);
+        expect(screen.queryByRole('link')).toHaveAttribute('href', 'https://external_page.com');
     });
 
     it('renders event card for disabled event', async () => {

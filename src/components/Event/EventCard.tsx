@@ -12,7 +12,7 @@ type EventCardProps = {
     link: string;
 };
 
-const Container = styled.div<{ disabled: boolean }>`
+const Content = styled.div<{ disabled: boolean }>`
     width: inherit;
     display: flex;
     height: 280px;
@@ -59,18 +59,6 @@ const EventName = styled.p`
     font-weight: bold;
 `;
 
-// const EventDescription = styled.p`
-//     word-wrap: break-word;
-//     height: 4.5rem;
-//     overflow: hidden;
-//     display: -webkit-box;
-//     -webkit-line-clamp: 3;
-//     -webkit-box-orient: vertical;
-//     line-clamp: 3;
-//     box-sizing: border-box;
-//     text-overflow: ellipsis;
-// `;
-
 const Thumbnail = styled.img`
     width: 15rem;
     height: auto;
@@ -88,7 +76,7 @@ const Thumbnail = styled.img`
 export function EventCard({ event, disabled, link }: EventCardProps) {
     const { isMobile } = useInAppBrowser();
     const contents = (
-        <Container disabled={disabled}>
+        <Content disabled={disabled}>
             <Group>
                 <EventTimeAndLocation>
                     {moment(event.startTime).format('HH.mm')} | {event.location}
@@ -97,19 +85,23 @@ export function EventCard({ event, disabled, link }: EventCardProps) {
                 {!isMobile && <ReactMarkdown>{event.blurb}</ReactMarkdown>}
             </Group>
             <Thumbnail src={event.thumbnail} alt="Event thumbnail" />
-        </Container>
+        </Content>
+    );
+    const isExternal = link.startsWith('https://');
+    const navigateTo = isExternal ? (
+        <a href={link} style={{ textDecoration: 'none' }} target="_blank" rel="noopener noreferrer">
+            {contents}
+        </a>
+    ) : (
+        <Link to={link} style={{ textDecoration: 'none' }}>
+            {contents}
+        </Link>
     );
 
     return (
         <>
             <h3>{moment(event.date).format('MMMM D, YYYY')}</h3>
-            {disabled ? (
-                contents
-            ) : (
-                <Link to={link} style={{ textDecoration: 'none' }}>
-                    {contents}
-                </Link>
-            )}
+            {disabled ? contents : navigateTo}
         </>
     );
 }

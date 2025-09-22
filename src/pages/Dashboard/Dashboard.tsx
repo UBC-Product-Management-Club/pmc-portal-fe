@@ -136,7 +136,7 @@ export default function Dashboard() {
                                     disabled={
                                         event.isDisabled || moment().isAfter(moment(event.date))
                                     }
-                                    link={`/events/${event.eventId}`}
+                                    link={event.externalPage ?? `/events/${event.eventId}`}
                                 />
                             )}
                         />

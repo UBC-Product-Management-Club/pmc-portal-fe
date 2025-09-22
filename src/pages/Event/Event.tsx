@@ -7,7 +7,6 @@ import { type Event } from '../../types/Event';
 import { useEvents } from '../../hooks/useEvents';
 import { useAttendee } from '../../hooks/useAttendee';
 import { styled } from 'styled-components';
-import { MdOutlinePeopleAlt } from 'react-icons/md';
 import { useAuth0 } from '@auth0/auth0-react';
 import { EventRegistrationModal } from '../../components/Event/EventRegistrationModal';
 import { Question, questionsSchema } from '../../types/Question';
@@ -19,7 +18,7 @@ import ReactMarkdown from 'react-markdown';
 const EventHeader = styled.div`
     display: flex;
     flex-direction: row;
-    align-items: start;
+    align-items: flex-start;
     gap: 1rem;
     @media screen and (max-width: 1350px) {
         flex-direction: column;
@@ -38,7 +37,6 @@ const Thumbnail = styled.img`
     max-width: 50%;
     padding: 1rem;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    margin: auto;
 `;
 
 const Title = styled.h1`
@@ -156,7 +154,8 @@ export default function Event() {
     const scrollToMap = () => mapRef!.current!.scrollIntoView({ behavior: 'smooth' });
     // test that this works
     const isRegistrationOpen =
-        event && moment(event.registrationOpens).isSameOrBefore(moment.now());
+        event &&
+        moment().isBetween(moment(event.registrationOpens), moment(event.registrationCloses));
 
     // Modal UI state
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -266,12 +265,16 @@ export default function Event() {
 
     // Updates button display
     const getButtonText = useCallback(() => {
+        console.log(moment());
         if (!event) return '';
-        if (!isAuthenticated && isRegistered === undefined) return 'Please sign in to register.';
+        if (!isAuthenticated) return 'Please sign in to register.';
         if (isRegistered === undefined) return 'Loading...';
-        if (!isRegistrationOpen) return 'Registration opens soon!';
         if (event.registered === event.maxAttendees) return 'Sorry! This event is full';
         if (isRegistered) return "You're already registered.";
+        if (moment(moment()).isBefore(moment(event.registrationOpens)))
+            return 'Registration opens soon!';
+        if (moment(moment()).isAfter(moment(event.registrationCloses)))
+            return 'Registration has closed.';
         return 'Register now!';
     }, [event, isRegistered]);
 
@@ -301,11 +304,6 @@ export default function Event() {
                             }
                         />
                         <Detail
-                            icon={<MdOutlinePeopleAlt size={30} />}
-                            text={`${event.maxAttendees - event.registered}/${event.maxAttendees} spots left!`}
-                            subtext={'Register now!'}
-                        />
-                        <Detail
                             icon={<FaDollarSign size={30} />}
                             text={`Member price: ${event.memberPrice === 0 ? 'Free!' : event.memberPrice + '$'}`}
                             subtext={`Non-member price: ${event.nonMemberPrice}$`}
@@ -315,7 +313,7 @@ export default function Event() {
                         disabled={
                             event.registered === event.maxAttendees ||
                             isRegistered ||
-                            !isRegistrationOpen
+                            (isAuthenticated && !isRegistrationOpen)
                         }
                         onClick={() => {
                             if (!isAuthenticated) {
@@ -327,6 +325,17 @@ export default function Event() {
                     >
                         {getButtonText()}
                     </RegisterButton>
+                    <Description>
+                        <h1>About the event</h1>
+                        <ReactMarkdown>{event.description}</ReactMarkdown>
+                        <h1>Location</h1>
+                        <iframe
+                            ref={mapRef}
+                            width="100%"
+                            height="250"
+                            src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_API_KEY}&q=${event.location}`}
+                        />
+                    </Description>
                 </DetailsContainer>
             </EventHeader>
             <EventRegistrationModal
@@ -335,18 +344,6 @@ export default function Event() {
                 onClose={() => setIsModalOpen(false)}
                 onFormSubmit={onFormSubmit}
             />
-            <Description>
-                <h1>About the event</h1>
-                <ReactMarkdown>{event.description}</ReactMarkdown>
-                {/* {props.eventInfo ? (<ReactMarkdown>{props.eventInfo}</ReactMarkdown>) :  <p>{event.description}</p>} */}
-                <h1>Location</h1>
-                <iframe
-                    ref={mapRef}
-                    width="100%"
-                    height="250"
-                    src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_API_KEY}&q=${event.location}`}
-                />
-            </Description>
         </>
     );
 }

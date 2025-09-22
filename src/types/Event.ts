@@ -5,6 +5,7 @@ const RawEventSchema = z.object({
     name: z.string(),
     date: z.iso.date(),
     registration_opens: z.iso.datetime({ offset: true }),
+    registration_closes: z.iso.datetime({ offset: true }),
     start_time: z.iso.datetime({ offset: true }),
     end_time: z.iso.datetime({ offset: true }),
     location: z.string(),
@@ -19,6 +20,7 @@ const RawEventSchema = z.object({
     is_disabled: z.boolean(),
     registered: z.number(),
     needs_review: z.boolean(),
+    external_page: z.url().nullable().optional(),
 });
 
 const EventSchema = RawEventSchema.transform((event) => ({
@@ -28,6 +30,7 @@ const EventSchema = RawEventSchema.transform((event) => ({
     blurb: event.blurb,
     description: event.description,
     registrationOpens: event.registration_opens,
+    registrationCloses: event.registration_closes,
     startTime: event.start_time,
     endTime: event.end_time,
     location: event.location,
@@ -40,6 +43,7 @@ const EventSchema = RawEventSchema.transform((event) => ({
     isDisabled: event.is_disabled,
     registered: event.registered,
     needsReview: event.needs_review,
+    externalPage: event.external_page,
 }));
 
 const EventCardSchema = RawEventSchema.pick({
@@ -54,6 +58,7 @@ const EventCardSchema = RawEventSchema.pick({
     member_price: true,
     non_member_price: true,
     is_disabled: true,
+    external_page: true,
 }).transform((event) => ({
     eventId: event.event_id,
     name: event.name,
@@ -66,6 +71,7 @@ const EventCardSchema = RawEventSchema.pick({
     memberPrice: event.member_price,
     nonMemberPrice: event.non_member_price,
     isDisabled: event.is_disabled,
+    externalPage: event.external_page,
 }));
 
 const EventCardsSchema = z.array(EventCardSchema);
