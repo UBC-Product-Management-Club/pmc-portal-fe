@@ -154,6 +154,9 @@ export default function Event() {
 
     const mapRef = useRef<HTMLIFrameElement | null>(null);
     const scrollToMap = () => mapRef!.current!.scrollIntoView({ behavior: 'smooth' });
+    // test that this works
+    const isRegistrationOpen =
+        event && moment(event.registrationOpens).isSameOrBefore(moment.now());
 
     // Modal UI state
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -266,6 +269,7 @@ export default function Event() {
         if (!event) return '';
         if (!isAuthenticated && isRegistered === undefined) return 'Please sign in to register.';
         if (isRegistered === undefined) return 'Loading...';
+        if (!isRegistrationOpen) return 'Registration opens soon!';
         if (event.registered === event.maxAttendees) return 'Sorry! This event is full';
         if (isRegistered) return "You're already registered.";
         return 'Register now!';
@@ -308,7 +312,11 @@ export default function Event() {
                         />
                     </Details>
                     <RegisterButton
-                        disabled={event.registered === event.maxAttendees || isRegistered}
+                        disabled={
+                            event.registered === event.maxAttendees ||
+                            isRegistered ||
+                            !isRegistrationOpen
+                        }
                         onClick={() => {
                             if (!isAuthenticated) {
                                 navigateTo('/');

@@ -296,11 +296,17 @@ export const EventQuestionRenderer = ({ onSubmit, questions }: EventFormProps) =
     return (
         <Content>
             <FormProvider {...methods}>
-                <StyledForm autoComplete="off" onSubmit={methods.handleSubmit(onSubmit)}>
+                <StyledForm
+                    autoComplete="off"
+                    onSubmit={methods.handleSubmit((data) => {
+                        setLoading(true);
+                        onSubmit(data);
+                    })}
+                >
                     {questions.map((q) => (
                         <RenderQuestion key={q.id} question={q} />
                     ))}
-                    <Submit disabled={loading} onClick={() => setLoading(true)} type="submit">
+                    <Submit disabled={loading} type="submit">
                         {loading ? 'Loading...' : 'Submit & Pay'}
                     </Submit>
                 </StyledForm>
