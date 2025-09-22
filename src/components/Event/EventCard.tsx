@@ -79,7 +79,8 @@ export function EventCard({ event, disabled, link }: EventCardProps) {
         <Content disabled={disabled}>
             <Group>
                 <EventTimeAndLocation>
-                    {moment(event.startTime).format('HH.mm')} | {event.location}
+                    {`${moment(event.startTime).format('hh.mm a')} - ${moment(event.endTime).format('hh.mm a')}`}{' '}
+                    | {event.location}
                 </EventTimeAndLocation>
                 <EventName>{event.name}</EventName>
                 {!isMobile && <ReactMarkdown>{event.blurb}</ReactMarkdown>}

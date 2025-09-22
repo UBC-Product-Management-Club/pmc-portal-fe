@@ -49,7 +49,7 @@ describe('EventCard', () => {
         await renderComponent();
 
         expect(screen.getByText('July 22, 2025')).toBeInTheDocument();
-        expect(screen.getByText('12:30 | sauder building')).toBeInTheDocument();
+        expect(screen.getByText('Mocked Date - Mocked Date | sauder building')).toBeInTheDocument();
         expect(screen.getByText(event.name)).toBeInTheDocument();
         expect(screen.getByText(event.blurb)).toBeInTheDocument();
         expect(screen.getByRole('img')).toHaveAttribute('src', event.thumbnail);
@@ -67,7 +67,7 @@ describe('EventCard', () => {
         );
 
         expect(screen.getByText('July 22, 2025')).toBeInTheDocument();
-        expect(screen.getByText('12:30 | sauder building')).toBeInTheDocument();
+        expect(screen.getByText('Mocked Date - Mocked Date | sauder building')).toBeInTheDocument();
         expect(screen.getByText(event.name)).toBeInTheDocument();
         expect(screen.getByText(event.blurb)).toBeInTheDocument();
         expect(screen.getByRole('img')).toHaveAttribute('src', event.thumbnail);
