@@ -37,6 +37,10 @@ const Thumbnail = styled.img`
     max-width: 50%;
     padding: 1rem;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    @media screen and (max-width: 1350px) {
+        max-width: 100%;
+        padding: 0;
+    }
 `;
 
 const Title = styled.h1`
