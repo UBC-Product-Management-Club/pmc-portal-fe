@@ -86,6 +86,7 @@ const RegisterButton = styled.button`
     border-radius: 20px;
     font-weight: 500;
     font-family: inherit;
+    height: 3rem;
     background: #f0f0f0;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
@@ -135,10 +136,6 @@ function Detail(props: DetailRow) {
         </DetailRow>
     );
 }
-
-// interface EventProps {
-//     eventInfo?: ReactNode;
-// }
 
 export default function Event() {
     const { isAuthenticated } = useAuth0();
@@ -271,14 +268,14 @@ export default function Event() {
     const getButtonText = useCallback(() => {
         console.log(moment());
         if (!event) return '';
-        if (!isAuthenticated) return 'Please sign in to register.';
+        if (!isAuthenticated) return 'Please sign in to register';
         if (isRegistered === undefined) return 'Loading...';
         if (event.registered === event.maxAttendees) return 'Sorry! This event is full';
-        if (isRegistered) return "You're already registered.";
+        if (isRegistered) return "You're already registered!";
         if (moment(moment()).isBefore(moment(event.registrationOpens)))
             return 'Registration opens soon!';
         if (moment(moment()).isAfter(moment(event.registrationCloses)))
-            return 'Registration has closed.';
+            return 'Registration has closed';
         return 'Register now!';
     }, [event, isRegistered]);
 

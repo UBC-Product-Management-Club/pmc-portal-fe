@@ -130,7 +130,7 @@ describe('Event', () => {
         expect(screen.getByText('Member price: 1$')).toBeInTheDocument();
         expect(screen.getByText('Non-member price: 2$')).toBeInTheDocument();
         expect(screen.getByText(mockEvent.description)).toBeInTheDocument();
-        expect(screen.getByRole('button')).toHaveTextContent('Please sign in to register.');
+        expect(screen.getByRole('button')).toHaveTextContent('Please sign in to register');
         expect(screen.getByRole('img')).toHaveAttribute('src', mockEvent.thumbnail);
     });
 
@@ -168,7 +168,7 @@ describe('Event', () => {
 
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
-            expect(screen.getByRole('button')).toHaveTextContent('Registration has closed.');
+            expect(screen.getByRole('button')).toHaveTextContent('Registration has closed');
             expect(screen.getByRole('button')).toHaveAttribute('disabled');
         });
 
@@ -185,7 +185,7 @@ describe('Event', () => {
         it('when already registered', async () => {
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
-            expect(screen.getByRole('button')).toHaveTextContent("You're already registered.");
+            expect(screen.getByRole('button')).toHaveTextContent("You're already registered!");
             expect(screen.getByRole('button')).toHaveAttribute('disabled');
         });
 
@@ -194,7 +194,7 @@ describe('Event', () => {
             mockUseAuth0.mockReturnValue({ isAuthenticated: false });
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
-            expect(screen.getByRole('button')).toHaveTextContent('Please sign in to register.');
+            expect(screen.getByRole('button')).toHaveTextContent('Please sign in to register');
 
             await act(() => user.click(screen.getByRole('button')));
 
