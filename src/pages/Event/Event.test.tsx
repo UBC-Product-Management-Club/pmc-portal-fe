@@ -36,6 +36,7 @@ describe('Event', () => {
             date: '2025-01-01',
             blurb: 'sdsd',
             description: 'sdsd',
+            registrationOpens: '2025-07-21T21:30:00+00',
             startTime: '2025-07-21T21:30:00+00',
             endTime: '2025-07-21T22:30:00+00',
             location: 'UBC Sauder Building',
