@@ -16,6 +16,7 @@ export const StyledTextArea = styled.textarea<{ hasError?: boolean }>`
     color: #ffffff;
     resize: none;
     font-size: 14px;
+    font-family: poppins;
 
     &:focus {
         outline: none;

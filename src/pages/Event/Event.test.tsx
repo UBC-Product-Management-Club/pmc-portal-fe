@@ -134,6 +134,17 @@ describe('Event', () => {
         expect(screen.getByRole('img')).toHaveAttribute('src', mockEvent.thumbnail);
     });
 
+    // it('show go to event page if registered', async () => {
+    //     await renderComponent();
+
+    //     await waitFor(() => {
+    //         expect(screen.getByRole('button')).toHaveTextContent("You're already registered!");
+    //         expect(screen.getByRole('button')).toHaveAttribute('disabled');
+    //         expect(screen.getByText("Go to event page")).toBeInTheDocument();
+    //     })
+    //     screen.debug(undefined)
+    // })
+
     describe('register button text', () => {
         it('when registration hasnt opened', async () => {
             vi.spyOn(Date, 'now').mockImplementation(() => mockBeforeRegistrationDate);

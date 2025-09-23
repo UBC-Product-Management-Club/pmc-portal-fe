@@ -12,6 +12,7 @@ export default function EventRegistrationFormInput({
     return (
         <div>
             <input
+                style={{ fontFamily: 'poppins' }}
                 className={'bg-dark-blue form-input'}
                 type={type}
                 placeholder={required ? `${placeholder} *` : placeholder}

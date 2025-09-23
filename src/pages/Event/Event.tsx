@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { CiCalendar, CiLocationOn } from 'react-icons/ci';
 import { FaDollarSign } from 'react-icons/fa6';
 import moment from 'moment';
@@ -266,7 +266,6 @@ export default function Event() {
 
     // Updates button display
     const getButtonText = useCallback(() => {
-        console.log(moment());
         if (!event) return '';
         if (!isAuthenticated) return 'Please sign in to register';
         if (isRegistered === undefined) return 'Loading...';
@@ -326,6 +325,19 @@ export default function Event() {
                     >
                         {getButtonText()}
                     </RegisterButton>
+                    {isRegistered && event.externalPage && (
+                        <Link
+                            to={
+                                event.externalPage.startsWith('https://')
+                                    ? event.externalPage
+                                    : `/events/${event.eventId}`
+                            }
+                            target="_blank"
+                            rel="noreferrer noopener"
+                        >
+                            <RegisterButton>Go to event page</RegisterButton>
+                        </Link>
+                    )}
                     <Description>
                         <h1>About the event</h1>
                         <ReactMarkdown>{event.description}</ReactMarkdown>

@@ -52,7 +52,7 @@ const DefaultTextInput = styled.input<{ $hasError: boolean }>`
     border-radius: 0.5rem;
     padding: 0.5rem 0.75rem;
     flex: ${(props) => (props.width ? '' : 1)};
-    font-family: 'poppins';
+    font-family: poppins;
     border: 1px solid ${(props) => (props.$hasError ? 'red' : '#ccc')};
     outline: none;
     box-sizing: border-box;
@@ -68,9 +68,9 @@ const TextArea = styled.textarea<{ $hasError: boolean }>`
     border: 1px solid ${(props) => (props.$hasError ? 'red' : '#ccc')};
     outline: none;
     box-sizing: border-box;
+    font-family: poppins;
 
     &::placeholder {
-        font-family: 'poppins';
         color: var(--pmc-midnight-blue);
     }
 `;
