@@ -21,6 +21,7 @@ const RawEventSchema = z.object({
     registered: z.number(),
     needs_review: z.boolean(),
     external_page: z.url().nullable().optional(),
+    waitlist_form: z.url().nullable().optional(),
 });
 
 const EventSchema = RawEventSchema.transform((event) => ({
@@ -44,6 +45,7 @@ const EventSchema = RawEventSchema.transform((event) => ({
     registered: event.registered,
     needsReview: event.needs_review,
     externalPage: event.external_page,
+    waitlistForm: event.waitlist_form,
 }));
 
 const EventCardSchema = RawEventSchema.pick({

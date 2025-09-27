@@ -56,12 +56,13 @@ describe('Event', () => {
             registered: 1,
             needsReview: false,
             externalPage: 'https://google.com',
+            waitlistForm: 'https://waitlist.form',
         };
         (useUserData as Mock).mockReturnValue({
             user: mockUser,
         });
         mockGetEventById = vi.fn().mockResolvedValue(mockEvent);
-        mockGetAttendee = vi.fn().mockResolvedValue({});
+        mockGetAttendee = vi.fn().mockResolvedValue({ attendeeId: 'id' });
         vi.mocked(useEvents, { partial: true }).mockReturnValue({
             getById: mockGetEventById,
             getAttendee: mockGetAttendee,
@@ -134,17 +135,6 @@ describe('Event', () => {
         expect(screen.getByRole('img')).toHaveAttribute('src', mockEvent.thumbnail);
     });
 
-    // it('show go to event page if registered', async () => {
-    //     await renderComponent();
-
-    //     await waitFor(() => {
-    //         expect(screen.getByRole('button')).toHaveTextContent("You're already registered!");
-    //         expect(screen.getByRole('button')).toHaveAttribute('disabled');
-    //         expect(screen.getByText("Go to event page")).toBeInTheDocument();
-    //     })
-    //     screen.debug(undefined)
-    // })
-
     describe('register button text', () => {
         it('when registration hasnt opened', async () => {
             vi.spyOn(Date, 'now').mockImplementation(() => mockBeforeRegistrationDate);
@@ -189,8 +179,10 @@ describe('Event', () => {
 
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
-            expect(screen.getByRole('button')).toHaveTextContent('Sorry! This event is full');
-            expect(screen.getByRole('button')).toHaveAttribute('disabled');
+            expect(screen.getByRole('button')).toHaveTextContent(
+                'Sorry! This event is full. Join the waitlist!'
+            );
+            expect(screen.getByRole('button')).not.toHaveAttribute('disabled');
         });
 
         it('when already registered', async () => {

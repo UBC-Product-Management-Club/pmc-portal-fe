@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { CiCalendar, CiLocationOn } from 'react-icons/ci';
 import { FaDollarSign } from 'react-icons/fa6';
@@ -153,10 +153,18 @@ export default function Event() {
 
     const mapRef = useRef<HTMLIFrameElement | null>(null);
     const scrollToMap = () => mapRef!.current!.scrollIntoView({ behavior: 'smooth' });
-    // test that this works
-    const isRegistrationOpen =
-        event &&
-        moment().isBetween(moment(event.registrationOpens), moment(event.registrationCloses));
+    const isFull = event && event.registered === event.maxAttendees;
+
+    const buttonState = (() => {
+        if (!event) return 'hidden';
+        if (!isAuthenticated) return 'authRequired';
+        if (isRegistered === undefined) return 'loading';
+        if (isFull) return 'full';
+        if (isRegistered) return 'alreadyRegistered';
+        if (moment().isBefore(moment(event.registrationOpens))) return 'notOpenYet';
+        if (moment().isAfter(moment(event.registrationCloses))) return 'closed';
+        return 'open';
+    })();
 
     // Modal UI state
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -264,19 +272,47 @@ export default function Event() {
         }
     };
 
-    // Updates button display
-    const getButtonText = useCallback(() => {
-        if (!event) return '';
-        if (!isAuthenticated) return 'Please sign in to register';
-        if (isRegistered === undefined) return 'Loading...';
-        if (event.registered === event.maxAttendees) return 'Sorry! This event is full';
-        if (isRegistered) return "You're already registered!";
-        if (moment(moment()).isBefore(moment(event.registrationOpens)))
-            return 'Registration opens soon!';
-        if (moment(moment()).isAfter(moment(event.registrationCloses)))
-            return 'Registration has closed';
-        return 'Register now!';
-    }, [event, isRegistered]);
+    const renderButton = () => {
+        switch (buttonState) {
+            case 'authRequired':
+                return (
+                    <RegisterButton onClick={() => navigateTo('/')}>
+                        Please sign in to register
+                    </RegisterButton>
+                );
+            case 'loading':
+                return <RegisterButton disabled>Loading...</RegisterButton>;
+            case 'full':
+                return (
+                    <a
+                        href={event?.waitlistForm ? event.waitlistForm : ''}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <RegisterButton>
+                            Sorry! This event is full. Join the waitlist!
+                        </RegisterButton>
+                    </a>
+                );
+            case 'alreadyRegistered':
+                return <RegisterButton disabled>You're already registered!</RegisterButton>;
+            case 'notOpenYet':
+                return <RegisterButton disabled>Registration opens soon!</RegisterButton>;
+            case 'closed':
+                return <RegisterButton disabled>Registration has closed!</RegisterButton>;
+            case 'open':
+                return (
+                    <RegisterButton onClick={() => !isModalOpen && setIsModalOpen(true)}>
+                        Register now!
+                    </RegisterButton>
+                );
+            default:
+                return null;
+        }
+    };
+
+    console.log(isRegistered);
+    console.log(event?.externalPage);
 
     if (loading) return <p style={{ color: 'white' }}>Loading...</p>;
     if (error) return <p>an error occurred fetching event details... try refreshing.</p>;
@@ -309,22 +345,7 @@ export default function Event() {
                             subtext={`Non-member price: ${event.nonMemberPrice}$`}
                         />
                     </Details>
-                    <RegisterButton
-                        disabled={
-                            event.registered === event.maxAttendees ||
-                            isRegistered ||
-                            (isAuthenticated && !isRegistrationOpen)
-                        }
-                        onClick={() => {
-                            if (!isAuthenticated) {
-                                navigateTo('/');
-                            } else if (!isModalOpen) {
-                                setIsModalOpen(true);
-                            }
-                        }}
-                    >
-                        {getButtonText()}
-                    </RegisterButton>
+                    {renderButton()}
                     {isRegistered && event.externalPage && (
                         <Link
                             to={
