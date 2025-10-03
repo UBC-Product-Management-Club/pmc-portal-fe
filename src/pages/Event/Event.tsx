@@ -153,15 +153,15 @@ export default function Event() {
 
     const mapRef = useRef<HTMLIFrameElement | null>(null);
     const scrollToMap = () => mapRef!.current!.scrollIntoView({ behavior: 'smooth' });
-    const isFull = event && event.registered === event.maxAttendees;
+    const isFull = event && event.registered >= event.maxAttendees;
 
     const buttonState = (() => {
         if (!event) return 'hidden';
+        if (isFull) return 'full';
         if (!isAuthenticated) return 'authRequired';
         if (isRegistered === undefined) return 'loading';
-        if (isFull) return 'full';
-        if (isRegistered) return 'alreadyRegistered';
         if (moment().isBefore(moment(event.registrationOpens))) return 'notOpenYet';
+        if (isRegistered) return 'alreadyRegistered';
         if (moment().isAfter(moment(event.registrationCloses))) return 'closed';
         return 'open';
     })();
