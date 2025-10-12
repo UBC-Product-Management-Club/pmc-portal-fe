@@ -204,8 +204,6 @@ export default function Event() {
     useEffect(() => {
         const query = new URLSearchParams(window.location.search);
         const attendeeId = query.get('attendeeId');
-        console.log('attendeeId', attendeeId);
-
         if (query.get('success')) {
             showToast('success', 'Payment successful! You are registered for the event.');
             setIsRegistered(true);
@@ -301,18 +299,46 @@ export default function Event() {
             case 'closed':
                 return <RegisterButton disabled>Registration has closed!</RegisterButton>;
             case 'open':
-                return (
-                    <RegisterButton onClick={() => !isModalOpen && setIsModalOpen(true)}>
-                        Register now!
-                    </RegisterButton>
-                );
+                return <RegisterButton onClick={handleRegisterClick}>Register now!</RegisterButton>;
             default:
                 return null;
         }
     };
 
-    console.log(isRegistered);
-    console.log(event?.externalPage);
+    const handleRegisterClick = async () => {
+        if (!event || !event.eventId) return;
+
+        // If there are no questions, skip modal and go straight to Stripe
+        const hasQuestions =
+            parsedQuestions && Array.isArray(parsedQuestions) && parsedQuestions.length > 0;
+
+        if (!hasQuestions) {
+            try {
+                // Create attendee (empty form)
+                const payload = constructFormData({});
+                const resp = await eventService.addAttendee(event.eventId, payload);
+                const parsed = AttendeeSchema.safeParse(resp.attendee);
+                if (!parsed.success) {
+                    console.error('Validation errors:', parsed.error.issues);
+                    throw new Error('Attendee validation failed');
+                }
+                const attendeeId = parsed.data.attendeeId;
+                if (!attendeeId) throw new Error('No attendeeId returned');
+
+                // Go straight to Stripe
+                await navigateToStripeEventPayment(event.eventId, attendeeId);
+            } catch (err) {
+                console.error('Error registering without questions:', err);
+                setError(true);
+            }
+        } else {
+            // Open modal if there are questions
+            setIsModalOpen(true);
+        }
+    };
+
+    console.log('isRegistered', isRegistered);
+    console.log('external page', event?.externalPage);
 
     if (loading) return <p style={{ color: 'white' }}>Loading...</p>;
     if (error) return <p>an error occurred fetching event details... try refreshing.</p>;
