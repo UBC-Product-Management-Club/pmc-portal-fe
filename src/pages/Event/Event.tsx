@@ -11,7 +11,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { EventRegistrationModal } from '../../components/Event/EventRegistrationModal';
 import { Question, questionsSchema } from '../../types/Question';
 import { usePaymentService } from '../../hooks/usePaymentService';
-import { ATTENDEE_STATUS, AttendeeSchema } from '../../types/Attendee';
+import { AttendeeSchema, AttendeeStatus } from '../../types/Attendee';
 import { showToast } from '../../utils';
 import ReactMarkdown from 'react-markdown';
 
@@ -148,15 +148,16 @@ export default function Event() {
     const [event, setEvent] = useState<Event | undefined>();
     const [parsedQuestions, setParsedQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState(true);
-    const [attendeeStatus, setAttendeeStatus] = useState<ATTENDEE_STATUS>();
+    const [attendeeStatus, setAttendeeStatus] = useState<AttendeeStatus>();
     const [error, setError] = useState(false);
 
     const mapRef = useRef<HTMLIFrameElement | null>(null);
     const scrollToMap = () => mapRef!.current!.scrollIntoView({ behavior: 'smooth' });
     const isFull = event && event.registered >= event.maxAttendees;
     const canGoToEventPage =
-        attendeeStatus === ATTENDEE_STATUS.ACCEPTED ||
-        attendeeStatus === ATTENDEE_STATUS.REGISTERED;
+        event &&
+        attendeeStatus &&
+        (attendeeStatus === 'REGISTERED' || attendeeStatus === 'ACCEPTED');
 
     const buttonState = (() => {
         if (!event) return 'hidden';
@@ -164,10 +165,10 @@ export default function Event() {
         if (!isAuthenticated) return 'authRequired';
         if (loading) return 'loading';
         if (moment().isBefore(moment(event.registrationOpens))) return 'notOpenYet';
-        if (attendeeStatus === ATTENDEE_STATUS.REGISTERED) return 'alreadyRegistered';
-        if (attendeeStatus === ATTENDEE_STATUS.APPLIED) return 'applied';
-        if (attendeeStatus === ATTENDEE_STATUS.PROCESSING) return 'processing';
-        if (attendeeStatus === ATTENDEE_STATUS.ACCEPTED) return 'accepted';
+        if (attendeeStatus === 'REGISTERED') return 'alreadyRegistered';
+        if (attendeeStatus === 'APPLIED') return 'applied';
+        if (attendeeStatus === 'PROCESSING') return 'processing';
+        if (attendeeStatus === 'ACCEPTED') return 'accepted';
         if (moment().isAfter(moment(event.registrationCloses))) return 'closed';
         return 'open';
     })();
@@ -179,32 +180,43 @@ export default function Event() {
     useEffect(() => {
         if (!event_id) return;
 
-        eventService
-            .getById(event_id)
-            .then((event) => {
-                setEvent(event);
+        const fetchData = async () => {
+            try {
+                const promises = [
+                    eventService.getById(event_id).then((event) => {
+                        setEvent(event);
+                        if (
+                            event.eventFormQuestions &&
+                            typeof event.eventFormQuestions === 'object' &&
+                            'questions' in event.eventFormQuestions
+                        ) {
+                            const result = questionsSchema.safeParse(
+                                event.eventFormQuestions.questions
+                            );
+                            if (result.success) setParsedQuestions(result.data);
+                        }
+                    }),
+                ];
 
-                //Parse event questions
-                if (
-                    event.eventFormQuestions &&
-                    typeof event.eventFormQuestions === 'object' &&
-                    'questions' in event.eventFormQuestions
-                ) {
-                    const result = questionsSchema.safeParse(event.eventFormQuestions.questions);
-                    if (result.success) {
-                        setParsedQuestions(result.data);
-                    }
+                if (isAuthenticated) {
+                    promises.push(
+                        attendeeService
+                            .getAttendee(event_id)
+                            .then((attendee) => setAttendeeStatus(attendee?.status))
+                    );
                 }
-            })
-            .catch(() => setError(true))
-            .finally(() => setLoading(false));
-        if (isAuthenticated) {
-            eventService
-                .getAttendee(event_id)
-                .then((attendee) => setAttendeeStatus(attendee?.status))
-                .catch(() => {});
-        }
-    }, [event_id]);
+
+                await Promise.all(promises);
+            } catch (err) {
+                console.error(err);
+                setError(true);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [event_id, isAuthenticated]);
 
     // Display payment message and delete temp attendee record [WIP]
     useEffect(() => {
@@ -214,7 +226,7 @@ export default function Event() {
 
         if (query.get('success')) {
             showToast('success', 'Payment successful! You are registered for the event.');
-            setAttendeeStatus(ATTENDEE_STATUS.REGISTERED);
+            setAttendeeStatus('REGISTERED');
         } else if (query.get('canceled') && attendeeId) {
             attendeeService.deleteAttendee(attendeeId);
             showToast('error', 'Payment canceled, you have not been charged.');
@@ -301,13 +313,30 @@ export default function Event() {
                     </a>
                 );
             case 'alreadyRegistered':
-                return <RegisterButton disabled>Thank you for registering!</RegisterButton>;
+            case 'accepted':
+                console.log(`can go to event page ${canGoToEventPage}`);
+                return (
+                    <>
+                        <RegisterButton disabled>You're in!</RegisterButton>
+                        {canGoToEventPage && (
+                            <Link
+                                to={
+                                    event.externalPage?.startsWith('https://')
+                                        ? event.externalPage
+                                        : `/events/${event.eventId}`
+                                }
+                                target="_blank"
+                                rel="noreferrer noopener"
+                            >
+                                <RegisterButton>Go to event page</RegisterButton>
+                            </Link>
+                        )}
+                    </>
+                );
             case 'applied':
                 return <RegisterButton disabled>Thank you for applying!</RegisterButton>;
             case 'processing':
                 return <RegisterButton disabled>We are processing your submission!</RegisterButton>;
-            case 'accepted':
-                return <RegisterButton disabled>You're in!</RegisterButton>;
             case 'notOpenYet':
                 return <RegisterButton disabled>Registration opens soon!</RegisterButton>;
             case 'closed':
@@ -355,19 +384,6 @@ export default function Event() {
                         />
                     </Details>
                     {renderButton()}
-                    {canGoToEventPage && event.externalPage && (
-                        <Link
-                            to={
-                                event.externalPage.startsWith('https://')
-                                    ? event.externalPage
-                                    : `/events/${event.eventId}`
-                            }
-                            target="_blank"
-                            rel="noreferrer noopener"
-                        >
-                            <RegisterButton>Go to event page</RegisterButton>
-                        </Link>
-                    )}
                     <Description>
                         <h1>About the event</h1>
                         <ReactMarkdown>{event.description}</ReactMarkdown>
