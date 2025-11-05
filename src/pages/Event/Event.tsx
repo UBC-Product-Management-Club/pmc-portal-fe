@@ -11,9 +11,10 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { EventRegistrationModal } from '../../components/Event/EventRegistrationModal';
 import { Question, questionsSchema } from '../../types/Question';
 import { usePaymentService } from '../../hooks/usePaymentService';
-import { AttendeeSchema } from '../../types/Attendee';
+import { AttendeeSchema, AttendeeStatus } from '../../types/Attendee';
 import { showToast } from '../../utils';
 import ReactMarkdown from 'react-markdown';
+import { CheckoutSessionResponse } from '../../service/PaymentService';
 
 const EventHeader = styled.div`
     display: flex;
@@ -148,7 +149,8 @@ export default function Event() {
     const [event, setEvent] = useState<Event | undefined>();
     const [parsedQuestions, setParsedQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isRegistered, setIsRegistered] = useState<boolean | undefined>(undefined);
+    const [checkoutSession, setCheckoutSession] = useState<CheckoutSessionResponse>();
+    const [attendeeState, setAttendeeState] = useState<AttendeeStatus | undefined>();
     const [error, setError] = useState(false);
 
     const mapRef = useRef<HTMLIFrameElement | null>(null);
@@ -159,10 +161,12 @@ export default function Event() {
         if (!event) return 'hidden';
         if (isFull) return 'full';
         if (!isAuthenticated) return 'authRequired';
-        if (isRegistered === undefined) return 'loading';
+        if (loading) return 'loading';
         if (moment().isBefore(moment(event.registrationOpens))) return 'notOpenYet';
-        if (isRegistered) return 'alreadyRegistered';
+        if (attendeeState === 'PROCESSING') return 'processing';
+        if (attendeeState === 'REGISTERED') return 'alreadyRegistered';
         if (moment().isAfter(moment(event.registrationCloses))) return 'closed';
+        if (attendeeState === 'APPLIED') return 'applied';
         return 'open';
     })();
 
@@ -193,33 +197,45 @@ export default function Event() {
             .catch(() => setError(true))
             .finally(() => setLoading(false));
         if (isAuthenticated) {
-            eventService
+            attendeeService
                 .getAttendee(event_id)
-                .then((attendee) => setIsRegistered(attendee !== null))
-                .catch(() => {});
+                .then((attendee) => {
+                    console.log(attendee);
+                    if (attendee) {
+                        setAttendeeState(attendee.status);
+                    }
+                })
+                .catch((error) => console.error(error));
         }
     }, [event_id]);
 
     // Display payment message and delete temp attendee record [WIP]
     useEffect(() => {
         const query = new URLSearchParams(window.location.search);
-        const attendeeId = query.get('attendeeId');
-        console.log('attendeeId', attendeeId);
-
         if (query.get('success')) {
             showToast('success', 'Payment successful! You are registered for the event.');
-            setIsRegistered(true);
-        } else if (query.get('canceled') && attendeeId) {
-            attendeeService.deleteAttendee(attendeeId);
-            showToast('error', 'Payment canceled, you have not been charged.');
+            setAttendeeState('REGISTERED');
         }
         window.history.replaceState({}, document.title, `/events/${event_id}/register`);
     }, [event_id]);
 
+    useEffect(() => {
+        if (event_id && attendeeState === 'PROCESSING') {
+            paymentService
+                .getCheckoutSession(event_id)
+                .then((session) => {
+                    console.log(session);
+                    setCheckoutSession(session);
+                })
+                .catch((error) => console.error(error));
+        }
+    }, [event_id, attendeeState]);
+
     // Create stripe session and redirects user
-    const navigateToStripeEventPayment = async (eventId: string, attendeeId: string) => {
+    const navigateToStripeEventPayment = async (eventId: string) => {
         try {
-            const resp = await paymentService.createStripeSessionEventUrl(eventId, attendeeId);
+            console.log('creating checkout session');
+            const resp = await paymentService.createStripeSessionEventUrl(eventId);
             if (!resp.url) {
                 throw new Error('Stripe session did not return a URL');
             }
@@ -261,11 +277,13 @@ export default function Event() {
                 throw new Error('Attendee validation failed');
             }
 
-            const attendeeId = parsed.data.attendeeId;
-            if (!attendeeId) {
-                throw new Error('No attendeeId returned');
+            if (!event.needsReview) {
+                await navigateToStripeEventPayment(event.eventId);
+            } else {
+                setAttendeeState('APPLIED');
+                setIsModalOpen(false);
+                showToast('success', 'Your application has been submitted.');
             }
-            await navigateToStripeEventPayment(event.eventId, attendeeId);
         } catch (err) {
             console.error('Error submitting attendee form:', err);
             setError(true);
@@ -300,6 +318,39 @@ export default function Event() {
                 return <RegisterButton disabled>Registration opens soon!</RegisterButton>;
             case 'closed':
                 return <RegisterButton disabled>Registration has closed!</RegisterButton>;
+            case 'processing':
+                return (
+                    <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                        <RegisterButton disabled>
+                            We're processing your registration!
+                        </RegisterButton>
+                        {checkoutSession && (
+                            <span
+                                style={{
+                                    fontSize: '10pt',
+                                    marginTop: '5px',
+                                    color: 'var(--pmc-light-grey)',
+                                }}
+                            >
+                                Click{' '}
+                                <a
+                                    href={checkoutSession.url}
+                                    target="_blank"
+                                    style={{ color: 'white' }}
+                                >
+                                    here
+                                </a>{' '}
+                                to pay. Expires {moment.unix(checkoutSession.expires_at).calendar()}
+                            </span>
+                        )}
+                    </div>
+                );
+            case 'applied':
+                return (
+                    <RegisterButton disabled>
+                        Thank you! We've received your application.
+                    </RegisterButton>
+                );
             case 'open':
                 return (
                     <RegisterButton onClick={() => !isModalOpen && setIsModalOpen(true)}>
@@ -310,9 +361,6 @@ export default function Event() {
                 return null;
         }
     };
-
-    console.log(isRegistered);
-    console.log(event?.externalPage);
 
     if (loading) return <p style={{ color: 'white' }}>Loading...</p>;
     if (error) return <p>an error occurred fetching event details... try refreshing.</p>;
@@ -346,7 +394,7 @@ export default function Event() {
                         />
                     </Details>
                     {renderButton()}
-                    {isRegistered && event.externalPage && (
+                    {attendeeState === 'REGISTERED' && event.externalPage && (
                         <Link
                             to={
                                 event.externalPage.startsWith('https://')
@@ -377,6 +425,7 @@ export default function Event() {
                 questions={parsedQuestions}
                 onClose={() => setIsModalOpen(false)}
                 onFormSubmit={onFormSubmit}
+                submitText={event.needsReview ? 'Submit' : undefined}
             />
         </>
     );

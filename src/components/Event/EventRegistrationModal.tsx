@@ -9,6 +9,8 @@ type EventRegistrationModalProps = {
     onClose: () => void;
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     onFormSubmit: (formData: Record<string, any>) => void;
+
+    submitText?: string;
 };
 
 const Container = styled.div`
@@ -73,6 +75,7 @@ export function EventRegistrationModal({
     questions,
     onClose,
     onFormSubmit,
+    submitText,
 }: EventRegistrationModalProps) {
     return (
         <Modal
@@ -89,7 +92,11 @@ export function EventRegistrationModal({
                 </ModalHeader>
 
                 <ModalBody>
-                    <EventQuestionRenderer questions={questions} onSubmit={onFormSubmit} />
+                    <EventQuestionRenderer
+                        questions={questions}
+                        onSubmit={onFormSubmit}
+                        submitText={submitText}
+                    />
                 </ModalBody>
             </Container>
         </Modal>

@@ -6,12 +6,14 @@ import { act, render, screen } from '@testing-library/react';
 import Event from './Event';
 import { type Event as EventType } from '../../types/Event';
 import userEvent from '@testing-library/user-event';
+import { useAttendee } from '../../hooks/useAttendee';
 
 vi.mock('../../providers/UserData/UserDataProvider', () => ({
     useUserData: vi.fn(),
 }));
 vi.mock('react-router-dom');
 vi.mock('../../hooks/useEvents');
+vi.mock('../../hooks/useAttendee');
 
 const mockUseAuth0 = vi.fn();
 vi.mock('@auth0/auth0-react', () => ({
@@ -62,9 +64,11 @@ describe('Event', () => {
             user: mockUser,
         });
         mockGetEventById = vi.fn().mockResolvedValue(mockEvent);
-        mockGetAttendee = vi.fn().mockResolvedValue({ attendeeId: 'id' });
+        mockGetAttendee = vi.fn().mockResolvedValue({ attendee_id: 'id', status: 'REGISTERED' });
         vi.mocked(useEvents, { partial: true }).mockReturnValue({
             getById: mockGetEventById,
+        });
+        vi.mocked(useAttendee, { partial: true }).mockReturnValue({
             getAttendee: mockGetAttendee,
         });
         vi.mocked(useParams, { partial: true }).mockReturnValue({
@@ -189,6 +193,30 @@ describe('Event', () => {
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
             expect(screen.getByRole('button')).toHaveTextContent("You're already registered!");
+            expect(screen.getByRole('button')).toHaveAttribute('disabled');
+        });
+
+        it('when applied', async () => {
+            vi.spyOn(Date, 'now').mockImplementation(() => mockRegistrationOpenDate);
+            mockGetAttendee.mockResolvedValueOnce({ status: 'APPLIED' });
+
+            await renderComponent();
+            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
+            expect(screen.getByRole('button')).toHaveTextContent(
+                "Thank you! We've received your application."
+            );
+            expect(screen.getByRole('button')).toHaveAttribute('disabled');
+        });
+
+        it('when processing', async () => {
+            vi.spyOn(Date, 'now').mockImplementation(() => mockRegistrationOpenDate);
+            mockGetAttendee.mockResolvedValueOnce({ status: 'APPLIED' });
+
+            await renderComponent();
+            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
+            expect(screen.getByRole('button')).toHaveTextContent(
+                "Thank you! We've received your application."
+            );
             expect(screen.getByRole('button')).toHaveAttribute('disabled');
         });
 
