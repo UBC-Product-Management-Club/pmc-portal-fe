@@ -1,12 +1,12 @@
 import { z } from 'zod/v4';
 
-enum ATTENDEE_STATUS {
-    FAILED,
-    PROCESSING,
-    APPLIED,
-    REGISTERED,
-    ACCEPTED,
-}
+const ATTENDEE_STATUS = z.enum([
+    'FAILED',
+    'PROCESSING',
+    'APPLIED',
+    'REGISTERED',
+    'ACCEPTED',
+] as const);
 
 const RawAttendee = z.object({
     user_id: z.string(),
@@ -16,7 +16,7 @@ const RawAttendee = z.object({
     created_at: z.iso.datetime({ offset: true }),
     last_updated: z.iso.datetime({ offset: true }),
     is_payment_verified: z.boolean().nullable(),
-    status: z.enum(ATTENDEE_STATUS),
+    status: ATTENDEE_STATUS,
     payment_id: z.string().nullable(),
 });
 
@@ -33,6 +33,7 @@ const AttendeeSchema = RawAttendee.transform((attendee) => ({
 }));
 
 type Attendee = z.infer<typeof AttendeeSchema>;
+type AttendeeStatus = z.infer<typeof ATTENDEE_STATUS>;
 
 export { AttendeeSchema, ATTENDEE_STATUS };
-export type { Attendee };
+export type { Attendee, AttendeeStatus };

@@ -164,17 +164,4 @@ describe('useEvents', () => {
         const event = await result.current.getById('event_id');
         expect(event).toEqual(parsedEvent);
     });
-
-    it('fetches a non-registered attendee for an event', async () => {
-        mockGetAttendee.mockResolvedValueOnce(null);
-        mockEventService.mockReturnValueOnce({
-            getById: mockGetById,
-            getAttendee: mockGetAttendee,
-        });
-
-        const { result } = renderHook(() => useEvents());
-        const attendee = await result.current.getAttendee('event_id');
-
-        expect(attendee).toEqual(null);
-    });
 });
