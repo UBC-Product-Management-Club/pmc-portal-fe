@@ -67,17 +67,6 @@ describe('EventService', () => {
         registered: 1,
     };
 
-    const mockAttendee = {
-        userId: 'user_id',
-        eventId: 'event_id',
-        eventFormAnswers: {},
-        attendeeId: 'attendee_id',
-        registrationTime: 'reg_time',
-        isPaymentVerified: true,
-        status: 'registered',
-        paymentId: 'payment_id',
-    };
-
     it('fetches all events', async () => {
         mockClient.get.mockResolvedValueOnce(testEvents);
 
@@ -94,14 +83,5 @@ describe('EventService', () => {
 
         expect(event).toEqual(mockEvent);
         expect(mockClient.get).toHaveBeenCalledWith('/event_id');
-    });
-
-    it('fetches an attendee', async () => {
-        mockClient.get.mockResolvedValueOnce(mockAttendee);
-
-        const attendee = await service.getAttendee('event_id');
-
-        expect(attendee).toEqual(mockAttendee);
-        expect(mockClient.get).toHaveBeenCalledWith(`/event_id`);
     });
 });
