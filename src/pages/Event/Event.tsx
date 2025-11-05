@@ -11,7 +11,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { EventRegistrationModal } from '../../components/Event/EventRegistrationModal';
 import { Question, questionsSchema } from '../../types/Question';
 import { usePaymentService } from '../../hooks/usePaymentService';
-import { AttendeeSchema } from '../../types/Attendee';
+import { ATTENDEE_STATUS, AttendeeSchema } from '../../types/Attendee';
 import { showToast } from '../../utils';
 import ReactMarkdown from 'react-markdown';
 
@@ -148,20 +148,26 @@ export default function Event() {
     const [event, setEvent] = useState<Event | undefined>();
     const [parsedQuestions, setParsedQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isRegistered, setIsRegistered] = useState<boolean | undefined>(undefined);
+    const [attendeeStatus, setAttendeeStatus] = useState<ATTENDEE_STATUS>();
     const [error, setError] = useState(false);
 
     const mapRef = useRef<HTMLIFrameElement | null>(null);
     const scrollToMap = () => mapRef!.current!.scrollIntoView({ behavior: 'smooth' });
     const isFull = event && event.registered >= event.maxAttendees;
+    const canGoToEventPage =
+        attendeeStatus === ATTENDEE_STATUS.ACCEPTED ||
+        attendeeStatus === ATTENDEE_STATUS.REGISTERED;
 
     const buttonState = (() => {
         if (!event) return 'hidden';
         if (isFull) return 'full';
         if (!isAuthenticated) return 'authRequired';
-        if (isRegistered === undefined) return 'loading';
+        if (loading) return 'loading';
         if (moment().isBefore(moment(event.registrationOpens))) return 'notOpenYet';
-        if (isRegistered) return 'alreadyRegistered';
+        if (attendeeStatus === ATTENDEE_STATUS.REGISTERED) return 'alreadyRegistered';
+        if (attendeeStatus === ATTENDEE_STATUS.APPLIED) return 'applied';
+        if (attendeeStatus === ATTENDEE_STATUS.PROCESSING) return 'processing';
+        if (attendeeStatus === ATTENDEE_STATUS.ACCEPTED) return 'accepted';
         if (moment().isAfter(moment(event.registrationCloses))) return 'closed';
         return 'open';
     })();
@@ -195,7 +201,7 @@ export default function Event() {
         if (isAuthenticated) {
             eventService
                 .getAttendee(event_id)
-                .then((attendee) => setIsRegistered(attendee !== null))
+                .then((attendee) => setAttendeeStatus(attendee?.status))
                 .catch(() => {});
         }
     }, [event_id]);
@@ -208,7 +214,7 @@ export default function Event() {
 
         if (query.get('success')) {
             showToast('success', 'Payment successful! You are registered for the event.');
-            setIsRegistered(true);
+            setAttendeeStatus(ATTENDEE_STATUS.REGISTERED);
         } else if (query.get('canceled') && attendeeId) {
             attendeeService.deleteAttendee(attendeeId);
             showToast('error', 'Payment canceled, you have not been charged.');
@@ -295,7 +301,13 @@ export default function Event() {
                     </a>
                 );
             case 'alreadyRegistered':
-                return <RegisterButton disabled>You're already registered!</RegisterButton>;
+                return <RegisterButton disabled>Thank you for registering!</RegisterButton>;
+            case 'applied':
+                return <RegisterButton disabled>Thank you for applying!</RegisterButton>;
+            case 'processing':
+                return <RegisterButton disabled>We are processing your submission!</RegisterButton>;
+            case 'accepted':
+                return <RegisterButton disabled>You're in!</RegisterButton>;
             case 'notOpenYet':
                 return <RegisterButton disabled>Registration opens soon!</RegisterButton>;
             case 'closed':
@@ -310,9 +322,6 @@ export default function Event() {
                 return null;
         }
     };
-
-    console.log(isRegistered);
-    console.log(event?.externalPage);
 
     if (loading) return <p style={{ color: 'white' }}>Loading...</p>;
     if (error) return <p>an error occurred fetching event details... try refreshing.</p>;
@@ -346,7 +355,7 @@ export default function Event() {
                         />
                     </Details>
                     {renderButton()}
-                    {isRegistered && event.externalPage && (
+                    {canGoToEventPage && event.externalPage && (
                         <Link
                             to={
                                 event.externalPage.startsWith('https://')

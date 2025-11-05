@@ -6,6 +6,7 @@ import { act, render, screen } from '@testing-library/react';
 import Event from './Event';
 import { type Event as EventType } from '../../types/Event';
 import userEvent from '@testing-library/user-event';
+import { ATTENDEE_STATUS } from '../../types/Attendee';
 
 vi.mock('../../providers/UserData/UserDataProvider', () => ({
     useUserData: vi.fn(),
@@ -186,9 +187,36 @@ describe('Event', () => {
         });
 
         it('when already registered', async () => {
+            mockGetAttendee.mockResolvedValue({ status: ATTENDEE_STATUS.REGISTERED });
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
-            expect(screen.getByRole('button')).toHaveTextContent("You're already registered!");
+            expect(screen.getByRole('button')).toHaveTextContent('Thank you for registering!');
+            expect(screen.getByRole('button')).toHaveAttribute('disabled');
+        });
+
+        it('when already applied', async () => {
+            mockGetAttendee.mockResolvedValue({ status: ATTENDEE_STATUS.APPLIED });
+            await renderComponent();
+            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
+            expect(screen.getByRole('button')).toHaveTextContent('Thank you for applying!');
+            expect(screen.getByRole('button')).toHaveAttribute('disabled');
+        });
+
+        it('when accepted', async () => {
+            mockGetAttendee.mockResolvedValue({ status: ATTENDEE_STATUS.ACCEPTED });
+            await renderComponent();
+            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
+            expect(screen.getByRole('button')).toHaveTextContent("You're in!");
+            expect(screen.getByRole('button')).toHaveAttribute('disabled');
+        });
+
+        it('when processing', async () => {
+            mockGetAttendee.mockResolvedValue({ status: ATTENDEE_STATUS.PROCESSING });
+            await renderComponent();
+            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
+            expect(screen.getByRole('button')).toHaveTextContent(
+                'We are processing your submission!'
+            );
             expect(screen.getByRole('button')).toHaveAttribute('disabled');
         });
 
