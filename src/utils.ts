@@ -2,6 +2,7 @@ import { UserDocument } from './types/User';
 import { Question } from './types/Question';
 import { z } from 'zod/v4';
 import { toast } from 'react-hot-toast';
+import moment from 'moment';
 
 const emptyUser: UserDocument = {
     userId: '',
@@ -84,4 +85,33 @@ function showToast(type: 'success' | 'error', message: string, duration: number 
     }
 }
 
-export { useInAppBrowser, emptyUser, formatPrice, buildEventFormResponseSchema, showToast };
+const renderTime = (start: string, end: string) => {
+    const startTime = moment(start);
+    const endTime = moment(end);
+    if (startTime.isSame(endTime, 'day')) {
+        return `${startTime.format('hh:mm A')} - ${endTime.format('hh:mm A')}`;
+    } else {
+        return `${startTime.format('MMMM D, hh:mm A')} - ${endTime.format('MMMM D, hh:mm A')}`;
+    }
+};
+
+const renderDate = (start: string, end: string) => {
+    const startTime = moment(start);
+    const endTime = moment(end);
+
+    if (startTime.isSame(endTime, 'day')) {
+        return startTime.format('MMMM D, YYYY');
+    }
+
+    return `${startTime.format('MMMM')} ${startTime.format('D')} - ${endTime.format('D')}, ${startTime.format('YYYY')}`;
+};
+
+export {
+    useInAppBrowser,
+    emptyUser,
+    formatPrice,
+    buildEventFormResponseSchema,
+    showToast,
+    renderTime,
+    renderDate,
+};
