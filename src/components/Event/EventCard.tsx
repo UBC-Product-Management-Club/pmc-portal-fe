@@ -1,9 +1,8 @@
 import './EventCard.css';
-import moment from 'moment';
 import { type EventCard } from '../../types/Event';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { useInAppBrowser } from '../../utils';
+import { renderDate, renderTime, useInAppBrowser } from '../../utils';
 import ReactMarkdown from 'react-markdown';
 
 type EventCardProps = {
@@ -79,8 +78,7 @@ export function EventCard({ event, disabled, link }: EventCardProps) {
         <Content disabled={disabled}>
             <Group>
                 <EventTimeAndLocation>
-                    {`${moment(event.startTime).format('hh.mm a')} - ${moment(event.endTime).format('hh.mm a')}`}{' '}
-                    | {event.location}
+                    {renderTime(event.startTime, event.endTime)} | {event.location}
                 </EventTimeAndLocation>
                 <EventName>{event.name}</EventName>
                 {!isMobile && <ReactMarkdown>{event.blurb}</ReactMarkdown>}
@@ -101,7 +99,7 @@ export function EventCard({ event, disabled, link }: EventCardProps) {
 
     return (
         <>
-            <h3>{moment(event.date).format('MMMM D, YYYY')}</h3>
+            <h3>{renderDate(event.startTime, event.endTime)}</h3>
             {disabled ? contents : navigateTo}
         </>
     );

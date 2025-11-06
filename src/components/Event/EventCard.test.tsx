@@ -12,10 +12,14 @@ vi.mock('moment', () => {
                 if (fmt === 'HH.mm') return '12:30';
                 return 'Mocked Date';
             },
+            isSame: (date: string, unit: string) => {
+                return date && unit;
+            },
         }),
     };
 });
 
+// TODO: Add multi-date tests
 describe('EventCard', () => {
     const event = {
         eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
