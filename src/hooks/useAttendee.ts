@@ -7,15 +7,15 @@ function useAttendee() {
 
     const getAttendee = useCallback(
         async (eventId: string) => {
-            const attendee = AttendeeSchema.safeParse(await attendeeService.getAttendee(eventId));
-            return attendee.success ? attendee.data : null;
+            const attendee = await attendeeService.getAttendee(eventId);
+            return attendee ? AttendeeSchema.parse(attendee) : null;
         },
         [attendeeService]
     );
 
     const deleteAttendee = useCallback(
-        async (attendeeId: string) => {
-            return await attendeeService.deleteAttendee(attendeeId);
+        async (eventId: string) => {
+            return await attendeeService.deleteAttendee(eventId);
         },
         [attendeeService]
     );

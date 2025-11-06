@@ -14,6 +14,7 @@ import { usePaymentService } from '../../hooks/usePaymentService';
 import { AttendeeSchema, AttendeeStatus } from '../../types/Attendee';
 import { showToast } from '../../utils';
 import ReactMarkdown from 'react-markdown';
+import { CheckoutSessionResponse } from '../../service/PaymentService';
 
 const EventHeader = styled.div`
     display: flex;
@@ -148,6 +149,7 @@ export default function Event() {
     const [event, setEvent] = useState<Event | undefined>();
     const [parsedQuestions, setParsedQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState(true);
+    const [checkoutSession, setCheckoutSession] = useState<CheckoutSessionResponse>();
     const [attendeeStatus, setAttendeeStatus] = useState<AttendeeStatus>();
     const [error, setError] = useState(false);
 
@@ -221,23 +223,30 @@ export default function Event() {
     // Display payment message and delete temp attendee record [WIP]
     useEffect(() => {
         const query = new URLSearchParams(window.location.search);
-        const attendeeId = query.get('attendeeId');
-        console.log('attendeeId', attendeeId);
-
         if (query.get('success')) {
             showToast('success', 'Payment successful! You are registered for the event.');
             setAttendeeStatus('REGISTERED');
-        } else if (query.get('canceled') && attendeeId) {
-            attendeeService.deleteAttendee(attendeeId);
-            showToast('error', 'Payment canceled, you have not been charged.');
         }
         window.history.replaceState({}, document.title, `/events/${event_id}/register`);
     }, [event_id]);
 
+    useEffect(() => {
+        if (event_id && attendeeStatus === 'PROCESSING') {
+            paymentService
+                .getCheckoutSession(event_id)
+                .then((session) => {
+                    console.log(session);
+                    setCheckoutSession(session);
+                })
+                .catch((error) => console.error(error));
+        }
+    }, [event_id, attendeeStatus]);
+
     // Create stripe session and redirects user
-    const navigateToStripeEventPayment = async (eventId: string, attendeeId: string) => {
+    const navigateToStripeEventPayment = async (eventId: string) => {
         try {
-            const resp = await paymentService.createStripeSessionEventUrl(eventId, attendeeId);
+            console.log('creating checkout session');
+            const resp = await paymentService.createStripeSessionEventUrl(eventId);
             if (!resp.url) {
                 throw new Error('Stripe session did not return a URL');
             }
@@ -279,11 +288,13 @@ export default function Event() {
                 throw new Error('Attendee validation failed');
             }
 
-            const attendeeId = parsed.data.attendeeId;
-            if (!attendeeId) {
-                throw new Error('No attendeeId returned');
+            if (!event.needsReview) {
+                await navigateToStripeEventPayment(event.eventId);
+            } else {
+                setAttendeeStatus('APPLIED');
+                setIsModalOpen(false);
+                showToast('success', 'Your application has been submitted.');
             }
-            await navigateToStripeEventPayment(event.eventId, attendeeId);
         } catch (err) {
             console.error('Error submitting attendee form:', err);
             setError(true);
@@ -314,7 +325,6 @@ export default function Event() {
                 );
             case 'alreadyRegistered':
             case 'accepted':
-                console.log(`can go to event page ${canGoToEventPage}`);
                 return (
                     <>
                         <RegisterButton disabled>You're in!</RegisterButton>
@@ -335,12 +345,37 @@ export default function Event() {
                 );
             case 'applied':
                 return <RegisterButton disabled>Thank you for applying!</RegisterButton>;
-            case 'processing':
-                return <RegisterButton disabled>We are processing your submission!</RegisterButton>;
             case 'notOpenYet':
                 return <RegisterButton disabled>Registration opens soon!</RegisterButton>;
             case 'closed':
                 return <RegisterButton disabled>Registration has closed!</RegisterButton>;
+            case 'processing':
+                return (
+                    <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                        <RegisterButton disabled>
+                            We are processing your registration!
+                        </RegisterButton>
+                        {checkoutSession && (
+                            <span
+                                style={{
+                                    fontSize: '10pt',
+                                    marginTop: '5px',
+                                    color: 'var(--pmc-light-grey)',
+                                }}
+                            >
+                                Click{' '}
+                                <a
+                                    href={checkoutSession.url}
+                                    target="_blank"
+                                    style={{ color: 'white' }}
+                                >
+                                    here
+                                </a>{' '}
+                                to pay. Expires {moment.unix(checkoutSession.expires_at).calendar()}
+                            </span>
+                        )}
+                    </div>
+                );
             case 'open':
                 return (
                     <RegisterButton onClick={() => !isModalOpen && setIsModalOpen(true)}>
@@ -402,6 +437,7 @@ export default function Event() {
                 questions={parsedQuestions}
                 onClose={() => setIsModalOpen(false)}
                 onFormSubmit={onFormSubmit}
+                submitText={event.needsReview ? 'Submit' : undefined}
             />
         </>
     );

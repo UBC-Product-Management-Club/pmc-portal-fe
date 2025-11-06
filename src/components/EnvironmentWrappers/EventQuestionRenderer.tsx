@@ -119,6 +119,7 @@ const StyledForm = styled.form`
 
 type EventFormProps = {
     /* eslint-disable  @typescript-eslint/no-explicit-any */
+    submitText?: string;
     onSubmit: (data: any) => void;
     questions: Question[];
 };
@@ -285,7 +286,11 @@ const RenderQuestion = ({ question }: { question: Question }) => {
     );
 };
 
-export const EventQuestionRenderer = ({ onSubmit, questions }: EventFormProps) => {
+export const EventQuestionRenderer = ({
+    submitText = 'Submit & Pay',
+    onSubmit,
+    questions,
+}: EventFormProps) => {
     const responseSchema = buildEventFormResponseSchema(questions);
     type ResponseData = z.infer<typeof responseSchema>;
     const methods = useForm<ResponseData>({
@@ -307,7 +312,7 @@ export const EventQuestionRenderer = ({ onSubmit, questions }: EventFormProps) =
                         <RenderQuestion key={q.id} question={q} />
                     ))}
                     <Submit disabled={loading} type="submit">
-                        {loading ? 'Loading...' : 'Submit & Pay'}
+                        {loading ? 'Loading...' : submitText}
                     </Submit>
                 </StyledForm>
             </FormProvider>

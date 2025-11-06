@@ -12,8 +12,8 @@ class AttendeeService {
         return this.client.get<Attendee>(`/${eventId}`);
     }
 
-    deleteAttendee(attendeeId: string): Promise<{ message: string }> {
-        return this.client.delete<{ message: string }>(`/${attendeeId}`);
+    deleteAttendee(eventId: string): Promise<{ message: string }> {
+        return this.client.delete<{ message: string }>(`/${eventId}`);
     }
 }
 

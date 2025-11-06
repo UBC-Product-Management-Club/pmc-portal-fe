@@ -15,6 +15,8 @@ vi.mock('react-router-dom');
 vi.mock('../../hooks/useEvents');
 vi.mock('../../hooks/useAttendee');
 
+// mock payment service get checkout session and test processing case.
+
 const mockUseAuth0 = vi.fn();
 vi.mock('@auth0/auth0-react', () => ({
     useAuth0: () => mockUseAuth0(),
@@ -64,7 +66,7 @@ describe('Event', () => {
             user: mockUser,
         });
         mockGetEventById = vi.fn().mockResolvedValue(mockEvent);
-        mockGetAttendee = vi.fn().mockResolvedValue({ attendeeId: 'id' });
+        mockGetAttendee = vi.fn().mockResolvedValue({ attendee_id: 'id', status: 'REGISTERED' });
         vi.mocked(useEvents, { partial: true }).mockReturnValue({
             getById: mockGetEventById,
         });
@@ -215,14 +217,16 @@ describe('Event', () => {
             expect(screen.getByRole('button')).toHaveAttribute('disabled');
         });
 
+        // update!
         it('when processing', async () => {
             mockGetAttendee.mockResolvedValue({ status: 'PROCESSING' });
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
             expect(screen.getByRole('button')).toHaveTextContent(
-                'We are processing your submission!'
+                'We are processing your registration!'
             );
             expect(screen.getByRole('button')).toHaveAttribute('disabled');
+            // expect(screen.getByText("Click here to pay")).toBeInTheDocument();
         });
 
         it('user not signed in', async () => {
