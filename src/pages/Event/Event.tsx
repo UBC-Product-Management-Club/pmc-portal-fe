@@ -150,12 +150,16 @@ export default function Event() {
     const [parsedQuestions, setParsedQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState(true);
     const [checkoutSession, setCheckoutSession] = useState<CheckoutSessionResponse>();
-    const [attendeeState, setAttendeeState] = useState<AttendeeStatus | undefined>();
+    const [attendeeStatus, setAttendeeStatus] = useState<AttendeeStatus>();
     const [error, setError] = useState(false);
 
     const mapRef = useRef<HTMLIFrameElement | null>(null);
     const scrollToMap = () => mapRef!.current!.scrollIntoView({ behavior: 'smooth' });
     const isFull = event && event.registered >= event.maxAttendees;
+    const canGoToEventPage =
+        event &&
+        attendeeStatus &&
+        (attendeeStatus === 'REGISTERED' || attendeeStatus === 'ACCEPTED');
 
     const buttonState = (() => {
         if (!event) return 'hidden';
@@ -163,10 +167,11 @@ export default function Event() {
         if (!isAuthenticated) return 'authRequired';
         if (loading) return 'loading';
         if (moment().isBefore(moment(event.registrationOpens))) return 'notOpenYet';
-        if (attendeeState === 'PROCESSING') return 'processing';
-        if (attendeeState === 'REGISTERED') return 'alreadyRegistered';
+        if (attendeeStatus === 'REGISTERED') return 'alreadyRegistered';
+        if (attendeeStatus === 'APPLIED') return 'applied';
+        if (attendeeStatus === 'PROCESSING') return 'processing';
+        if (attendeeStatus === 'ACCEPTED') return 'accepted';
         if (moment().isAfter(moment(event.registrationCloses))) return 'closed';
-        if (attendeeState === 'APPLIED') return 'applied';
         return 'open';
     })();
 
@@ -177,50 +182,56 @@ export default function Event() {
     useEffect(() => {
         if (!event_id) return;
 
-        eventService
-            .getById(event_id)
-            .then((event) => {
-                setEvent(event);
+        const fetchData = async () => {
+            try {
+                const promises = [
+                    eventService.getById(event_id).then((event) => {
+                        setEvent(event);
+                        if (
+                            event.eventFormQuestions &&
+                            typeof event.eventFormQuestions === 'object' &&
+                            'questions' in event.eventFormQuestions
+                        ) {
+                            const result = questionsSchema.safeParse(
+                                event.eventFormQuestions.questions
+                            );
+                            if (result.success) setParsedQuestions(result.data);
+                        }
+                    }),
+                ];
 
-                //Parse event questions
-                if (
-                    event.eventFormQuestions &&
-                    typeof event.eventFormQuestions === 'object' &&
-                    'questions' in event.eventFormQuestions
-                ) {
-                    const result = questionsSchema.safeParse(event.eventFormQuestions.questions);
-                    if (result.success) {
-                        setParsedQuestions(result.data);
-                    }
+                if (isAuthenticated) {
+                    promises.push(
+                        attendeeService
+                            .getAttendee(event_id)
+                            .then((attendee) => setAttendeeStatus(attendee?.status))
+                    );
                 }
-            })
-            .catch(() => setError(true))
-            .finally(() => setLoading(false));
-        if (isAuthenticated) {
-            attendeeService
-                .getAttendee(event_id)
-                .then((attendee) => {
-                    console.log(attendee);
-                    if (attendee) {
-                        setAttendeeState(attendee.status);
-                    }
-                })
-                .catch((error) => console.error(error));
-        }
-    }, [event_id]);
+
+                await Promise.all(promises);
+            } catch (err) {
+                console.error(err);
+                setError(true);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [event_id, isAuthenticated]);
 
     // Display payment message and delete temp attendee record [WIP]
     useEffect(() => {
         const query = new URLSearchParams(window.location.search);
         if (query.get('success')) {
             showToast('success', 'Payment successful! You are registered for the event.');
-            setAttendeeState('REGISTERED');
+            setAttendeeStatus('REGISTERED');
         }
         window.history.replaceState({}, document.title, `/events/${event_id}/register`);
     }, [event_id]);
 
     useEffect(() => {
-        if (event_id && attendeeState === 'PROCESSING') {
+        if (event_id && attendeeStatus === 'PROCESSING') {
             paymentService
                 .getCheckoutSession(event_id)
                 .then((session) => {
@@ -229,7 +240,7 @@ export default function Event() {
                 })
                 .catch((error) => console.error(error));
         }
-    }, [event_id, attendeeState]);
+    }, [event_id, attendeeStatus]);
 
     // Create stripe session and redirects user
     const navigateToStripeEventPayment = async (eventId: string) => {
@@ -280,7 +291,7 @@ export default function Event() {
             if (!event.needsReview) {
                 await navigateToStripeEventPayment(event.eventId);
             } else {
-                setAttendeeState('APPLIED');
+                setAttendeeStatus('APPLIED');
                 setIsModalOpen(false);
                 showToast('success', 'Your application has been submitted.');
             }
@@ -313,7 +324,27 @@ export default function Event() {
                     </a>
                 );
             case 'alreadyRegistered':
-                return <RegisterButton disabled>You're already registered!</RegisterButton>;
+            case 'accepted':
+                return (
+                    <>
+                        <RegisterButton disabled>You're in!</RegisterButton>
+                        {canGoToEventPage && (
+                            <Link
+                                to={
+                                    event.externalPage?.startsWith('https://')
+                                        ? event.externalPage
+                                        : `/events/${event.eventId}`
+                                }
+                                target="_blank"
+                                rel="noreferrer noopener"
+                            >
+                                <RegisterButton>Go to event page</RegisterButton>
+                            </Link>
+                        )}
+                    </>
+                );
+            case 'applied':
+                return <RegisterButton disabled>Thank you for applying!</RegisterButton>;
             case 'notOpenYet':
                 return <RegisterButton disabled>Registration opens soon!</RegisterButton>;
             case 'closed':
@@ -322,7 +353,7 @@ export default function Event() {
                 return (
                     <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
                         <RegisterButton disabled>
-                            We're processing your registration!
+                            We are processing your registration!
                         </RegisterButton>
                         {checkoutSession && (
                             <span
@@ -344,12 +375,6 @@ export default function Event() {
                             </span>
                         )}
                     </div>
-                );
-            case 'applied':
-                return (
-                    <RegisterButton disabled>
-                        Thank you! We've received your application.
-                    </RegisterButton>
                 );
             case 'open':
                 return (
@@ -394,19 +419,6 @@ export default function Event() {
                         />
                     </Details>
                     {renderButton()}
-                    {attendeeState === 'REGISTERED' && event.externalPage && (
-                        <Link
-                            to={
-                                event.externalPage.startsWith('https://')
-                                    ? event.externalPage
-                                    : `/events/${event.eventId}`
-                            }
-                            target="_blank"
-                            rel="noreferrer noopener"
-                        >
-                            <RegisterButton>Go to event page</RegisterButton>
-                        </Link>
-                    )}
                     <Description>
                         <h1>About the event</h1>
                         <ReactMarkdown>{event.description}</ReactMarkdown>

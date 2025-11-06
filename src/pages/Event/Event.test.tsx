@@ -15,6 +15,8 @@ vi.mock('react-router-dom');
 vi.mock('../../hooks/useEvents');
 vi.mock('../../hooks/useAttendee');
 
+// mock payment service get checkout session and test processing case.
+
 const mockUseAuth0 = vi.fn();
 vi.mock('@auth0/auth0-react', () => ({
     useAuth0: () => mockUseAuth0(),
@@ -189,35 +191,42 @@ describe('Event', () => {
             expect(screen.getByRole('button')).not.toHaveAttribute('disabled');
         });
 
+        // i cant get the fucking to event page button to show up. ts pmo
         it('when already registered', async () => {
+            mockGetEventById.mockResolvedValueOnce({ ...mockEvent, registered: 1 });
+            mockGetAttendee.mockResolvedValue({ status: 'REGISTERED' });
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
-            expect(screen.getByRole('button')).toHaveTextContent("You're already registered!");
+            expect(screen.getByRole('button')).toHaveTextContent("You're in!");
             expect(screen.getByRole('button')).toHaveAttribute('disabled');
         });
 
-        it('when applied', async () => {
-            vi.spyOn(Date, 'now').mockImplementation(() => mockRegistrationOpenDate);
-            mockGetAttendee.mockResolvedValueOnce({ status: 'APPLIED' });
-
+        it('when already applied', async () => {
+            mockGetAttendee.mockResolvedValue({ status: 'APPLIED' });
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
-            expect(screen.getByRole('button')).toHaveTextContent(
-                "Thank you! We've received your application."
-            );
+            expect(screen.getByRole('button')).toHaveTextContent('Thank you for applying!');
             expect(screen.getByRole('button')).toHaveAttribute('disabled');
         });
 
+        it('when accepted', async () => {
+            mockGetAttendee.mockResolvedValue({ status: 'ACCEPTED' });
+            await renderComponent();
+            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
+            expect(screen.getByRole('button')).toHaveTextContent("You're in!");
+            expect(screen.getByRole('button')).toHaveAttribute('disabled');
+        });
+
+        // update!
         it('when processing', async () => {
-            vi.spyOn(Date, 'now').mockImplementation(() => mockRegistrationOpenDate);
-            mockGetAttendee.mockResolvedValueOnce({ status: 'APPLIED' });
-
+            mockGetAttendee.mockResolvedValue({ status: 'PROCESSING' });
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
             expect(screen.getByRole('button')).toHaveTextContent(
-                "Thank you! We've received your application."
+                'We are processing your registration!'
             );
             expect(screen.getByRole('button')).toHaveAttribute('disabled');
+            // expect(screen.getByText("Click here to pay")).toBeInTheDocument();
         });
 
         it('user not signed in', async () => {
