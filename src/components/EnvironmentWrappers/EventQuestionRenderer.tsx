@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
     Controller,
     FormProvider,
@@ -200,7 +201,7 @@ const FileBasedInput = ({ question }: FileBasedInputProps) => {
             control={control}
             rules={{ required: question.required && 'This field is required' }}
             render={({ field }) => {
-                const { ...restField } = field;
+                const { value, ...restField } = field;
                 return (
                     <>
                         <HiddenFileInput

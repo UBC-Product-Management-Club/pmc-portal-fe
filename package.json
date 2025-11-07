@@ -17,7 +17,8 @@
     },
     "lint-staged": {
         "*.{ts,tsx}": [
-            "eslint --fix"
+            "eslint --cache --max-warnings=0",
+            "git add"
         ]
     },
     "dependencies": {
