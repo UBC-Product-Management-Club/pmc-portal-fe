@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { CiCalendar, CiLocationOn } from 'react-icons/ci';
 import { FaDollarSign } from 'react-icons/fa6';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { type Event } from '../../types/Event';
 import { useEvents } from '../../hooks/useEvents';
 import { useAttendee } from '../../hooks/useAttendee';
@@ -13,8 +13,8 @@ import { Question, questionsSchema } from '../../types/Question';
 import { usePaymentService } from '../../hooks/usePaymentService';
 import { AttendeeSchema, AttendeeStatus } from '../../types/Attendee';
 import { showToast } from '../../utils';
-import ReactMarkdown from 'react-markdown';
 import { CheckoutSessionResponse } from '../../service/PaymentService';
+import Markdown from 'react-markdown';
 
 const EventHeader = styled.div`
     display: flex;
@@ -400,8 +400,17 @@ export default function Event() {
                     <Details>
                         <Detail
                             icon={<CiCalendar size={30} />}
-                            text={moment(event.startTime).format('dddd, Do MMMM yyyy')}
-                            subtext={`${moment(event.startTime).format('h:mm a')} - ${moment(event.endTime).format('h:mm a')}`}
+                            text={moment
+                                .utc(event.startTime)
+                                .tz('America/Vancouver')
+                                .format('dddd, Do MMMM yyyy')}
+                            subtext={(() => {
+                                const start = moment.utc(event.startTime).tz('America/Vancouver');
+                                const end = moment.utc(event.endTime).tz('America/Vancouver');
+                                return start.day() === end.day()
+                                    ? `${start.format('h:mm A')} - ${end.format('h:mm A z')}`
+                                    : 'See times below';
+                            })()}
                         />
                         <Detail
                             icon={<CiLocationOn size={30} />}
@@ -414,14 +423,14 @@ export default function Event() {
                         />
                         <Detail
                             icon={<FaDollarSign size={30} />}
-                            text={`Member price: ${event.memberPrice === 0 ? 'Free!' : event.memberPrice + '$'}`}
-                            subtext={`Non-member price: ${event.nonMemberPrice}$`}
+                            text={`Member price: ${event.memberPrice === 0 ? 'Free!' : `$${event.memberPrice.toFixed(2)}`}`}
+                            subtext={`Non-member price: $${event.nonMemberPrice.toFixed(2)}`}
                         />
                     </Details>
                     {renderButton()}
                     <Description>
                         <h1>About the event</h1>
-                        <ReactMarkdown>{event.description}</ReactMarkdown>
+                        <Markdown>{event.description}</Markdown>
                         <h1>Location</h1>
                         <iframe
                             ref={mapRef}
