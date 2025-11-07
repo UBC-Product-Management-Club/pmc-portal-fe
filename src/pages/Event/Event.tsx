@@ -13,6 +13,7 @@ import { Question, questionsSchema } from '../../types/Question';
 import { usePaymentService } from '../../hooks/usePaymentService';
 import { AttendeeSchema } from '../../types/Attendee';
 import { showToast } from '../../utils';
+import { useUserData } from '../../providers/UserData/UserDataProvider';
 import ReactMarkdown from 'react-markdown';
 
 const EventHeader = styled.div`
@@ -144,6 +145,7 @@ export default function Event() {
     const paymentService = usePaymentService();
     const { event_id } = useParams<{ event_id: string }>();
     const navigateTo = useNavigate();
+    const { user } = useUserData();
 
     const [event, setEvent] = useState<Event | undefined>();
     const [parsedQuestions, setParsedQuestions] = useState<Question[]>([]);
@@ -372,12 +374,16 @@ export default function Event() {
                     </Description>
                 </DetailsContainer>
             </EventHeader>
-            <EventRegistrationModal
-                isModalOpen={isModalOpen}
-                questions={parsedQuestions}
-                onClose={() => setIsModalOpen(false)}
-                onFormSubmit={onFormSubmit}
-            />
+            {user && (
+                <EventRegistrationModal
+                    isModalOpen={isModalOpen}
+                    questions={parsedQuestions}
+                    onClose={() => setIsModalOpen(false)}
+                    onFormSubmit={onFormSubmit}
+                    eventId={event.eventId}
+                    userId={user.userId || ''}
+                />
+            )}
         </>
     );
 }

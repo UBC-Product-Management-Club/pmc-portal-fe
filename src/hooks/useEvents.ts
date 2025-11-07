@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { EventService } from '../service/EventService';
+import { EventService, JsonValue } from '../service/EventService';
 import { EventCard, EventCardsSchema, EventSchema } from '../types/Event';
 import { AttendeeSchema } from '../types/Attendee';
 
@@ -25,7 +25,7 @@ function useEvents() {
 
     const addAttendee = useCallback(
         async (eventId: string, eventFormAnswers: FormData) => {
-            return await eventService.addAttendee(eventId, eventFormAnswers);
+            return eventService.addAttendee(eventId, eventFormAnswers);
         },
         [eventService]
     );
@@ -38,6 +38,36 @@ function useEvents() {
         [eventService]
     );
 
-    return { getAll, getUserCurrentEvents, getById, addAttendee, getAttendee };
+    const loadDraft = useCallback(
+        async (eventId: string, userId: string) => {
+            return eventService.loadDraft(eventId, userId);
+        },
+        [eventService]
+    );
+
+    const saveDraft = useCallback(
+        async (eventId: string, userId: string, draft: Record<string, JsonValue>) => {
+            return eventService.saveDraft(eventId, userId, draft);
+        },
+        [eventService]
+    );
+
+    const deleteDraft = useCallback(
+        async (eventId: string, userId: string) => {
+            return eventService.deleteDraft(eventId, userId);
+        },
+        [eventService]
+    );
+
+    return {
+        getAll,
+        getUserCurrentEvents,
+        getById,
+        addAttendee,
+        getAttendee,
+        loadDraft,
+        saveDraft,
+        deleteDraft,
+    };
 }
 export { useEvents };

@@ -7,6 +7,14 @@ export type AddAttendeeResponse = {
     attendee: Attendee;
 };
 
+export type JsonValue =
+    | string
+    | number
+    | boolean
+    | null
+    | JsonValue[]
+    | { [key: string]: JsonValue };
+
 class EventService {
     private client: RestClient;
 
@@ -32,6 +40,20 @@ class EventService {
 
     addAttendee(eventId: string, eventFormAnswers: FormData): Promise<AddAttendeeResponse> {
         return this.client.post<AddAttendeeResponse>(`/${eventId}/register`, eventFormAnswers);
+    }
+
+    loadDraft(eventId: string, userId: string): Promise<Record<string, JsonValue> | null> {
+        return this.client.get<Record<string, JsonValue> | null>(
+            `/drafts/${eventId}?userId=${userId}`
+        );
+    }
+
+    saveDraft(eventId: string, userId: string, draft: Record<string, JsonValue>): Promise<void> {
+        return this.client.post<void>(`/drafts/${eventId}`, JSON.stringify({ userId, draft }));
+    }
+
+    deleteDraft(eventId: string, userId: string): Promise<void> {
+        return this.client.delete<void>(`/drafts/${eventId}?userId=${userId}`);
     }
 }
 
