@@ -18,6 +18,7 @@ type EventRegistrationModalProps = {
     onClose: () => void;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onFormSubmit: (formData: Record<string, any>) => Promise<void>;
+    submitText?: string;
 };
 
 const Container = styled.div`
@@ -83,6 +84,7 @@ export function EventRegistrationModal({
     userId,
     onClose,
     onFormSubmit,
+    submitText,
 }: EventRegistrationModalProps) {
     const responseSchema = buildEventFormResponseSchema(questions);
     type ResponseData = z.infer<typeof responseSchema>;
@@ -154,6 +156,7 @@ export function EventRegistrationModal({
                         methods={methods}
                         loading={loading}
                         error={error}
+                        submitText={submitText}
                     />
                 </ModalBody>
             </Container>

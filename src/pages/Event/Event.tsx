@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { CiCalendar, CiLocationOn } from 'react-icons/ci';
 import { FaDollarSign } from 'react-icons/fa6';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { type Event } from '../../types/Event';
 import { useEvents } from '../../hooks/useEvents';
 import { useAttendee } from '../../hooks/useAttendee';
@@ -11,10 +11,11 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { EventRegistrationModal } from '../../components/Event/EventRegistrationModal';
 import { Question, questionsSchema } from '../../types/Question';
 import { usePaymentService } from '../../hooks/usePaymentService';
-import { AttendeeSchema } from '../../types/Attendee';
+import { AttendeeSchema, AttendeeStatus } from '../../types/Attendee';
 import { showToast } from '../../utils';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
-import ReactMarkdown from 'react-markdown';
+import { CheckoutSessionResponse } from '../../service/PaymentService';
+import Markdown from 'react-markdown';
 
 const EventHeader = styled.div`
     display: flex;
@@ -150,20 +151,28 @@ export default function Event() {
     const [event, setEvent] = useState<Event | undefined>();
     const [parsedQuestions, setParsedQuestions] = useState<Question[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isRegistered, setIsRegistered] = useState<boolean | undefined>(undefined);
+    const [checkoutSession, setCheckoutSession] = useState<CheckoutSessionResponse>();
+    const [attendeeStatus, setAttendeeStatus] = useState<AttendeeStatus>();
     const [error, setError] = useState(false);
 
     const mapRef = useRef<HTMLIFrameElement | null>(null);
     const scrollToMap = () => mapRef!.current!.scrollIntoView({ behavior: 'smooth' });
     const isFull = event && event.registered >= event.maxAttendees;
+    const canGoToEventPage =
+        event &&
+        attendeeStatus &&
+        (attendeeStatus === 'REGISTERED' || attendeeStatus === 'ACCEPTED');
 
     const buttonState = (() => {
         if (!event) return 'hidden';
         if (isFull) return 'full';
         if (!isAuthenticated) return 'authRequired';
-        if (isRegistered === undefined) return 'loading';
+        if (loading) return 'loading';
         if (moment().isBefore(moment(event.registrationOpens))) return 'notOpenYet';
-        if (isRegistered) return 'alreadyRegistered';
+        if (attendeeStatus === 'REGISTERED') return 'alreadyRegistered';
+        if (attendeeStatus === 'APPLIED') return 'applied';
+        if (attendeeStatus === 'PROCESSING') return 'processing';
+        if (attendeeStatus === 'ACCEPTED') return 'accepted';
         if (moment().isAfter(moment(event.registrationCloses))) return 'closed';
         return 'open';
     })();
@@ -175,53 +184,71 @@ export default function Event() {
     useEffect(() => {
         if (!event_id) return;
 
-        eventService
-            .getById(event_id)
-            .then((event) => {
-                setEvent(event);
+        const fetchData = async () => {
+            try {
+                const promises = [
+                    eventService.getById(event_id).then((event) => {
+                        setEvent(event);
+                        if (
+                            event.eventFormQuestions &&
+                            typeof event.eventFormQuestions === 'object' &&
+                            'questions' in event.eventFormQuestions
+                        ) {
+                            const result = questionsSchema.safeParse(
+                                event.eventFormQuestions.questions
+                            );
+                            if (result.success) setParsedQuestions(result.data);
+                        }
+                    }),
+                ];
 
-                //Parse event questions
-                if (
-                    event.eventFormQuestions &&
-                    typeof event.eventFormQuestions === 'object' &&
-                    'questions' in event.eventFormQuestions
-                ) {
-                    const result = questionsSchema.safeParse(event.eventFormQuestions.questions);
-                    if (result.success) {
-                        setParsedQuestions(result.data);
-                    }
+                if (isAuthenticated) {
+                    promises.push(
+                        attendeeService
+                            .getAttendee(event_id)
+                            .then((attendee) => setAttendeeStatus(attendee?.status))
+                    );
                 }
-            })
-            .catch(() => setError(true))
-            .finally(() => setLoading(false));
-        if (isAuthenticated) {
-            eventService
-                .getAttendee(event_id)
-                .then((attendee) => setIsRegistered(attendee !== null))
-                .catch(() => {});
-        }
-    }, [event_id]);
+
+                await Promise.all(promises);
+            } catch (err) {
+                console.error(err);
+                setError(true);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [event_id, isAuthenticated]);
 
     // Display payment message and delete temp attendee record [WIP]
     useEffect(() => {
         const query = new URLSearchParams(window.location.search);
-        const attendeeId = query.get('attendeeId');
-        console.log('attendeeId', attendeeId);
-
         if (query.get('success')) {
             showToast('success', 'Payment successful! You are registered for the event.');
-            setIsRegistered(true);
-        } else if (query.get('canceled') && attendeeId) {
-            attendeeService.deleteAttendee(attendeeId);
-            showToast('error', 'Payment canceled, you have not been charged.');
+            setAttendeeStatus('REGISTERED');
         }
         window.history.replaceState({}, document.title, `/events/${event_id}/register`);
     }, [event_id]);
 
+    useEffect(() => {
+        if (event_id && attendeeStatus === 'PROCESSING') {
+            paymentService
+                .getCheckoutSession(event_id)
+                .then((session) => {
+                    console.log(session);
+                    setCheckoutSession(session);
+                })
+                .catch((error) => console.error(error));
+        }
+    }, [event_id, attendeeStatus]);
+
     // Create stripe session and redirects user
-    const navigateToStripeEventPayment = async (eventId: string, attendeeId: string) => {
+    const navigateToStripeEventPayment = async (eventId: string) => {
         try {
-            const resp = await paymentService.createStripeSessionEventUrl(eventId, attendeeId);
+            console.log('creating checkout session');
+            const resp = await paymentService.createStripeSessionEventUrl(eventId);
             if (!resp.url) {
                 throw new Error('Stripe session did not return a URL');
             }
@@ -263,11 +290,13 @@ export default function Event() {
                 throw new Error('Attendee validation failed');
             }
 
-            const attendeeId = parsed.data.attendeeId;
-            if (!attendeeId) {
-                throw new Error('No attendeeId returned');
+            if (!event.needsReview) {
+                await navigateToStripeEventPayment(event.eventId);
+            } else {
+                setAttendeeStatus('APPLIED');
+                setIsModalOpen(false);
+                showToast('success', 'Your application has been submitted.');
             }
-            await navigateToStripeEventPayment(event.eventId, attendeeId);
         } catch (err) {
             console.error('Error submitting attendee form:', err);
             setError(true);
@@ -297,11 +326,58 @@ export default function Event() {
                     </a>
                 );
             case 'alreadyRegistered':
-                return <RegisterButton disabled>You're already registered!</RegisterButton>;
+            case 'accepted':
+                return (
+                    <>
+                        <RegisterButton disabled>You're in!</RegisterButton>
+                        {canGoToEventPage && (
+                            <Link
+                                to={
+                                    event.externalPage?.startsWith('https://')
+                                        ? event.externalPage
+                                        : `/events/${event.eventId}`
+                                }
+                                target="_blank"
+                                rel="noreferrer noopener"
+                            >
+                                <RegisterButton>Go to event page</RegisterButton>
+                            </Link>
+                        )}
+                    </>
+                );
+            case 'applied':
+                return <RegisterButton disabled>Thank you for applying!</RegisterButton>;
             case 'notOpenYet':
                 return <RegisterButton disabled>Registration opens soon!</RegisterButton>;
             case 'closed':
                 return <RegisterButton disabled>Registration has closed!</RegisterButton>;
+            case 'processing':
+                return (
+                    <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                        <RegisterButton disabled>
+                            We are processing your registration!
+                        </RegisterButton>
+                        {checkoutSession && (
+                            <span
+                                style={{
+                                    fontSize: '10pt',
+                                    marginTop: '5px',
+                                    color: 'var(--pmc-light-grey)',
+                                }}
+                            >
+                                Click{' '}
+                                <a
+                                    href={checkoutSession.url}
+                                    target="_blank"
+                                    style={{ color: 'white' }}
+                                >
+                                    here
+                                </a>{' '}
+                                to pay. Expires {moment.unix(checkoutSession.expires_at).calendar()}
+                            </span>
+                        )}
+                    </div>
+                );
             case 'open':
                 return (
                     <RegisterButton onClick={() => !isModalOpen && setIsModalOpen(true)}>
@@ -312,9 +388,6 @@ export default function Event() {
                 return null;
         }
     };
-
-    console.log(isRegistered);
-    console.log(event?.externalPage);
 
     if (loading) return <p style={{ color: 'white' }}>Loading...</p>;
     if (error) return <p>an error occurred fetching event details... try refreshing.</p>;
@@ -329,8 +402,17 @@ export default function Event() {
                     <Details>
                         <Detail
                             icon={<CiCalendar size={30} />}
-                            text={moment(event.startTime).format('dddd, Do MMMM yyyy')}
-                            subtext={`${moment(event.startTime).format('h:mm a')} - ${moment(event.endTime).format('h:mm a')}`}
+                            text={moment
+                                .utc(event.startTime)
+                                .tz('America/Vancouver')
+                                .format('dddd, Do MMMM yyyy')}
+                            subtext={(() => {
+                                const start = moment.utc(event.startTime).tz('America/Vancouver');
+                                const end = moment.utc(event.endTime).tz('America/Vancouver');
+                                return start.day() === end.day()
+                                    ? `${start.format('h:mm A')} - ${end.format('h:mm A z')}`
+                                    : 'See times below';
+                            })()}
                         />
                         <Detail
                             icon={<CiLocationOn size={30} />}
@@ -343,27 +425,14 @@ export default function Event() {
                         />
                         <Detail
                             icon={<FaDollarSign size={30} />}
-                            text={`Member price: ${event.memberPrice === 0 ? 'Free!' : event.memberPrice + '$'}`}
-                            subtext={`Non-member price: ${event.nonMemberPrice}$`}
+                            text={`Member price: ${event.memberPrice === 0 ? 'Free!' : `$${event.memberPrice.toFixed(2)}`}`}
+                            subtext={`Non-member price: $${event.nonMemberPrice.toFixed(2)}`}
                         />
                     </Details>
                     {renderButton()}
-                    {isRegistered && event.externalPage && (
-                        <Link
-                            to={
-                                event.externalPage.startsWith('https://')
-                                    ? event.externalPage
-                                    : `/events/${event.eventId}`
-                            }
-                            target="_blank"
-                            rel="noreferrer noopener"
-                        >
-                            <RegisterButton>Go to event page</RegisterButton>
-                        </Link>
-                    )}
                     <Description>
                         <h1>About the event</h1>
-                        <ReactMarkdown>{event.description}</ReactMarkdown>
+                        <Markdown>{event.description}</Markdown>
                         <h1>Location</h1>
                         <iframe
                             ref={mapRef}
@@ -382,6 +451,7 @@ export default function Event() {
                     onFormSubmit={onFormSubmit}
                     eventId={event.eventId}
                     userId={user.userId || ''}
+                    submitText={event.needsReview ? 'Submit' : undefined}
                 />
             )}
         </>

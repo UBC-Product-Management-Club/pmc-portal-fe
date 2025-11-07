@@ -1,17 +1,26 @@
 import { useCallback, useMemo } from 'react';
 import { AttendeeService } from '../service/AttendeeService';
+import { AttendeeSchema } from '../types/Attendee';
 
 function useAttendee() {
     const attendeeService = useMemo(() => new AttendeeService(), []);
 
-    const deleteAttendee = useCallback(
-        async (attendeeId: string) => {
-            return await attendeeService.deleteAttendee(attendeeId);
+    const getAttendee = useCallback(
+        async (eventId: string) => {
+            const attendee = await attendeeService.getAttendee(eventId);
+            return attendee ? AttendeeSchema.parse(attendee) : null;
         },
         [attendeeService]
     );
 
-    return { deleteAttendee };
+    const deleteAttendee = useCallback(
+        async (eventId: string) => {
+            return await attendeeService.deleteAttendee(eventId);
+        },
+        [attendeeService]
+    );
+
+    return { getAttendee, deleteAttendee };
 }
 
 export { useAttendee };

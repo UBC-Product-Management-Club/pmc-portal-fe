@@ -29,7 +29,7 @@ export class RestClient {
 
     public post<TResponse>(
         path: string,
-        body: BodyInit,
+        body?: BodyInit,
         headers: HeadersInit = {}
     ): Promise<TResponse> {
         const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;

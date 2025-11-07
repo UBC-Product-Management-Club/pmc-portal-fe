@@ -121,6 +121,7 @@ const StyledForm = styled.form`
 `;
 
 interface EventFormProps<T extends FieldValues = FieldValues> {
+    submitText?: string;
     onSubmit: (data: T) => Promise<void>;
     questions: Question[];
     methods: UseFormReturn<T>;
@@ -290,6 +291,7 @@ const RenderQuestion = ({ question }: { question: Question }) => {
 };
 
 export const EventQuestionRenderer = <T extends FieldValues = FieldValues>({
+    submitText = 'Submit & Pay',
     onSubmit,
     questions,
     methods,
@@ -307,7 +309,7 @@ export const EventQuestionRenderer = <T extends FieldValues = FieldValues>({
                     ))}
 
                     <Submit disabled={loading} type="submit">
-                        {loading ? 'Loading...' : 'Submit & Pay'}
+                        {loading ? 'Loading...' : submitText}
                     </Submit>
                 </StyledForm>
             </FormProvider>

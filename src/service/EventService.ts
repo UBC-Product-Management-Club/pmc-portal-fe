@@ -34,10 +34,6 @@ class EventService {
         return this.client.get<Event>(`/${eventId}`);
     }
 
-    getAttendee(eventId: string): Promise<Attendee> {
-        return this.client.get<Attendee>(`/${eventId}/attendee`);
-    }
-
     addAttendee(eventId: string, eventFormAnswers: FormData): Promise<AddAttendeeResponse> {
         return this.client.post<AddAttendeeResponse>(`/${eventId}/register`, eventFormAnswers);
     }

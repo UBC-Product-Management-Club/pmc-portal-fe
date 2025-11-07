@@ -135,17 +135,6 @@ describe('useEvents', () => {
         registered: 0,
         needsReview: false,
     };
-    const rawAttendee = {
-        user_id: '00000000-0000-0000-0000-000000000000',
-        event_id: '00000000-0000-0000-0000-000000000000',
-        event_form_answers: {},
-        attendee_id: '00000000-0000-0000-0000-000000000000',
-        registration_time: new Date().toISOString(),
-        is_payment_verified: true,
-        status: '',
-        payment_id: '',
-    };
-
     beforeEach(() => {
         mockGetAllEvents = vi.fn().mockResolvedValue(rawEvents);
         mockGetById = vi.fn().mockResolvedValue(event);
@@ -174,31 +163,5 @@ describe('useEvents', () => {
 
         const event = await result.current.getById('event_id');
         expect(event).toEqual(parsedEvent);
-    });
-
-    it('fetches a registered attendee for an event', async () => {
-        mockGetAttendee.mockResolvedValueOnce(rawAttendee);
-        mockEventService.mockReturnValueOnce({
-            getById: mockGetById,
-            getAttendee: mockGetAttendee,
-        });
-
-        const { result } = renderHook(() => useEvents());
-        const attendee = await result.current.getAttendee('event_id');
-
-        expect(Object.values(attendee!)).toEqual(Object.values(rawAttendee));
-    });
-
-    it('fetches a non-registered attendee for an event', async () => {
-        mockGetAttendee.mockResolvedValueOnce(null);
-        mockEventService.mockReturnValueOnce({
-            getById: mockGetById,
-            getAttendee: mockGetAttendee,
-        });
-
-        const { result } = renderHook(() => useEvents());
-        const attendee = await result.current.getAttendee('event_id');
-
-        expect(attendee).toEqual(null);
     });
 });
