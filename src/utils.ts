@@ -2,7 +2,7 @@ import { UserDocument } from './types/User';
 import { Question } from './types/Question';
 import { z } from 'zod/v4';
 import { toast } from 'react-hot-toast';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 const emptyUser: UserDocument = {
     userId: '',
@@ -86,18 +86,18 @@ function showToast(type: 'success' | 'error', message: string, duration: number 
 }
 
 const renderTime = (start: string, end: string) => {
-    const startTime = moment(start);
-    const endTime = moment(end);
+    const startTime = moment.utc(start).tz('America/Vancouver');
+    const endTime = moment.utc(end).tz('America/Vancouver');
     if (startTime.isSame(endTime, 'day')) {
-        return `${startTime.format('hh:mm A')} - ${endTime.format('hh:mm A')}`;
+        return `${startTime.format('h:mm A')} - ${endTime.format('h:mm A')}`;
     } else {
-        return `${startTime.format('MMMM D, hh:mm A')} - ${endTime.format('MMMM D, hh:mm A')}`;
+        return `${startTime.format('MMMM D, h:mm A')} - ${endTime.format('MMMM D, h:mm A')}`;
     }
 };
 
 const renderDate = (start: string, end: string) => {
-    const startTime = moment(start);
-    const endTime = moment(end);
+    const startTime = moment.utc(start).tz('America/Vancouver');
+    const endTime = moment.utc(end).tz('America/Vancouver');
 
     if (startTime.isSame(endTime, 'day')) {
         return startTime.format('MMMM D, YYYY');

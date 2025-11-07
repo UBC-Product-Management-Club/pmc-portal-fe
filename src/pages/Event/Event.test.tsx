@@ -47,7 +47,7 @@ describe('Event', () => {
             registrationOpens: '2025-07-20T21:30:00+00:00',
             registrationCloses: '2025-07-22T22:30:00+00:00',
             startTime: '2025-07-24T21:30:00+00:00',
-            endTime: '2025-07-26T22:30:00+00:00',
+            endTime: '2025-07-24T22:30:00+00:00',
             location: 'UBC Sauder Building',
             thumbnail:
                 'https://dthvbanipvldaiabgvuc.supabase.co/storage/v1/object/public/event-media/events/75f6ef8e-12d7-48f3-a0a8-96443ae5d1f7/media/umm-nocturnaltrashposts-and-then-uhh.jpeg',
@@ -119,8 +119,8 @@ describe('Event', () => {
         expect(screen.getByText('Product Conference')).toBeInTheDocument();
         expect(screen.getByText('Thursday, 24th July 2025')).toBeInTheDocument();
         expect(screen.getByText('UBC Sauder Building')).toBeInTheDocument();
-        expect(screen.getByText('Member price: 1$')).toBeInTheDocument();
-        expect(screen.getByText('Non-member price: 2$')).toBeInTheDocument();
+        expect(screen.getByText('Member price: $1.00')).toBeInTheDocument();
+        expect(screen.getByText('Non-member price: $2.00')).toBeInTheDocument();
         expect(screen.getByText(mockEvent.description)).toBeInTheDocument();
         expect(screen.getByRole('img')).toHaveAttribute('src', mockEvent.thumbnail);
     });
@@ -133,9 +133,32 @@ describe('Event', () => {
         expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
         expect(screen.getByText('Product Conference')).toBeInTheDocument();
         expect(screen.getByText('Thursday, 24th July 2025')).toBeInTheDocument();
+        expect(screen.getByText('2:30 PM - 3:30 PM PDT')).toBeInTheDocument();
         expect(screen.getByText('UBC Sauder Building')).toBeInTheDocument();
-        expect(screen.getByText('Member price: 1$')).toBeInTheDocument();
-        expect(screen.getByText('Non-member price: 2$')).toBeInTheDocument();
+        expect(screen.getByText('Member price: $1.00')).toBeInTheDocument();
+        expect(screen.getByText('Non-member price: $2.00')).toBeInTheDocument();
+        expect(screen.getByText(mockEvent.description)).toBeInTheDocument();
+        expect(screen.getByRole('button')).toHaveTextContent('Please sign in to register');
+        expect(screen.getByRole('img')).toHaveAttribute('src', mockEvent.thumbnail);
+    });
+
+    it('handles multi-day dates ', async () => {
+        vi.spyOn(Date, 'now').mockImplementation(() => mockRegistrationOpenDate);
+        mockUseAuth0.mockReturnValue({ isAuthenticated: false });
+        mockGetEventById.mockResolvedValueOnce({
+            ...mockEvent,
+            startTime: '2025-07-24T21:30:00+00:00',
+            endTime: '2025-07-25T22:30:00+00:00',
+        });
+        await renderComponent();
+
+        expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
+        expect(screen.getByText('Product Conference')).toBeInTheDocument();
+        expect(screen.getByText('Thursday, 24th July 2025')).toBeInTheDocument();
+        expect(screen.getByText('See times below')).toBeInTheDocument();
+        expect(screen.getByText('UBC Sauder Building')).toBeInTheDocument();
+        expect(screen.getByText('Member price: $1.00')).toBeInTheDocument();
+        expect(screen.getByText('Non-member price: $2.00')).toBeInTheDocument();
         expect(screen.getByText(mockEvent.description)).toBeInTheDocument();
         expect(screen.getByRole('button')).toHaveTextContent('Please sign in to register');
         expect(screen.getByRole('img')).toHaveAttribute('src', mockEvent.thumbnail);
