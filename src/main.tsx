@@ -14,6 +14,7 @@ import { UserDataProvider } from './providers/UserData/UserDataProvider.tsx';
 import AuthorizedRouter from './components/AuthorizedRouter/AuthorizedRouter.tsx';
 import PaymentSuccess from './components/Payment/PaymentSuccess.tsx';
 import PaymentCanceled from './components/Payment/PaymentCanceled.tsx';
+import EventDashboard from './pages/Events/EventDashboard.tsx';
 
 Modal.setAppElement('#root');
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -41,6 +42,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                             <Route path="/dashboard/success" element={<PaymentSuccess />}></Route>
                             <Route path="/dashboard/canceled" element={<PaymentCanceled />}></Route>
                         </Route>
+                        <Route path={'/events/:event_id'} element={<EventDashboard />} />
                     </Routes>
                 </UserDataProvider>
             </Auth0Provider>

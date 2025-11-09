@@ -233,7 +233,7 @@ export default function Event() {
     useEffect(() => {
         if (event_id && attendeeStatus === 'PROCESSING') {
             paymentService
-                .getCheckoutSession(event_id)
+                .getOrCreateEventCheckoutSession(event_id)
                 .then((session) => {
                     console.log(session);
                     setCheckoutSession(session);
@@ -246,7 +246,7 @@ export default function Event() {
     const navigateToStripeEventPayment = async (eventId: string) => {
         try {
             console.log('creating checkout session');
-            const resp = await paymentService.createStripeSessionEventUrl(eventId);
+            const resp = await paymentService.getOrCreateEventCheckoutSession(eventId);
             if (!resp.url) {
                 throw new Error('Stripe session did not return a URL');
             }
