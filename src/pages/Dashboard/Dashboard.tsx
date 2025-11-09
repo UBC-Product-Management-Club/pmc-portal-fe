@@ -116,7 +116,10 @@ export default function Dashboard() {
                     valuable insights, hands-on experiences, and opportunities to connect with
                     industry leaders. Check out our upcoming events to support you on your product
                     journey and help you grow your skills, expand your network, and explore new
-                    opportunities in the field!
+                    opportunities in the field!{' '}
+                    <span style={{ fontWeight: 'bold' }}>
+                        All times listed are in Vancouver time (PST).
+                    </span>
                 </p>
             </DashboardSection>
 

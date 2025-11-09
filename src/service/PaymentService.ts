@@ -11,7 +11,9 @@ interface CreatePaymentIntentResponse {
 }
 
 interface CheckoutSessionResponse {
+    id: string;
     url: string;
+    expires_at: number;
 }
 
 interface FetchFeeResponse {
@@ -72,16 +74,14 @@ class PaymentService {
     }
 
     // Post request for creating event payment session
-    async createStripeSessionEventUrl(
-        eventId: string,
-        attendeeId: string
-    ): Promise<CheckoutSessionResponse> {
-        const endpoint = `/checkout-session/event/${eventId}`;
-        const response = await this.client.post<CheckoutSessionResponse>(
-            endpoint,
-            JSON.stringify({ attendeeId: attendeeId })
+    async createStripeSessionEventUrl(eventId: string): Promise<CheckoutSessionResponse> {
+        return await this.client.post<CheckoutSessionResponse>(
+            `/checkout-session/event/${eventId}`
         );
-        return response;
+    }
+
+    async getCheckoutSession(eventId: string) {
+        return await this.client.get<CheckoutSessionResponse>(`/checkout-session/event/${eventId}`);
     }
 
     private async getMembershipFeeElementsOptions(): Promise<StripeElementsOptions> {
@@ -104,4 +104,4 @@ class PaymentService {
 }
 
 export { PaymentService, PaymentType };
-export type { FetchFeeResponse, getElementOptionsOptions };
+export type { FetchFeeResponse, getElementOptionsOptions, CheckoutSessionResponse };

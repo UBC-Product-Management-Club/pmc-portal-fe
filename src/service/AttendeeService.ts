@@ -1,3 +1,4 @@
+import { Attendee } from '../types/Attendee';
 import { RestClient } from './RestClient';
 
 class AttendeeService {
@@ -7,8 +8,12 @@ class AttendeeService {
         this.client = client ?? new RestClient(`${import.meta.env.VITE_API_URL}/api/v2/attendee`);
     }
 
-    deleteAttendee(attendeeId: string): Promise<{ message: string }> {
-        return this.client.delete<{ message: string }>(`/${attendeeId}/delete`);
+    getAttendee(eventId: string): Promise<Attendee> {
+        return this.client.get<Attendee>(`/${eventId}`);
+    }
+
+    deleteAttendee(eventId: string): Promise<{ message: string }> {
+        return this.client.delete<{ message: string }>(`/${eventId}`);
     }
 }
 
