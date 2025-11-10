@@ -2,7 +2,7 @@ import Modal from 'react-modal';
 import z from 'zod/v4';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { buildEventFormResponseSchema } from '../../utils';
+import { buildEventFormResponseSchema, showToast } from '../../utils';
 import { styled } from 'styled-components';
 import { Question } from '../../types/Question';
 import { EventQuestionRenderer } from '../EnvironmentWrappers/EventQuestionRenderer';
@@ -99,6 +99,7 @@ export function EventRegistrationModal({
         eventId,
         methods,
         isOpen: isModalOpen,
+        onLoadSuccess: () => showToast('success', 'Draft loaded'),
     });
 
     const [loading, setLoading] = useState(false);
@@ -126,6 +127,7 @@ export function EventRegistrationModal({
         setIsClosing(true);
         try {
             await flushDraft();
+            showToast('success', 'Draft saved');
         } catch (err) {
             console.error('Failed to save draft on close:', err);
         } finally {
