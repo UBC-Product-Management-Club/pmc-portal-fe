@@ -54,7 +54,7 @@ export function useEventFormDraft<T extends Record<string, any>>({
 
         const loadDraftData = async () => {
             try {
-                const draft = await loadDraft(eventId, userId);
+                const draft = await loadDraft(eventId);
 
                 if (cancelled) return;
 
@@ -108,7 +108,7 @@ export function useEventFormDraft<T extends Record<string, any>>({
 
         const saveDraftData = async () => {
             try {
-                await saveDraft(eventId, userId, debouncedValues as T);
+                await saveDraft(eventId, debouncedValues as T);
                 if (!cancelled) {
                     lastSavedRef.current = currentValues;
                     onSaveSuccess?.();
@@ -144,12 +144,13 @@ export function useEventFormDraft<T extends Record<string, any>>({
         }
 
         try {
-            await saveDraft(eventId, userId, currentValues as T);
+            await saveDraft(eventId, currentValues as T);
             lastSavedRef.current = currentValuesStr;
             onSaveSuccess?.();
         } catch (error) {
             onSaveError?.(error instanceof Error ? error : new Error(String(error)));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId, eventId, hasLoaded]);
 
     return { flushDraft };

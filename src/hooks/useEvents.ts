@@ -30,22 +30,22 @@ function useEvents() {
     );
 
     const loadDraft = useCallback(
-        async (eventId: string, userId: string) => {
-            return eventService.loadDraft(eventId, userId);
+        async (eventId: string) => {
+            return eventService.loadDraft(eventId);
         },
         [eventService]
     );
 
     const saveDraft = useCallback(
-        async (eventId: string, userId: string, draft: Record<string, JsonValue>) => {
-            return eventService.saveDraft(eventId, userId, draft);
+        async (eventId: string, draft: Record<string, JsonValue>) => {
+            return eventService.saveDraft(eventId, draft);
         },
         [eventService]
     );
 
     const deleteDraft = useCallback(
-        async (eventId: string, userId: string) => {
-            return eventService.deleteDraft(eventId, userId);
+        async (eventId: string) => {
+            return eventService.deleteDraft(eventId);
         },
         [eventService]
     );

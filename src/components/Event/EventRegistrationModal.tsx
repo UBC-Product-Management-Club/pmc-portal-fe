@@ -111,7 +111,7 @@ export function EventRegistrationModal({
         setError(null);
         try {
             await onFormSubmit(data);
-            await deleteDraft(eventId, userId);
+            await deleteDraft(eventId);
             onClose();
         } catch (err) {
             console.error('Form submission failed:', err);
