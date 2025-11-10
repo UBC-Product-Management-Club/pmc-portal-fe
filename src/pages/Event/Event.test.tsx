@@ -176,10 +176,25 @@ describe('Event', () => {
             expect(screen.getByRole('button')).toHaveAttribute('disabled');
         });
 
-        it('when registration is open', async () => {
+        it('when registration is open with questions, modal appears on click', async () => {
             const user = userEvent.setup();
             vi.spyOn(Date, 'now').mockImplementation(() => mockRegistrationOpenDate);
-            mockGetEventById.mockResolvedValueOnce({ ...mockEvent, registered: 10 });
+            mockGetEventById.mockResolvedValueOnce({
+                ...mockEvent,
+                registered: 10,
+                eventFormQuestions: {
+                    questions: [
+                        {
+                            id: 'q1',
+                            type: 'dropdown',
+                            label: 'How familiar are you with product management?',
+                            options: ['Beginner', 'Intermediate', 'Advanced', 'Mentor'],
+                            required: true,
+                        },
+                    ],
+                },
+            });
+
             mockGetAttendee.mockResolvedValue(null);
 
             await renderComponent();
@@ -189,6 +204,25 @@ describe('Event', () => {
             await act(() => user.click(screen.getByRole('button')));
 
             expect(screen.getByText('Event Registration')).toBeInTheDocument();
+        });
+
+        it('when registration is open with no questions, no modal should appear on click', async () => {
+            const user = userEvent.setup();
+            vi.spyOn(Date, 'now').mockImplementation(() => mockRegistrationOpenDate);
+
+            mockGetEventById.mockResolvedValueOnce({
+                ...mockEvent,
+                registered: 10,
+                eventFormQuestions: { questions: [] },
+            });
+            mockGetAttendee.mockResolvedValue(null);
+
+            await renderComponent();
+            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
+            expect(screen.getByRole('button')).toHaveTextContent('Register now!');
+
+            await act(() => user.click(screen.getByRole('button')));
+            expect(screen.queryByText('Event Registration')).not.toBeInTheDocument();
         });
 
         it('when registration closes', async () => {
