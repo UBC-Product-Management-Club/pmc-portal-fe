@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { EventService } from '../service/EventService';
+import { EventService, JsonValue } from '../service/EventService';
 import { EventCard, EventCardsSchema, EventSchema } from '../types/Event';
 
 function useEvents() {
@@ -24,11 +24,40 @@ function useEvents() {
 
     const addAttendee = useCallback(
         async (eventId: string, eventFormAnswers: FormData) => {
-            return await eventService.addAttendee(eventId, eventFormAnswers);
+            return eventService.addAttendee(eventId, eventFormAnswers);
         },
         [eventService]
     );
 
-    return { getAll, getUserCurrentEvents, getById, addAttendee };
+    const loadDraft = useCallback(
+        async (eventId: string) => {
+            return eventService.loadDraft(eventId);
+        },
+        [eventService]
+    );
+
+    const saveDraft = useCallback(
+        async (eventId: string, draft: Record<string, JsonValue>) => {
+            return eventService.saveDraft(eventId, draft);
+        },
+        [eventService]
+    );
+
+    const deleteDraft = useCallback(
+        async (eventId: string) => {
+            return eventService.deleteDraft(eventId);
+        },
+        [eventService]
+    );
+
+    return {
+        getAll,
+        getUserCurrentEvents,
+        getById,
+        addAttendee,
+        loadDraft,
+        saveDraft,
+        deleteDraft,
+    };
 }
 export { useEvents };

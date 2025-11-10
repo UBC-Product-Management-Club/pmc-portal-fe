@@ -1,10 +1,14 @@
-import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+    Controller,
+    FormProvider,
+    UseFormReturn,
+    useFormContext,
+    FieldValues,
+} from 'react-hook-form';
 import { Question } from '../../types/Question';
 import { styled } from 'styled-components';
-import { buildEventFormResponseSchema } from '../../utils.ts';
-import React, { useState } from 'react';
-import z from 'zod/v4';
+import React from 'react';
 
 const Content = styled.div`
     width: 100%;
@@ -117,12 +121,14 @@ const StyledForm = styled.form`
     gap: 2rem; // adjust spacing here
 `;
 
-type EventFormProps = {
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
+interface EventFormProps<T extends FieldValues = FieldValues> {
     submitText?: string;
-    onSubmit: (data: any) => void;
+    onSubmit: (data: T) => Promise<void>;
     questions: Question[];
-};
+    methods: UseFormReturn<T>;
+    loading: boolean;
+    error: string | null;
+}
 
 type StyledInputProps = React.ComponentProps<typeof DefaultTextInput>;
 
@@ -195,8 +201,7 @@ const FileBasedInput = ({ question }: FileBasedInputProps) => {
             control={control}
             rules={{ required: question.required && 'This field is required' }}
             render={({ field }) => {
-                /* eslint-disable  @typescript-eslint/no-unused-vars */
-                const { value, ...restField } = field; // exclude `value` completely
+                const { value, ...restField } = field;
                 return (
                     <>
                         <HiddenFileInput
@@ -286,31 +291,24 @@ const RenderQuestion = ({ question }: { question: Question }) => {
     );
 };
 
-export const EventQuestionRenderer = ({
+export const EventQuestionRenderer = <T extends FieldValues = FieldValues>({
     submitText = 'Submit & Pay',
     onSubmit,
     questions,
-}: EventFormProps) => {
-    const responseSchema = buildEventFormResponseSchema(questions);
-    type ResponseData = z.infer<typeof responseSchema>;
-    const methods = useForm<ResponseData>({
-        resolver: zodResolver(responseSchema),
-    });
-    const [loading, setLoading] = useState(false);
-
+    methods,
+    loading,
+    error,
+}: EventFormProps<T>) => {
     return (
         <Content>
             <FormProvider {...methods}>
-                <StyledForm
-                    autoComplete="off"
-                    onSubmit={methods.handleSubmit((data) => {
-                        setLoading(true);
-                        onSubmit(data);
-                    })}
-                >
+                <StyledForm autoComplete="off" onSubmit={methods.handleSubmit(onSubmit)}>
+                    {error && <ErrorMessage>{error}</ErrorMessage>}
+
                     {questions.map((q) => (
                         <RenderQuestion key={q.id} question={q} />
                     ))}
+
                     <Submit disabled={loading} type="submit">
                         {loading ? 'Loading...' : submitText}
                     </Submit>
