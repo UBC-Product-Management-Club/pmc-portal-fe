@@ -274,7 +274,6 @@ describe('Event', () => {
             expect(screen.getByRole('button')).toHaveAttribute('disabled');
         });
 
-        // update!
         it('when processing', async () => {
             mockGetAttendee.mockResolvedValue({ status: 'PROCESSING' });
             await renderComponent();
@@ -289,6 +288,20 @@ describe('Event', () => {
         it('user not signed in', async () => {
             const user = userEvent.setup();
             mockUseAuth0.mockReturnValue({ isAuthenticated: false });
+            await renderComponent();
+            expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
+            expect(screen.getByRole('button')).toHaveTextContent('Please sign in to register');
+
+            await act(() => user.click(screen.getByRole('button')));
+
+            expect(mockNavigateTo).toHaveBeenCalledWith('/');
+        });
+
+        it('user not signed in', async () => {
+            const user = userEvent.setup();
+            (useUserData as Mock).mockReturnValue({
+                user: undefined,
+            });
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
             expect(screen.getByRole('button')).toHaveTextContent('Please sign in to register');
