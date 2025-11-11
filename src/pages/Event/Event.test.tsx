@@ -238,6 +238,7 @@ describe('Event', () => {
 
         it('when full', async () => {
             vi.spyOn(Date, 'now').mockImplementation(() => mockRegistrationOpenDate);
+            mockGetAttendee.mockResolvedValue({});
             mockGetEventById.mockResolvedValueOnce({ ...mockEvent, registered: 100 });
 
             await renderComponent();
@@ -248,10 +249,8 @@ describe('Event', () => {
             expect(screen.getByRole('button')).not.toHaveAttribute('disabled');
         });
 
-        // i cant get the fucking to event page button to show up. ts pmo
         it('when already registered', async () => {
             mockGetEventById.mockResolvedValueOnce({ ...mockEvent, registered: 1 });
-            mockGetAttendee.mockResolvedValue({ status: 'REGISTERED' });
             await renderComponent();
             expect(mockGetEventById).toHaveBeenCalledWith(mockEventId);
             expect(screen.getByRole('button')).toHaveTextContent("You're in!");

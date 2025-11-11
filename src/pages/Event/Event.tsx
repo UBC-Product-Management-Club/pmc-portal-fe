@@ -165,7 +165,6 @@ export default function Event() {
 
     const buttonState = (() => {
         if (!event) return 'hidden';
-        if (isFull) return 'full';
         if (!user || !isAuthenticated) return 'authRequired';
         if (loading) return 'loading';
         if (moment().isBefore(moment(event.registrationOpens))) return 'notOpenYet';
@@ -174,6 +173,7 @@ export default function Event() {
         if (attendeeStatus === 'PROCESSING') return 'processing';
         if (attendeeStatus === 'ACCEPTED') return 'accepted';
         if (moment().isAfter(moment(event.registrationCloses))) return 'closed';
+        if (isFull) return 'full';
         return 'open';
     })();
 
