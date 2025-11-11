@@ -166,7 +166,7 @@ export default function Event() {
     const buttonState = (() => {
         if (!event) return 'hidden';
         if (isFull) return 'full';
-        if (!isAuthenticated) return 'authRequired';
+        if (!user || !isAuthenticated) return 'authRequired';
         if (loading) return 'loading';
         if (moment().isBefore(moment(event.registrationOpens))) return 'notOpenYet';
         if (attendeeStatus === 'REGISTERED') return 'alreadyRegistered';
@@ -417,8 +417,6 @@ export default function Event() {
             setIsModalOpen(true);
         }
     };
-
-    console.log('external page', event?.externalPage);
 
     if (loading) return <p style={{ color: 'white' }}>Loading...</p>;
     if (error) return <p>an error occurred fetching event details... try refreshing.</p>;

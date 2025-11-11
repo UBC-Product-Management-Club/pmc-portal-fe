@@ -1,7 +1,6 @@
 import { FiBook } from 'react-icons/fi';
 import { TbSchool } from 'react-icons/tb';
 import { ProfileWhyPM } from '../../components/Profile/ProfileWhyPM';
-import ProfileEvents from '../../components/Profile/ProfileEvents';
 import styled from 'styled-components';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
 
@@ -104,7 +103,6 @@ export function Profile() {
                     </PersonalInfoContainer>
                 </ProfileSpaceAround>
                 <ProfileWhyPM />
-                <ProfileEvents />
             </ProfileContainer>
         )
     );

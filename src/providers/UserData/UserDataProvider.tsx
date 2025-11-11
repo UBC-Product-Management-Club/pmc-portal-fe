@@ -2,7 +2,6 @@ import { ActionDispatch, createContext, ReactNode, useContext, useEffect, useRed
 import { UserDataFromAuth, UserDocument, UserFromDatabase } from '../../types/User';
 import { useLocation } from 'react-router-dom';
 import { useUserService } from '../../hooks/useUserService';
-import { useAuth0 } from '@auth0/auth0-react';
 
 type UpdateUserFunction = ActionDispatch<[Action]>;
 
@@ -43,7 +42,6 @@ function UserDataProvider({ children }: { children: ReactNode }) {
         Partial<UserDocument> | UserFromDatabase | undefined,
         [Action]
     >(reducer, undefined);
-    const auth0 = useAuth0();
     const userService = useUserService();
     const location = useLocation();
 
@@ -52,15 +50,9 @@ function UserDataProvider({ children }: { children: ReactNode }) {
             userService
                 .me()
                 .then((user) => update({ type: ActionTypes.LOAD, payload: user }))
-                .catch(() => {
-                    console.log('your session has expired!');
-                    auth0.logout({
-                        logoutParams: {
-                            returnTo: window.location.origin,
-                        },
-                    });
-                });
+                .catch((error) => console.error(error));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.pathname]);
 
     function reducer(
