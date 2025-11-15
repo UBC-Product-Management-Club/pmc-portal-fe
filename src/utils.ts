@@ -35,9 +35,9 @@ function useInAppBrowser() {
     return { isInAppBrowser, isMobile };
 }
 
-function formatPrice(price: number) {
+const formatPrice = (price: number) => {
     return `$${price / 100}`;
-}
+};
 
 function buildEventFormResponseSchema(questions: Question[]) {
     /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -68,7 +68,7 @@ function buildEventFormResponseSchema(questions: Question[]) {
     return z.object(shape);
 }
 
-function showToast(type: 'success' | 'error', message: string, duration: number = 4000) {
+const showToast = (type: 'success' | 'error', message: string, duration: number = 4000) => {
     const options = {
         style: {
             borderRadius: '10px',
@@ -83,7 +83,7 @@ function showToast(type: 'success' | 'error', message: string, duration: number 
     } else if (type === 'error') {
         toast.error(message, options);
     }
-}
+};
 
 const renderTime = (start: string, end: string) => {
     const startTime = moment.utc(start).tz('America/Vancouver');

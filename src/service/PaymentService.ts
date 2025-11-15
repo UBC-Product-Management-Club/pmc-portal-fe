@@ -74,14 +74,12 @@ class PaymentService {
     }
 
     // Post request for creating event payment session
-    async createStripeSessionEventUrl(eventId: string): Promise<CheckoutSessionResponse> {
-        return await this.client.post<CheckoutSessionResponse>(
-            `/checkout-session/event/${eventId}`
-        );
+    async getOrCreateEventCheckoutSession(eventId: string): Promise<CheckoutSessionResponse> {
+        return await this.client.get<CheckoutSessionResponse>(`/checkout-session/event/${eventId}`);
     }
 
-    async getCheckoutSession(eventId: string) {
-        return await this.client.get<CheckoutSessionResponse>(`/checkout-session/event/${eventId}`);
+    async getOrCreateRSVPCheckoutSession(eventId: string) {
+        return await this.client.get<CheckoutSessionResponse>(`/checkout-session/rsvp/${eventId}`);
     }
 
     private async getMembershipFeeElementsOptions(): Promise<StripeElementsOptions> {
