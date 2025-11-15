@@ -59,7 +59,7 @@ describe('EventDashboard', () => {
         await renderComponent();
 
         expect(screen.getByTestId('paywall')).toBeInTheDocument();
-        expect(mockLoadComponent).toHaveBeenCalledWith('./Paywall');
+        expect(mockLoadComponent).toHaveBeenCalledWith('./Paywall.tsx');
     });
 
     it('renders NoEventAccess when attendee status is unknown', async () => {

@@ -106,8 +106,13 @@ export default function EventDashboard() {
                     setEventComponent(() => EventNotFound);
                 }
             } else if (attendee?.status === 'ACCEPTED') {
-                const module = await loadComponent(`./Paywall`);
-                setEventComponent(() => module.default);
+                try {
+                    const module = await loadComponent(`./Paywall.tsx`);
+                    setEventComponent(() => module.default);
+                } catch (error) {
+                    console.error(error);
+                    setEventComponent(() => EventNotFound);
+                }
             } else {
                 setEventComponent(() => NoEventAccess);
             }
