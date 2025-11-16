@@ -1,12 +1,10 @@
-// src/pages/EventDashboard/EventDashboard.tsx
 import { useParams } from 'react-router-dom';
 import { Suspense, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAttendee } from '../../hooks/useAttendee';
-import { loadComponent } from './EventUtils';
 
-import.meta.glob('./pages/Events/**/main.tsx');
+import.meta.glob('./*/main.tsx');
 
 const Container = styled.div`
     display: flex;
@@ -98,8 +96,9 @@ export default function EventDashboard() {
         async function route(eventId: string) {
             const attendee = await getAttendee(eventId);
             if (attendee?.status === 'REGISTERED') {
+                console.log(`./${eventId}/main.tsx`);
                 try {
-                    const module = await loadComponent(`./${eventId}/main.tsx`);
+                    const module = await import(`./${eventId}/main.tsx`);
                     setEventComponent(() => module.default);
                 } catch (error) {
                     console.error(error);
@@ -107,7 +106,7 @@ export default function EventDashboard() {
                 }
             } else if (attendee?.status === 'ACCEPTED') {
                 try {
-                    const module = await loadComponent(`./Paywall.tsx`);
+                    const module = await import(`./Paywall.tsx`);
                     setEventComponent(() => module.default);
                 } catch (error) {
                     console.error(error);

@@ -2,28 +2,26 @@ import { act, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { useParams } from 'react-router-dom';
 import { useAttendee } from '../../hooks/useAttendee';
-import { loadComponent } from './EventUtils';
-import EventDashboard from './EventDashboard';
+// import { loadComponent } from './EventUtils';
 
 // We'll mock these two hooks
 vi.mock('react-router-dom');
 vi.mock('../../hooks/useAttendee');
-vi.mock('./EventUtils', () => ({
-    loadComponent: vi.fn(),
+vi.mock('./Paywall.tsx', () => ({
+    default: () => <div>Paywall</div>,
 }));
+vi.mock('./test-event/main.tsx', () => ({
+    default: () => <div>EventMain</div>,
+}));
+
+import EventDashboard from './EventDashboard';
 
 describe('EventDashboard', () => {
     const mockGetAttendee = vi.fn();
-    const mockLoadComponent = loadComponent as Mock;
-    const eventModule = {
-        default: () => <div data-testid="event-main">Mocked Event Main</div>,
-    };
-    const paymentModule = { default: () => <div data-testid="paywall">Paywall Component</div> };
-
     beforeEach(() => {
-        vi.resetAllMocks();
+        vi.clearAllMocks();
         vi.mocked(useParams, { partial: true }).mockReturnValue({
-            event_id: 'test-event-id',
+            event_id: 'test-event',
         });
         vi.mocked(useAttendee, { partial: true }).mockReturnValue({
             getAttendee: mockGetAttendee,
@@ -44,22 +42,18 @@ describe('EventDashboard', () => {
 
     it('renders Event main component when attendee is REGISTERED', async () => {
         mockGetAttendee.mockResolvedValue({ status: 'REGISTERED' });
-        mockLoadComponent.mockResolvedValueOnce(eventModule);
 
         await renderComponent();
 
-        expect(screen.getByTestId('event-main')).toBeInTheDocument();
-        expect(mockLoadComponent).toHaveBeenCalledWith('./test-event-id/main.tsx');
+        expect(await screen.findByText('EventMain')).toBeInTheDocument();
     });
 
     it('renders Paywall when attendee is ACCEPTED', async () => {
         mockGetAttendee.mockResolvedValue({ status: 'ACCEPTED' });
-        mockLoadComponent.mockResolvedValueOnce(paymentModule);
 
         await renderComponent();
 
-        expect(screen.getByTestId('paywall')).toBeInTheDocument();
-        expect(mockLoadComponent).toHaveBeenCalledWith('./Paywall.tsx');
+        expect(await screen.findByText('Paywall')).toBeInTheDocument();
     });
 
     it('renders NoEventAccess when attendee status is unknown', async () => {
