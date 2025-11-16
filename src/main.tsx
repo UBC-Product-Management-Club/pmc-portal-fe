@@ -28,6 +28,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                     audience: import.meta.env.VITE_API_URL,
                 }}
                 useRefreshTokens={true}
+                useRefreshTokensFallback={true}
                 cacheLocation="localstorage"
             >
                 <UserDataProvider>
