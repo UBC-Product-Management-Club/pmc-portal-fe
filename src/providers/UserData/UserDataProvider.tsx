@@ -2,6 +2,7 @@ import { ActionDispatch, createContext, ReactNode, useContext, useEffect, useRed
 import { UserDataFromAuth, UserDocument, UserFromDatabase } from '../../types/User';
 import { useLocation } from 'react-router-dom';
 import { useUserService } from '../../hooks/useUserService';
+import { useAuth0 } from '@auth0/auth0-react';
 
 type UpdateUserFunction = ActionDispatch<[Action]>;
 
@@ -32,10 +33,12 @@ function useUserData() {
     return useContext(UserDataContext);
 }
 
-const requiresFreshData = [
-    /\/dashboard/,
-    /\/events\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\/|$)/,
-];
+const dashboardPath = /\/dashboard/;
+const eventsPagePath =
+    /\/events\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\/|$)/;
+const eventRegistrationPath =
+    /\/events\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/register\/?$/;
+const requiresFreshData = [dashboardPath, eventsPagePath, eventRegistrationPath];
 
 function UserDataProvider({ children }: { children: ReactNode }) {
     const [user, update] = useReducer<
@@ -43,16 +46,37 @@ function UserDataProvider({ children }: { children: ReactNode }) {
         [Action]
     >(reducer, undefined);
     const userService = useUserService();
+    const { logout } = useAuth0();
     const location = useLocation();
 
     useEffect(() => {
-        if (requiresFreshData.some((pattern) => location.pathname.match(pattern))) {
-            userService
-                .me()
-                .then((user) => update({ type: ActionTypes.LOAD, payload: user }))
-                .catch((error) => console.error(error));
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        if (!requiresFreshData.some((pattern) => location.pathname.match(pattern))) return;
+
+        let cancelled = false;
+        userService
+            .me()
+            .then((user) => {
+                if (!cancelled) {
+                    update({ type: ActionTypes.LOAD, payload: user });
+                }
+            })
+            .catch(async (error) => {
+                console.error(error);
+                if (cancelled) return;
+                // event registration page should
+                // be accessible when unauthenticated
+                if (!location.pathname.match(eventRegistrationPath)) {
+                    await logout({
+                        logoutParams: {
+                            returnTo: window.origin,
+                        },
+                    });
+                }
+            });
+        return () => {
+            cancelled = true;
+        };
+        // react-hooks/exhaustive-deps
     }, [location.pathname]);
 
     function reducer(
