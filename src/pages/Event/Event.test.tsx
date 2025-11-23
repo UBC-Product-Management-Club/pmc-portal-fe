@@ -98,7 +98,7 @@ describe('Event', () => {
         await renderComponent();
 
         expect(
-            screen.getByText('an error occurred fetching event details... try refreshing.')
+            screen.getByText('An error occurred fetching event details. Please try refreshing or')
         ).toBeInTheDocument();
     });
 
@@ -108,7 +108,7 @@ describe('Event', () => {
         await renderComponent();
 
         expect(
-            screen.getByText('an error occurred fetching event details... try refreshing.')
+            screen.getByText('An error occurred fetching event details. Please try refreshing or')
         ).toBeInTheDocument();
     });
 

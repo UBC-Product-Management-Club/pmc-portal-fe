@@ -140,7 +140,7 @@ function Detail(props: DetailRow) {
 }
 
 export default function Event() {
-    const { isAuthenticated } = useAuth0();
+    const { isAuthenticated, logout } = useAuth0();
     const eventService = useEvents();
     const attendeeService = useAttendee();
     const paymentService = usePaymentService();
@@ -419,7 +419,28 @@ export default function Event() {
     };
 
     if (loading) return <p style={{ color: 'white' }}>Loading...</p>;
-    if (error) return <p>an error occurred fetching event details... try refreshing.</p>;
+    if (error)
+        return (
+            <p style={{ color: 'white' }}>
+                An error occurred fetching event details. Please try refreshing or{' '}
+                <a
+                    style={{
+                        color: 'var(--pmc-light-blue)',
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                    }}
+                    onClick={() =>
+                        logout({
+                            logoutParams: {
+                                returnTo: window.location.origin,
+                            },
+                        })
+                    }
+                >
+                    signing in again
+                </a>
+            </p>
+        );
     if (!event) return <p style={{ color: 'white' }}>No event details available.</p>;
 
     return (
