@@ -20,7 +20,14 @@ function useAttendee() {
         [attendeeService]
     );
 
-    return { getAttendee, deleteAttendee };
+    const getTeammates = useCallback(
+        async (eventId: string) => {
+            return await attendeeService.getTeammates(eventId);
+        },
+        [attendeeService]
+    );
+
+    return { getAttendee, deleteAttendee, getTeammates };
 }
 
 export { useAttendee };
