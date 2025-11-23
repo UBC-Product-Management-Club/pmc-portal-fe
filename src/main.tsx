@@ -41,8 +41,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/dashboard/success" element={<PaymentSuccess />}></Route>
                             <Route path="/dashboard/canceled" element={<PaymentCanceled />}></Route>
-                            <Route path={'/events/:event_id'} element={<EventDashboard />} />
                         </Route>
+                        <Route path={'/events/:event_id'} element={<EventDashboard />} />
                     </Routes>
                 </UserDataProvider>
             </Auth0Provider>
