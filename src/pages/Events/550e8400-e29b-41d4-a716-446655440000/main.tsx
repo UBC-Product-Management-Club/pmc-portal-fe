@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useAttendee } from '../../../hooks/useAttendee';
 import { useUserData } from '../../../providers/UserData/UserDataProvider';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import gearyHeist from '../../../assets/gearyHeist.avif';
 import PMCLogo from '../../../assets/pmclogo.svg';
 import { TeamResponse } from '../../../types/Attendee';
@@ -230,6 +230,7 @@ const CountdownText = styled.p`
 
 export default function ProductHeist() {
     const attendeeService = useAttendee();
+    const { event_id } = useParams();
     const { user } = useUserData();
     const navigate = useNavigate();
 
@@ -240,11 +241,9 @@ export default function ProductHeist() {
     const isSubmissionOpen = new Date() >= targetDate;
 
     useEffect(() => {
-        const fetchTeam = async () => {
+        const fetchTeam = async (eventId: string) => {
             try {
-                const data = await attendeeService.getTeammates(
-                    '550e8400-e29b-41d4-a716-446655440000'
-                );
+                const data = await attendeeService.getTeammates(eventId);
                 setTeamData(data || null);
             } catch (e) {
                 setTeamData(null);
@@ -253,8 +252,10 @@ export default function ProductHeist() {
                 setLoading(false);
             }
         };
-        fetchTeam();
-    }, []);
+        if (event_id) {
+            fetchTeam(event_id);
+        }
+    }, [event_id]);
 
     useEffect(() => {
         const interval = setInterval(() => {
