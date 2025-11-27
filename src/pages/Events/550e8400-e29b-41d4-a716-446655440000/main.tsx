@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { useAttendee } from '../../../hooks/useAttendee';
 import { useUserData } from '../../../providers/UserData/UserDataProvider';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import gearyHeist from '../../../assets/gearyHeist.avif';
 import PMCLogo from '../../../assets/pmclogo.svg';
-import { TeamResponse } from '../../../types/Attendee';
+import type { TeamResponse } from '../../../types/Team';
+import { useTeam } from '../../../hooks/useTeam';
 
 const spin = keyframes`
   from { transform: rotate(0deg); }
@@ -112,6 +112,7 @@ const CardContent = styled.div<{ center?: boolean }>`
     padding: 0 1.5rem 1rem 1.5rem;
     display: flex;
     flex-direction: column;
+    flex: 1;
     ${({ center }) =>
         center &&
         `
@@ -228,8 +229,119 @@ const CountdownText = styled.p`
     font-weight: 500;
 `;
 
+const TeamContainer = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+`;
+
+const TeamSetupContainer = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    gap: 1.5rem;
+    width: 100%;
+    align-items: center;
+`;
+
+const TeamSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+`;
+
+const TeamSetupTitle = styled.h3`
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+`;
+
+const TeamSetupText = styled.p`
+    font-size: 0.875rem;
+    color: var(--pmc-light-grey);
+    margin: 0;
+    line-height: 1.5;
+`;
+
+const InputGroup = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    @media (min-width: 640px) {
+        flex-direction: row;
+    }
+`;
+
+const Input = styled.input`
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(141, 155, 235, 0.3);
+    background-color: var(--pmc-dark-blue);
+    color: #ffffff;
+    font-size: 0.875rem;
+    box-sizing: border-box;
+    transition: all 0.2s;
+
+    &:focus {
+        outline: none;
+        border-color: var(--pmc-light-blue);
+        box-shadow: 0 0 0 3px rgba(141, 155, 235, 0.1);
+    }
+
+    &::placeholder {
+        color: var(--pmc-light-grey);
+    }
+`;
+
+const Button = styled.button`
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    background: linear-gradient(135deg, var(--pmc-light-blue) 0%, #6b7bcf 100%);
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    box-shadow: 0 4px 6px -1px rgba(141, 155, 235, 0.2);
+
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px -1px rgba(141, 155, 235, 0.3);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        background: rgba(141, 155, 235, 0.3);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+`;
+
+const VerticalDivider = styled.div`
+    width: 1px;
+    align-self: stretch;
+    background: linear-gradient(
+        to bottom,
+        rgba(141, 155, 235, 0) 0%,
+        rgba(141, 155, 235, 0.3) 15%,
+        rgba(141, 155, 235, 0.3) 85%,
+        rgba(141, 155, 235, 0) 100%
+    );
+`;
+
 export default function ProductHeist() {
-    const attendeeService = useAttendee();
+    const teamService = useTeam();
     const { event_id } = useParams();
     const { user } = useUserData();
     const navigate = useNavigate();
@@ -240,11 +352,15 @@ export default function ProductHeist() {
     const targetDate = new Date('2025-11-29T09:00:00');
     const isSubmissionOpen = new Date() >= targetDate;
 
+    const [formTeamCode, setFormTeamCode] = useState('');
+    const [formTeamName, setFormTeamName] = useState('');
+
     useEffect(() => {
         const fetchTeam = async (eventId: string) => {
             try {
-                const data = await attendeeService.getTeammates(eventId);
+                const data = await teamService.getTeam(eventId);
                 setTeamData(data || null);
+                console.log(data);
             } catch (e) {
                 setTeamData(null);
                 console.log(e);
@@ -275,7 +391,43 @@ export default function ProductHeist() {
     }, []);
 
     const members = teamData?.Team?.Team_Member || [];
-    const teamName = teamData?.Team?.team_name || 'Your Team';
+    const teamName = teamData?.Team?.team_name;
+    const teamCode = teamData?.Team?.team_code;
+
+    const handleJoinTeam = async () => {
+        try {
+            if (!event_id) return;
+
+            const data = await teamService.joinTeam(event_id, formTeamCode);
+            setTeamData(data);
+            setFormTeamCode('');
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    const handleCreateTeam = async () => {
+        try {
+            if (!event_id) return;
+
+            const data = await teamService.createTeam(event_id, formTeamName);
+            setTeamData(data);
+            setFormTeamName('');
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    const handleLeaveTeam = async () => {
+        try {
+            if (!event_id) return;
+
+            await teamService.leaveTeam(event_id);
+            setTeamData(null);
+        } catch (e) {
+            console.log(e);
+        }
+    };
 
     return (
         <PageContainer>
@@ -292,7 +444,11 @@ export default function ProductHeist() {
 
                 <Content>
                     <Header>
-                        <TeamName>{teamName}</TeamName>
+                        <TeamName>
+                            {teamName
+                                ? `Team: ${teamName} (Code: ${teamCode})`
+                                : 'No Team Assigned'}
+                        </TeamName>
                     </Header>
 
                     <CardsWrapper>
@@ -309,29 +465,86 @@ export default function ProductHeist() {
                                         <LoadingText>Loading team...</LoadingText>
                                     </>
                                 ) : members.length > 0 ? (
-                                    members.map((member) => {
-                                        const user = member.Attendee.User;
-                                        return (
-                                            <MemberItem key={member.attendee_id}>
-                                                <MemberContent>
-                                                    <Avatar>
-                                                        <AvatarImage
-                                                            src={gearyHeist}
-                                                            alt={`${user.first_name} ${user.last_name}`}
-                                                        />
-                                                    </Avatar>
-                                                    <UserInfo>
-                                                        <UserName>
-                                                            {user.first_name} {user.last_name}
-                                                        </UserName>
-                                                        <UserEmail>{user.email}</UserEmail>
-                                                    </UserInfo>
-                                                </MemberContent>
-                                            </MemberItem>
-                                        );
-                                    })
+                                    <TeamContainer>
+                                        {members.map((member) => {
+                                            const user = member.Attendee.User;
+                                            return (
+                                                <MemberItem key={member.attendee_id}>
+                                                    <MemberContent>
+                                                        <Avatar>
+                                                            <AvatarImage
+                                                                src={gearyHeist}
+                                                                alt={`${user.first_name} ${user.last_name}`}
+                                                            />
+                                                        </Avatar>
+                                                        <UserInfo>
+                                                            <UserName>
+                                                                {user.first_name} {user.last_name}
+                                                            </UserName>
+                                                            <UserEmail>{user.email}</UserEmail>
+                                                        </UserInfo>
+                                                    </MemberContent>
+                                                </MemberItem>
+                                            );
+                                        })}
+                                        <Button onClick={handleLeaveTeam}>Leave</Button>
+                                    </TeamContainer>
                                 ) : (
-                                    <LoadingText>Event Starting Soon...</LoadingText>
+                                    <TeamSetupContainer>
+                                        <TeamSection>
+                                            <TeamSetupTitle>Join a Team</TeamSetupTitle>
+                                            <TeamSetupText>
+                                                Enter team code below to join your crew and start
+                                                planning the heist.
+                                            </TeamSetupText>
+                                            <InputGroup>
+                                                <Input
+                                                    type="text"
+                                                    placeholder="e.g. J1C8V"
+                                                    value={formTeamCode}
+                                                    onChange={(e) =>
+                                                        setFormTeamCode(
+                                                            e.target.value.toUpperCase()
+                                                        )
+                                                    }
+                                                    maxLength={5}
+                                                />
+                                                <Button
+                                                    onClick={handleJoinTeam}
+                                                    disabled={!formTeamCode.trim()}
+                                                >
+                                                    Join
+                                                </Button>
+                                            </InputGroup>
+                                        </TeamSection>
+
+                                        <VerticalDivider />
+
+                                        <TeamSection>
+                                            <TeamSetupTitle>Create a Team</TeamSetupTitle>
+                                            <TeamSetupText>
+                                                Start your own crew and get a unique code to share
+                                                with your teammates.
+                                            </TeamSetupText>
+                                            <InputGroup>
+                                                <Input
+                                                    type="text"
+                                                    placeholder="Enter team name"
+                                                    value={formTeamName}
+                                                    onChange={(e) =>
+                                                        setFormTeamName(e.target.value)
+                                                    }
+                                                    maxLength={50}
+                                                />
+                                                <Button
+                                                    onClick={handleCreateTeam}
+                                                    disabled={!formTeamName.trim()}
+                                                >
+                                                    Create
+                                                </Button>
+                                            </InputGroup>
+                                        </TeamSection>
+                                    </TeamSetupContainer>
                                 )}
                             </CardContent>
                         </Card>

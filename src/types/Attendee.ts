@@ -32,29 +32,8 @@ const AttendeeSchema = RawAttendee.transform((attendee) => ({
     paymentId: attendee.payment_id,
 }));
 
-const TeamResponseSchema = z.object({
-    team_id: z.uuid(),
-    Team: z.object({
-        team_name: z.string(),
-        Team_Member: z.array(
-            z.object({
-                attendee_id: z.uuid(),
-                Attendee: z.object({
-                    user_id: z.string(),
-                    User: z.object({
-                        email: z.email(),
-                        first_name: z.string(),
-                        last_name: z.string(),
-                    }),
-                }),
-            })
-        ),
-    }),
-});
-
 type Attendee = z.infer<typeof AttendeeSchema>;
 type AttendeeStatus = z.infer<typeof ATTENDEE_STATUS>;
-type TeamResponse = z.infer<typeof TeamResponseSchema>;
 
-export { AttendeeSchema, ATTENDEE_STATUS, TeamResponseSchema };
-export type { Attendee, AttendeeStatus, TeamResponse };
+export { AttendeeSchema, ATTENDEE_STATUS };
+export type { Attendee, AttendeeStatus };
