@@ -43,9 +43,15 @@ const TeamResponseSchema = z.object({
     }),
 });
 
+type DeliverableVersion = {
+    submission: JSON;
+    submitted_at: string | null;
+    submitted_by: string | null;
+};
+
 type Team = z.infer<typeof TeamSchema>;
 type TeamMember = z.infer<typeof TeamMemberSchema>;
 type TeamResponse = z.infer<typeof TeamResponseSchema>;
 
 export { TeamSchema, TeamMemberSchema, TeamResponseSchema };
-export type { Team, TeamMember, TeamResponse };
+export type { Team, TeamMember, TeamResponse, DeliverableVersion };

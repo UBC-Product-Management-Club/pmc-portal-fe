@@ -1,5 +1,5 @@
 import { useForm, Controller } from 'react-hook-form';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTeam } from '../../hooks/useTeam';
 import styled from 'styled-components';
 
@@ -102,6 +102,13 @@ const FileNameText = styled.span`
     margin-top: 0.25rem;
 `;
 
+const ExistingFileLink = styled.a`
+    font-size: 0.8rem;
+    color: var(--pmc-light-blue);
+    margin-left: 0.25rem;
+    text-decoration: underline;
+`;
+
 const FieldError = styled.span`
     font-size: 0.75rem;
     color: #fca5a5;
@@ -137,11 +144,47 @@ const SubmitButton = styled.button`
     }
 `;
 
+const SubmissionInfo = styled.div`
+    font-size: 0.8rem;
+    color: var(--pmc-light-grey);
+    padding: 0.5rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(141, 155, 235, 0.12);
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: baseline;
+    flex-wrap: wrap;
+
+    code {
+        font-family: inherit;
+        font-size: 0.8rem;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 0.1rem 0.35rem;
+        border-radius: 999px;
+        color: #e5e7eb;
+    }
+`;
+
 type DeliverablesFormData = {
     projectTitle: string;
-    githubLink: string;
-    demoLink: string;
+    figjamLink: string;
+    figmaLink: string;
     presentationFile: File | null;
+};
+
+type DeliverableResponse = {
+    submission: {
+        projectTitle: string;
+        figjamLink: string;
+        figmaLink: string;
+        file_links?: string[];
+    };
+    submitted_at: string;
+    submitted_by: string;
+    User: {
+        first_name: string;
+        last_name: string;
+    };
 };
 
 export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
@@ -150,28 +193,34 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
         handleSubmit,
         control,
         watch,
+        reset,
         formState: { errors },
     } = useForm<DeliverablesFormData>({
         defaultValues: {
             projectTitle: '',
-            githubLink: '',
-            demoLink: '',
+            figjamLink: '',
+            figmaLink: '',
             presentationFile: null,
         },
     });
 
-    const teamService = useTeam();
+    const { getDeliverable, submitDeliverable } = useTeam();
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const presentationFile = watch('presentationFile');
+    const [existingFileUrl, setExistingFileUrl] = useState<string | null>(null);
+    const [submissionMeta, setSubmissionMeta] = useState<{
+        submitted_at: string;
+        submitted_by: string;
+    } | null>(null);
 
     const onSubmit = async (data: DeliverablesFormData) => {
         console.log('Submitting deliverables:', data);
 
         const formData = new FormData();
         formData.append('projectTitle', data.projectTitle);
-        formData.append('figmaLink', data.githubLink);
-        formData.append('figjamLink', data.demoLink);
+        formData.append('figmaLink', data.figmaLink);
+        formData.append('figjamLink', data.figjamLink);
         if (data.presentationFile) {
             formData.append('presentationFile', data.presentationFile);
         }
@@ -179,16 +228,75 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
         try {
             if (!eventId) return;
 
-            const data = await teamService.submitDeliverable(eventId, formData);
-            console.log('Deliverables submitted successfully:', data);
+            const res = await submitDeliverable(eventId, formData);
+            console.log('Deliverables submitted successfully:', res);
+
+            const refreshed = (await getDeliverable(eventId)) as DeliverableResponse | null;
+            if (refreshed) {
+                const firstLink = refreshed.submission.file_links?.[0] ?? null;
+                setExistingFileUrl(firstLink);
+                setSubmissionMeta({
+                    submitted_at: refreshed.submitted_at,
+                    submitted_by: `${refreshed.User.first_name} ${refreshed.User.last_name}`,
+                });
+            }
         } catch (e) {
             console.log('Error submitting deliverables:', e);
         }
     };
 
+    const extractOriginalFileName = (url: string): string => {
+        const fullName = url.substring(url.lastIndexOf('/') + 1);
+        return fullName.substring(fullName.indexOf('-') + 1);
+    };
+
+    useEffect(() => {
+        const loadExistingDeliverable = async () => {
+            if (!eventId) return;
+
+            try {
+                const existing = (await getDeliverable(eventId)) as DeliverableResponse | null;
+                if (!existing) return;
+
+                const { submission, submitted_at, User } = existing;
+                console.log('Existing deliverable submission:', existing);
+
+                reset({
+                    projectTitle: submission.projectTitle ?? '',
+                    figmaLink: submission.figmaLink ?? '',
+                    figjamLink: submission.figjamLink ?? '',
+                    presentationFile: null,
+                });
+
+                const firstLink = submission.file_links?.[0] ?? null;
+                setExistingFileUrl(firstLink);
+                setSubmissionMeta({
+                    submitted_at,
+                    submitted_by: `${User.first_name} ${User.last_name}`,
+                });
+            } catch (err) {
+                console.log('Error loading existing deliverable:', err);
+            }
+        };
+
+        loadExistingDeliverable();
+    }, [eventId, getDeliverable, reset]);
+
+    const formattedSubmittedAt =
+        submissionMeta && new Date(submissionMeta.submitted_at).toLocaleString();
+
     return (
         <DeliverablesLayout onSubmit={handleSubmit(onSubmit)}>
             <DeliverablesForm>
+                {submissionMeta && (
+                    <SubmissionInfo>
+                        <span>Last submitted:</span>
+                        <strong>{formattedSubmittedAt}</strong>
+                        <span>by</span>
+                        <code>{submissionMeta.submitted_by}</code>
+                    </SubmissionInfo>
+                )}
+
                 <DeliverableItem>
                     <Label htmlFor="projectTitle">
                         Project Title<RequiredMark>*</RequiredMark>
@@ -207,18 +315,18 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
                 </DeliverableItem>
 
                 <DeliverableItem>
-                    <Label htmlFor="githubLink">
+                    <Label htmlFor="figmaLink">
                         Figma File Link<RequiredMark>*</RequiredMark>
                     </Label>
                     <HelperText>
                         Link to your main Figma design file (final mockups / UI screens).
                     </HelperText>
                     <TextInput
-                        id="githubLink"
+                        id="figmaLink"
                         type="url"
                         placeholder="https://www.figma.com/file/your-file-id/your-file-name"
-                        $hasError={!!errors.githubLink}
-                        {...register('githubLink', {
+                        $hasError={!!errors.figmaLink}
+                        {...register('figmaLink', {
                             required: 'Figma file link is required',
                             pattern: {
                                 value: /^https?:\/\/.+/,
@@ -226,22 +334,22 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
                             },
                         })}
                     />
-                    {errors.githubLink && <FieldError>{errors.githubLink.message}</FieldError>}
+                    {errors.figmaLink && <FieldError>{errors.figmaLink.message}</FieldError>}
                 </DeliverableItem>
 
                 <DeliverableItem>
-                    <Label htmlFor="demoLink">
+                    <Label htmlFor="figjamLink">
                         FigJam Link<RequiredMark>*</RequiredMark>
                     </Label>
                     <HelperText>
                         Link to your FigJam board with brainstorming, flows, or planning.
                     </HelperText>
                     <TextInput
-                        id="demoLink"
+                        id="figjamLink"
                         type="url"
                         placeholder="https://www.figma.com/figjam/your-board-id/your-board-name"
-                        $hasError={!!errors.demoLink}
-                        {...register('demoLink', {
+                        $hasError={!!errors.figjamLink}
+                        {...register('figjamLink', {
                             required: 'FigJam link is required',
                             pattern: {
                                 value: /^https?:\/\/.+/,
@@ -249,7 +357,7 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
                             },
                         })}
                     />
-                    {errors.demoLink && <FieldError>{errors.demoLink.message}</FieldError>}
+                    {errors.figjamLink && <FieldError>{errors.figjamLink.message}</FieldError>}
                 </DeliverableItem>
 
                 <DeliverableItem>
@@ -257,13 +365,22 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
                         Presentation File (PDF, PPT, etc.)<RequiredMark>*</RequiredMark>
                     </Label>
                     <HelperText>Upload the deck you’ll present to the judges.</HelperText>
+
                     <Controller
                         name="presentationFile"
                         control={control}
-                        rules={{ required: 'Presentation file is required' }}
+                        rules={{
+                            validate: (file) =>
+                                !!file || !!existingFileUrl || 'Presentation file is required',
+                        }}
                         render={({ field }) => {
                             const { value, ...restField } = field;
-                            console.log('Presentation file field value:', value);
+                            console.log(value);
+
+                            const existingFileName = existingFileUrl
+                                ? extractOriginalFileName(existingFileUrl)
+                                : '';
+
                             return (
                                 <>
                                     <HiddenFileInput
@@ -276,21 +393,42 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
                                             field.onChange(e.target.files?.[0] || null)
                                         }
                                     />
+
                                     <FileUploadButton
                                         type="button"
                                         onClick={() => fileInputRef.current?.click()}
                                     >
-                                        📎 {presentationFile ? 'Change File' : 'Choose File'}
-                                    </FileUploadButton>
-                                    <FileNameText>
+                                        📎{' '}
                                         {presentationFile
-                                            ? `Selected: ${presentationFile.name}`
-                                            : 'No file chosen (PDF, PPT, PPTX)'}
+                                            ? 'Change File'
+                                            : existingFileUrl
+                                              ? 'Replace File'
+                                              : 'Choose File'}
+                                    </FileUploadButton>
+
+                                    <FileNameText>
+                                        {presentationFile ? (
+                                            <>Selected: {presentationFile.name}</>
+                                        ) : existingFileUrl ? (
+                                            <>
+                                                Previously uploaded:
+                                                <ExistingFileLink
+                                                    href={existingFileUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    {existingFileName}
+                                                </ExistingFileLink>
+                                            </>
+                                        ) : (
+                                            'No file chosen (PDF, PPT, PPTX)'
+                                        )}
                                     </FileNameText>
                                 </>
                             );
                         }}
                     />
+
                     {errors.presentationFile && (
                         <FieldError>{errors.presentationFile.message}</FieldError>
                     )}

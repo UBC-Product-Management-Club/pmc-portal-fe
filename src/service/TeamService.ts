@@ -1,4 +1,4 @@
-import { TeamResponse } from '../types/Team';
+import { DeliverableVersion, TeamResponse } from '../types/Team';
 import { RestClient } from './RestClient';
 
 class TeamService {
@@ -32,6 +32,10 @@ class TeamService {
 
     submitDeliverable(eventId: string, deliverableData: FormData): Promise<{ message: string }> {
         return this.client.post<{ message: string }>(`/${eventId}/deliverable`, deliverableData);
+    }
+
+    getDeliverable(eventId: string): Promise<DeliverableVersion | null> {
+        return this.client.get<DeliverableVersion | null>(`/${eventId}/deliverable`);
     }
 }
 

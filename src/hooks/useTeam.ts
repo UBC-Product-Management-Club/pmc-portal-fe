@@ -43,7 +43,14 @@ function useTeam() {
         [teamService]
     );
 
-    return { getTeam, createTeam, joinTeam, leaveTeam, submitDeliverable };
+    const getDeliverable = useCallback(
+        async (eventId: string) => {
+            return await teamService.getDeliverable(eventId);
+        },
+        [teamService]
+    );
+
+    return { getTeam, createTeam, joinTeam, leaveTeam, submitDeliverable, getDeliverable };
 }
 
 export { useTeam };
