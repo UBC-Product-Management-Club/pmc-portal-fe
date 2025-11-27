@@ -324,7 +324,7 @@ const LockedDate = styled.div`
 `;
 
 export default function ProductHeist() {
-    const teamService = useTeam();
+    const { getTeam, joinTeam, leaveTeam, createTeam } = useTeam();
     const { event_id } = useParams();
     const { user } = useUserData();
     const navigate = useNavigate();
@@ -342,7 +342,7 @@ export default function ProductHeist() {
     useEffect(() => {
         const fetchTeam = async (eventId: string) => {
             try {
-                const data = await teamService.getTeam(eventId);
+                const data = await getTeam(eventId);
                 setTeamData(data || null);
                 console.log(data);
             } catch (e) {
@@ -355,7 +355,7 @@ export default function ProductHeist() {
         if (event_id) {
             fetchTeam(event_id);
         }
-    }, [event_id, teamService]);
+    }, [event_id, getTeam]);
 
     const members = teamData?.Team?.Team_Member || [];
     const teamName = teamData?.Team?.team_name;
@@ -366,7 +366,7 @@ export default function ProductHeist() {
             if (!event_id) return;
 
             setJoinError('');
-            const data = await teamService.joinTeam(event_id, formTeamCode);
+            const data = await joinTeam(event_id, formTeamCode);
             setTeamData(data);
             setFormTeamCode('');
         } catch (e) {
@@ -380,7 +380,7 @@ export default function ProductHeist() {
             if (!event_id) return;
 
             setCreateError('');
-            const data = await teamService.createTeam(event_id, formTeamName);
+            const data = await createTeam(event_id, formTeamName);
             setTeamData(data);
             setFormTeamName('');
         } catch (e) {
@@ -393,7 +393,7 @@ export default function ProductHeist() {
         try {
             if (!event_id) return;
 
-            await teamService.leaveTeam(event_id);
+            await leaveTeam(event_id);
             setTeamData(null);
         } catch (e) {
             console.log(e);
