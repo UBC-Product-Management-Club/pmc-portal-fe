@@ -99,13 +99,15 @@ const Card = styled.div`
 
 const CardHeader = styled.div`
     padding: 0.5rem 1.5rem 0 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `;
 
 const CardTitle = styled.h2`
     font-size: 1rem;
     font-weight: 600;
     color: #7f838f;
-    margin-bottom: 0;
 `;
 
 const CardContent = styled.div<{ center?: boolean }>`
@@ -359,6 +361,15 @@ const VerticalDivider = styled.div`
     );
 `;
 
+const Count = styled.div`
+    background-color: rgba(141, 155, 235, 0.2);
+    color: #8d9beb;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+`;
+
 export default function ProductHeist() {
     const teamService = useTeam();
     const { event_id } = useParams();
@@ -481,6 +492,7 @@ export default function ProductHeist() {
                         <Card>
                             <CardHeader>
                                 <CardTitle>Meet Your Accomplices</CardTitle>
+                                {members.length > 0 && <Count>{members.length}/4</Count>}
                             </CardHeader>
                             {/* ONLY center if loading or no members */}
                             <CardContent center={loading || members.length === 0}>
