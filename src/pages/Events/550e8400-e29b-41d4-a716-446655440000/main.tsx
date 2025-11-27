@@ -328,6 +328,25 @@ const Button = styled.button`
     }
 `;
 
+const ErrorMessage = styled.div`
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+
+    &:before {
+        content: '⚠';
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+`;
+
 const VerticalDivider = styled.div`
     width: 1px;
     align-self: stretch;
@@ -354,6 +373,8 @@ export default function ProductHeist() {
 
     const [formTeamCode, setFormTeamCode] = useState('');
     const [formTeamName, setFormTeamName] = useState('');
+    const [joinError, setJoinError] = useState('');
+    const [createError, setCreateError] = useState('');
 
     useEffect(() => {
         const fetchTeam = async (eventId: string) => {
@@ -398,11 +419,13 @@ export default function ProductHeist() {
         try {
             if (!event_id) return;
 
+            setJoinError('');
             const data = await teamService.joinTeam(event_id, formTeamCode);
             setTeamData(data);
             setFormTeamCode('');
         } catch (e) {
             console.log(e);
+            setJoinError('Unable to join team. Please check the code and try again.');
         }
     };
 
@@ -410,11 +433,13 @@ export default function ProductHeist() {
         try {
             if (!event_id) return;
 
+            setCreateError('');
             const data = await teamService.createTeam(event_id, formTeamName);
             setTeamData(data);
             setFormTeamName('');
         } catch (e) {
             console.log(e);
+            setCreateError('Unable to create team. Please try again.');
         }
     };
 
@@ -516,6 +541,7 @@ export default function ProductHeist() {
                                                     Join
                                                 </Button>
                                             </InputGroup>
+                                            {joinError && <ErrorMessage>{joinError}</ErrorMessage>}
                                         </TeamSection>
 
                                         <VerticalDivider />
@@ -543,6 +569,9 @@ export default function ProductHeist() {
                                                     Create
                                                 </Button>
                                             </InputGroup>
+                                            {createError && (
+                                                <ErrorMessage>{createError}</ErrorMessage>
+                                            )}
                                         </TeamSection>
                                     </TeamSetupContainer>
                                 )}
