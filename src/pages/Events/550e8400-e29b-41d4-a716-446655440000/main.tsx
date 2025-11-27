@@ -418,10 +418,12 @@ export default function ProductHeist() {
     const [teamData, setTeamData] = useState<TeamResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
+    const [phase, setPhase] = useState<'before' | 'during' | 'after'>('before');
+
     const targetDate = new Date('2025-11-29T09:00:00');
-    // const dueDate = new Date('2025-11-30T12:00:00');
-    // const isSubmissionOpen = new Date() >= targetDate;
-    const isSubmissionOpen = true;
+    const dueDate = new Date('2025-11-30T12:00:00');
+
+    const isSubmissionOpen = phase === 'during';
 
     const [formTeamCode, setFormTeamCode] = useState('');
     const [formTeamName, setFormTeamName] = useState('');
@@ -449,17 +451,33 @@ export default function ProductHeist() {
     useEffect(() => {
         const interval = setInterval(() => {
             const now = new Date();
-            const diff = targetDate.getTime() - now.getTime();
-            if (diff <= 0) {
-                clearInterval(interval);
+
+            if (now < targetDate) {
+                // before event
+                const diff = targetDate.getTime() - now.getTime();
+                setPhase('before');
+
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                setTimeLeft({ hours, minutes, seconds });
+            } else if (now < dueDate) {
+                // during event
+                const diff = dueDate.getTime() - now.getTime();
+                setPhase('during');
+
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                setTimeLeft({ hours, minutes, seconds });
+            } else {
+                // after event
+                setPhase('after');
                 setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
-                return;
+                clearInterval(interval);
             }
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            setTimeLeft({ hours, minutes, seconds });
         }, 500);
+
         return () => clearInterval(interval);
     }, []);
 
@@ -537,7 +555,14 @@ export default function ProductHeist() {
                                     <CardTitle>Timeline</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <CountdownText>Heist starts in...</CountdownText>
+                                    <CountdownText>
+                                        {phase === 'before'
+                                            ? 'Heist starts in...'
+                                            : phase === 'during'
+                                              ? 'Heist ends in...'
+                                              : 'Heist complete - submissions closed'}
+                                    </CountdownText>
+
                                     <CountdownNumbers>
                                         <TimeBlock>
                                             <TimeValue>{timeLeft.hours}</TimeValue>
