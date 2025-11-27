@@ -6,6 +6,7 @@ import gearyHeist from '../../../assets/gearyHeist.avif';
 import PMCLogo from '../../../assets/pmclogo.svg';
 import type { TeamResponse } from '../../../types/Team';
 import { useTeam } from '../../../hooks/useTeam';
+import { DeliverablesSection } from '../../../components/Deliverables/DeliverablesSection';
 
 const spin = keyframes`
   from { transform: rotate(0deg); }
@@ -75,6 +76,7 @@ const TeamName = styled.h1`
 `;
 
 const CardsWrapper = styled.div`
+    height: calc(100vh * 2 / 3);
     display: flex;
     gap: 1.5rem;
     width: 100%;
@@ -84,6 +86,13 @@ const CardsWrapper = styled.div`
     @media (max-width: 768px) {
         flex-direction: column;
     }
+`;
+
+const CardVerticalWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    flex: 1;
 `;
 
 const Card = styled.div`
@@ -115,6 +124,9 @@ const CardContent = styled.div<{ center?: boolean }>`
     display: flex;
     flex-direction: column;
     flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+
     ${({ center }) =>
         center &&
         `
@@ -155,8 +167,11 @@ const AvatarImage = styled.img`
 `;
 
 const UserInfo = styled.div`
-    flex: 1;
-    min-width: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 `;
 
 const UserName = styled.h3`
@@ -169,7 +184,6 @@ const UserName = styled.h3`
 const UserEmail = styled.p`
     font-size: 0.875rem;
     color: var(--pmc-light-grey);
-    margin-top: -1rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -215,19 +229,12 @@ const TimeLabel = styled.span`
     text-transform: uppercase;
 `;
 
-const SubmissionText = styled.p`
-    font-size: 1rem;
-    color: var(--pmc-light-grey);
-    margin-top: 3rem;
-    text-align: center;
-`;
-
 const CountdownText = styled.p`
     font-size: 1rem;
     color: var(--pmc-light-grey);
     text-align: center;
     margin: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 0.25rem;
     font-weight: 500;
 `;
 
@@ -235,6 +242,7 @@ const TeamContainer = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
+    justify-content: space-between;
     gap: 1.5rem;
     width: 100%;
 `;
@@ -370,6 +378,37 @@ const Count = styled.div`
     border-radius: 9999px;
 `;
 
+const VaultImage = styled.img`
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    filter: grayscale(75%) brightness(85%);
+    opacity: 0.6;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+`;
+
+const LockedTitle = styled.h2`
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+`;
+
+const LockedSubtitle = styled.p`
+    color: var(--pmc-light-grey);
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+`;
+
+const LockedDate = styled.div`
+    color: #8d9beb;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+`;
+
 export default function ProductHeist() {
     const teamService = useTeam();
     const { event_id } = useParams();
@@ -380,7 +419,9 @@ export default function ProductHeist() {
     const [loading, setLoading] = useState(true);
     const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
     const targetDate = new Date('2025-11-29T09:00:00');
-    const isSubmissionOpen = new Date() >= targetDate;
+    // const dueDate = new Date('2025-11-30T12:00:00');
+    // const isSubmissionOpen = new Date() >= targetDate;
+    const isSubmissionOpen = true;
 
     const [formTeamCode, setFormTeamCode] = useState('');
     const [formTeamName, setFormTeamName] = useState('');
@@ -489,136 +530,163 @@ export default function ProductHeist() {
 
                     <CardsWrapper>
                         {/* Team Members Card */}
+                        <CardVerticalWrapper>
+                            {/* Countdown Card (do NOT center) */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Timeline</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <CountdownText>Heist starts in...</CountdownText>
+                                    <CountdownNumbers>
+                                        <TimeBlock>
+                                            <TimeValue>{timeLeft.hours}</TimeValue>
+                                            <TimeLabel>hours</TimeLabel>
+                                        </TimeBlock>
+                                        <TimeBlock>
+                                            <TimeValue>{timeLeft.minutes}</TimeValue>
+                                            <TimeLabel>minutes</TimeLabel>
+                                        </TimeBlock>
+                                        <TimeBlock>
+                                            <TimeValue>{timeLeft.seconds}</TimeValue>
+                                            <TimeLabel>seconds</TimeLabel>
+                                        </TimeBlock>
+                                    </CountdownNumbers>
+                                </CardContent>
+                            </Card>
+
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Meet Your Accomplices</CardTitle>
+                                    {members.length > 0 && <Count>{members.length}/4</Count>}
+                                </CardHeader>
+                                {/* ONLY center if loading or no members */}
+                                <CardContent center={loading || members.length === 0}>
+                                    {loading ? (
+                                        <>
+                                            <Spinner />
+                                            <LoadingText>Loading team...</LoadingText>
+                                        </>
+                                    ) : members.length > 0 ? (
+                                        <TeamContainer>
+                                            <div>
+                                                {members.map((member) => {
+                                                    const user = member.Attendee.User;
+                                                    return (
+                                                        <MemberItem key={member.attendee_id}>
+                                                            <MemberContent>
+                                                                <Avatar>
+                                                                    <AvatarImage
+                                                                        src={gearyHeist}
+                                                                        alt={`${user.first_name} ${user.last_name}`}
+                                                                    />
+                                                                </Avatar>
+                                                                <UserInfo>
+                                                                    <UserName>
+                                                                        {user.first_name}{' '}
+                                                                        {user.last_name}
+                                                                    </UserName>
+                                                                    <UserEmail>
+                                                                        {user.email}
+                                                                    </UserEmail>
+                                                                </UserInfo>
+                                                            </MemberContent>
+                                                        </MemberItem>
+                                                    );
+                                                })}
+                                            </div>
+                                            <Button onClick={handleLeaveTeam}>Leave</Button>
+                                        </TeamContainer>
+                                    ) : (
+                                        <TeamSetupContainer>
+                                            <TeamSection>
+                                                <TeamSetupTitle>Join a Team</TeamSetupTitle>
+                                                <TeamSetupText>
+                                                    Enter team code below to join your crew and
+                                                    start planning the heist.
+                                                </TeamSetupText>
+                                                <InputGroup>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="e.g. J1C8V"
+                                                        value={formTeamCode}
+                                                        onChange={(e) =>
+                                                            setFormTeamCode(
+                                                                e.target.value.toUpperCase()
+                                                            )
+                                                        }
+                                                        maxLength={5}
+                                                    />
+                                                    <Button
+                                                        onClick={handleJoinTeam}
+                                                        disabled={!formTeamCode.trim()}
+                                                    >
+                                                        Join
+                                                    </Button>
+                                                </InputGroup>
+                                                {joinError && (
+                                                    <ErrorMessage>{joinError}</ErrorMessage>
+                                                )}
+                                            </TeamSection>
+
+                                            <VerticalDivider />
+
+                                            <TeamSection>
+                                                <TeamSetupTitle>Create a Team</TeamSetupTitle>
+                                                <TeamSetupText>
+                                                    Start your own crew and get a unique code to
+                                                    share with your teammates.
+                                                </TeamSetupText>
+                                                <InputGroup>
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Enter team name"
+                                                        value={formTeamName}
+                                                        onChange={(e) =>
+                                                            setFormTeamName(e.target.value)
+                                                        }
+                                                        maxLength={50}
+                                                    />
+                                                    <Button
+                                                        onClick={handleCreateTeam}
+                                                        disabled={!formTeamName.trim()}
+                                                    >
+                                                        Create
+                                                    </Button>
+                                                </InputGroup>
+                                                {createError && (
+                                                    <ErrorMessage>{createError}</ErrorMessage>
+                                                )}
+                                            </TeamSection>
+                                        </TeamSetupContainer>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </CardVerticalWrapper>
                         <Card>
                             <CardHeader>
-                                <CardTitle>Meet Your Accomplices</CardTitle>
-                                {members.length > 0 && <Count>{members.length}/4</Count>}
+                                <CardTitle>Submission Vault</CardTitle>
                             </CardHeader>
-                            {/* ONLY center if loading or no members */}
-                            <CardContent center={loading || members.length === 0}>
-                                {loading ? (
-                                    <>
-                                        <Spinner />
-                                        <LoadingText>Loading team...</LoadingText>
-                                    </>
-                                ) : members.length > 0 ? (
-                                    <TeamContainer>
-                                        {members.map((member) => {
-                                            const user = member.Attendee.User;
-                                            return (
-                                                <MemberItem key={member.attendee_id}>
-                                                    <MemberContent>
-                                                        <Avatar>
-                                                            <AvatarImage
-                                                                src={gearyHeist}
-                                                                alt={`${user.first_name} ${user.last_name}`}
-                                                            />
-                                                        </Avatar>
-                                                        <UserInfo>
-                                                            <UserName>
-                                                                {user.first_name} {user.last_name}
-                                                            </UserName>
-                                                            <UserEmail>{user.email}</UserEmail>
-                                                        </UserInfo>
-                                                    </MemberContent>
-                                                </MemberItem>
-                                            );
-                                        })}
-                                        <Button onClick={handleLeaveTeam}>Leave</Button>
-                                    </TeamContainer>
-                                ) : (
-                                    <TeamSetupContainer>
-                                        <TeamSection>
-                                            <TeamSetupTitle>Join a Team</TeamSetupTitle>
-                                            <TeamSetupText>
-                                                Enter team code below to join your crew and start
-                                                planning the heist.
-                                            </TeamSetupText>
-                                            <InputGroup>
-                                                <Input
-                                                    type="text"
-                                                    placeholder="e.g. J1C8V"
-                                                    value={formTeamCode}
-                                                    onChange={(e) =>
-                                                        setFormTeamCode(
-                                                            e.target.value.toUpperCase()
-                                                        )
-                                                    }
-                                                    maxLength={5}
-                                                />
-                                                <Button
-                                                    onClick={handleJoinTeam}
-                                                    disabled={!formTeamCode.trim()}
-                                                >
-                                                    Join
-                                                </Button>
-                                            </InputGroup>
-                                            {joinError && <ErrorMessage>{joinError}</ErrorMessage>}
-                                        </TeamSection>
 
-                                        <VerticalDivider />
+                            {!isSubmissionOpen ? (
+                                <CardContent center>
+                                    <div style={{ textAlign: 'center', maxWidth: '400px' }}>
+                                        <VaultImage src={gearyHeist} alt="Vault Locked" />
 
-                                        <TeamSection>
-                                            <TeamSetupTitle>Create a Team</TeamSetupTitle>
-                                            <TeamSetupText>
-                                                Start your own crew and get a unique code to share
-                                                with your teammates.
-                                            </TeamSetupText>
-                                            <InputGroup>
-                                                <Input
-                                                    type="text"
-                                                    placeholder="Enter team name"
-                                                    value={formTeamName}
-                                                    onChange={(e) =>
-                                                        setFormTeamName(e.target.value)
-                                                    }
-                                                    maxLength={50}
-                                                />
-                                                <Button
-                                                    onClick={handleCreateTeam}
-                                                    disabled={!formTeamName.trim()}
-                                                >
-                                                    Create
-                                                </Button>
-                                            </InputGroup>
-                                            {createError && (
-                                                <ErrorMessage>{createError}</ErrorMessage>
-                                            )}
-                                        </TeamSection>
-                                    </TeamSetupContainer>
-                                )}
-                            </CardContent>
-                        </Card>
+                                        <LockedTitle>🗝️ SUBMISSION VAULT LOCKED 🗝️</LockedTitle>
+                                        <LockedSubtitle>
+                                            All files are secured and hidden for now...
+                                        </LockedSubtitle>
 
-                        {/* Countdown Card (do NOT center) */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Upload Your Project</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                {!isSubmissionOpen ? (
-                                    <>
-                                        <CountdownText>Submission opens in...</CountdownText>
-                                        <CountdownNumbers>
-                                            <TimeBlock>
-                                                <TimeValue>{timeLeft.hours}</TimeValue>
-                                                <TimeLabel>hours</TimeLabel>
-                                            </TimeBlock>
-                                            <TimeBlock>
-                                                <TimeValue>{timeLeft.minutes}</TimeValue>
-                                                <TimeLabel>minutes</TimeLabel>
-                                            </TimeBlock>
-                                            <TimeBlock>
-                                                <TimeValue>{timeLeft.seconds}</TimeValue>
-                                                <TimeLabel>seconds</TimeLabel>
-                                            </TimeBlock>
-                                        </CountdownNumbers>
-                                    </>
-                                ) : null}
-                                <SubmissionText>
-                                    DUE: November 30, 2025 | 12:00 PM PST
-                                </SubmissionText>
-                            </CardContent>
+                                        <CountdownText>Deliverable are due:</CountdownText>
+                                        <LockedDate>November 30, 2025 — 12:00 PM PST</LockedDate>
+                                    </div>
+                                </CardContent>
+                            ) : (
+                                <CardContent>
+                                    <DeliverablesSection />
+                                </CardContent>
+                            )}
                         </Card>
                     </CardsWrapper>
                 </Content>
