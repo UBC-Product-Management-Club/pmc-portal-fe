@@ -29,6 +29,10 @@ class TeamService {
     leaveTeam(eventId: string): Promise<{ message: string }> {
         return this.client.delete<{ message: string }>(`/${eventId}/team`);
     }
+
+    submitDeliverable(eventId: string, deliverableData: FormData): Promise<{ message: string }> {
+        return this.client.post<{ message: string }>(`/${eventId}/deliverable`, deliverableData);
+    }
 }
 
 export { TeamService };

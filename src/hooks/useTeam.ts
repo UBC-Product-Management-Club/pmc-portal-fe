@@ -36,7 +36,14 @@ function useTeam() {
         [teamService]
     );
 
-    return { getTeam, createTeam, joinTeam, leaveTeam };
+    const submitDeliverable = useCallback(
+        async (eventId: string, deliverableData: FormData) => {
+            return await teamService.submitDeliverable(eventId, deliverableData);
+        },
+        [teamService]
+    );
+
+    return { getTeam, createTeam, joinTeam, leaveTeam, submitDeliverable };
 }
 
 export { useTeam };

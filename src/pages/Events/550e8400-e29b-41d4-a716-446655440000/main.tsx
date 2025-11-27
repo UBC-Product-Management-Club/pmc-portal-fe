@@ -7,6 +7,17 @@ import PMCLogo from '../../../assets/pmclogo.svg';
 import type { TeamResponse } from '../../../types/Team';
 import { useTeam } from '../../../hooks/useTeam';
 import { DeliverablesSection } from '../../../components/Deliverables/DeliverablesSection';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardVerticalWrapper,
+    CardsWrapper,
+    CountdownText,
+} from '../../../components/Deliverables/utils';
+import { TimelineCard } from '../../../components/Deliverables/TimelineCard';
+import { useSubmissionWindow } from '../../../hooks/useSubmissionWindow';
 
 const spin = keyframes`
   from { transform: rotate(0deg); }
@@ -75,68 +86,6 @@ const TeamName = styled.h1`
     color: #ffffff;
 `;
 
-const CardsWrapper = styled.div`
-    height: calc(100vh * 2 / 3);
-    display: flex;
-    gap: 1.5rem;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-
-    @media (max-width: 768px) {
-        flex-direction: column;
-    }
-`;
-
-const CardVerticalWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    flex: 1;
-`;
-
-const Card = styled.div`
-    flex: 1 1 300px;
-    min-width: 0;
-    border: 1px solid rgba(141, 155, 235, 0.2);
-    border-radius: 0.75rem;
-    background-color: var(--pmc-midnight-blue);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-`;
-
-const CardHeader = styled.div`
-    padding: 0.5rem 1.5rem 0 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const CardTitle = styled.h2`
-    font-size: 1rem;
-    font-weight: 600;
-    color: #7f838f;
-`;
-
-const CardContent = styled.div<{ center?: boolean }>`
-    padding: 0 1.5rem 1rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-
-    ${({ center }) =>
-        center &&
-        `
-        align-items: center;  /* horizontal centering */
-        text-align: center;   /* text centering */
-        justify-content: center; /* vertical centering */
-        height: 150px;        /* optional: adjust for visual centering */
-    `}
-`;
-
 const MemberItem = styled.div`
     border-bottom: 1px solid rgba(141, 155, 235, 0.15);
 
@@ -201,41 +150,6 @@ const Spinner = styled.div`
 const LoadingText = styled.p`
     color: var(--pmc-light-grey);
     margin-top: 1rem;
-`;
-
-const CountdownNumbers = styled.div`
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    gap: 1rem;
-`;
-
-const TimeBlock = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-`;
-
-const TimeValue = styled.span`
-    font-size: 4rem;
-    font-weight: bold;
-    color: #ffffff;
-`;
-
-const TimeLabel = styled.span`
-    font-size: 1rem;
-    color: var(--pmc-light-grey);
-    text-transform: uppercase;
-`;
-
-const CountdownText = styled.p`
-    font-size: 1rem;
-    color: var(--pmc-light-grey);
-    text-align: center;
-    margin: 0;
-    margin-bottom: 0.25rem;
-    font-weight: 500;
 `;
 
 const TeamContainer = styled.div`
@@ -417,13 +331,8 @@ export default function ProductHeist() {
 
     const [teamData, setTeamData] = useState<TeamResponse | null>(null);
     const [loading, setLoading] = useState(true);
-    const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
-    const [phase, setPhase] = useState<'before' | 'during' | 'after'>('before');
 
-    const targetDate = new Date('2025-11-29T09:00:00');
-    const dueDate = new Date('2025-11-30T12:00:00');
-
-    const isSubmissionOpen = phase === 'during';
+    const phase = useSubmissionWindow();
 
     const [formTeamCode, setFormTeamCode] = useState('');
     const [formTeamName, setFormTeamName] = useState('');
@@ -446,40 +355,7 @@ export default function ProductHeist() {
         if (event_id) {
             fetchTeam(event_id);
         }
-    }, [event_id]);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const now = new Date();
-
-            if (now < targetDate) {
-                // before event
-                const diff = targetDate.getTime() - now.getTime();
-                setPhase('before');
-
-                const hours = Math.floor(diff / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                setTimeLeft({ hours, minutes, seconds });
-            } else if (now < dueDate) {
-                // during event
-                const diff = dueDate.getTime() - now.getTime();
-                setPhase('during');
-
-                const hours = Math.floor(diff / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                setTimeLeft({ hours, minutes, seconds });
-            } else {
-                // after event
-                setPhase('after');
-                setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
-                clearInterval(interval);
-            }
-        }, 500);
-
-        return () => clearInterval(interval);
-    }, []);
+    }, [event_id, teamService]);
 
     const members = teamData?.Team?.Team_Member || [];
     const teamName = teamData?.Team?.team_name;
@@ -550,35 +426,7 @@ export default function ProductHeist() {
                         {/* Team Members Card */}
                         <CardVerticalWrapper>
                             {/* Countdown Card (do NOT center) */}
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Timeline</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <CountdownText>
-                                        {phase === 'before'
-                                            ? 'Heist starts in...'
-                                            : phase === 'during'
-                                              ? 'Heist ends in...'
-                                              : 'Heist complete - submissions closed'}
-                                    </CountdownText>
-
-                                    <CountdownNumbers>
-                                        <TimeBlock>
-                                            <TimeValue>{timeLeft.hours}</TimeValue>
-                                            <TimeLabel>hours</TimeLabel>
-                                        </TimeBlock>
-                                        <TimeBlock>
-                                            <TimeValue>{timeLeft.minutes}</TimeValue>
-                                            <TimeLabel>minutes</TimeLabel>
-                                        </TimeBlock>
-                                        <TimeBlock>
-                                            <TimeValue>{timeLeft.seconds}</TimeValue>
-                                            <TimeLabel>seconds</TimeLabel>
-                                        </TimeBlock>
-                                    </CountdownNumbers>
-                                </CardContent>
-                            </Card>
+                            <TimelineCard />
 
                             <Card>
                                 <CardHeader>
@@ -693,23 +541,43 @@ export default function ProductHeist() {
                                 <CardTitle>Submission Vault</CardTitle>
                             </CardHeader>
 
-                            {!isSubmissionOpen ? (
+                            {phase === 'before' && (
                                 <CardContent center>
                                     <div style={{ textAlign: 'center', maxWidth: '400px' }}>
                                         <VaultImage src={gearyHeist} alt="Vault Locked" />
 
-                                        <LockedTitle>🗝️ SUBMISSION VAULT LOCKED 🗝️</LockedTitle>
+                                        <LockedTitle>🗝️ SUBMISSION VAULT OPENS SOON 🗝️</LockedTitle>
                                         <LockedSubtitle>
-                                            All files are secured and hidden for now...
+                                            The vault is sealed until the heist begins. Get your
+                                            crew ready...
                                         </LockedSubtitle>
 
-                                        <CountdownText>Deliverable are due:</CountdownText>
+                                        <CountdownText>
+                                            Deliverables will be open until:
+                                        </CountdownText>
                                         <LockedDate>November 30, 2025 — 12:00 PM PST</LockedDate>
                                     </div>
                                 </CardContent>
-                            ) : (
+                            )}
+                            {phase === 'during' && (
                                 <CardContent>
-                                    <DeliverablesSection />
+                                    <DeliverablesSection eventId={event_id!} />
+                                </CardContent>
+                            )}
+                            {phase === 'after' && (
+                                <CardContent center>
+                                    <div style={{ textAlign: 'center', maxWidth: '400px' }}>
+                                        <VaultImage src={gearyHeist} alt="Vault Locked" />
+
+                                        <LockedTitle>🗝️ SUBMISSION VAULT CLOSED 🗝️</LockedTitle>
+                                        <LockedSubtitle>
+                                            All files have been secured in the vault. Submissions
+                                            are now closed.
+                                        </LockedSubtitle>
+
+                                        <CountdownText>Deliverables were due:</CountdownText>
+                                        <LockedDate>November 30, 2025 — 12:00 PM PST</LockedDate>
+                                    </div>
                                 </CardContent>
                             )}
                         </Card>

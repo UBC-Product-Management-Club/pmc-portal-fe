@@ -1,5 +1,6 @@
 import { useForm, Controller } from 'react-hook-form';
 import { useRef } from 'react';
+import { useTeam } from '../../hooks/useTeam';
 import styled from 'styled-components';
 
 const DeliverablesLayout = styled.form`
@@ -143,7 +144,7 @@ type DeliverablesFormData = {
     presentationFile: File | null;
 };
 
-export const DeliverablesSection = () => {
+export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
     const {
         register,
         handleSubmit,
@@ -159,6 +160,8 @@ export const DeliverablesSection = () => {
         },
     });
 
+    const teamService = useTeam();
+
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const presentationFile = watch('presentationFile');
 
@@ -171,6 +174,15 @@ export const DeliverablesSection = () => {
         formData.append('figjamLink', data.demoLink);
         if (data.presentationFile) {
             formData.append('presentationFile', data.presentationFile);
+        }
+
+        try {
+            if (!eventId) return;
+
+            const data = await teamService.submitDeliverable(eventId, formData);
+            console.log('Deliverables submitted successfully:', data);
+        } catch (e) {
+            console.log('Error submitting deliverables:', e);
         }
     };
 
