@@ -1,4 +1,4 @@
-import { Attendee, TeamResponse } from '../types/Attendee';
+import { Attendee } from '../types/Attendee';
 import { RestClient } from './RestClient';
 
 class AttendeeService {
@@ -14,10 +14,6 @@ class AttendeeService {
 
     deleteAttendee(eventId: string): Promise<{ message: string }> {
         return this.client.delete<{ message: string }>(`/${eventId}`);
-    }
-
-    getTeammates(eventId: string): Promise<TeamResponse> {
-        return this.client.get<TeamResponse>(`/${eventId}/team`);
     }
 }
 
