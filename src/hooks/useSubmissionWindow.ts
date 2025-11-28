@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { HEIST_END, HEIST_START } from '../utils';
 
-type Phase = 'before' | 'during' | 'after';
+export type Phase = 'before' | 'during' | 'after';
 
 function useSubmissionWindow() {
     const getPhase = (now: number): Phase => {

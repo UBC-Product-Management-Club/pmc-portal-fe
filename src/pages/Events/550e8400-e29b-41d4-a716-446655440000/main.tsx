@@ -6,7 +6,6 @@ import gearyHeist from '../../../assets/gearyHeist.avif';
 import PMCLogo from '../../../assets/pmclogo.svg';
 import type { TeamResponse } from '../../../types/Team';
 import { useTeam } from '../../../hooks/useTeam';
-import { DeliverablesSection } from '../../../components/Deliverables/DeliverablesSection';
 import {
     Card,
     CardContent,
@@ -14,10 +13,10 @@ import {
     CardTitle,
     CardVerticalWrapper,
     CardsWrapper,
-    CountdownText,
 } from '../../../components/Deliverables/utils';
 import { TimelineCard } from '../../../components/Deliverables/TimelineCard';
 import { useSubmissionWindow } from '../../../hooks/useSubmissionWindow';
+import SubmissionVault from './SubmissionVault';
 
 const spin = keyframes`
   from { transform: rotate(0deg); }
@@ -293,37 +292,6 @@ const Count = styled.div`
     border-radius: 9999px;
 `;
 
-const VaultImage = styled.img`
-    width: 180px;
-    height: 180px;
-    object-fit: cover;
-    filter: grayscale(75%) brightness(85%);
-    opacity: 0.6;
-    margin-bottom: 1rem;
-    border-radius: 12px;
-`;
-
-const LockedTitle = styled.h2`
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 1.25rem;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.5rem;
-`;
-
-const LockedSubtitle = styled.p`
-    color: var(--pmc-light-grey);
-    font-size: 0.9rem;
-    margin-bottom: 1.25rem;
-`;
-
-const LockedDate = styled.div`
-    color: #8d9beb;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-top: 0.5rem;
-`;
-
 const TeamCode = styled.span`
     font-size: 0.5em;
     font-weight: 400;
@@ -390,9 +358,15 @@ export default function ProductHeist() {
             const data = await createTeam(event_id, formTeamName);
             setTeamData(data);
             setFormTeamName('');
-        } catch (e) {
+            /* eslint-disable  @typescript-eslint/no-explicit-any */
+        } catch (e: any) {
             console.log(e);
-            setCreateError('Unable to create team. Please try again.');
+            if (e.message.endsWith('Conflict')) {
+                // just gonna assume team name taken. I don't think any other error is possible really
+                setCreateError('Team name unavailable!');
+            } else {
+                setCreateError('Unable to create team!');
+            }
         }
     };
 
@@ -551,46 +525,7 @@ export default function ProductHeist() {
                             <CardHeader>
                                 <CardTitle>Submission Vault</CardTitle>
                             </CardHeader>
-
-                            {phase === 'before' && (
-                                <CardContent center>
-                                    <div style={{ textAlign: 'center', maxWidth: '400px' }}>
-                                        <VaultImage src={gearyHeist} alt="Vault Locked" />
-
-                                        <LockedTitle>🗝️ SUBMISSION VAULT OPENS SOON 🗝️</LockedTitle>
-                                        <LockedSubtitle>
-                                            The vault is sealed until the heist begins. Get your
-                                            crew ready...
-                                        </LockedSubtitle>
-
-                                        <CountdownText>
-                                            Deliverables will be open until:
-                                        </CountdownText>
-                                        <LockedDate>November 30, 2025 — 12:00 PM PST</LockedDate>
-                                    </div>
-                                </CardContent>
-                            )}
-                            {phase === 'during' && (
-                                <CardContent>
-                                    <DeliverablesSection eventId={event_id!} />
-                                </CardContent>
-                            )}
-                            {phase === 'after' && (
-                                <CardContent center>
-                                    <div style={{ textAlign: 'center', maxWidth: '400px' }}>
-                                        <VaultImage src={gearyHeist} alt="Vault Locked" />
-
-                                        <LockedTitle>🗝️ SUBMISSION VAULT CLOSED 🗝️</LockedTitle>
-                                        <LockedSubtitle>
-                                            All files have been secured in the vault. Submissions
-                                            are now closed.
-                                        </LockedSubtitle>
-
-                                        <CountdownText>Deliverables were due:</CountdownText>
-                                        <LockedDate>November 30, 2025 — 12:00 PM PST</LockedDate>
-                                    </div>
-                                </CardContent>
-                            )}
+                            <SubmissionVault phase={phase} eventId={event_id!} />
                         </Card>
                     </CardsWrapper>
                 </Content>
