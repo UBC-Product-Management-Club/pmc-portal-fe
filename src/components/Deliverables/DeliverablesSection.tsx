@@ -65,7 +65,8 @@ const TextInput = styled.input<{ $hasError?: boolean }>`
     }
 
     &::placeholder {
-        color: var(--pmc-light-grey);
+        font-style: italic;
+        opacity: 0.5;
     }
 `;
 

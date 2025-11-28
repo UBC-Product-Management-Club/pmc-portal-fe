@@ -4,8 +4,8 @@ import { z } from 'zod/v4';
 import { toast } from 'react-hot-toast';
 import moment from 'moment-timezone';
 
-const HEIST_START = new Date('2025-11-29T09:00:00').getTime();
-const HEIST_END = new Date('2025-11-30T12:00:00').getTime();
+const HEIST_START = new Date('2025-11-29T10:00:00').getTime();
+const HEIST_END = new Date('2025-11-30T10:00:00').getTime();
 
 const emptyUser: UserDocument = {
     userId: '',

@@ -11,7 +11,7 @@ function useSubmissionWindow() {
     };
 
     const [phase, setPhase] = useState<Phase>(() => {
-        const now = new Date('2025-11-30T11:00:00').getTime();
+        const now = Date.now();
         return getPhase(now);
     });
 

@@ -218,7 +218,8 @@ const Input = styled.input`
     }
 
     &::placeholder {
-        color: var(--pmc-light-grey);
+        font-style: italic;
+        opacity: 0.5;
     }
 `;
 
@@ -323,6 +324,12 @@ const LockedDate = styled.div`
     margin-top: 0.5rem;
 `;
 
+const TeamCode = styled.span`
+    font-size: 0.5em;
+    font-weight: 400;
+    opacity: 0.7;
+`;
+
 export default function ProductHeist() {
     const { getTeam, joinTeam, leaveTeam, createTeam } = useTeam();
     const { event_id } = useParams();
@@ -416,9 +423,8 @@ export default function ProductHeist() {
                 <Content>
                     <Header>
                         <TeamName>
-                            {teamName
-                                ? `Team: ${teamName} (Code: ${teamCode})`
-                                : 'No Team Assigned'}
+                            {teamName || 'No Team Assigned'}{' '}
+                            {teamCode && <TeamCode>#{teamCode}</TeamCode>}
                         </TeamName>
                     </Header>
 
@@ -468,7 +474,12 @@ export default function ProductHeist() {
                                                     );
                                                 })}
                                             </div>
-                                            <Button onClick={handleLeaveTeam}>Leave</Button>
+                                            <Button
+                                                onClick={handleLeaveTeam}
+                                                disabled={phase !== 'before'}
+                                            >
+                                                Leave
+                                            </Button>
                                         </TeamContainer>
                                     ) : (
                                         <TeamSetupContainer>
