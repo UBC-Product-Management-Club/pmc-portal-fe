@@ -1,46 +1,43 @@
 import { useEffect, useState } from 'react';
-import { HEIST_END, HEIST_START } from '../utils';
+import { getEventTimestamps } from '../utils';
+import { useEvents } from './useEvents';
 
 export type Phase = 'before' | 'during' | 'after';
 
-function useSubmissionWindow() {
-    const getPhase = (now: number): Phase => {
-        if (now < HEIST_START) return 'before';
-        if (now >= HEIST_START && now < HEIST_END) return 'during';
-        return 'after';
-    };
+function useSubmissionWindow(eventId: string) {
+    const { getById } = useEvents();
 
-    const [phase, setPhase] = useState<Phase>(() => {
-        const now = Date.now();
-        return getPhase(now);
-    });
+    const [phase, setPhase] = useState<Phase>('before');
 
     useEffect(() => {
-        const now = Date.now();
         let toStartTimeout: ReturnType<typeof setTimeout> | undefined;
         let toEndTimeout: ReturnType<typeof setTimeout> | undefined;
 
-        if (now < HEIST_START) {
-            toStartTimeout = setTimeout(() => {
-                setPhase('during');
-            }, HEIST_START - now);
+        async function setup() {
+            const event = await getById(eventId);
 
-            toEndTimeout = setTimeout(() => {
+            const { start, end } = getEventTimestamps(event);
+            const now = Date.now();
+
+            if (now < start) {
+                setPhase('before');
+                toStartTimeout = setTimeout(() => setPhase('during'), start - now);
+                toEndTimeout = setTimeout(() => setPhase('after'), end - now);
+            } else if (now >= start && now < end) {
+                setPhase('during');
+                toEndTimeout = setTimeout(() => setPhase('after'), end - now);
+            } else {
                 setPhase('after');
-            }, HEIST_END - now);
-        } else if (now >= HEIST_START && now < HEIST_END) {
-            toEndTimeout = setTimeout(() => {
-                setPhase('after');
-            }, HEIST_END - now);
-        } else {
-            setPhase('after');
+            }
         }
+
+        setup();
 
         return () => {
             if (toStartTimeout) clearTimeout(toStartTimeout);
             if (toEndTimeout) clearTimeout(toEndTimeout);
         };
-    }, []);
+    }, [getById, eventId]);
 
     return phase;
 }
