@@ -450,7 +450,7 @@ export default function ProductHeist() {
                                             </div>
                                             <Button
                                                 onClick={handleLeaveTeam}
-                                                disabled={phase !== 'before'}
+                                                // disabled={phase !== 'before'}
                                             >
                                                 Leave
                                             </Button>
