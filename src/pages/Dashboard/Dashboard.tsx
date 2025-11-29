@@ -136,9 +136,7 @@ export default function Dashboard() {
                                 <EventCard
                                     data-testid={`registered-${event.eventId}`}
                                     event={event}
-                                    disabled={
-                                        event.isDisabled || moment().isAfter(moment(event.date))
-                                    }
+                                    disabled={event.isDisabled}
                                     link={event.externalPage ?? `/events/${event.eventId}`}
                                 />
                             )}
