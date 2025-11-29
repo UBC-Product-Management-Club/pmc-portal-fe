@@ -3,9 +3,7 @@ import { Question } from './types/Question';
 import { z } from 'zod/v4';
 import { toast } from 'react-hot-toast';
 import moment from 'moment-timezone';
-
-const HEIST_START = new Date('2025-11-29T10:00:00').getTime();
-const HEIST_END = new Date('2025-11-30T10:00:00').getTime();
+import { Event } from './types/Event';
 
 const emptyUser: UserDocument = {
     userId: '',
@@ -109,6 +107,13 @@ const renderDate = (start: string, end: string) => {
     return `${startTime.format('MMMM')} ${startTime.format('D')} - ${endTime.format('D')}, ${startTime.format('YYYY')}`;
 };
 
+const getEventTimestamps = (event: Event) => {
+    return {
+        start: new Date(event.startTime).getTime(),
+        end: new Date(event.endTime).getTime(),
+    };
+};
+
 export {
     useInAppBrowser,
     emptyUser,
@@ -117,6 +122,5 @@ export {
     showToast,
     renderTime,
     renderDate,
-    HEIST_START,
-    HEIST_END,
+    getEventTimestamps,
 };

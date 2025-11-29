@@ -299,15 +299,15 @@ const TeamCode = styled.span`
 `;
 
 export default function ProductHeist() {
-    const { getTeam, joinTeam, leaveTeam, createTeam } = useTeam();
     const { event_id } = useParams();
+    const { getTeam, joinTeam, leaveTeam, createTeam } = useTeam();
     const { user } = useUserData();
     const navigate = useNavigate();
 
     const [teamData, setTeamData] = useState<TeamResponse | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const phase = useSubmissionWindow();
+    const phase = useSubmissionWindow(event_id ?? '');
 
     const [formTeamCode, setFormTeamCode] = useState('');
     const [formTeamName, setFormTeamName] = useState('');
@@ -315,6 +315,7 @@ export default function ProductHeist() {
     const [createError, setCreateError] = useState('');
 
     useEffect(() => {
+        if (!event_id) return;
         const fetchTeam = async (eventId: string) => {
             try {
                 const data = await getTeam(eventId);
@@ -406,7 +407,7 @@ export default function ProductHeist() {
                         {/* Team Members Card */}
                         <CardVerticalWrapper>
                             {/* Countdown Card (do NOT center) */}
-                            <TimelineCard />
+                            <TimelineCard eventId={event_id} />
 
                             <Card>
                                 <CardHeader>
