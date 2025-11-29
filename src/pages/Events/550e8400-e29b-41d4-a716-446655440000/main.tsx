@@ -407,7 +407,7 @@ export default function ProductHeist() {
                         {/* Team Members Card */}
                         <CardVerticalWrapper>
                             {/* Countdown Card (do NOT center) */}
-                            <TimelineCard eventId={event_id} />
+                            <TimelineCard eventId={event_id ?? ''} />
 
                             <Card>
                                 <CardHeader>
