@@ -16,16 +16,16 @@ function useSubmissionWindow(eventId: string) {
         async function setup() {
             const event = await getById(eventId);
 
-            const { start: HEIST_START, end: HEIST_END } = getEventTimestamps(event);
+            const { start, end } = getEventTimestamps(event);
             const now = Date.now();
 
-            if (now < HEIST_START) {
+            if (now < start) {
                 setPhase('before');
-                toStartTimeout = setTimeout(() => setPhase('during'), HEIST_START - now);
-                toEndTimeout = setTimeout(() => setPhase('after'), HEIST_END - now);
-            } else if (now >= HEIST_START && now < HEIST_END) {
+                toStartTimeout = setTimeout(() => setPhase('during'), start - now);
+                toEndTimeout = setTimeout(() => setPhase('after'), end - now);
+            } else if (now >= start && now < end) {
                 setPhase('during');
-                toEndTimeout = setTimeout(() => setPhase('after'), HEIST_END - now);
+                toEndTimeout = setTimeout(() => setPhase('after'), end - now);
             } else {
                 setPhase('after');
             }
