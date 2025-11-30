@@ -1,7 +1,7 @@
-import { useForm, Controller } from 'react-hook-form';
 import { useEffect, useRef, useState } from 'react';
-import { useTeam } from '../../hooks/useTeam';
+import { Controller, useForm } from 'react-hook-form';
 import styled from 'styled-components';
+import { useTeam } from '../../hooks/useTeam';
 
 const DeliverablesLayout = styled.form`
     display: flex;
@@ -317,10 +317,10 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
 
                 <DeliverableItem>
                     <Label htmlFor="figmaLink">
-                        Figma File Link<RequiredMark>*</RequiredMark>
+                        Prototype File Link<RequiredMark>*</RequiredMark>
                     </Label>
                     <HelperText>
-                        Link to your main Figma design file (final mockups / UI screens).
+                        Link to your main prototype design file (ie. Figma, Lovable, etc).
                     </HelperText>
                     <TextInput
                         id="figmaLink"
