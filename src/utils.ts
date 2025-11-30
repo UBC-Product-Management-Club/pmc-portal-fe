@@ -1,11 +1,11 @@
-import { UserDocument } from './types/User';
-import { Question } from './types/Question';
-import { z } from 'zod/v4';
-import { toast } from 'react-hot-toast';
 import moment from 'moment-timezone';
+import { toast } from 'react-hot-toast';
+import { z } from 'zod/v4';
+import { Question } from './types/Question';
+import { UserDocument } from './types/User';
 
 const HEIST_START = new Date('2025-11-29T10:00:00').getTime();
-const HEIST_END = new Date('2025-11-30T10:00:00').getTime();
+const HEIST_END = new Date('2025-11-30T12:00:00').getTime();
 
 const emptyUser: UserDocument = {
     userId: '',
@@ -110,13 +110,13 @@ const renderDate = (start: string, end: string) => {
 };
 
 export {
-    useInAppBrowser,
+    buildEventFormResponseSchema,
     emptyUser,
     formatPrice,
-    buildEventFormResponseSchema,
-    showToast,
-    renderTime,
-    renderDate,
-    HEIST_START,
     HEIST_END,
+    HEIST_START,
+    renderDate,
+    renderTime,
+    showToast,
+    useInAppBrowser,
 };
