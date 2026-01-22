@@ -55,7 +55,7 @@ export default function Dashboard() {
                                     <span className="text-xl">✨</span>
                                 </div>
                                 <p className="text-base font-medium">
-                                    Become a member and enjoy discounted event prices!
+                                    Want to become a member and enjoy discounted event prices?
                                 </p>
                             </div>
                             <button
@@ -72,7 +72,7 @@ export default function Dashboard() {
                 <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-baseline">
                     <h2 className="text-3xl font-bold tracking-tight">PMC Dashboard</h2>
                     <p className="text-lg italic text-[var(--pmc-light-blue)]">
-                        Welcome, {user ? user.firstName : '...'}
+                        Welcome {user ? user.firstName : '...'}
                     </p>
                 </div>
 
@@ -122,14 +122,14 @@ export default function Dashboard() {
                         {error ? (
                             <div className="text-center">
                                 <p className="text-xl font-semibold text-[var(--pmc-red)]">
-                                    An error occurred fetching events
+                                    An error occurred fetching events :(
                                 </p>
                                 <p className="mt-2 text-gray-400">Please try again later</p>
                             </div>
                         ) : (
                             <div className="flex flex-col items-center gap-3">
                                 <div className="h-10 w-10 animate-spin rounded-full border-4 border-[var(--pmc-light-blue)] border-t-transparent"></div>
-                                <p className="text-lg text-gray-300">Loading events...</p>
+                                <p className="text-lg text-gray-300">Loading</p>
                             </div>
                         )}
                     </div>
