@@ -2,11 +2,11 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { CiCalendar, CiLocationOn } from 'react-icons/ci';
 import { FaDollarSign } from 'react-icons/fa6';
+import { IoArrowBack } from 'react-icons/io5';
 import moment from 'moment-timezone';
 import { type Event } from '../../types/Event';
 import { useEvents } from '../../hooks/useEvents';
 import { useAttendee } from '../../hooks/useAttendee';
-import { styled } from 'styled-components';
 import { useAuth0 } from '@auth0/auth0-react';
 import { EventRegistrationModal } from '../../components/Event/EventRegistrationModal';
 import { Question, questionsSchema } from '../../types/Question';
@@ -17,125 +17,23 @@ import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { CheckoutSessionResponse } from '../../service/PaymentService';
 import Markdown from 'react-markdown';
 
-const EventHeader = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 1rem;
-    @media screen and (max-width: 1350px) {
-        flex-direction: column;
-    }
-`;
-
-const DetailsContainer = styled.div`
-    width: 50%;
-    @media screen and (max-width: 1350px) {
-        width: 100%;
-    }
-`;
-
-const Thumbnail = styled.img`
-    border-radius: 8px;
-    max-width: 50%;
-    padding: 1rem;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-    @media screen and (max-width: 1350px) {
-        max-width: 100%;
-        padding: 0;
-    }
-`;
-
-const Title = styled.h1`
-    color: #ffffff;
-    font-size: xx-large;
-    font-weight: bold;
-`;
-
-const Details = styled.div`
-    display: flex;
-    padding: 1.5rem;
-    border: 1px solid #a9a9a9;
-    border-radius: 12px;
-    text-align: left;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    color: white;
-    flex-direction: column;
-    gap: 1.5rem;
-    justify-content: space-between;
-`;
-
-const DetailRow = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-`;
-
-const DetailText = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    h4,
-    p {
-        margin: 0;
-    }
-`;
-
-const RegisterButton = styled.button`
-    width: 100%;
-    color: #1c1c1c;
-    border-radius: 20px;
-    font-weight: 500;
-    font-family: inherit;
-    height: 3rem;
-    background: #f0f0f0;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    margin-top: 1rem;
-    transition: border-color 0.2s;
-    &:hover {
-        border-color: black;
-        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
-    }
-    &:disabled {
-        background: gray;
-        cursor: not-allowed;
-        color: LightGray;
-    }
-`;
-
-const Description = styled.div`
-    padding: 1rem;
-    text-align: left;
-    & > h1 {
-        color: #ffffff;
-        font-size: x-large;
-        font-weight: bold;
-    }
-
-    & > p {
-        color: white;
-    }
-`;
-
-interface DetailRow {
+interface DetailRowProps {
     icon: ReactNode;
     text: string;
     subtext?: string | ReactNode;
 }
 
-function Detail(props: DetailRow) {
+function Detail({ icon, text, subtext }: DetailRowProps) {
     return (
-        <DetailRow>
-            {props.icon}
-            <DetailText>
-                <h4>{props.text}</h4>
-                {props.subtext && <p>{props.subtext}</p>}
-            </DetailText>
-        </DetailRow>
+        <div className="flex flex-row items-center gap-3">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--pmc-dark-purple)]/30 text-[var(--pmc-light-blue)]">
+                {icon}
+            </div>
+            <div className="flex flex-col gap-0.5">
+                <h4 className="m-0 text-base font-semibold text-white">{text}</h4>
+                {subtext && <p className="m-0 text-sm text-gray-300">{subtext}</p>}
+            </div>
+        </div>
     );
 }
 
@@ -177,10 +75,8 @@ export default function Event() {
         return 'open';
     })();
 
-    // Modal UI state
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Fetch event and parses event form questions
     useEffect(() => {
         if (!event_id) return;
 
@@ -222,7 +118,6 @@ export default function Event() {
         fetchData();
     }, [event_id, isAuthenticated]);
 
-    // Display payment message and delete temp attendee record [WIP]
     useEffect(() => {
         const query = new URLSearchParams(window.location.search);
 
@@ -245,7 +140,6 @@ export default function Event() {
         }
     }, [event_id, attendeeStatus]);
 
-    // Create stripe session and redirects user
     const navigateToStripeEventPayment = async (eventId: string) => {
         try {
             console.log('creating checkout session');
@@ -277,7 +171,6 @@ export default function Event() {
         return formData;
     };
 
-    // Adds attendee response then redirect to stripe checkout
     const onFormSubmit = async (formData: Record<string, unknown>) => {
         if (!event?.eventId) return;
 
@@ -304,98 +197,14 @@ export default function Event() {
         }
     };
 
-    const renderButton = () => {
-        switch (buttonState) {
-            case 'authRequired':
-                return (
-                    <RegisterButton onClick={() => navigateTo('/')}>
-                        Please sign in to register
-                    </RegisterButton>
-                );
-            case 'loading':
-                return <RegisterButton disabled>Loading...</RegisterButton>;
-            case 'full':
-                return (
-                    <a
-                        href={event?.waitlistForm ? event.waitlistForm : ''}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <RegisterButton>
-                            Sorry! This event is full. Join the waitlist!
-                        </RegisterButton>
-                    </a>
-                );
-            case 'alreadyRegistered':
-            case 'accepted':
-                return (
-                    <>
-                        <RegisterButton disabled>You're in!</RegisterButton>
-                        {canGoToEventPage && (
-                            <Link
-                                to={
-                                    event.externalPage?.startsWith('https://')
-                                        ? event.externalPage
-                                        : `/events/${event.eventId}`
-                                }
-                                target="_blank"
-                                rel="noreferrer noopener"
-                            >
-                                <RegisterButton>Go to event page</RegisterButton>
-                            </Link>
-                        )}
-                    </>
-                );
-            case 'applied':
-                return <RegisterButton disabled>Thank you for applying!</RegisterButton>;
-            case 'notOpenYet':
-                return <RegisterButton disabled>Registration opens soon!</RegisterButton>;
-            case 'closed':
-                return <RegisterButton disabled>Registration has closed!</RegisterButton>;
-            case 'processing':
-                return (
-                    <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-                        <RegisterButton disabled>
-                            We are processing your registration!
-                        </RegisterButton>
-                        {checkoutSession && (
-                            <span
-                                style={{
-                                    fontSize: '10pt',
-                                    marginTop: '5px',
-                                    color: 'var(--pmc-light-grey)',
-                                }}
-                            >
-                                Click{' '}
-                                <a
-                                    href={checkoutSession.url}
-                                    target="_blank"
-                                    style={{ color: 'white' }}
-                                >
-                                    here
-                                </a>{' '}
-                                to pay. Expires {moment.unix(checkoutSession.expires_at).calendar()}
-                            </span>
-                        )}
-                    </div>
-                );
-            case 'open':
-                return <RegisterButton onClick={handleRegisterClick}>Register now!</RegisterButton>;
-            default:
-                return null;
-        }
-    };
-
     const handleRegisterClick = async () => {
         if (!event || !event.eventId) return;
 
-        // If there are no questions, skip modal and go straight to Stripe
         const hasQuestions =
             parsedQuestions && Array.isArray(parsedQuestions) && parsedQuestions.length > 0;
 
         if (!hasQuestions) {
             try {
-                // Create attendee (empty form)
                 const payload = constructFormData({});
                 const resp = await eventService.addAttendee(event.eventId, payload);
                 const parsed = AttendeeSchema.safeParse(resp.attendee);
@@ -406,29 +215,155 @@ export default function Event() {
                 const attendeeId = parsed.data.attendeeId;
                 if (!attendeeId) throw new Error('No attendeeId returned');
 
-                // Go straight to Stripe
                 await navigateToStripeEventPayment(event.eventId);
             } catch (err) {
                 console.error('Error registering without questions:', err);
                 setError(true);
             }
         } else {
-            // Open modal if there are questions
             setIsModalOpen(true);
         }
     };
 
-    if (loading) return <p style={{ color: 'white' }}>Loading...</p>;
-    if (error)
+    const baseButtonClass =
+        'w-full rounded-full py-3 px-6 text-base font-semibold transition-all duration-200 cursor-pointer';
+    const primaryButtonClass = `${baseButtonClass} bg-gradient-to-r from-[var(--pmc-light-blue)] to-[var(--pmc-purple)] text-white hover:shadow-lg hover:shadow-[var(--pmc-purple)]/30 hover:scale-[1.02] border-none`;
+    const secondaryButtonClass = `${baseButtonClass} bg-white text-[var(--pmc-dark-blue)] hover:bg-gray-100 border border-gray-200`;
+    const disabledButtonClass = `${baseButtonClass} bg-gray-600 text-gray-300 cursor-not-allowed border-none`;
+
+    const renderButton = () => {
+        switch (buttonState) {
+            case 'authRequired':
+                return (
+                    <button className={secondaryButtonClass} onClick={() => navigateTo('/')}>
+                        Please sign in to register
+                    </button>
+                );
+            case 'loading':
+                return (
+                    <button className={disabledButtonClass} disabled>
+                        <span className="flex items-center justify-center gap-2">
+                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-transparent"></span>
+                            Loading...
+                        </span>
+                    </button>
+                );
+            case 'full':
+                return (
+                    <a
+                        href={event?.waitlistForm ? event.waitlistForm : ''}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block"
+                    >
+                        <button className={secondaryButtonClass}>
+                            Sorry! This event is full. Join the waitlist!
+                        </button>
+                    </a>
+                );
+            case 'alreadyRegistered':
+            case 'accepted':
+                return (
+                    <div className="flex flex-col gap-3">
+                        <button
+                            className={`${disabledButtonClass} bg-green-500/20 text-green-400`}
+                            disabled
+                        >
+                            You're in!
+                        </button>
+                        {canGoToEventPage && (
+                            <Link
+                                to={
+                                    event.externalPage?.startsWith('https://')
+                                        ? event.externalPage
+                                        : `/events/${event.eventId}`
+                                }
+                                target="_blank"
+                                rel="noreferrer noopener"
+                                className="block"
+                            >
+                                <button className={primaryButtonClass}>Go to event page</button>
+                            </Link>
+                        )}
+                    </div>
+                );
+            case 'applied':
+                return (
+                    <button
+                        className={`${disabledButtonClass} bg-[var(--pmc-purple)]/20 text-[var(--pmc-light-blue)]`}
+                        disabled
+                    >
+                        Thank you for applying!
+                    </button>
+                );
+            case 'notOpenYet':
+                return (
+                    <button className={disabledButtonClass} disabled>
+                        Registration opens soon!
+                    </button>
+                );
+            case 'closed':
+                return (
+                    <button className={disabledButtonClass} disabled>
+                        Registration has closed
+                    </button>
+                );
+            case 'processing':
+                return (
+                    <div className="flex flex-col items-center gap-2">
+                        <button
+                            className={`${disabledButtonClass} bg-yellow-500/20 text-yellow-400`}
+                            disabled
+                        >
+                            We are processing your registration!
+                        </button>
+                        {checkoutSession && (
+                            <p className="text-center text-sm text-gray-400">
+                                Click{' '}
+                                <a
+                                    href={checkoutSession.url}
+                                    target="_blank"
+                                    className="font-medium text-[var(--pmc-light-blue)] underline hover:text-white"
+                                >
+                                    here
+                                </a>{' '}
+                                to complete payment. Expires{' '}
+                                {moment.unix(checkoutSession.expires_at).calendar()}
+                            </p>
+                        )}
+                    </div>
+                );
+            case 'open':
+                return (
+                    <button className={primaryButtonClass} onClick={handleRegisterClick}>
+                        Register now!
+                    </button>
+                );
+            default:
+                return null;
+        }
+    };
+
+    if (loading) {
         return (
-            <p style={{ color: 'white' }}>
-                An error occurred fetching event details. Please try refreshing or{' '}
+            <div className="flex min-h-[400px] flex-col items-center justify-center gap-4">
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-[var(--pmc-light-blue)] border-t-transparent"></div>
+                <p className="text-lg text-gray-300">Loading...</p>
+            </div>
+        );
+    }
+
+    if (error || !event) {
+        return (
+            <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--pmc-red)]/20">
+                    <span className="text-3xl text-[var(--pmc-red)]">!</span>
+                </div>
+                <p className="text-lg text-white">
+                    An error occurred fetching event details. Please try refreshing or
+                </p>
                 <a
-                    style={{
-                        color: 'var(--pmc-light-blue)',
-                        textDecoration: 'underline',
-                        cursor: 'pointer',
-                    }}
+                    className="cursor-pointer text-[var(--pmc-light-blue)] underline hover:text-white"
                     onClick={() =>
                         logout({
                             logoutParams: {
@@ -439,60 +374,107 @@ export default function Event() {
                 >
                     signing in again
                 </a>
-            </p>
+            </div>
         );
-    if (!event) return <p style={{ color: 'white' }}>No event details available.</p>;
+    }
 
     return (
-        <>
-            <EventHeader>
-                <Thumbnail src={event.thumbnail} alt="Event" />
-                <DetailsContainer>
-                    <Title>{event.name}</Title>
-                    <Details>
-                        <Detail
-                            icon={<CiCalendar size={30} />}
-                            text={moment
-                                .utc(event.startTime)
-                                .tz('America/Vancouver')
-                                .format('dddd, Do MMMM yyyy')}
-                            subtext={(() => {
-                                const start = moment.utc(event.startTime).tz('America/Vancouver');
-                                const end = moment.utc(event.endTime).tz('America/Vancouver');
-                                return start.day() === end.day()
-                                    ? `${start.format('h:mm A')} - ${end.format('h:mm A z')}`
-                                    : 'See times below';
-                            })()}
-                        />
-                        <Detail
-                            icon={<CiLocationOn size={30} />}
-                            text={event.location}
-                            subtext={
-                                <span style={{ cursor: 'pointer' }} onClick={scrollToMap}>
-                                    Get directions
-                                </span>
-                            }
-                        />
-                        <Detail
-                            icon={<FaDollarSign size={30} />}
-                            text={`Member price: ${event.memberPrice === 0 ? 'Free!' : `$${event.memberPrice.toFixed(2)}`}`}
-                            subtext={`Non-member price: $${event.nonMemberPrice.toFixed(2)}`}
-                        />
-                    </Details>
-                    {renderButton()}
-                    <Description>
-                        <h1>About the event</h1>
+        <div className="text-white">
+            {/* Back Link */}
+            <Link
+                to="/dashboard"
+                className="mb-6 flex items-center gap-2 text-gray-400 no-underline transition-colors hover:text-white"
+            >
+                <IoArrowBack size={20} />
+                <span>Back to Dashboard</span>
+            </Link>
+
+            {/* Header Section - Image and Basic Info Side by Side */}
+            <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-stretch">
+                {/* Event Image */}
+                <div className="md:w-2/5">
+                    <img
+                        src={event.thumbnail}
+                        alt={event.name}
+                        className="h-full w-full rounded-2xl object-cover shadow-2xl"
+                    />
+                </div>
+
+                {/* Basic Event Info */}
+                <div className="flex flex-1 flex-col">
+                    <h1 className="mb-6 text-3xl font-bold leading-tight lg:text-4xl">
+                        {event.name}
+                    </h1>
+
+                    {/* Details Card */}
+                    <div className="mb-6 rounded-2xl border border-gray-700 bg-[var(--pmc-midnight-blue)]/50 p-6">
+                        <div className="flex flex-col gap-5">
+                            <Detail
+                                icon={<CiCalendar size={24} />}
+                                text={moment
+                                    .utc(event.startTime)
+                                    .tz('America/Vancouver')
+                                    .format('dddd, Do MMMM yyyy')}
+                                subtext={(() => {
+                                    const start = moment
+                                        .utc(event.startTime)
+                                        .tz('America/Vancouver');
+                                    const end = moment.utc(event.endTime).tz('America/Vancouver');
+                                    return start.day() === end.day()
+                                        ? `${start.format('h:mm A')} - ${end.format('h:mm A z')}`
+                                        : 'See times below';
+                                })()}
+                            />
+
+                            <Detail
+                                icon={<CiLocationOn size={24} />}
+                                text={event.location}
+                                subtext={
+                                    <span
+                                        className="cursor-pointer text-sm text-[var(--pmc-light-blue)] underline hover:text-white"
+                                        onClick={scrollToMap}
+                                    >
+                                        Get directions
+                                    </span>
+                                }
+                            />
+
+                            <Detail
+                                icon={<FaDollarSign size={24} />}
+                                text={`Member price: ${event.memberPrice === 0 ? 'Free!' : `$${event.memberPrice.toFixed(2)}`}`}
+                                subtext={`Non-member price: $${event.nonMemberPrice.toFixed(2)}`}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Registration Button */}
+                    <div className="mt-auto">{renderButton()}</div>
+                </div>
+            </div>
+
+            {/* Detailed Info Section - Full Width Below */}
+            <div className="grid gap-8 md:grid-cols-2">
+                {/* About Section */}
+                <div>
+                    <h2 className="mb-4 text-2xl font-bold">About the Event</h2>
+                    <div className="prose prose-invert max-w-none text-gray-300 [&>p]:mb-4 [&>ul]:list-disc [&>ul]:pl-5">
                         <Markdown>{event.description}</Markdown>
-                        <h1>Location</h1>
-                        <iframe
-                            ref={mapRef}
-                            width="100%"
-                            height="250"
-                            src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_API_KEY}&q=${event.location}`}
-                        />
-                    </Description>
-                </DetailsContainer>
-            </EventHeader>
+                    </div>
+                </div>
+
+                {/* Location Section */}
+                <div>
+                    <h2 className="mb-4 text-2xl font-bold">Location</h2>
+                    <iframe
+                        ref={mapRef}
+                        className="w-full rounded-xl border-0"
+                        height="300"
+                        src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_API_KEY}&q=${event.location}`}
+                    />
+                </div>
+            </div>
+
+            {/* Registration Modal */}
             {user && (
                 <EventRegistrationModal
                     isModalOpen={isModalOpen}
@@ -504,6 +486,6 @@ export default function Event() {
                     submitText={event.needsReview ? 'Submit' : undefined}
                 />
             )}
-        </>
+        </div>
     );
 }
