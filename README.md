@@ -1,6 +1,11 @@
 # PMC Portal Frontend
 
-## Contributor:
-- Gordon Cheung
+## Current Contributor:
 - Toby Lau
+- Si Moon Song
+- Kevin Lei
+- Jeffrey Zhai
+
+## Past Contributors
+- Gordon Cheung
 - Karen Agustino
