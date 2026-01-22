@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { useEvents } from '../../hooks/useEvents';
 import { useEffect, useState } from 'react';
@@ -7,55 +6,6 @@ import { EventCard } from '../../components/Event/EventCard';
 import moment from 'moment';
 import { Carousel } from '../../components/Dashboard/Carousel';
 import { usePaymentService } from '../../hooks/usePaymentService';
-
-const DashboardContainer = styled.div`
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
-`;
-
-const DashboardSection = styled.div`
-    width: 100%;
-`;
-
-const DashboardHeader = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: baseline;
-`;
-
-const WelcomeMessage = styled.h4`
-    font-style: italic;
-    margin-left: 'auto';
-`;
-
-const DashboardStayTuned = styled.p`
-    text-align: center;
-    color: white;
-    font-weight: bold;
-    margin-top: 5rem;
-`;
-
-const Membership = styled.div`
-    background-color: #f9fafb;
-    padding: 20px 24px;
-    border-radius: 10px;
-    border: 1px solid #d1d1d1;
-    font-size: 16px;
-    line-height: 1.5;
-    color: #333;
-    a {
-        color: #2563eb;
-        text-decoration: none;
-        font-weight: 500;
-    }
-    a:hover {
-        text-decoration: underline;
-    }
-`;
 
 export default function Dashboard() {
     const { user, isMember } = useUserData();
@@ -93,86 +43,119 @@ export default function Dashboard() {
     };
 
     return (
-        <DashboardContainer>
-            <DashboardSection>
+        <div className="flex flex-col items-center gap-8 text-white">
+            {/* Hero Section */}
+            <section className="w-full">
+                {/* Membership CTA Banner */}
                 {isMember === false && (
-                    <Membership>
-                        Want to become a member and enjoy discounted event prices? Click{' '}
-                        <a
-                            onClick={navigateToStripeMembershipPayment}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            here
-                        </a>{' '}
-                        to join.
-                    </Membership>
+                    <div className="mb-6 rounded-xl border border-gray-300 bg-gradient-to-r from-[var(--pmc-dark-purple)] to-[var(--pmc-purple)] p-5 text-white shadow-lg">
+                        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
+                                    <span className="text-xl">✨</span>
+                                </div>
+                                <p className="text-base font-medium">
+                                    Become a member and enjoy discounted event prices!
+                                </p>
+                            </div>
+                            <button
+                                onClick={navigateToStripeMembershipPayment}
+                                className="cursor-pointer rounded-full bg-white px-6 py-2 text-sm font-semibold text-[var(--pmc-dark-purple)] transition-all duration-200 hover:scale-105 hover:bg-gray-100"
+                            >
+                                Join Now
+                            </button>
+                        </div>
+                    </div>
                 )}
-                <DashboardHeader>
-                    <h2>PMC Dashboard</h2>
-                    <WelcomeMessage>{`Welcome ${user ? user.firstName : '...'}`}</WelcomeMessage>
-                </DashboardHeader>
-                <p>
-                    At PMC, our mission is to empower aspiring product managers by providing
-                    valuable insights, hands-on experiences, and opportunities to connect with
-                    industry leaders. Check out our upcoming events to support you on your product
-                    journey and help you grow your skills, expand your network, and explore new
-                    opportunities in the field!{' '}
-                    <span style={{ fontWeight: 'bold' }}>
+
+                {/* Header */}
+                <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-baseline">
+                    <h2 className="text-3xl font-bold tracking-tight">PMC Dashboard</h2>
+                    <p className="text-lg italic text-[var(--pmc-light-blue)]">
+                        Welcome, {user ? user.firstName : '...'}
+                    </p>
+                </div>
+
+                {/* Mission Statement */}
+                <div className="mt-4 rounded-lg bg-[var(--pmc-midnight-blue)]/50 p-5">
+                    <p className="leading-relaxed text-gray-200">
+                        At PMC, our mission is to empower aspiring product managers by providing
+                        valuable insights, hands-on experiences, and opportunities to connect with
+                        industry leaders. Check out our upcoming events to support you on your
+                        product journey and help you grow your skills, expand your network, and
+                        explore new opportunities in the field!
+                    </p>
+                    <p className="mt-3 text-sm font-semibold text-[var(--pmc-light-blue)]">
                         All times listed are in Vancouver time (PST).
-                    </span>
-                </p>
-            </DashboardSection>
+                    </p>
+                </div>
+            </section>
 
-            <DashboardSection>
-                {userEvents && userEvents.length > 0 && (
-                    <>
-                        <DashboardHeader>
-                            <h2>Your Events</h2>
-                        </DashboardHeader>
-                        <Carousel
-                            items={userEvents}
-                            showArrows={false}
-                            renderItem={(event) => (
-                                <EventCard
-                                    data-testid={`registered-${event.eventId}`}
-                                    event={event}
-                                    disabled={event.isDisabled}
-                                    link={event.externalPage ?? `/events/${event.eventId}`}
-                                />
-                            )}
-                        />
-                    </>
-                )}
-            </DashboardSection>
-
-            <DashboardSection>
-                <DashboardHeader>
-                    <h2>Upcoming Events</h2>
-                </DashboardHeader>
-                {events === undefined ? (
-                    <>{error ? <h1>An error occurred fetching events :(</h1> : <h1>Loading</h1>} </>
-                ) : (
-                    <>
-                        {events.length > 0 ? (
-                            <Carousel
-                                items={events}
-                                renderItem={(event) => (
-                                    <EventCard
-                                        data-testid={event.eventId}
-                                        event={event}
-                                        disabled={
-                                            event.isDisabled || moment().isAfter(moment(event.date))
-                                        }
-                                        link={`/events/${event.eventId}/register`}
-                                    />
-                                )}
+            {/* User's Registered Events Section */}
+            {userEvents && userEvents.length > 0 && (
+                <section className="w-full">
+                    <div className="mb-4 flex items-center gap-3">
+                        <div className="h-1 w-8 rounded-full bg-[var(--pmc-purple)]"></div>
+                        <h2 className="text-2xl font-bold">Your Events</h2>
+                    </div>
+                    <Carousel
+                        items={userEvents}
+                        showArrows={false}
+                        renderItem={(event) => (
+                            <EventCard
+                                data-testid={`registered-${event.eventId}`}
+                                event={event}
+                                disabled={event.isDisabled}
+                                link={event.externalPage ?? `/events/${event.eventId}`}
                             />
-                        ) : (
-                            <DashboardStayTuned>Stay tuned for future events!</DashboardStayTuned>
                         )}
-                    </>
+                    />
+                </section>
+            )}
+
+            {/* Upcoming Events Section */}
+            <section className="w-full">
+                <h2 className="text-2xl font-bold mb-4">Upcoming Events</h2>
+
+                {events === undefined ? (
+                    <div className="flex min-h-[200px] items-center justify-center">
+                        {error ? (
+                            <div className="text-center">
+                                <p className="text-xl font-semibold text-[var(--pmc-red)]">
+                                    An error occurred fetching events
+                                </p>
+                                <p className="mt-2 text-gray-400">Please try again later</p>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center gap-3">
+                                <div className="h-10 w-10 animate-spin rounded-full border-4 border-[var(--pmc-light-blue)] border-t-transparent"></div>
+                                <p className="text-lg text-gray-300">Loading events...</p>
+                            </div>
+                        )}
+                    </div>
+                ) : events.length > 0 ? (
+                    <Carousel
+                        items={events}
+                        renderItem={(event) => (
+                            <EventCard
+                                data-testid={event.eventId}
+                                event={event}
+                                disabled={event.isDisabled || moment().isAfter(moment(event.date))}
+                                link={`/events/${event.eventId}/register`}
+                            />
+                        )}
+                    />
+                ) : (
+                    <div className="flex min-h-[200px] flex-col items-center justify-center rounded-xl border border-dashed border-gray-500 bg-[var(--pmc-midnight-blue)]/30 p-8">
+                        <p className="text-center text-xl font-bold text-white">
+                            Stay tuned for future events!
+                        </p>
+                        <p className="mt-2 text-gray-400">
+                            We're working on exciting new events for you
+                        </p>
+                    </div>
                 )}
-            </DashboardSection>
-        </DashboardContainer>
+            </section>
+        </div>
     );
 }
