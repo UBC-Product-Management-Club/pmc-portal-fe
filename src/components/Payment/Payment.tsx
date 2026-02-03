@@ -3,7 +3,6 @@ import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { Elements, PaymentElement } from '@stripe/react-stripe-js';
 import { usePayments } from '../../hooks/usePayments';
 import { getElementOptionsOptions } from '../../service/PaymentService';
-import { styled } from 'styled-components';
 import { usePaymentService } from '../../hooks/usePaymentService';
 
 const stripe_key = loadStripe(import.meta.env.VITE_STRIPE_KEY);
@@ -16,20 +15,10 @@ interface PaymentProps {
 
 type PaymentComponentProps = Omit<PaymentProps, 'type' | 'options'>;
 
-const Submit = styled.button`
-    cursor: pointer;
-    display: block;
-    font-family: poppins;
-    font-weight: 600;
-    margin-top: 0.5rem;
-    margin-left: auto;
-    padding: 0.5rem 2rem;
-    border-radius: 0.5rem;
-    color: var(--pmc-midnight-blue);
-`;
-
 function PaymentComponent({ onPayment, onError }: PaymentComponentProps) {
     const { pay, processing } = usePayments();
+    const submitClass =
+        'ml-auto mt-2 block rounded-lg bg-white px-8 py-2 font-semibold text-pmc-midnight-blue';
     return (
         <>
             {processing && <p>processing</p>}
@@ -42,7 +31,9 @@ function PaymentComponent({ onPayment, onError }: PaymentComponentProps) {
                 }}
             >
                 <PaymentElement />
-                <Submit type="submit">Continue</Submit>
+                <button className={submitClass} type="submit">
+                    Continue
+                </button>
             </form>
         </>
     );
@@ -57,7 +48,7 @@ function Payment({ onPayment, onError, options }: PaymentProps) {
             .getElementsOptions(options)
             .then(setElementOptions)
             .catch(() => console.error("couldn't fetch client secret"));
-    }, []);
+    }, [paymentService, options]);
 
     const appearance: Appearance = useMemo(
         () => ({

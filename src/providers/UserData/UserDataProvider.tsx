@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { ActionDispatch, createContext, ReactNode, useContext, useEffect, useReducer } from 'react';
 import { UserDataFromAuth, UserDocument, UserFromDatabase } from '../../types/User';
 import { useLocation } from 'react-router-dom';
@@ -77,7 +78,7 @@ function UserDataProvider({ children }: { children: ReactNode }) {
             cancelled = true;
         };
         // react-hooks/exhaustive-deps
-    }, [location.pathname]);
+    }, [location.pathname, logout, userService]);
 
     function reducer(
         prevState: Partial<UserDocument> | UserFromDatabase | undefined,

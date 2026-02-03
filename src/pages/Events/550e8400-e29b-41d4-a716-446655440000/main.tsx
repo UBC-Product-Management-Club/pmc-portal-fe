@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
 import { useUserData } from '../../../providers/UserData/UserDataProvider';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import gearyHeist from '../../../assets/gearyHeist.avif';
@@ -18,291 +17,46 @@ import { TimelineCard } from '../../../components/Deliverables/TimelineCard';
 import { useSubmissionWindow } from '../../../hooks/useSubmissionWindow';
 import SubmissionVault from './SubmissionVault';
 
-const spin = keyframes`
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-`;
-
-const PageContainer = styled.div`
-    width: 100%;
-    max-width: 1500px;
-    margin: 0 auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    box-sizing: border-box;
-
-    @media (min-width: 768px) {
-        padding-left: 2rem;
-        padding-right: 2rem;
-    }
-`;
-
-const Container = styled.div`
-    min-height: 100vh;
-    background-color: var(--pmc-dark-blue);
-`;
-
-const TopBar = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 0;
-`;
-
-const Logo = styled.img`
-    padding-top: 1rem;
-    height: 2.5rem;
-    cursor: pointer;
-`;
-
-const UserGreeting = styled.div`
-    background-color: white;
-    color: black;
-    border-radius: 20px;
-    padding: 0.5rem 2rem;
-    font-weight: 600;
-    font-size: 1rem;
-`;
-
-const Content = styled.div`
-    margin: 0;
-    padding: 2rem 0;
-
-    @media (min-width: 768px) {
-        padding: 3rem 0;
-    }
-`;
-
-const Header = styled.div`
-    text-align: left;
-    margin-bottom: 1.5rem;
-`;
-
-const TeamName = styled.h1`
-    font-size: 2.5rem;
-    font-weight: bold;
-    letter-spacing: -0.025em;
-    color: #ffffff;
-`;
-
-const MemberItem = styled.div`
-    border-bottom: 1px solid rgba(141, 155, 235, 0.15);
-
-    &:last-child {
-        border-bottom: none;
-    }
-`;
-
-const MemberContent = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-`;
-
-const Avatar = styled.div`
-    height: 2.5rem;
-    width: 2.5rem;
-    border-radius: 50%;
-    border: 2px solid rgba(141, 155, 235, 0.3);
-    flex-shrink: 0;
-    overflow: hidden;
-`;
-
-const AvatarImage = styled.img`
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-`;
-
-const UserInfo = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-`;
-
-const UserName = styled.h3`
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #ffffff;
-    line-height: 1.2;
-`;
-
-const UserEmail = styled.p`
-    font-size: 0.875rem;
-    color: var(--pmc-light-grey);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`;
-
-const Spinner = styled.div`
-    height: 3rem;
-    width: 3rem;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    border-bottom-color: var(--pmc-light-blue);
-    animation: ${spin} 1s linear infinite;
-`;
-
-const LoadingText = styled.p`
-    color: var(--pmc-light-grey);
-    margin-top: 1rem;
-`;
-
-const TeamContainer = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 1.5rem;
-    width: 100%;
-`;
-
-const TeamSetupContainer = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-    gap: 1.5rem;
-    width: 100%;
-    align-items: center;
-`;
-
-const TeamSection = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-`;
-
-const TeamSetupTitle = styled.h3`
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #ffffff;
-    margin: 0;
-`;
-
-const TeamSetupText = styled.p`
-    font-size: 0.875rem;
-    color: var(--pmc-light-grey);
-    margin: 0;
-    line-height: 1.5;
-`;
-
-const InputGroup = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-
-    @media (min-width: 640px) {
-        flex-direction: row;
-    }
-`;
-
-const Input = styled.input`
-    flex: 1;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    border: 1px solid rgba(141, 155, 235, 0.3);
-    background-color: var(--pmc-dark-blue);
-    color: #ffffff;
-    font-size: 0.875rem;
-    box-sizing: border-box;
-    transition: all 0.2s;
-
-    &:focus {
-        outline: none;
-        border-color: var(--pmc-light-blue);
-        box-shadow: 0 0 0 3px rgba(141, 155, 235, 0.1);
-    }
-
-    &::placeholder {
-        font-style: italic;
-        opacity: 0.5;
-    }
-`;
-
-const Button = styled.button`
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    border: none;
-    background: linear-gradient(135deg, var(--pmc-light-blue) 0%, #6b7bcf 100%);
-    color: #ffffff;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    box-shadow: 0 4px 6px -1px rgba(141, 155, 235, 0.2);
-
-    &:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 12px -1px rgba(141, 155, 235, 0.3);
-    }
-
-    &:active {
-        transform: translateY(0);
-    }
-
-    &:disabled {
-        background: rgba(141, 155, 235, 0.3);
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-    }
-`;
-
-const ErrorMessage = styled.div`
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    background-color: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #fca5a5;
-    font-size: 0.875rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-
-    &:before {
-        content: '⚠';
-        font-size: 1rem;
-        flex-shrink: 0;
-    }
-`;
-
-const VerticalDivider = styled.div`
-    width: 1px;
-    align-self: stretch;
-    background: linear-gradient(
-        to bottom,
-        rgba(141, 155, 235, 0) 0%,
-        rgba(141, 155, 235, 0.3) 15%,
-        rgba(141, 155, 235, 0.3) 85%,
-        rgba(141, 155, 235, 0) 100%
-    );
-`;
-
-const Count = styled.div`
-    background-color: rgba(141, 155, 235, 0.2);
-    color: #8d9beb;
-    font-weight: 600;
-    font-size: 0.875rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-`;
-
-const TeamCode = styled.span`
-    font-size: 0.5em;
-    font-weight: 400;
-    opacity: 0.7;
-`;
-
 export default function ProductHeist() {
     const { getTeam, joinTeam, leaveTeam, createTeam } = useTeam();
     const { event_id } = useParams();
     const { user } = useUserData();
     const navigate = useNavigate();
+    const pageClass = 'mx-auto w-full max-w-[1500px] px-4 md:px-8';
+    const containerClass = 'min-h-screen bg-pmc-dark-blue';
+    const topBarClass = 'flex items-center justify-between py-4';
+    const logoClass = 'h-10 cursor-pointer pt-4';
+    const greetingClass = 'rounded-full bg-white px-8 py-2 text-base font-semibold text-black';
+    const contentClass = 'py-8 md:py-12';
+    const headerClass = 'mb-6 text-left';
+    const teamNameClass = 'text-[2.5rem] font-bold tracking-tight text-white';
+    const teamCodeClass = 'text-[0.5em] font-normal opacity-70';
+    const memberItemClass = 'border-b border-[rgba(141,155,235,0.15)] last:border-b-0';
+    const memberContentClass = 'flex items-center gap-4';
+    const avatarClass =
+        'h-10 w-10 shrink-0 overflow-hidden rounded-full border-2 border-[rgba(141,155,235,0.3)]';
+    const userInfoClass = 'flex w-full items-center justify-between';
+    const userNameClass = 'text-lg font-semibold leading-tight text-white';
+    const userEmailClass = 'truncate text-sm text-pmc-light-grey';
+    const spinnerClass =
+        'h-12 w-12 animate-spin rounded-full border-2 border-transparent border-b-pmc-light-blue';
+    const loadingTextClass = 'mt-4 text-pmc-light-grey';
+    const teamContainerClass = 'flex w-full flex-1 flex-col justify-between gap-6';
+    const teamSetupContainerClass = 'flex w-full flex-1 flex-row items-center gap-6';
+    const teamSectionClass = 'flex flex-col gap-3';
+    const teamTitleClass = 'm-0 text-lg font-semibold text-white';
+    const teamTextClass = 'text-sm leading-relaxed text-pmc-light-grey';
+    const inputGroupClass = 'flex flex-col gap-2 sm:flex-row';
+    const inputClass =
+        'flex-1 rounded-lg border border-[rgba(141,155,235,0.3)] bg-pmc-dark-blue px-4 py-3 text-sm text-white placeholder:italic placeholder:opacity-50 focus:outline-none focus:border-pmc-light-blue focus:shadow-[0_0_0_3px_rgba(141,155,235,0.1)]';
+    const buttonClass =
+        'rounded-lg bg-[linear-gradient(135deg,var(--pmc-light-blue)_0%,#6b7bcf_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_4px_6px_-1px_rgba(141,155,235,0.2)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_12px_-1px_rgba(141,155,235,0.3)] disabled:cursor-not-allowed disabled:bg-[rgba(141,155,235,0.3)] disabled:shadow-none';
+    const errorClass =
+        'mt-2 flex items-center gap-2 rounded-lg border border-[rgba(239,68,68,0.3)] bg-[rgba(239,68,68,0.1)] px-4 py-3 text-sm text-red-300';
+    const dividerClass =
+        'self-stretch w-px bg-[linear-gradient(to_bottom,rgba(141,155,235,0)_0%,rgba(141,155,235,0.3)_15%,rgba(141,155,235,0.3)_85%,rgba(141,155,235,0)_100%)]';
+    const countClass =
+        'rounded-full bg-[rgba(141,155,235,0.2)] px-3 py-1 text-sm font-semibold text-[#8d9beb]';
 
     const [teamData, setTeamData] = useState<TeamResponse | null>(null);
     const [loading, setLoading] = useState(true);
@@ -382,25 +136,30 @@ export default function ProductHeist() {
     };
 
     return (
-        <PageContainer>
-            <Container>
+        <div className={pageClass}>
+            <div className={containerClass}>
                 {/* Top bar with logo and greeting */}
-                <TopBar>
-                    <Logo src={PMCLogo} alt="PMC Logo" onClick={() => navigate('/dashboard')} />
+                <div className={topBarClass}>
+                    <img
+                        className={logoClass}
+                        src={PMCLogo}
+                        alt="PMC Logo"
+                        onClick={() => navigate('/dashboard')}
+                    />
                     {user && (
                         <Link to="/profile" style={{ textDecoration: 'none' }}>
-                            <UserGreeting>Hi, {user.firstName}!</UserGreeting>
+                            <div className={greetingClass}>Hi, {user.firstName}!</div>
                         </Link>
                     )}
-                </TopBar>
+                </div>
 
-                <Content>
-                    <Header>
-                        <TeamName>
+                <div className={contentClass}>
+                    <div className={headerClass}>
+                        <h1 className={teamNameClass}>
                             {teamName || 'No Team Assigned'}{' '}
-                            {teamCode && <TeamCode>#{teamCode}</TeamCode>}
-                        </TeamName>
-                    </Header>
+                            {teamCode && <span className={teamCodeClass}>#{teamCode}</span>}
+                        </h1>
+                    </div>
 
                     <CardsWrapper>
                         {/* Team Members Card */}
@@ -411,60 +170,68 @@ export default function ProductHeist() {
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Meet Your Accomplices</CardTitle>
-                                    {members.length > 0 && <Count>{members.length}/4</Count>}
+                                    {members.length > 0 && (
+                                        <div className={countClass}>{members.length}/4</div>
+                                    )}
                                 </CardHeader>
                                 {/* ONLY center if loading or no members */}
                                 <CardContent center={loading || members.length === 0}>
                                     {loading ? (
                                         <>
-                                            <Spinner />
-                                            <LoadingText>Loading team...</LoadingText>
+                                            <div className={spinnerClass} />
+                                            <p className={loadingTextClass}>Loading team...</p>
                                         </>
                                     ) : members.length > 0 ? (
-                                        <TeamContainer>
+                                        <div className={teamContainerClass}>
                                             <div>
                                                 {members.map((member) => {
                                                     const user = member.Attendee.User;
                                                     return (
-                                                        <MemberItem key={member.attendee_id}>
-                                                            <MemberContent>
-                                                                <Avatar>
-                                                                    <AvatarImage
+                                                        <div
+                                                            className={memberItemClass}
+                                                            key={member.attendee_id}
+                                                        >
+                                                            <div className={memberContentClass}>
+                                                                <div className={avatarClass}>
+                                                                    <img
                                                                         src={gearyHeist}
                                                                         alt={`${user.first_name} ${user.last_name}`}
+                                                                        className="h-full w-full object-cover"
                                                                     />
-                                                                </Avatar>
-                                                                <UserInfo>
-                                                                    <UserName>
+                                                                </div>
+                                                                <div className={userInfoClass}>
+                                                                    <h3 className={userNameClass}>
                                                                         {user.first_name}{' '}
                                                                         {user.last_name}
-                                                                    </UserName>
-                                                                    <UserEmail>
+                                                                    </h3>
+                                                                    <p className={userEmailClass}>
                                                                         {user.email}
-                                                                    </UserEmail>
-                                                                </UserInfo>
-                                                            </MemberContent>
-                                                        </MemberItem>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     );
                                                 })}
                                             </div>
-                                            <Button
+                                            <button
+                                                className={buttonClass}
                                                 onClick={handleLeaveTeam}
                                                 // disabled={phase !== 'before'}
                                             >
                                                 Leave
-                                            </Button>
-                                        </TeamContainer>
+                                            </button>
+                                        </div>
                                     ) : (
-                                        <TeamSetupContainer>
-                                            <TeamSection>
-                                                <TeamSetupTitle>Join a Team</TeamSetupTitle>
-                                                <TeamSetupText>
+                                        <div className={teamSetupContainerClass}>
+                                            <div className={teamSectionClass}>
+                                                <h3 className={teamTitleClass}>Join a Team</h3>
+                                                <p className={teamTextClass}>
                                                     Enter team code below to join your crew and
                                                     start planning the heist.
-                                                </TeamSetupText>
-                                                <InputGroup>
-                                                    <Input
+                                                </p>
+                                                <div className={inputGroupClass}>
+                                                    <input
+                                                        className={inputClass}
                                                         type="text"
                                                         placeholder="e.g. J1C8V"
                                                         value={formTeamCode}
@@ -475,28 +242,30 @@ export default function ProductHeist() {
                                                         }
                                                         maxLength={5}
                                                     />
-                                                    <Button
+                                                    <button
+                                                        className={buttonClass}
                                                         onClick={handleJoinTeam}
                                                         disabled={!formTeamCode.trim()}
                                                     >
                                                         Join
-                                                    </Button>
-                                                </InputGroup>
+                                                    </button>
+                                                </div>
                                                 {joinError && (
-                                                    <ErrorMessage>{joinError}</ErrorMessage>
+                                                    <div className={errorClass}>⚠ {joinError}</div>
                                                 )}
-                                            </TeamSection>
+                                            </div>
 
-                                            <VerticalDivider />
+                                            <div className={dividerClass} />
 
-                                            <TeamSection>
-                                                <TeamSetupTitle>Create a Team</TeamSetupTitle>
-                                                <TeamSetupText>
+                                            <div className={teamSectionClass}>
+                                                <h3 className={teamTitleClass}>Create a Team</h3>
+                                                <p className={teamTextClass}>
                                                     Start your own crew and get a unique code to
                                                     share with your teammates.
-                                                </TeamSetupText>
-                                                <InputGroup>
-                                                    <Input
+                                                </p>
+                                                <div className={inputGroupClass}>
+                                                    <input
+                                                        className={inputClass}
                                                         type="text"
                                                         placeholder="Enter team name"
                                                         value={formTeamName}
@@ -505,18 +274,21 @@ export default function ProductHeist() {
                                                         }
                                                         maxLength={50}
                                                     />
-                                                    <Button
+                                                    <button
+                                                        className={buttonClass}
                                                         onClick={handleCreateTeam}
                                                         disabled={!formTeamName.trim()}
                                                     >
                                                         Create
-                                                    </Button>
-                                                </InputGroup>
+                                                    </button>
+                                                </div>
                                                 {createError && (
-                                                    <ErrorMessage>{createError}</ErrorMessage>
+                                                    <div className={errorClass}>
+                                                        ⚠ {createError}
+                                                    </div>
                                                 )}
-                                            </TeamSection>
-                                        </TeamSetupContainer>
+                                            </div>
+                                        </div>
                                     )}
                                 </CardContent>
                             </Card>
@@ -528,8 +300,8 @@ export default function ProductHeist() {
                             <SubmissionVault phase={phase} eventId={event_id!} />
                         </Card>
                     </CardsWrapper>
-                </Content>
-            </Container>
-        </PageContainer>
+                </div>
+            </div>
+        </div>
     );
 }

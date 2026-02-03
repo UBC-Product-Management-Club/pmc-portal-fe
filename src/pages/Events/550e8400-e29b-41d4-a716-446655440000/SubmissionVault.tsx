@@ -3,58 +3,32 @@ import { Phase } from '../../../hooks/useSubmissionWindow';
 import { DeliverablesSection } from '../../../components/Deliverables/DeliverablesSection';
 import { CardContent, CountdownText } from '../../../components/Deliverables/utils';
 import gearyHeist from '../../../assets/gearyHeist.avif';
-import { styled } from 'styled-components';
 
 interface SubmissionVaultProps {
     phase: Phase;
     eventId: string;
 }
 
-const VaultImage = styled.img`
-    width: 180px;
-    height: 180px;
-    object-fit: cover;
-    filter: grayscale(75%) brightness(85%);
-    opacity: 0.6;
-    margin-bottom: 1rem;
-    border-radius: 12px;
-`;
-
-const LockedTitle = styled.h2`
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 1.25rem;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.5rem;
-`;
-
-const LockedSubtitle = styled.p`
-    color: var(--pmc-light-grey);
-    font-size: 0.9rem;
-    margin-bottom: 1.25rem;
-`;
-
-const LockedDate = styled.div`
-    color: #8d9beb;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-top: 0.5rem;
-`;
-
 function SubmissionVault({ phase, eventId }: SubmissionVaultProps) {
+    const imageClass =
+        'mb-4 h-[180px] w-[180px] rounded-xl object-cover opacity-60 [filter:grayscale(75%)_brightness(85%)]';
+    const titleClass = 'mb-2 text-xl font-bold tracking-[0.5px] text-white';
+    const subtitleClass = 'mb-5 text-sm text-pmc-light-grey';
+    const dateClass = 'mt-2 text-base font-semibold text-[#8d9beb]';
+    const messageClass = 'mx-auto max-w-[400px] text-center';
     if (phase === 'before') {
         return (
             <CardContent center>
-                <div style={{ textAlign: 'center', maxWidth: '400px' }}>
-                    <VaultImage src={gearyHeist} alt="Vault Locked" />
+                <div className={messageClass}>
+                    <img className={imageClass} src={gearyHeist} alt="Vault Locked" />
 
-                    <LockedTitle>🗝️ SUBMISSION VAULT OPENS SOON 🗝️</LockedTitle>
-                    <LockedSubtitle>
+                    <h2 className={titleClass}>🗝️ SUBMISSION VAULT OPENS SOON 🗝️</h2>
+                    <p className={subtitleClass}>
                         The vault is sealed until the heist begins. Get your crew ready...
-                    </LockedSubtitle>
+                    </p>
 
                     <CountdownText>Deliverables will be open until:</CountdownText>
-                    <LockedDate>November 30, 2025 — 12:00 PM PST</LockedDate>
+                    <div className={dateClass}>November 30, 2025 — 12:00 PM PST</div>
                 </div>
             </CardContent>
         );
@@ -70,16 +44,16 @@ function SubmissionVault({ phase, eventId }: SubmissionVaultProps) {
 
     return (
         <CardContent center>
-            <div style={{ textAlign: 'center', maxWidth: '400px' }}>
-                <VaultImage src={gearyHeist} alt="Vault Locked" />
+            <div className={messageClass}>
+                <img className={imageClass} src={gearyHeist} alt="Vault Locked" />
 
-                <LockedTitle>🗝️ SUBMISSION VAULT CLOSED 🗝️</LockedTitle>
-                <LockedSubtitle>
+                <h2 className={titleClass}>🗝️ SUBMISSION VAULT CLOSED 🗝️</h2>
+                <p className={subtitleClass}>
                     All files have been secured in the vault. Submissions are now closed.
-                </LockedSubtitle>
+                </p>
 
                 <CountdownText>Deliverables were due:</CountdownText>
-                <LockedDate>November 30, 2025 — 12:00 PM PST</LockedDate>
+                <div className={dateClass}>November 30, 2025 — 12:00 PM PST</div>
             </div>
         </CardContent>
     );

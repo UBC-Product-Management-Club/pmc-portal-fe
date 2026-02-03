@@ -6,16 +6,19 @@ import { Toaster } from 'react-hot-toast';
 
 export function Layout() {
     const { isLoading } = useAuth0();
+    const wrapperClass = 'mx-auto h-[95vh] w-[90vw] max-w-full lg:w-[65vw]';
+    const containerClass = 'py-12';
+    const footerClass = 'py-4';
     return (
-        <div className={'width-fit'}>
+        <div className={wrapperClass}>
             {!isLoading && (
                 <>
                     <Toaster position="top-center" />
                     <Navbar />
-                    <div className={'container'}>
+                    <div className={containerClass}>
                         <Outlet />
                     </div>
-                    <div className="footer">
+                    <div className={footerClass}>
                         <Footer />
                     </div>
                 </>

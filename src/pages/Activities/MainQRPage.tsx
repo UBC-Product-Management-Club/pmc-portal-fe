@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import './MainQrPage.css';
 import EnterEmail, { RaffleFormData } from './EnterEmail';
 import { useSearchParams } from 'react-router-dom';
 
@@ -12,6 +11,21 @@ export default function MainQRPage() {
     const [searchParams] = useSearchParams();
     const event_id = 'xUIGbhL9btd9Pn0kdda2'; // Product sprint event ID
     const qrCodeId = searchParams.get('qrid');
+    const containerClass = 'flex w-[90vw] max-w-[64vw] flex-col items-center gap-4';
+    const raffleNameClass =
+        'text-center text-xl font-bold text-transparent bg-clip-text bg-[linear-gradient(90deg,#DCE1FF_0%,#DDD7FF_23%,#DDD2FF_59%,#8D9BEB_87%)]';
+    const raffleSubtextClass = 'text-center text-white';
+    const checkmarkContainerClass = 'flex h-[100px] w-[100px] items-center justify-center mb-4';
+    const checkmarkCircleClass =
+        'flex h-[80px] w-[80px] items-center justify-center rounded-full border-[5px] border-[#4CAF50] opacity-0 animate-[drawCircle_0.5s_ease-out_forwards]';
+    const checkmarkStrokeClass =
+        'h-[40px] w-[20px] rotate-45 border-b-[5px] border-r-[5px] border-[#4CAF50] opacity-0 animate-[drawCheck_0.3s_ease-out_0.5s_forwards]';
+    const errorContainerClass = 'flex h-[100px] w-[100px] items-center justify-center mb-4';
+    const errorCircleClass =
+        'relative flex h-[80px] w-[80px] items-center justify-center rounded-full border-[5px] border-red-500 opacity-0 animate-[drawCircle_0.5s_ease-out_forwards]';
+    const errorXClass = 'relative h-[50px] w-[50px]';
+    const errorLineClass =
+        'absolute left-0 top-1/2 h-[5px] w-[50px] origin-center bg-red-500 opacity-0 animate-[drawX_0.3s_ease-out_0.5s_forwards]';
 
     const submit = (emailData: RaffleFormData) => {
         localStorage.setItem('attendee-email', emailData.email);
@@ -58,46 +72,49 @@ export default function MainQRPage() {
 
     if (!email) {
         return (
-            <div className="qr-page-container">
+            <div className={containerClass}>
                 <EnterEmail onSubmit={submit} />
             </div>
         );
     }
     if (loading) {
         return (
-            <div className="qr-page-container">
-                <p className="raffle-subtext">Loading...</p>
+            <div className={containerClass}>
+                <p className={raffleSubtextClass}>Loading...</p>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="qr-page-container">
-                <div className="error-x-container">
-                    <div className="error-x-circle">
-                        <div className="error-x"></div>
+            <div className={containerClass}>
+                <div className={errorContainerClass}>
+                    <div className={errorCircleClass}>
+                        <div className={errorXClass}>
+                            <div className={`${errorLineClass} rotate-45 scale-0`} />
+                            <div className={`${errorLineClass} -rotate-45 scale-0`} />
+                        </div>
                     </div>
                 </div>
-                <p className="raffle-name"> Oooops... something went wrong! </p>
-                <h3 className="raffle-name">{errorMsg}</h3>
+                <p className={raffleNameClass}> Oooops... something went wrong! </p>
+                <h3 className={raffleNameClass}>{errorMsg}</h3>
             </div>
         );
     }
 
     return (
-        <div className="qr-page-container">
+        <div className={containerClass}>
             {qrCodeId && (
                 <>
-                    <div className="checkmark-container">
-                        <div className="checkmark-circle">
-                            <div className="checkmark-stroke"></div>
+                    <div className={checkmarkContainerClass}>
+                        <div className={checkmarkCircleClass}>
+                            <div className={checkmarkStrokeClass}></div>
                         </div>
                     </div>
-                    <p className="raffle-name"> 🎉 CONGRATULATIONS! 🎉 </p>
+                    <p className={raffleNameClass}> 🎉 CONGRATULATIONS! 🎉 </p>
                 </>
             )}
-            <h3 className="raffle-subtext"> You have {raffleTickets} raffle tickets. </h3>
+            <h3 className={raffleSubtextClass}> You have {raffleTickets} raffle tickets. </h3>
         </div>
     );
 }

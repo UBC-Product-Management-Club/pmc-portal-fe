@@ -26,7 +26,7 @@ interface DetailRowProps {
 function Detail({ icon, text, subtext }: DetailRowProps) {
     return (
         <div className="flex flex-row items-center gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--pmc-dark-purple)]/30 text-[var(--pmc-light-blue)]">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-(--pmc-dark-purple)/30 text-(--pmc-light-blue)">
                 {icon}
             </div>
             <div className="flex flex-col gap-0.5">
@@ -116,7 +116,7 @@ export default function Event() {
         };
 
         fetchData();
-    }, [event_id, isAuthenticated]);
+    }, [attendeeService, eventService, event_id, isAuthenticated]);
 
     useEffect(() => {
         const query = new URLSearchParams(window.location.search);
@@ -138,7 +138,7 @@ export default function Event() {
                 })
                 .catch((error) => console.error(error));
         }
-    }, [event_id, attendeeStatus]);
+    }, [attendeeStatus, event_id, paymentService]);
 
     const navigateToStripeEventPayment = async (eventId: string) => {
         try {
@@ -290,7 +290,7 @@ export default function Event() {
             case 'applied':
                 return (
                     <button
-                        className={`${disabledButtonClass} bg-[var(--pmc-purple)]/20 text-[var(--pmc-light-blue)]`}
+                        className={`${disabledButtonClass} bg-(--pmc-purple)/20 text-(--pmc-light-blue)`}
                         disabled
                     >
                         Thank you for applying!
@@ -323,7 +323,7 @@ export default function Event() {
                                 <a
                                     href={checkoutSession.url}
                                     target="_blank"
-                                    className="font-medium text-[var(--pmc-light-blue)] underline hover:text-white"
+                                    className="font-medium text-(--pmc-light-blue) underline hover:text-white"
                                 >
                                     here
                                 </a>{' '}
@@ -347,7 +347,7 @@ export default function Event() {
     if (loading) {
         return (
             <div className="flex min-h-[400px] flex-col items-center justify-center gap-4">
-                <div className="h-12 w-12 animate-spin rounded-full border-4 border-[var(--pmc-light-blue)] border-t-transparent"></div>
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-(--pmc-light-blue) border-t-transparent"></div>
                 <p className="text-lg text-gray-300">Loading...</p>
             </div>
         );
@@ -356,14 +356,14 @@ export default function Event() {
     if (error || !event) {
         return (
             <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--pmc-red)]/20">
-                    <span className="text-3xl text-[var(--pmc-red)]">!</span>
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-(--pmc-red)/20">
+                    <span className="text-3xl text-(--pmc-red)">!</span>
                 </div>
                 <p className="text-lg text-white">
                     An error occurred fetching event details. Please try refreshing or
                 </p>
                 <a
-                    className="cursor-pointer text-[var(--pmc-light-blue)] underline hover:text-white"
+                    className="cursor-pointer text-(--pmc-light-blue) underline hover:text-white"
                     onClick={() =>
                         logout({
                             logoutParams: {
@@ -407,7 +407,7 @@ export default function Event() {
                     </h1>
 
                     {/* Details Card */}
-                    <div className="mb-6 rounded-2xl border border-gray-700 bg-[var(--pmc-midnight-blue)]/50 p-6">
+                    <div className="mb-6 rounded-2xl border border-gray-700 bg-(--pmc-midnight-blue)/50 p-6">
                         <div className="flex flex-col gap-5">
                             <Detail
                                 icon={<CiCalendar size={24} />}
@@ -431,7 +431,7 @@ export default function Event() {
                                 text={event.location}
                                 subtext={
                                     <span
-                                        className="cursor-pointer text-sm text-[var(--pmc-light-blue)] underline hover:text-white"
+                                        className="cursor-pointer text-sm text-(--pmc-light-blue) underline hover:text-white"
                                         onClick={scrollToMap}
                                     >
                                         Get directions
@@ -452,25 +452,20 @@ export default function Event() {
                 </div>
             </div>
 
-            {/* Detailed Info Section - Full Width Below */}
-            <div className="grid gap-8 md:grid-cols-2">
-                {/* About Section */}
-                <div>
-                    <h2 className="mb-4 text-2xl font-bold">About the Event</h2>
-                    <div className="prose prose-invert max-w-none text-gray-300 [&>p]:mb-4 [&>ul]:list-disc [&>ul]:pl-5">
-                        <Markdown>{event.description}</Markdown>
+            {/* Detailed Info Section - Text wraps around map */}
+            <div>
+                <h2 className="mb-4 text-2xl font-bold">About the Event</h2>
+                <div className="prose prose-invert max-w-none text-gray-300 [&>p]:mb-4 [&>ul]:list-disc [&>ul]:pl-5">
+                    <div className="float-right mb-6 ml-10 w-full md:w-[420px]">
+                        <h2 className="mb-4 text-2xl font-bold">Location</h2>
+                        <iframe
+                            ref={mapRef}
+                            className="h-[300px] w-full rounded-xl border-0"
+                            src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_API_KEY}&q=${event.location}`}
+                        />
                     </div>
-                </div>
-
-                {/* Location Section */}
-                <div>
-                    <h2 className="mb-4 text-2xl font-bold">Location</h2>
-                    <iframe
-                        ref={mapRef}
-                        className="w-full rounded-xl border-0"
-                        height="300"
-                        src={`https://www.google.com/maps/embed/v1/place?key=${import.meta.env.VITE_GOOGLE_API_KEY}&q=${event.location}`}
-                    />
+                    <Markdown>{event.description}</Markdown>
+                    <div className="clear-both" />
                 </div>
             </div>
 

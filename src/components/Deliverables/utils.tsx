@@ -1,101 +1,56 @@
-import styled from 'styled-components';
+import React from 'react';
 
-const CardsWrapper = styled.div`
-    height: calc(100vh * 2 / 3);
-    display: flex;
-    gap: 1.5rem;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
+const CardsWrapper = ({ children }: { children: React.ReactNode }) => (
+    <div className="flex h-[66vh] w-full max-w-full gap-6 max-md:flex-col">{children}</div>
+);
 
-    @media (max-width: 768px) {
-        flex-direction: column;
-    }
-`;
+const CardVerticalWrapper = ({ children }: { children: React.ReactNode }) => (
+    <div className="flex flex-1 flex-col gap-6">{children}</div>
+);
 
-const CardVerticalWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    flex: 1;
-`;
+const Card = ({ children }: { children: React.ReactNode }) => (
+    <div className="flex min-w-0 flex-1 flex-col rounded-xl border border-[rgba(141,155,235,0.2)] bg-pmc-midnight-blue shadow-[0_10px_15px_-3px_rgba(0,0,0,0.3)]">
+        {children}
+    </div>
+);
 
-const Card = styled.div`
-    flex: 1 1 300px;
-    min-width: 0;
-    border: 1px solid rgba(141, 155, 235, 0.2);
-    border-radius: 0.75rem;
-    background-color: var(--pmc-midnight-blue);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-`;
+const CardHeader = ({ children }: { children: React.ReactNode }) => (
+    <div className="flex items-center justify-between px-6 pb-0 pt-2">{children}</div>
+);
 
-const CardHeader = styled.div`
-    padding: 0.5rem 1.5rem 0 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
+const CardTitle = ({ children }: { children: React.ReactNode }) => (
+    <h2 className="text-base font-semibold text-[#7f838f]">{children}</h2>
+);
 
-const CardTitle = styled.h2`
-    font-size: 1rem;
-    font-weight: 600;
-    color: #7f838f;
-`;
+const CardContent = ({ children, center }: { children: React.ReactNode; center?: boolean }) => (
+    <div
+        className={`flex min-h-0 flex-1 flex-col overflow-y-auto px-6 pb-4 ${
+            center ? 'h-[150px] items-center justify-center text-center' : ''
+        }`}
+    >
+        {children}
+    </div>
+);
 
-const CardContent = styled.div<{ center?: boolean }>`
-    padding: 0 1.5rem 1rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
+const CountdownNumbers = ({ children }: { children: React.ReactNode }) => (
+    <div className="flex w-full justify-between gap-4">{children}</div>
+);
 
-    ${({ center }) =>
-        center &&
-        `
-        align-items: center;  /* horizontal centering */
-        text-align: center;   /* text centering */
-        justify-content: center; /* vertical centering */
-        height: 150px;        /* optional: adjust for visual centering */
-    `}
-`;
+const TimeBlock = ({ children }: { children: React.ReactNode }) => (
+    <div className="flex flex-1 flex-col items-center">{children}</div>
+);
 
-const CountdownNumbers = styled.div`
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    gap: 1rem;
-`;
+const TimeValue = ({ children }: { children: React.ReactNode }) => (
+    <span className="text-4xl font-bold text-white">{children}</span>
+);
 
-const TimeBlock = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-`;
+const TimeLabel = ({ children }: { children: React.ReactNode }) => (
+    <span className="text-sm uppercase text-pmc-light-grey">{children}</span>
+);
 
-const TimeValue = styled.span`
-    font-size: 4rem;
-    font-weight: bold;
-    color: #ffffff;
-`;
-
-const TimeLabel = styled.span`
-    font-size: 1rem;
-    color: var(--pmc-light-grey);
-    text-transform: uppercase;
-`;
-
-const CountdownText = styled.p`
-    font-size: 1rem;
-    color: var(--pmc-light-grey);
-    text-align: center;
-    margin: 0;
-    margin-bottom: 0.25rem;
-    font-weight: 500;
-`;
+const CountdownText = ({ children }: { children: React.ReactNode }) => (
+    <p className="mb-1 text-center text-sm font-medium text-pmc-light-grey">{children}</p>
+);
 
 export {
     CardsWrapper,
