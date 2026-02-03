@@ -59,11 +59,14 @@ interface EventFormProps<T extends FieldValues = FieldValues> {
     error: string | null;
 }
 
-type TextBasedQuestion = Extract<Question, { type: 'short-answer' | 'long-answer' }>;
-
 type TextBasedInputProps = {
-    question: TextBasedQuestion;
+    question: Extract<Question, { type: 'short-answer' }>;
     StyledComponent: React.ComponentType<StyledInputProps>;
+};
+
+type TextAreaInputProps = {
+    question: Extract<Question, { type: 'long-answer' }>;
+    StyledComponent: React.ComponentType<StyledTextAreaProps>;
 };
 
 type FileBasedInputProps = {
@@ -72,7 +75,7 @@ type FileBasedInputProps = {
 
 type DropdownInputProps = {
     question: Extract<Question, { type: 'dropdown' }>;
-    StyledComponent: React.ComponentType<StyledInputProps>;
+    StyledComponent: React.ComponentType<StyledSelectProps>;
 };
 
 type QuestionWrapperProps = {
@@ -96,7 +99,7 @@ const QuestionWrapper = ({ id, label, required, error, children }: QuestionWrapp
     </div>
 );
 
-// Form control for long and short answers
+// Form control for short answers
 const TextBasedInput = ({ question, StyledComponent }: TextBasedInputProps) => {
     const {
         register,
@@ -110,7 +113,24 @@ const TextBasedInput = ({ question, StyledComponent }: TextBasedInputProps) => {
             type="text"
             $hasError={!!hasError}
             {...register(question.id, { required: question.required && 'This field is required' })}
-        ></FinalInput>
+        />
+    );
+};
+
+// Form control for long answers (textarea)
+const TextAreaInput = ({ question, StyledComponent }: TextAreaInputProps) => {
+    const {
+        register,
+        formState: { errors },
+    } = useFormContext();
+    const hasError = !!errors[question.id];
+    const FinalInput = StyledComponent;
+    return (
+        <FinalInput
+            id={question.id}
+            $hasError={!!hasError}
+            {...register(question.id, { required: question.required && 'This field is required' })}
+        />
     );
 };
 
@@ -207,7 +227,7 @@ const RenderQuestion = ({ question }: { question: Question }) => {
                             />
                         );
                     case 'long-answer':
-                        return <TextBasedInput question={question} StyledComponent={TextArea} />;
+                        return <TextAreaInput question={question} StyledComponent={TextArea} />;
                     case 'dropdown':
                         return <DropdownInput question={question} StyledComponent={Dropdown} />;
                     case 'file':
