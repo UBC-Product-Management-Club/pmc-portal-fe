@@ -3,142 +3,9 @@ import { Link, useParams } from 'react-router-dom';
 import { usePaymentService } from '../../hooks/usePaymentService';
 import { useEvents } from '../../hooks/useEvents';
 import { Event } from '../../types/Event';
-import styled from 'styled-components';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { IoArrowBack } from 'react-icons/io5';
 import { useInAppBrowser } from '../../utils';
-
-const PageWrapper = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, var(--pmc-blue), var(--pmc-dark-blue));
-    padding: 1.5rem;
-    box-sizing: border-box;
-`;
-
-const Card = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 3rem;
-    background-color: rgba(255, 255, 255, 0.08);
-    border-radius: 1.5rem;
-    padding: 3rem 4rem;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-    max-width: 900px;
-    width: 100%;
-    color: white;
-    backdrop-filter: blur(8px);
-    text-align: left;
-
-    @media screen and (max-width: 768px) {
-        flex-direction: column-reverse;
-        gap: 1.5rem;
-        padding: 2rem;
-        max-width: 95%;
-        text-align: center;
-    }
-`;
-
-const Column = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.25rem;
-
-    @media screen and (max-width: 768px) {
-        align-items: center;
-    }
-`;
-
-const Title = styled.h1`
-    font-size: 2.3rem;
-    font-weight: 700;
-    color: var(--pmc-light-grey);
-    margin: 0;
-`;
-
-const Subtitle = styled.p`
-    font-size: 1.1rem;
-    color: #dfe6ef;
-    max-width: 420px;
-    margin: 0;
-`;
-
-const Blurb = styled.p`
-    font-size: 1rem;
-    color: #cfd9e5;
-    line-height: 1.5;
-    max-width: 480px;
-    font-weight: 400;
-    opacity: 0.9;
-    margin: 0;
-
-    @media screen and (max-width: 768px) {
-        max-width: 90%;
-    }
-`;
-
-const Button = styled.button`
-    background: var(--pmc-light-grey);
-    color: var(--pmc-midnight-blue);
-    border: none;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    font-size: 1rem;
-    padding: 0.75rem 2rem;
-    border-radius: 0.75rem;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    margin-top: 0.5rem;
-    @media screen and (min-width: 768px) {
-        width: 50%;
-    }
-`;
-
-const Thumbnail = styled.img`
-    width: 20rem;
-    height: auto;
-    border-radius: 1rem;
-    object-fit: cover;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-
-    @media screen and (max-width: 768px) {
-        width: 14rem;
-    }
-`;
-
-const MessageBox = styled.div`
-    background-color: rgba(255, 255, 255, 0.08);
-    border-radius: 1rem;
-    padding: 3rem;
-    text-align: center;
-    color: var(--pmc-light-grey);
-    font-size: 1.25rem;
-    max-width: 600px;
-    width: 100%;
-`;
-
-const ReturnButton = styled.button`
-    background-color: transparent;
-    border: none;
-    overflow: hidden;
-    outline: none;
-    width: fit-content;
-    cursor: pointer;
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-`;
 
 export default function Paywall() {
     const { user } = useUserData();
@@ -149,6 +16,21 @@ export default function Paywall() {
     const [error, setError] = useState<string>();
     const [event, setEvent] = useState<Event>();
     const [loadingCheckout, setLoadingCheckout] = useState(false);
+    const pageClass =
+        'fixed inset-0 flex h-full w-full items-center justify-center bg-[linear-gradient(135deg,var(--pmc-blue),var(--pmc-dark-blue))] p-6';
+    const cardClass =
+        'flex w-full max-w-[900px] flex-col-reverse items-center gap-6 rounded-3xl bg-[rgba(255,255,255,0.08)] px-8 py-8 text-center text-white shadow-[0_8px_30px_rgba(0,0,0,0.25)] backdrop-blur-md md:flex-row md:gap-12 md:px-16 md:py-12 md:text-left';
+    const columnClass = 'flex flex-col items-center gap-5 md:items-start';
+    const titleClass = 'text-[2.3rem] font-bold text-pmc-light-grey';
+    const subtitleClass = 'max-w-[420px] text-[1.1rem] text-[#dfe6ef]';
+    const blurbClass = 'max-w-[480px] text-base text-[#cfd9e5] opacity-90 md:max-w-[90%]';
+    const buttonClass =
+        'mt-2 w-full rounded-xl bg-pmc-light-grey px-8 py-3 text-base font-semibold text-pmc-midnight-blue md:w-1/2';
+    const thumbClass =
+        'w-[14rem] rounded-2xl object-cover shadow-[0_8px_24px_rgba(0,0,0,0.3)] md:w-[20rem]';
+    const messageClass =
+        'w-full max-w-[600px] rounded-2xl bg-[rgba(255,255,255,0.08)] p-12 text-center text-xl text-pmc-light-grey';
+    const returnClass = 'flex w-fit items-center gap-4 text-white';
 
     useEffect(() => {
         if (!event_id) {
@@ -177,42 +59,44 @@ export default function Paywall() {
 
     if (error) {
         return (
-            <PageWrapper>
-                <MessageBox>An error occurred! Please refresh the page. {error}</MessageBox>
-            </PageWrapper>
+            <div className={pageClass}>
+                <div className={messageClass}>
+                    An error occurred! Please refresh the page. {error}
+                </div>
+            </div>
         );
     }
 
     if (!event) {
         return (
-            <PageWrapper>
-                <MessageBox>Loading event...</MessageBox>
-            </PageWrapper>
+            <div className={pageClass}>
+                <div className={messageClass}>Loading event...</div>
+            </div>
         );
     }
 
     return (
-        <PageWrapper>
-            <Card>
-                <Column>
+        <div className={pageClass}>
+            <div className={cardClass}>
+                <div className={columnClass}>
                     <Link to="/dashboard">
-                        <ReturnButton>
+                        <button className={returnClass}>
                             <IoArrowBack />
                             Back
-                        </ReturnButton>
+                        </button>
                     </Link>
-                    <Title>Welcome to {event.name}!</Title>
-                    <Subtitle>
+                    <h1 className={titleClass}>Welcome to {event.name}!</h1>
+                    <p className={subtitleClass}>
                         Hi {user?.firstName ?? 'there'} 👋 — finalize your registration below to
                         confirm your spot.
-                    </Subtitle>
-                    {!isMobile && event.blurb && <Blurb>{event.blurb}</Blurb>}
-                    <Button onClick={checkout} disabled={loadingCheckout}>
+                    </p>
+                    {!isMobile && event.blurb && <p className={blurbClass}>{event.blurb}</p>}
+                    <button className={buttonClass} onClick={checkout} disabled={loadingCheckout}>
                         {loadingCheckout ? 'Loading...' : 'Secure Your Spot'}
-                    </Button>
-                </Column>
-                <Thumbnail src={event.thumbnail} alt={`${event.name} thumbnail`} />
-            </Card>
-        </PageWrapper>
+                    </button>
+                </div>
+                <img className={thumbClass} src={event.thumbnail} alt={`${event.name} thumbnail`} />
+            </div>
+        </div>
     );
 }

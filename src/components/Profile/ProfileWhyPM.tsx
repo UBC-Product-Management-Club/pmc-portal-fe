@@ -1,26 +1,7 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
-import { styled } from 'styled-components';
 
 // import {MdOutlineEdit} from "react-icons/md";
-
-const ProfileSpaceBetween = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-`;
-
-const ProfileWhyPmTextArea = styled.textarea`
-    width: 100%;
-    box-sizing: border-box;
-    border: 1px solid #333d6c;
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    background-color: transparent;
-    color: white;
-    resize: none;
-    font-family: inherit;
-`;
 
 export function ProfileWhyPM() {
     const [isLoading, setIsLoading] = useState(true);
@@ -46,18 +27,27 @@ export function ProfileWhyPM() {
             setIsLoading(false);
         }
     }, [user, isLoading]);
+    const headerRowClass = 'flex flex-row items-center justify-between';
+    const textAreaClass =
+        'w-full resize-none rounded-2xl border border-white/10 bg-[var(--pmc-midnight-blue)]/30 p-6 text-white shadow-inner focus:outline-none focus:ring-2 focus:ring-pmc-blue/60';
 
     return (
-        <div>
-            <ProfileSpaceBetween>
-                <h3>Why Product Management?</h3>
+        <div className="flex flex-col gap-4">
+            <div className={headerRowClass}>
+                <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-white/60">
+                        About you
+                    </p>
+                    <h3 className="text-lg font-semibold sm:text-xl">Why Product Management?</h3>
+                </div>
                 {/*TODO: re-add button once we get backend update endpoint working*/}
                 {/*<button onClick={handleEditButton} className={"button-dark-purple profile-pill"}>*/}
                 {/*    <p>{isEditing ? 'Save' : 'Edit'}</p>*/}
                 {/*    <MdOutlineEdit/>*/}
                 {/*</button>*/}
-            </ProfileSpaceBetween>
-            <ProfileWhyPmTextArea
+            </div>
+            <textarea
+                className={textAreaClass}
                 value={text}
                 onChange={handleChange}
                 readOnly={!isEditing}

@@ -3,7 +3,6 @@ import z from 'zod/v4';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { buildEventFormResponseSchema, showToast } from '../../utils';
-import { styled } from 'styled-components';
 import { Question } from '../../types/Question';
 import { EventQuestionRenderer } from '../EnvironmentWrappers/EventQuestionRenderer';
 import { useEventFormDraft } from '../../hooks/useEventFormDraft';
@@ -21,46 +20,6 @@ type EventRegistrationModalProps = {
     submitText?: string;
 };
 
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    max-width: 600px;
-    max-height: 90vh;
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-    background-color: var(--pmc-midnight-blue);
-`;
-
-const ModalHeader = styled.div`
-    display: flex;
-    align-items: center;
-    position: relative;
-`;
-
-const Title = styled.h2`
-    color: var(--pmc-light-grey);
-    margin: 0 auto; /* centers title */
-    font-size: 1.5rem;
-`;
-
-const CloseButton = styled.button`
-    position: absolute;
-    right: 0;
-    top: 0;
-    border: none;
-    background: transparent;
-    font-size: 1.5rem;
-    cursor: pointer;
-`;
-
-const ModalBody = styled.div`
-    padding: 1.5rem;
-    overflow-y: auto;
-    flex: 1;
-`;
-
 const modalStyles = {
     content: {
         padding: 0,
@@ -72,8 +31,10 @@ const modalStyles = {
         backgroundColor: 'rgba(0, 0, 2, 0.5)',
         backdropFilter: 'blur(3px)',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
+        paddingTop: '110px',
+        paddingBottom: '24px',
     },
 };
 
@@ -86,6 +47,14 @@ export function EventRegistrationModal({
     onFormSubmit,
     submitText,
 }: EventRegistrationModalProps) {
+    const containerClass =
+        'flex max-h-[calc(100vh-140px)] w-[min(92vw,600px)] flex-col overflow-hidden rounded-3xl border border-white/10 bg-[var(--pmc-midnight-blue)]/80 shadow-[0_18px_40px_rgba(0,0,0,0.35)] backdrop-blur-md';
+    const headerClass =
+        'relative flex items-center justify-between border-b border-white/10 px-8 py-6';
+    const titleClass = 'text-xl font-semibold text-white';
+    const closeClass =
+        'flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xl text-white transition-colors hover:bg-white/10';
+    const bodyClass = 'flex-1 overflow-y-auto px-8 py-6';
     const responseSchema = buildEventFormResponseSchema(questions);
     type ResponseData = z.infer<typeof responseSchema>;
 
@@ -144,14 +113,18 @@ export function EventRegistrationModal({
             style={modalStyles}
             shouldCloseOnOverlayClick={!loading && !isClosing}
         >
-            <Container>
-                <ModalHeader>
-                    <Title>Event Registration</Title>
-                    <CloseButton onClick={handleClose} disabled={loading || isClosing}>
+            <div className={containerClass}>
+                <div className={headerClass}>
+                    <h2 className={titleClass}>Event Registration</h2>
+                    <button
+                        className={closeClass}
+                        onClick={handleClose}
+                        disabled={loading || isClosing}
+                    >
                         {isClosing ? '...' : '×'}
-                    </CloseButton>
-                </ModalHeader>
-                <ModalBody>
+                    </button>
+                </div>
+                <div className={bodyClass}>
                     <EventQuestionRenderer<ResponseData>
                         onSubmit={handleSubmit}
                         questions={questions}
@@ -160,8 +133,8 @@ export function EventRegistrationModal({
                         error={error}
                         submitText={submitText}
                     />
-                </ModalBody>
-            </Container>
+                </div>
+            </div>
         </Modal>
     );
 }

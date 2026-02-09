@@ -1,5 +1,4 @@
-import '../AllUsers/AllUsers.css';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FaSync, FaFileDownload, FaArrowLeft } from 'react-icons/fa';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -13,8 +12,15 @@ export default function AttendeeList() {
     const [isLoading, setIsLoading] = useState(false);
     const { event_id } = useParams();
     const navigate = useNavigate();
+    const backClass = 'mb-4 cursor-pointer text-white';
+    const headerClass = 'flex items-center justify-between gap-4 text-white';
+    const headerGroupClass = 'flex items-center gap-4';
+    const tableClass = 'w-full overflow-x-auto rounded border border-[#ddd] text-white';
+    const headerRowClass = 'border-b-2 border-[#ddd] bg-[#f5f5f5] font-bold';
+    const cellClass = 'break-words px-4 py-3 text-left';
+    const bodyClass = 'max-h-[600px] overflow-y-auto';
 
-    const fetchAttendees = async () => {
+    const fetchAttendees = useCallback(async () => {
         setIsLoading(true);
         try {
             const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/attendee/${event_id}`, {
@@ -30,7 +36,7 @@ export default function AttendeeList() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [event_id]);
 
     const exportToCSV = () => {
         const headers = getAllUniqueHeaders();
@@ -107,30 +113,22 @@ export default function AttendeeList() {
 
     useEffect(() => {
         fetchAttendees();
-    }, []);
+    }, [fetchAttendees]);
 
     return (
         <div>
-            <div
-                onClick={() => navigate('/admin/events')}
-                style={{
-                    color: 'white',
-                    cursor: 'pointer',
-                    marginBottom: '16px',
-                }}
-            >
+            <div onClick={() => navigate('/admin/events')} className={backClass}>
                 <FaArrowLeft size={20} />
             </div>
-            <div className="header-section">
-                <div className="header-group">
+            <div className={headerClass}>
+                <div className={headerGroupClass}>
                     <h1>Attendee List</h1>
                     <FaSync
-                        className={`refresh-icon ${isLoading ? 'spinning' : ''}`}
+                        className={`${isLoading ? 'animate-spin' : ''} text-[#666]`}
                         onClick={() => !isLoading && fetchAttendees()}
                         size={20}
                         style={{
                             cursor: isLoading ? 'default' : 'pointer',
-                            color: '#666',
                         }}
                     />
                     <FaFileDownload
@@ -146,10 +144,10 @@ export default function AttendeeList() {
                 <div>Total attendees: {attendees.length}</div>
             </div>
 
-            <div className="users-table" style={{ overflowX: 'auto' }}>
+            <div className={tableClass}>
                 <div style={{ minWidth: 'max-content' }}>
                     <div
-                        className="table-header"
+                        className={headerRowClass}
                         style={{
                             display: 'grid',
                             gridTemplateColumns: attendees.length
@@ -159,7 +157,7 @@ export default function AttendeeList() {
                     >
                         {attendees.length > 0 &&
                             getAllUniqueHeaders().map((header) => (
-                                <div key={header} className="header-cell">
+                                <div key={header} className={cellClass}>
                                     {header
                                         .replace(/_/g, ' ')
                                         .replace(/\b\w/g, (c) => c.toUpperCase())}
@@ -167,18 +165,18 @@ export default function AttendeeList() {
                             ))}
                     </div>
 
-                    <div className="table-body">
+                    <div className={bodyClass}>
                         {attendees.map((attendee: Attendee) => (
                             <div
                                 key={attendee.id}
-                                className="table-row"
                                 style={{
                                     display: 'grid',
                                     gridTemplateColumns: `repeat(${getAllUniqueHeaders().length}, 200px)`,
+                                    borderBottom: '1px solid #ddd',
                                 }}
                             >
                                 {getAllUniqueHeaders().map((header) => (
-                                    <div key={header} className="table-cell">
+                                    <div key={header} className={cellClass}>
                                         {attendee[header] !== undefined
                                             ? Array.isArray(attendee[header])
                                                 ? attendee[header].join(', ')

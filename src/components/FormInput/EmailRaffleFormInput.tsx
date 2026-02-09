@@ -1,5 +1,4 @@
 import { UseFormRegister, FieldError } from 'react-hook-form';
-import '../styles/component-theme.css';
 
 type RaffleFormData = {
     email: string;
@@ -20,11 +19,14 @@ export default function RaffleFormInput({
     register,
     error,
 }: FormInputProps) {
+    const inputClass =
+        'w-full rounded-full border border-transparent bg-pmc-blue px-3 py-2 text-white placeholder:text-pmc-midnight-grey focus:outline-none';
+    const errorClass = 'border-2 border-red-500';
+    const errorTextClass = 'ml-2 text-sm text-red-400';
     return (
         <div>
             <input
-                className={'bg-dark-blue'}
-                style={error ? { border: '0.25rem solid red' } : undefined}
+                className={`${inputClass} ${error ? errorClass : ''}`}
                 type={type}
                 placeholder={placeholder}
                 {...register(name, {
@@ -35,7 +37,7 @@ export default function RaffleFormInput({
                     },
                 })}
             />
-            {error && <span className="error-message">{error.message}</span>}
+            {error && <span className={errorTextClass}>{error.message}</span>}
         </div>
     );
 }

@@ -9,7 +9,6 @@ import { Payment } from '../Payment/Payment';
 import { FetchFeeResponse, PaymentType } from '../../service/PaymentService';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../../utils';
-import { styled } from 'styled-components';
 import { ZodError } from 'zod/v4';
 import { PaymentIntent } from '@stripe/stripe-js';
 import { useUserService } from '../../hooks/useUserService';
@@ -23,130 +22,6 @@ enum Pages {
     PAYMENT_SUCCESS,
 }
 
-const Container = styled.div`
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    min-height: 100vh;
-    background-color: var(--pmc-blue);
-`;
-const Content = styled.div`
-    width: 70%;
-    max-width: 750px;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 5rem;
-    border-radius: 1rem;
-    position: relative;
-    background-color: #1d233f;
-
-    @media (max-width: 768px) {
-        padding: 1.5rem;
-        max-width: 90%;
-    }
-
-    @media (max-width: 480px) {
-        padding: 1rem;
-    }
-`;
-const ReturnButton = styled.button`
-    background-color: transparent;
-    border: none;
-    overflow: hidden;
-    outline: none;
-    width: fit-content;
-    cursor: pointer;
-    color: white;
-    outline: none;
-    display: flex;
-    align-items: center;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    gap: 1rem;
-`;
-
-const Logo = styled.img`
-    width: 4rem;
-    height: 4rem;
-`;
-
-const ContentHeader = styled.h1`
-    font-size: x-large;
-    margin: 2rem 0;
-    color: white;
-`;
-
-const PaymentHeader = styled.p`
-    color: white;
-    margin: 0.5rem 0;
-`;
-
-const PaymentSuccess = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: white;
-    padding-top: 1rem;
-    padding-botton: 1 rem;
-`;
-
-const Button = styled.button`
-    cursor: pointer;
-    display: block;
-    font-family: poppins;
-    font-weight: 600;
-    margin-top: 0.5rem;
-    padding: 0.5rem 2rem;
-    border-radius: 0.5rem;
-    color: var(--pmc-midnight-blue);
-`;
-
-const ButtonRow = styled.div`
-    display: flex;
-    gap: 12px;
-    margin-top: 16px;
-`;
-
-const StyledButton = styled.button`
-    font-family: poppins;
-    flex: 1;
-    padding: 10px 20px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    color: white;
-    background-color: #2563eb;
-    font-size: 1rem;
-    &:hover {
-        background-color: #1e40af;
-    }
-`;
-
-const StyledLinkButton = styled(Link)`
-    font-family: poppins;
-    flex: 1;
-    padding: 10px 20px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    color: white;
-    background-color: #6b7280; /* gray */
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1rem;
-    &:hover {
-        background-color: #4b5563;
-    }
-`;
-
 export default function Onboarding() {
     const [responses, setResponses] = useState<Partial<UserDataFromUser>>({});
     const [currPage, setCurrPage] = useState<Pages>(Pages.USER_INFO);
@@ -155,13 +30,30 @@ export default function Onboarding() {
     const { user, update } = useUserData();
     const paymentService = usePaymentService();
     const userService = useUserService();
+    const containerClass =
+        'relative flex min-h-screen flex-col items-center justify-evenly bg-pmc-blue';
+    const contentClass =
+        'relative mx-auto flex w-[70%] max-w-[750px] flex-col rounded-2xl bg-pmc-dark-blue px-20 py-8 md:px-20 md:py-8 sm:max-w-[90%] sm:px-6 sm:py-6 max-sm:px-4 max-sm:py-4';
+    const returnButtonClass =
+        'mt-4 mb-4 flex w-fit cursor-pointer items-center gap-4 border-0 bg-transparent text-white';
+    const logoClass = 'h-16 w-16';
+    const contentHeaderClass = 'my-8 text-xl text-white';
+    const paymentHeaderClass = 'my-2 text-white';
+    const paymentSuccessClass = 'flex flex-col items-center pt-4 text-white';
+    const primaryButtonClass =
+        'mt-2 block rounded-lg bg-white px-8 py-2 font-semibold text-pmc-midnight-blue';
+    const buttonRowClass = 'mt-4 flex gap-3';
+    const choiceButtonClass =
+        'flex-1 cursor-pointer rounded-md border-none bg-blue-600 px-5 py-2.5 text-base font-semibold text-white hover:bg-blue-800';
+    const choiceLinkClass =
+        'inline-flex flex-1 cursor-pointer items-center justify-center rounded-md bg-gray-500 px-5 py-2.5 text-base font-semibold text-white no-underline hover:bg-gray-600';
 
     useEffect(() => {
         paymentService
             .getMembershipFee()
             .then(setFee)
             .catch(() => console.error('failed to fetch fee'));
-    }, []);
+    }, [paymentService]);
 
     async function computePreviousPage() {
         switch (currPage) {
@@ -190,18 +82,18 @@ export default function Onboarding() {
 
     if (auth0User) {
         return (
-            <Container data-testid="onboarding">
-                <Content>
+            <div className={containerClass} data-testid="onboarding">
+                <div className={contentClass}>
                     {currPage !== Pages.PAYMENT_SUCCESS && (
-                        <ReturnButton onClick={computePreviousPage}>
+                        <button className={returnButtonClass} onClick={computePreviousPage}>
                             <IoArrowBack />
                             Back
-                        </ReturnButton>
+                        </button>
                     )}
-                    <Logo src={PMCLogo} />
+                    <img className={logoClass} src={PMCLogo} />
                     {currPage === Pages.USER_INFO && (
                         <>
-                            <ContentHeader>Let's get you signed up!</ContentHeader>
+                            <h1 className={contentHeaderClass}>Let's get you signed up!</h1>
                             <UserDataForm
                                 responses={responses}
                                 onSubmit={(data: UserDataFromUser) => {
@@ -234,31 +126,32 @@ export default function Onboarding() {
                     )}
                     {currPage === Pages.MEMBERSHIP && fee && (
                         <>
-                            <PaymentHeader>
+                            <p className={paymentHeaderClass}>
                                 To become a PMC member for the 2025/2026 academic year, a {charge}{' '}
                                 membership fee is required. Would you like to become a member?
-                            </PaymentHeader>
-                            <ButtonRow>
-                                <StyledButton
+                            </p>
+                            <div className={buttonRowClass}>
+                                <button
+                                    className={choiceButtonClass}
                                     onClick={() => {
                                         setCurrPage(Pages.PAYMENT);
                                     }}
                                 >
                                     Yes, continue to payments
-                                </StyledButton>
+                                </button>
 
-                                <StyledLinkButton to="/dashboard">
+                                <Link className={choiceLinkClass} to="/dashboard">
                                     No, continue as non-member
-                                </StyledLinkButton>
-                            </ButtonRow>
+                                </Link>
+                            </div>
                         </>
                     )}
                     {currPage === Pages.PAYMENT && fee && user && (
                         <>
-                            <PaymentHeader>
+                            <p className={paymentHeaderClass}>
                                 To become a PMC member for the 2025/2026 academic year, a {charge}{' '}
                                 membership fee is required.
-                            </PaymentHeader>
+                            </p>
                             <Payment
                                 data-testid="payment"
                                 onPayment={(payment: PaymentIntent) => {
@@ -279,11 +172,11 @@ export default function Onboarding() {
                     )}
                     {currPage === Pages.PAYMENT_SUCCESS && (
                         <>
-                            <ContentHeader>
+                            <h1 className={contentHeaderClass}>
                                 Welcome to PMC {user?.firstName}!{' '}
                                 <span style={{ fontSize: 'x-large' }}>🥳</span>
-                            </ContentHeader>
-                            <PaymentSuccess>
+                            </h1>
+                            <div className={paymentSuccessClass}>
                                 <img src={checkmark} width={40} />
                                 <h3>Payment Successful</h3>
                                 <p>We've processed your {charge} charge</p>
@@ -293,13 +186,15 @@ export default function Onboarding() {
                                     color="white"
                                     style={{ textDecoration: 'None' }}
                                 >
-                                    <Button>Continue to dashboard</Button>
+                                    <button className={primaryButtonClass}>
+                                        Continue to dashboard
+                                    </button>
                                 </Link>
-                            </PaymentSuccess>
+                            </div>
                         </>
                     )}
-                </Content>
-            </Container>
+                </div>
+            </div>
         );
     } else {
         return <h1>please refresh the page</h1>;

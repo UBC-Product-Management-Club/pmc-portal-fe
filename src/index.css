@@ -24,6 +24,19 @@
     box-sizing: border-box;
 }
 
+@theme {
+    --color-pmc-light-blue: var(--pmc-light-blue);
+    --color-pmc-purple: var(--pmc-purple);
+    --color-pmc-red: var(--pmc-red);
+    --color-pmc-black: var(--pmc-black);
+    --color-pmc-dark-purple: var(--pmc-dark-purple);
+    --color-pmc-light-grey: var(--pmc-light-grey);
+    --color-pmc-blue: var(--pmc-blue);
+    --color-pmc-dark-blue: var(--pmc-dark-blue);
+    --color-pmc-midnight-grey: var(--pmc-midnight-grey);
+    --color-pmc-midnight-blue: var(--pmc-midnight-blue);
+}
+
 body,
 html {
     margin: 0;
@@ -80,5 +93,46 @@ html {
         width: 90vw;
         max-width: 100%; /* Ensures the element doesn't overflow the viewport */
         margin: 0 auto; /* Centers the element horizontally */
+    }
+}
+
+@keyframes drawCircle {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes drawCheck {
+    0% {
+        opacity: 0;
+        transform: scale(0) rotate(45deg);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1) rotate(45deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(45deg);
+    }
+}
+
+@keyframes drawX {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
     }
 }

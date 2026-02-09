@@ -1,65 +1,4 @@
-import styled from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
-
-const CarouselWrapper = styled.div`
-    position: relative;
-    width: 100%;
-`;
-
-const CarouselTrack = styled.div`
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 1rem;
-    padding-bottom: 1rem;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-`;
-
-const ArrowButton = styled.button`
-    position: absolute;
-    top: 55%;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    font-size: 1.5rem;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-    transition: background-color 0.2s;
-
-    &:hover {
-        background-color: rgba(0, 0, 0, 0.8);
-    }
-
-    &:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-    }
-`;
-
-const LeftArrow = styled(ArrowButton)`
-    left: 3px;
-`;
-
-const RightArrow = styled(ArrowButton)`
-    right: 3px;
-`;
-
-const CardWrapper = styled.div`
-    flex: 0 0 100%;
-    scroll-snap-align: start;
-`;
 
 type CarouselProps<T> = {
     items: T[];
@@ -71,6 +10,14 @@ export function Carousel<T>({ items, renderItem, showArrows = true }: CarouselPr
     const scrollRef = useRef<HTMLDivElement>(null);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(false);
+    const wrapperClass = 'relative w-full';
+    const trackClass =
+        'flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden';
+    const arrowClass =
+        'absolute top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-black/50 text-xl text-white transition-colors hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-30';
+    const leftArrowClass = `${arrowClass} left-[3px]`;
+    const rightArrowClass = `${arrowClass} right-[3px]`;
+    const cardClass = 'flex-[0_0_100%] snap-start';
 
     const updateScrollButtons = () => {
         if (!scrollRef.current) return;
@@ -93,22 +40,29 @@ export function Carousel<T>({ items, renderItem, showArrows = true }: CarouselPr
     };
 
     return (
-        <CarouselWrapper>
+        <div className={wrapperClass}>
             {showArrows && canScrollLeft && (
-                <LeftArrow onClick={() => scrollByCard('left')}>←</LeftArrow>
+                <button className={leftArrowClass} onClick={() => scrollByCard('left')}>
+                    ←
+                </button>
             )}
-            <CarouselTrack
+            <div
                 data-testid={'carousel-track'}
                 ref={scrollRef}
                 onScroll={updateScrollButtons}
+                className={trackClass}
             >
                 {items.map((item, idx) => (
-                    <CardWrapper key={idx}>{renderItem(item)}</CardWrapper>
+                    <div className={cardClass} key={idx}>
+                        {renderItem(item)}
+                    </div>
                 ))}
-            </CarouselTrack>
+            </div>
             {showArrows && canScrollRight && (
-                <RightArrow onClick={() => scrollByCard('right')}>→</RightArrow>
+                <button className={rightArrowClass} onClick={() => scrollByCard('right')}>
+                    →
+                </button>
             )}
-        </CarouselWrapper>
+        </div>
     );
 }
