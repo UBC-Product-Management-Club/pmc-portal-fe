@@ -2,7 +2,7 @@ import { type EventCard } from '../../types/Event';
 import { Link } from 'react-router-dom';
 import { renderDate, renderTime, useInAppBrowser } from '../../utils';
 import ReactMarkdown from 'react-markdown';
-import { FaRegCalendarAlt, FaRegClock } from 'react-icons/fa';
+import { FaRegCalendarAlt, FaRegClock, FaMapPin } from 'react-icons/fa';
 
 type EventCardProps = {
     event: EventCard;
@@ -15,8 +15,8 @@ export function EventCard({ event, disabled, link }: EventCardProps) {
     const contentClass = `flex h-[500px] flex-col-reverse items-start justify-evenly gap-4 overflow-hidden rounded-2xl px-8 py-8 text-white md:h-[280px] md:flex-row md:items-center md:justify-between md:px-16 md:py-6 ${
         disabled ? 'bg-pmc-black/80' : 'bg-pmc-dark-purple'
     }`;
-    const groupClass = 'w-full md:w-4/5 md:self-center';
-    const nameClass = 'text-[1.25rem] font-bold max-sm:text-[1.75rem]';
+    const groupClass = 'w-full md:w-4/5 md:self-center flex flex-col gap-1';
+    const nameClass = 'text-3xl font-bold max-sm:text-[1.75rem]';
     const thumbnailClass =
         'aspect-square w-[17rem] self-center rounded-[13px] object-cover shadow-[0_8px_16px_rgba(0,0,0,0.2)] md:w-[15rem]';
     const statusClass = disabled ? 'text-red-400' : 'text-green-400';
@@ -45,8 +45,8 @@ export function EventCard({ event, disabled, link }: EventCardProps) {
                 </div>
                 <div className={dateRowClass}>
                     <FaRegClock />
-                    <span>
-                        {renderTime(event.startTime, event.endTime)} | {event.location}
+                    <span className="inline-flex items-center gap-1">
+                        {renderTime(event.startTime, event.endTime)} | <FaMapPin /> {event.location}
                     </span>
                 </div>
 

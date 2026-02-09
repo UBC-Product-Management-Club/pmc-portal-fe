@@ -43,7 +43,7 @@ export default function Paywall() {
                 console.error(error);
                 setError('Failed to fetch event!');
             });
-    }, [event_id, getById]);
+    }, [event_id]);
 
     async function checkout() {
         if (!event_id) return;

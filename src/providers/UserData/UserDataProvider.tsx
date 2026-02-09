@@ -78,7 +78,7 @@ function UserDataProvider({ children }: { children: ReactNode }) {
             cancelled = true;
         };
         // react-hooks/exhaustive-deps
-    }, [location.pathname, logout, userService]);
+    }, [location.pathname]);
 
     function reducer(
         prevState: Partial<UserDocument> | UserFromDatabase | undefined,

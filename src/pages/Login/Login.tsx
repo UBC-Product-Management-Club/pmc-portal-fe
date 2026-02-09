@@ -12,7 +12,7 @@ export default function Login() {
         'mx-auto flex w-full flex-col items-center justify-center rounded-none bg-pmc-dark-blue p-8 md:h-[27rem] md:w-[36rem] md:rounded-2xl';
     const logoClass = 'h-32 w-32 md:h-40 md:w-40';
     const headerClass =
-        'text-center font-[Helvetica] leading-relaxed text-transparent bg-clip-text bg-white md:text-2xl';
+        'text-center font-bold font-[Poppins] leading-relaxed text-transparent bg-clip-text bg-white md:text-2xl';
     const buttonContainerClass = 'flex flex-col';
     const loginButtonClass =
         'my-2 w-[300px] cursor-pointer rounded-full border-0 bg-white py-3 text-base font-normal text-[#1c1c1c]';

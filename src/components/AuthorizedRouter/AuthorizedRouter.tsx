@@ -37,7 +37,7 @@ export default function AuthorizedRouter() {
                         });
                 });
         }
-    }, [auth0User, getAccessTokenSilently, navigateTo, update, userService]);
+    }, [auth0User]);
 
     // TODO: Design a loading page
     return <h1 style={{ color: 'white' }}>loading...</h1>;
