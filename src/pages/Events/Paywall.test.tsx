@@ -74,15 +74,44 @@ describe('Paywall', () => {
         expect(screen.getByRole('button')).toHaveTextContent('Loading...');
     });
 
-    it('navigates to stripe', async () => {
+    it('rsvp to free event forces reload', async () => {
         const user = userEvent.setup();
-        mockGetCheckoutSession.mockResolvedValueOnce('checkout_url');
+        const mockReload = vi.fn();
+        Object.defineProperty(window, 'location', {
+            configurable: true,
+            value: {
+                ...window.location,
+                reload: mockReload,
+            },
+        });
+        mockGetCheckoutSession.mockResolvedValueOnce(null);
 
         await renderComponent();
 
         await act(() => user.click(screen.getByRole('button')));
 
         expect(screen.getByRole('button')).toHaveTextContent('Loading...');
+        expect(mockReload).toHaveBeenCalled();
+        expect(mockGetCheckoutSession).toHaveBeenCalledWith('test-event-id');
+    });
+
+    it('navigates to stripe', async () => {
+        const user = userEvent.setup();
+        const assignMock = vi.fn();
+        Object.defineProperty(window, 'location', {
+            writable: true,
+            value: {
+                ...window.location,
+                assign: assignMock,
+            },
+        });
+
+        await renderComponent();
+
+        await act(() => user.click(screen.getByRole('button')));
+
+        expect(screen.getByRole('button')).toHaveTextContent('Loading...');
+        expect(assignMock).toHaveBeenCalledWith('checkout-url');
         expect(mockGetCheckoutSession).toHaveBeenCalledWith('test-event-id');
     });
 

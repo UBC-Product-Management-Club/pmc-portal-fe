@@ -50,7 +50,11 @@ export default function Paywall() {
         setLoadingCheckout(true);
         try {
             const session = await paymentService.getOrCreateRSVPCheckoutSession(event_id);
-            window.location.href = session.url;
+            if (session) {
+                window.location.assign(session.url);
+                return;
+            }
+            window.location.reload();
         } catch (error) {
             console.error(error);
             setError('Failed to fetch checkout session!');
