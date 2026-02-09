@@ -1,89 +1,47 @@
 import { useParams } from 'react-router-dom';
 import { Suspense, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 import { useAttendee } from '../../hooks/useAttendee';
 
 import.meta.glob('./*/main.tsx');
-
-const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
-`;
-
-const Content = styled.div`
-    width: 36rem;
-    height: 27rem;
-    margin: auto;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 1rem;
-    background: var(--pmc-blue);
-    @media screen and (max-width: 768px) {
-        width: 100%;
-        height: 100;
-        border-radius: 0rem;
-    }
-`;
-
-const Title = styled.h1`
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: var(--pmc-light-grey);
-`;
-
-const Subtitle = styled.p`
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-    max-width: 400px;
-    color: var(--pmc-light-grey);
-`;
-
-const HomeLink = styled(Link)`
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    transition: background 0.2s ease;
-`;
+const containerClass = 'flex flex-col items-center justify-center p-8 text-center';
+const contentClass =
+    'mx-auto flex w-full flex-col items-center justify-center rounded-none bg-pmc-blue p-8 md:h-[27rem] md:w-[36rem] md:rounded-2xl';
+const titleClass = 'mb-4 text-[2.5rem] font-bold text-pmc-light-grey';
+const subtitleClass = 'mb-8 max-w-[400px] text-[1.1rem] text-pmc-light-grey';
+const homeLinkClass = 'inline-block rounded-lg px-6 py-3 font-semibold text-white no-underline';
 
 function EventNotFound() {
     return (
-        <Container>
-            <Content>
-                <Title>Event Not Found!</Title>
-                <Subtitle>
+        <div className={containerClass}>
+            <div className={contentClass}>
+                <h1 className={titleClass}>Event Not Found!</h1>
+                <p className={subtitleClass}>
                     We couldn’t find the event you’re looking for. It may have been removed or is
                     under construction!
-                </Subtitle>
-                <HomeLink to="/dashboard">Go Back Home</HomeLink>
-            </Content>
-        </Container>
+                </p>
+                <Link className={homeLinkClass} to="/dashboard">
+                    Go Back Home
+                </Link>
+            </div>
+        </div>
     );
 }
 
 function NoEventAccess() {
     return (
-        <Container>
-            <Content>
-                <Title>Access denied!</Title>
-                <Subtitle>
+        <div className={containerClass}>
+            <div className={contentClass}>
+                <h1 className={titleClass}>Access denied!</h1>
+                <p className={subtitleClass}>
                     You don't have access to this page yet. If you think this is a mistake, contact
                     tech@ubcpmc.com.
-                </Subtitle>
-                <HomeLink to="/dashboard">Go Back Home</HomeLink>
-            </Content>
-        </Container>
+                </p>
+                <Link className={homeLinkClass} to="/dashboard">
+                    Go Back Home
+                </Link>
+            </div>
+        </div>
     );
 }
 
@@ -119,7 +77,7 @@ export default function EventDashboard() {
         if (event_id) {
             route(event_id);
         }
-    }, [event_id]);
+    }, [event_id, getAttendee]);
 
     if (!EventComponent) return <h1>Loading...</h1>;
 

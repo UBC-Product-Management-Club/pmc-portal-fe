@@ -1,170 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import styled from 'styled-components';
 import { useTeam } from '../../hooks/useTeam';
-
-const DeliverablesLayout = styled.form`
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-`;
-
-const DeliverablesForm = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 0.25rem;
-`;
-
-const DeliverableItem = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-`;
-
-const ActionsRow = styled.div`
-    display: flex;
-    justify-content: flex-end;
-`;
-
-const Label = styled.label`
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-`;
-
-const RequiredMark = styled.span`
-    color: #ef4444;
-`;
-
-const HelperText = styled.p`
-    font-size: 0.8rem;
-    color: var(--pmc-light-grey);
-    margin: 0;
-`;
-
-const TextInput = styled.input<{ $hasError?: boolean }>`
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    border: 1px solid ${(props) => (props.$hasError ? '#ef4444' : 'rgba(141, 155, 235, 0.3)')};
-    background-color: var(--pmc-dark-blue);
-    color: #ffffff;
-    font-size: 0.875rem;
-    box-sizing: border-box;
-    transition: all 0.2s;
-
-    &:focus {
-        outline: none;
-        border-color: var(--pmc-light-blue);
-        box-shadow: 0 0 0 3px rgba(141, 155, 235, 0.1);
-    }
-
-    &::placeholder {
-        font-style: italic;
-        opacity: 0.5;
-    }
-`;
-
-const HiddenFileInput = styled.input`
-    display: none;
-`;
-
-const FileUploadButton = styled.button`
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    background: rgba(141, 155, 235, 0.12);
-    color: #ffffff;
-    cursor: pointer;
-    font-weight: 500;
-    border: 1px dashed rgba(141, 155, 235, 0.5);
-    font-size: 0.875rem;
-    transition: all 0.2s;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    &:hover {
-        background: rgba(141, 155, 235, 0.2);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px -1px rgba(141, 155, 235, 0.25);
-    }
-`;
-
-const FileNameText = styled.span`
-    font-size: 0.8rem;
-    color: var(--pmc-light-grey);
-    font-style: italic;
-    margin-top: 0.25rem;
-`;
-
-const ExistingFileLink = styled.a`
-    font-size: 0.8rem;
-    color: var(--pmc-light-blue);
-    margin-left: 0.25rem;
-    text-decoration: underline;
-`;
-
-const FieldError = styled.span`
-    font-size: 0.75rem;
-    color: #fca5a5;
-    margin-top: 0.25rem;
-`;
-
-const SubmitButton = styled.button`
-    padding: 0.75rem 1.5rem;
-    border-radius: 999px;
-    border: none;
-    background: linear-gradient(135deg, var(--pmc-light-blue) 0%, #6b7bcf 100%);
-    color: #ffffff;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 4px 6px -1px rgba(141, 155, 235, 0.2);
-
-    &:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 12px -1px rgba(141, 155, 235, 0.3);
-    }
-
-    &:active {
-        transform: translateY(0);
-    }
-
-    &:disabled {
-        background: rgba(141, 155, 235, 0.3);
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-    }
-`;
-
-const SubmissionInfo = styled.div`
-    font-size: 0.8rem;
-    color: var(--pmc-light-grey);
-    padding: 0.5rem 0.75rem;
-    border-radius: 999px;
-    background: rgba(141, 155, 235, 0.12);
-    display: inline-flex;
-    gap: 0.4rem;
-    align-items: baseline;
-    flex-wrap: wrap;
-
-    code {
-        font-family: inherit;
-        font-size: 0.8rem;
-        background: rgba(0, 0, 0, 0.3);
-        padding: 0.1rem 0.35rem;
-        border-radius: 999px;
-        color: #e5e7eb;
-    }
-`;
 
 type DeliverablesFormData = {
     projectTitle: string;
@@ -285,48 +121,73 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
 
     const formattedSubmittedAt =
         submissionMeta && new Date(submissionMeta.submitted_at).toLocaleString();
+    const layoutClass = 'flex flex-col gap-4';
+    const formClass = 'flex flex-1 flex-col gap-5 overflow-y-auto pr-1';
+    const itemClass = 'flex flex-col gap-2';
+    const actionsClass = 'flex justify-end';
+    const labelClass = 'flex items-center gap-1 text-sm font-semibold text-white';
+    const requiredClass = 'text-red-500';
+    const helperClass = 'text-[0.8rem] text-pmc-light-grey';
+    const inputBaseClass =
+        'w-full rounded-lg border bg-pmc-dark-blue px-4 py-3 text-sm text-white transition-all placeholder:italic placeholder:opacity-50 focus:outline-none focus:border-pmc-light-blue focus:shadow-[0_0_0_3px_rgba(141,155,235,0.1)]';
+    const fileInputClass = 'hidden';
+    const fileButtonClass =
+        'flex items-center gap-2 rounded-lg border border-dashed border-[rgba(141,155,235,0.5)] bg-[rgba(141,155,235,0.12)] px-4 py-3 text-left text-sm font-medium text-white transition-all hover:-translate-y-0.5 hover:bg-[rgba(141,155,235,0.2)] hover:shadow-[0_4px_8px_-1px_rgba(141,155,235,0.25)]';
+    const fileNameClass = 'mt-1 text-[0.8rem] italic text-pmc-light-grey';
+    const existingFileLinkClass = 'ml-1 text-[0.8rem] text-pmc-light-blue underline';
+    const errorClass = 'mt-1 text-[0.75rem] text-red-300';
+    const submitClass =
+        'rounded-full bg-[linear-gradient(135deg,var(--pmc-light-blue)_0%,#6b7bcf_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_4px_6px_-1px_rgba(141,155,235,0.2)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_12px_-1px_rgba(141,155,235,0.3)] disabled:cursor-not-allowed disabled:bg-[rgba(141,155,235,0.3)] disabled:shadow-none';
+    const submissionInfoClass =
+        'inline-flex flex-wrap items-baseline gap-2 rounded-full bg-[rgba(141,155,235,0.12)] px-3 py-2 text-[0.8rem] text-pmc-light-grey';
+    const submissionCodeClass =
+        'rounded-full bg-[rgba(0,0,0,0.3)] px-1.5 py-0.5 text-[0.8rem] text-[#e5e7eb]';
+    const inputClass = (hasError?: boolean) =>
+        `${inputBaseClass} ${hasError ? 'border-red-500' : 'border-[rgba(141,155,235,0.3)]'}`;
 
     return (
-        <DeliverablesLayout onSubmit={handleSubmit(onSubmit)}>
-            <DeliverablesForm>
+        <form className={layoutClass} onSubmit={handleSubmit(onSubmit)}>
+            <div className={formClass}>
                 {submissionMeta && (
-                    <SubmissionInfo>
+                    <div className={submissionInfoClass}>
                         <span>Last submitted:</span>
                         <strong>{formattedSubmittedAt}</strong>
                         <span>by</span>
-                        <code>{submissionMeta.submitted_by}</code>
-                    </SubmissionInfo>
+                        <code className={submissionCodeClass}>{submissionMeta.submitted_by}</code>
+                    </div>
                 )}
 
-                <DeliverableItem>
-                    <Label htmlFor="projectTitle">
-                        Project Title<RequiredMark>*</RequiredMark>
-                    </Label>
-                    <HelperText>Give your heist a memorable, clear name.</HelperText>
-                    <TextInput
+                <div className={itemClass}>
+                    <label className={labelClass} htmlFor="projectTitle">
+                        Project Title<span className={requiredClass}>*</span>
+                    </label>
+                    <p className={helperClass}>Give your heist a memorable, clear name.</p>
+                    <input
                         id="projectTitle"
                         type="text"
                         placeholder="e.g. PathFinder"
-                        $hasError={!!errors.projectTitle}
+                        className={inputClass(!!errors.projectTitle)}
                         {...register('projectTitle', {
                             required: 'Project title is required',
                         })}
                     />
-                    {errors.projectTitle && <FieldError>{errors.projectTitle.message}</FieldError>}
-                </DeliverableItem>
+                    {errors.projectTitle && (
+                        <span className={errorClass}>{errors.projectTitle.message}</span>
+                    )}
+                </div>
 
-                <DeliverableItem>
-                    <Label htmlFor="figmaLink">
-                        Prototype File Link<RequiredMark>*</RequiredMark>
-                    </Label>
-                    <HelperText>
+                <div className={itemClass}>
+                    <label className={labelClass} htmlFor="figmaLink">
+                        Prototype File Link<span className={requiredClass}>*</span>
+                    </label>
+                    <p className={helperClass}>
                         Link to your main prototype design file (ie. Figma, Lovable, etc).
-                    </HelperText>
-                    <TextInput
+                    </p>
+                    <input
                         id="figmaLink"
                         type="url"
                         placeholder="https://www.figma.com/file/your-file-id/your-file-name"
-                        $hasError={!!errors.figmaLink}
+                        className={inputClass(!!errors.figmaLink)}
                         {...register('figmaLink', {
                             required: 'Figma file link is required',
                             pattern: {
@@ -335,21 +196,23 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
                             },
                         })}
                     />
-                    {errors.figmaLink && <FieldError>{errors.figmaLink.message}</FieldError>}
-                </DeliverableItem>
+                    {errors.figmaLink && (
+                        <span className={errorClass}>{errors.figmaLink.message}</span>
+                    )}
+                </div>
 
-                <DeliverableItem>
-                    <Label htmlFor="figjamLink">
-                        FigJam Link<RequiredMark>*</RequiredMark>
-                    </Label>
-                    <HelperText>
+                <div className={itemClass}>
+                    <label className={labelClass} htmlFor="figjamLink">
+                        FigJam Link<span className={requiredClass}>*</span>
+                    </label>
+                    <p className={helperClass}>
                         Link to your FigJam board with brainstorming, flows, or planning.
-                    </HelperText>
-                    <TextInput
+                    </p>
+                    <input
                         id="figjamLink"
                         type="url"
                         placeholder="https://www.figma.com/figjam/your-board-id/your-board-name"
-                        $hasError={!!errors.figjamLink}
+                        className={inputClass(!!errors.figjamLink)}
                         {...register('figjamLink', {
                             required: 'FigJam link is required',
                             pattern: {
@@ -358,14 +221,16 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
                             },
                         })}
                     />
-                    {errors.figjamLink && <FieldError>{errors.figjamLink.message}</FieldError>}
-                </DeliverableItem>
+                    {errors.figjamLink && (
+                        <span className={errorClass}>{errors.figjamLink.message}</span>
+                    )}
+                </div>
 
-                <DeliverableItem>
-                    <Label htmlFor="presentationFile">
-                        Presentation File (PDF, PPT, etc.)<RequiredMark>*</RequiredMark>
-                    </Label>
-                    <HelperText>Upload the deck you’ll present to the judges.</HelperText>
+                <div className={itemClass}>
+                    <label className={labelClass} htmlFor="presentationFile">
+                        Presentation File (PDF, PPT, etc.)<span className={requiredClass}>*</span>
+                    </label>
+                    <p className={helperClass}>Upload the deck you’ll present to the judges.</p>
 
                     <Controller
                         name="presentationFile"
@@ -384,18 +249,20 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
 
                             return (
                                 <>
-                                    <HiddenFileInput
+                                    <input
                                         {...restField}
                                         ref={fileInputRef}
                                         type="file"
                                         id="presentationFile"
                                         accept=".pdf,.ppt,.pptx"
+                                        className={fileInputClass}
                                         onChange={(e) =>
                                             field.onChange(e.target.files?.[0] || null)
                                         }
                                     />
 
-                                    <FileUploadButton
+                                    <button
+                                        className={fileButtonClass}
                                         type="button"
                                         onClick={() => fileInputRef.current?.click()}
                                     >
@@ -405,40 +272,43 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
                                             : existingFileUrl
                                               ? 'Replace File'
                                               : 'Choose File'}
-                                    </FileUploadButton>
+                                    </button>
 
-                                    <FileNameText>
+                                    <span className={fileNameClass}>
                                         {presentationFile ? (
                                             <>Selected: {presentationFile.name}</>
                                         ) : existingFileUrl ? (
                                             <>
                                                 Previously uploaded:
-                                                <ExistingFileLink
+                                                <a
+                                                    className={existingFileLinkClass}
                                                     href={existingFileUrl}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                 >
                                                     {existingFileName}
-                                                </ExistingFileLink>
+                                                </a>
                                             </>
                                         ) : (
                                             'No file chosen (PDF, PPT, PPTX)'
                                         )}
-                                    </FileNameText>
+                                    </span>
                                 </>
                             );
                         }}
                     />
 
                     {errors.presentationFile && (
-                        <FieldError>{errors.presentationFile.message}</FieldError>
+                        <span className={errorClass}>{errors.presentationFile.message}</span>
                     )}
-                </DeliverableItem>
-            </DeliverablesForm>
+                </div>
+            </div>
 
-            <ActionsRow>
-                <SubmitButton type="submit">Submit Deliverables</SubmitButton>
-            </ActionsRow>
-        </DeliverablesLayout>
+            <div className={actionsClass}>
+                <button className={submitClass} type="submit">
+                    Submit Deliverables
+                </button>
+            </div>
+        </form>
     );
 };

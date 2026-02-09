@@ -1,41 +1,18 @@
-import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-const ContentHeader = styled.h1`
-    font-size: x-large;
-    margin: 2rem 0;
-    color: white;
-`;
-
-const PaymentContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: white;
-    padding-top: 1rem;
-    padding-botton: 1 rem;
-`;
-
-const Button = styled.button`
-    cursor: pointer;
-    display: block;
-    font-family: poppins;
-    font-weight: 600;
-    margin-top: 0.5rem;
-    padding: 0.5rem 2rem;
-    border-radius: 0.5rem;
-    color: var(--pmc-midnight-blue);
-`;
-
 const PaymentCanceled = () => {
+    const headerClass = 'my-8 text-xl text-white';
+    const containerClass = 'flex flex-col items-center pt-4 text-white';
+    const buttonClass =
+        'mt-2 block rounded-lg bg-white px-8 py-2 font-semibold text-pmc-midnight-blue';
     return (
         <>
-            <ContentHeader>Payment Canceled </ContentHeader>
-            <PaymentContainer>
+            <h1 className={headerClass}>Payment Canceled </h1>
+            <div className={containerClass}>
                 <Link to="/dashboard" color="white" style={{ textDecoration: 'None' }}>
-                    <Button>Continue to dashboard</Button>
+                    <button className={buttonClass}>Continue to dashboard</button>
                 </Link>
-            </PaymentContainer>
+            </div>
         </>
     );
 };

@@ -7,119 +7,48 @@ import {
     FieldValues,
 } from 'react-hook-form';
 import { Question } from '../../types/Question';
-import { styled } from 'styled-components';
 import React from 'react';
+const contentClass = 'flex w-full flex-col justify-evenly gap-4';
+const submitClass = 'ml-auto rounded-lg bg-white px-8 py-2 font-semibold text-pmc-midnight-blue';
+const requiredMarkClass = 'ml-1 text-red-500';
+const errorClass = 'font-semibold text-red-500';
+const questionWrapperClass = 'flex flex-col gap-1';
+const labelClass = 'mb-1 block font-semibold';
+const formClass = 'flex flex-col gap-8 text-pmc-light-grey';
+const baseInputClass =
+    'rounded-lg border border-transparent bg-pmc-blue px-3 py-2 text-white placeholder:text-pmc-midnight-grey focus:outline-none';
+const fileButtonClass =
+    'rounded-lg bg-pmc-light-blue px-4 py-2 font-semibold text-white hover:bg-pmc-dark-purple';
+const fileNameClass = 'italic text-pmc-midnight-grey';
 
-const Content = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    gap: 1rem;
-`;
+type StyledInputProps = React.InputHTMLAttributes<HTMLInputElement> & { $hasError: boolean };
+type StyledTextAreaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+    $hasError: boolean;
+};
+type StyledSelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & { $hasError: boolean };
 
-const Dropdown = styled.select<{ $hasError: boolean }>`
-    border-radius: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    flex: 1;
-    font-family: 'poppins';
+const DefaultTextInput = ({ $hasError, className, ...props }: StyledInputProps) => {
+    const borderClass = $hasError ? 'border border-red-500' : 'border border-transparent';
+    return <input {...props} className={`${baseInputClass} ${borderClass} ${className ?? ''}`} />;
+};
 
-    &::placeholder {
-        color: var(--pmc-midnight-blue);
-    }
+const TextArea = ({ $hasError, className, ...props }: StyledTextAreaProps) => {
+    const borderClass = $hasError ? 'border border-red-500' : 'border border-transparent';
+    return (
+        <textarea {...props} className={`${baseInputClass} ${borderClass} ${className ?? ''}`} />
+    );
+};
 
-    border: ${(props) => props.$hasError && '0.2rem solid red'};
-`;
-
-const Submit = styled.button`
-    font-family: poppins;
-    font-weight: 600;
-    margin-left: auto;
-    padding: 0.5rem 2rem;
-    border-radius: 0.5rem;
-    color: var(--pmc-midnight-blue);
-    cursor: pointer;
-`;
-
-const RequiredMark = styled.span`
-    color: red;
-    margin-left: 0.25rem;
-`;
-
-const ErrorMessage = styled.span`
-    font-family: poppins;
-    font-weight: 600;
-    color: red;
-`;
-
-const DefaultTextInput = styled.input<{ $hasError: boolean }>`
-    border-radius: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    flex: ${(props) => (props.width ? '' : 1)};
-    font-family: poppins;
-    border: 1px solid ${(props) => (props.$hasError ? 'red' : '#ccc')};
-    outline: none;
-    box-sizing: border-box;
-
-    &::placeholder {
-        color: var(--pmc-midnight-blue);
-    }
-`;
-
-const TextArea = styled.textarea<{ $hasError: boolean }>`
-    border-radius: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid ${(props) => (props.$hasError ? 'red' : '#ccc')};
-    outline: none;
-    box-sizing: border-box;
-    font-family: poppins;
-
-    &::placeholder {
-        color: var(--pmc-midnight-blue);
-    }
-`;
-
-const StyledQuestionWrapper = styled.div`
-    display: flex;
-    flex-direction: column; /* stack label + input vertically */
-    gap: 0.25rem; /* small spacing */
-`;
-
-const Label = styled.label`
-    display: block;
-    margin-bottom: 0.25rem; /* add space below label */
-    font-weight: 600;
-`;
-
-const HiddenFileInput = styled.input`
-    display: none;
-`;
-
-const FileUploadButton = styled.button`
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    background-color: var(--pmc-light-blue);
-    color: white;
-    cursor: pointer;
-    font-weight: 600;
-    border: none;
-
-    &:hover {
-        background-color: var(--pmc-dark-purple);
-    }
-`;
-
-const FileNameText = styled.span`
-    font-style: italic;
-    color: var(--pmc-midnight-grey);
-`;
-
-const StyledForm = styled.form`
-    display: flex;
-    color: var(--pmc-light-grey);
-    flex-direction: column;
-    gap: 2rem; // adjust spacing here
-`;
+const Dropdown = ({ $hasError, className, ...props }: StyledSelectProps) => {
+    const borderClass = $hasError ? 'border border-red-500' : 'border border-transparent';
+    const dropdownArrowClass = 'pr-4';
+    return (
+        <select
+            {...props}
+            className={`${baseInputClass} ${borderClass} ${dropdownArrowClass} ${className ?? ''}`}
+        />
+    );
+};
 
 interface EventFormProps<T extends FieldValues = FieldValues> {
     submitText?: string;
@@ -130,13 +59,14 @@ interface EventFormProps<T extends FieldValues = FieldValues> {
     error: string | null;
 }
 
-type StyledInputProps = React.ComponentProps<typeof DefaultTextInput>;
-
-type TextBasedQuestion = Extract<Question, { type: 'short-answer' | 'long-answer' }>;
-
 type TextBasedInputProps = {
-    question: TextBasedQuestion;
+    question: Extract<Question, { type: 'short-answer' }>;
     StyledComponent: React.ComponentType<StyledInputProps>;
+};
+
+type TextAreaInputProps = {
+    question: Extract<Question, { type: 'long-answer' }>;
+    StyledComponent: React.ComponentType<StyledTextAreaProps>;
 };
 
 type FileBasedInputProps = {
@@ -145,7 +75,7 @@ type FileBasedInputProps = {
 
 type DropdownInputProps = {
     question: Extract<Question, { type: 'dropdown' }>;
-    StyledComponent: React.ComponentType<StyledInputProps>;
+    StyledComponent: React.ComponentType<StyledSelectProps>;
 };
 
 type QuestionWrapperProps = {
@@ -159,17 +89,17 @@ type QuestionWrapperProps = {
 
 // General question layout, taking input element as children
 const QuestionWrapper = ({ id, label, required, error, children }: QuestionWrapperProps) => (
-    <StyledQuestionWrapper>
-        <Label htmlFor={id}>
+    <div className={questionWrapperClass}>
+        <label className={labelClass} htmlFor={id}>
             {label}
-            {required && <RequiredMark>*</RequiredMark>}
-        </Label>
+            {required && <span className={requiredMarkClass}>*</span>}
+        </label>
         {children}
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-    </StyledQuestionWrapper>
+        {error && <span className={errorClass}>{error}</span>}
+    </div>
 );
 
-// Form control for long and short answers
+// Form control for short answers
 const TextBasedInput = ({ question, StyledComponent }: TextBasedInputProps) => {
     const {
         register,
@@ -183,7 +113,24 @@ const TextBasedInput = ({ question, StyledComponent }: TextBasedInputProps) => {
             type="text"
             $hasError={!!hasError}
             {...register(question.id, { required: question.required && 'This field is required' })}
-        ></FinalInput>
+        />
+    );
+};
+
+// Form control for long answers (textarea)
+const TextAreaInput = ({ question, StyledComponent }: TextAreaInputProps) => {
+    const {
+        register,
+        formState: { errors },
+    } = useFormContext();
+    const hasError = !!errors[question.id];
+    const FinalInput = StyledComponent;
+    return (
+        <FinalInput
+            id={question.id}
+            $hasError={!!hasError}
+            {...register(question.id, { required: question.required && 'This field is required' })}
+        />
     );
 };
 
@@ -204,22 +151,24 @@ const FileBasedInput = ({ question }: FileBasedInputProps) => {
                 const { value, ...restField } = field;
                 return (
                     <>
-                        <HiddenFileInput
+                        <input
                             {...restField}
                             ref={fileInputRef}
                             type="file"
                             id={question.id}
                             onChange={(e) => field.onChange(e.target.files?.[0])} // manually update RHF state
+                            className="hidden"
                         />
-                        <FileUploadButton
+                        <button
+                            className={fileButtonClass}
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
                         >
                             Choose file
-                        </FileUploadButton>
-                        <FileNameText>
+                        </button>
+                        <span className={fileNameClass}>
                             {file ? `File selected: ${file.name}` : 'No file chosen'}
-                        </FileNameText>
+                        </span>
                     </>
                 );
             }}
@@ -278,7 +227,7 @@ const RenderQuestion = ({ question }: { question: Question }) => {
                             />
                         );
                     case 'long-answer':
-                        return <TextBasedInput question={question} StyledComponent={TextArea} />;
+                        return <TextAreaInput question={question} StyledComponent={TextArea} />;
                     case 'dropdown':
                         return <DropdownInput question={question} StyledComponent={Dropdown} />;
                     case 'file':
@@ -300,20 +249,24 @@ export const EventQuestionRenderer = <T extends FieldValues = FieldValues>({
     error,
 }: EventFormProps<T>) => {
     return (
-        <Content>
+        <div className={contentClass}>
             <FormProvider {...methods}>
-                <StyledForm autoComplete="off" onSubmit={methods.handleSubmit(onSubmit)}>
-                    {error && <ErrorMessage>{error}</ErrorMessage>}
+                <form
+                    className={formClass}
+                    autoComplete="off"
+                    onSubmit={methods.handleSubmit(onSubmit)}
+                >
+                    {error && <span className={errorClass}>{error}</span>}
 
                     {questions.map((q) => (
                         <RenderQuestion key={q.id} question={q} />
                     ))}
 
-                    <Submit disabled={loading} type="submit">
+                    <button className={submitClass} disabled={loading} type="submit">
                         {loading ? 'Loading...' : submitText}
-                    </Submit>
-                </StyledForm>
+                    </button>
+                </form>
             </FormProvider>
-        </Content>
+        </div>
     );
 };

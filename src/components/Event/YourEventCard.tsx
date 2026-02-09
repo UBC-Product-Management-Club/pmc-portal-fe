@@ -1,105 +1,63 @@
-import './EventCard.css';
 import moment from 'moment';
 import { type EventCard } from '../../types/Event';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import { FaRegCalendarAlt, FaRegClock } from 'react-icons/fa';
 
 type YourEventCardProps = {
     event: EventCard;
     disabled: boolean;
 };
 
-const Container = styled.div<{ disabled: boolean }>`
-    width: inherit;
-    display: flex;
-    height: 280px;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 1rem 2rem;
-    box-sizing: border-box;
-    border-radius: 1rem;
-    gap: 1rem;
-    color: white;
-    background-color: ${({ disabled }) =>
-        disabled ? 'var(--pmc-black)' : 'var(--pmc-dark-purple)'};
-    opacity: ${({ disabled }) => (disabled ? 0.8 : 1)};
-    overflow: hidden;
-
-    @media screen and (max-width: 600px) {
-        flex-direction: column-reverse;
-        align-items: start;
-        gap: 2rem;
-    }
-`;
-
-const Column = styled.div`
-    max-width: 50%;
-    box-sizing: border-box;
-    align-self: center;
-`;
-
-const EventTimeAndLocation = styled.p`
-    font-style: normal;
-    font-weight: 510;
-    font-size: 16px;
-    line-height: 19px;
-    color: #ffffff;
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-`;
-
-const EventName = styled.p`
-    font-size: x-large;
-    font-weight: bold;
-`;
-
-const EventDescription = styled.p`
-    word-wrap: break-word;
-    height: 4.5rem;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    line-clamp: 3;
-    box-sizing: border-box;
-    text-overflow: ellipsis;
-`;
-
-const Thumbnail = styled.img`
-    width: 100%;
-    max-width: 15rem;
-    height: auto;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: 13px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    align-self: center;
-
-    @media screen and (max-width: 768px) {
-        max-width: 100%;
-    }
-`;
-
 export function YourEventCard({ event, disabled }: YourEventCardProps) {
+    const containerClass = `flex h-[280px] flex-row justify-between gap-4 overflow-hidden rounded-2xl px-8 py-8 text-white max-sm:flex-col-reverse max-sm:items-start max-sm:gap-8 md:px-16 ${
+        disabled ? 'bg-pmc-black/80' : 'bg-pmc-dark-purple'
+    }`;
+    const columnClass = 'max-w-[50%] self-center max-sm:max-w-full';
+    const nameClass = 'text-[1.25rem] font-bold';
+    const descClass =
+        'h-[4.5rem] overflow-hidden text-ellipsis [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:3]';
+    const thumbClass =
+        'aspect-square w-full max-w-[15rem] self-center rounded-[13px] object-cover shadow-[0_8px_16px_rgba(0,0,0,0.2)] max-sm:max-w-full';
+    const statusClass = disabled ? 'text-red-400' : 'text-green-400';
+    const statusText = disabled ? 'Ended' : 'Upcoming';
+    const statusDotClass = disabled ? 'bg-red-400' : 'bg-green-400';
+    const statusPillClass =
+        'inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1';
+    const dateRowClass = 'flex items-center gap-2 text-sm text-white/80';
     const contents = (
-        <Container disabled={disabled}>
-            <Column>
-                <EventTimeAndLocation>
-                    {moment(event.startTime).format('HH.mm A')} | {event.location}
-                </EventTimeAndLocation>
-                <EventName>{event.name}</EventName>
-                <EventDescription>{event.blurb}</EventDescription>
-            </Column>
-            <Column>
-                <Thumbnail src={event.thumbnail} alt="Event thumbnail" />
-            </Column>
-        </Container>
+        <div className={containerClass}>
+            <div className={columnClass}>
+                <div className="mb-2">
+                    <span className={statusPillClass}>
+                        <span
+                            className={`inline-flex h-2 w-2 rounded-full ${
+                                disabled ? statusDotClass : `animate-pulse ${statusDotClass}`
+                            }`}
+                        />
+                        <span className={`text-sm font-semibold ${statusClass}`}>{statusText}</span>
+                    </span>
+                </div>
+                <div className={dateRowClass}>
+                    <FaRegCalendarAlt />
+                    <span>{moment(event.date).format('MMMM D, YYYY')}</span>
+                </div>
+                <div className={dateRowClass}>
+                    <FaRegClock />
+                    <span>
+                        {moment(event.startTime).format('HH.mm A')} | {event.location}
+                    </span>
+                </div>
+                <p className={nameClass}>{event.name}</p>
+                <p className={descClass}>{event.blurb}</p>
+            </div>
+            <div className={columnClass}>
+                <img className={thumbClass} src={event.thumbnail} alt="Event thumbnail" />
+            </div>
+        </div>
     );
 
     return (
         <>
-            <h3>{moment(event.date).format('MMMM D, YYYY')}</h3>
             {disabled ? (
                 contents
             ) : (
