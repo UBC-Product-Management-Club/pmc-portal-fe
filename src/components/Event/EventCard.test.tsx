@@ -40,7 +40,10 @@ describe('EventCard', () => {
         expect(screen.getByText('8:30 AM - 9:00 AM | sauder building')).toBeInTheDocument();
         expect(screen.getByText(event.name)).toBeInTheDocument();
         expect(screen.getByText(event.blurb)).toBeInTheDocument();
-        expect(screen.getByRole('img')).toHaveAttribute('src', event.thumbnail);
+        expect(screen.getByRole('img')).toHaveAttribute(
+            'src',
+            expect.stringContaining(event.eventId)
+        );
         expect(screen.getByRole('link')).toHaveAttribute(
             'href',
             `/events/${event.eventId}/register`
@@ -58,7 +61,10 @@ describe('EventCard', () => {
         expect(screen.getByText('8:30 AM - 9:00 AM | sauder building')).toBeInTheDocument();
         expect(screen.getByText(event.name)).toBeInTheDocument();
         expect(screen.getByText(event.blurb)).toBeInTheDocument();
-        expect(screen.getByRole('img')).toHaveAttribute('src', event.thumbnail);
+        expect(screen.getByRole('img')).toHaveAttribute(
+            'src',
+            expect.stringContaining(event.eventId)
+        );
         expect(screen.queryByRole('link')).toHaveAttribute('href', 'https://external_page.com');
     });
 
@@ -84,7 +90,10 @@ describe('EventCard', () => {
         ).toBeInTheDocument();
         expect(screen.getByText(event.name)).toBeInTheDocument();
         expect(screen.getByText(event.blurb)).toBeInTheDocument();
-        expect(screen.getByRole('img')).toHaveAttribute('src', event.thumbnail);
+        expect(screen.getByRole('img')).toHaveAttribute(
+            'src',
+            expect.stringContaining(event.eventId)
+        );
         expect(screen.getByRole('link')).toHaveAttribute('href', `/events/${event.eventId}`);
     });
 

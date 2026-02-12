@@ -52,7 +52,11 @@ export function EventCard({ event, disabled, link }: EventCardProps) {
 
                 {!isMobile && <ReactMarkdown>{event.blurb}</ReactMarkdown>}
             </div>
-            <img className={thumbnailClass} src={event.thumbnail} alt="Event thumbnail" />
+            <img
+                className={thumbnailClass}
+                src={`https://cvxxwlszessyxnqonacw.supabase.co/storage/v1/object/public/event-media/${event.eventId}/thumbnail`}
+                alt="Event thumbnail"
+            />
         </div>
     );
     const isExternal = link.startsWith('https://');

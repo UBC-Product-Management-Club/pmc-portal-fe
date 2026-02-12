@@ -49,8 +49,6 @@ describe('Event', () => {
             startTime: '2025-07-24T21:30:00+00:00',
             endTime: '2025-07-24T22:30:00+00:00',
             location: 'UBC Sauder Building',
-            thumbnail:
-                'https://dthvbanipvldaiabgvuc.supabase.co/storage/v1/object/public/event-media/events/75f6ef8e-12d7-48f3-a0a8-96443ae5d1f7/media/umm-nocturnaltrashposts-and-then-uhh.jpeg',
             memberPrice: 1,
             nonMemberPrice: 2,
             maxAttendees: 100,
@@ -122,7 +120,10 @@ describe('Event', () => {
         expect(screen.getByText('Member price: $1.00')).toBeInTheDocument();
         expect(screen.getByText('Non-member price: $2.00')).toBeInTheDocument();
         expect(screen.getByText(mockEvent.description)).toBeInTheDocument();
-        expect(screen.getByRole('img')).toHaveAttribute('src', mockEvent.thumbnail);
+        expect(screen.getByRole('img')).toHaveAttribute(
+            'src',
+            expect.stringContaining(mockEvent.eventId)
+        );
     });
 
     it('shows event info when not authenticated', async () => {
@@ -139,7 +140,10 @@ describe('Event', () => {
         expect(screen.getByText('Non-member price: $2.00')).toBeInTheDocument();
         expect(screen.getByText(mockEvent.description)).toBeInTheDocument();
         expect(screen.getByRole('button')).toHaveTextContent('Please sign in to register');
-        expect(screen.getByRole('img')).toHaveAttribute('src', mockEvent.thumbnail);
+        expect(screen.getByRole('img')).toHaveAttribute(
+            'src',
+            expect.stringContaining(mockEvent.eventId)
+        );
     });
 
     it('handles multi-day dates ', async () => {
@@ -161,7 +165,10 @@ describe('Event', () => {
         expect(screen.getByText('Non-member price: $2.00')).toBeInTheDocument();
         expect(screen.getByText(mockEvent.description)).toBeInTheDocument();
         expect(screen.getByRole('button')).toHaveTextContent('Please sign in to register');
-        expect(screen.getByRole('img')).toHaveAttribute('src', mockEvent.thumbnail);
+        expect(screen.getByRole('img')).toHaveAttribute(
+            'src',
+            expect.stringContaining(mockEvent.eventId)
+        );
     });
 
     describe('register button text', () => {

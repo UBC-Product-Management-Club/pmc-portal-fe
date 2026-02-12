@@ -21,7 +21,6 @@ describe('useEvents', () => {
             location: 'sauder building',
             member_price: 5,
             non_member_price: 10,
-            thumbnail: 'https://someurl.com',
             is_disabled: false,
         },
         {
@@ -34,7 +33,6 @@ describe('useEvents', () => {
             location: '"AMS Nest"',
             member_price: 3,
             non_member_price: 50,
-            thumbnail: 'https://someurl.com',
             is_disabled: false,
             registered: 0,
         },
@@ -48,7 +46,6 @@ describe('useEvents', () => {
             location: 'ubc henry angus',
             member_price: 8,
             non_member_price: 20,
-            thumbnail: 'https://someurl.com',
             is_disabled: true,
         },
     ];
@@ -63,8 +60,6 @@ describe('useEvents', () => {
             location: 'sauder building',
             memberPrice: 5,
             nonMemberPrice: 10,
-            thumbnail:
-                'https://cvxxwlszessyxnqonacw.supabase.co/storage/v1/object/public/event-media/d8651b2d-7337-4f7c-81f8-62190ee71d0c/thumbnail',
             isDisabled: false,
         },
         {
@@ -77,8 +72,6 @@ describe('useEvents', () => {
             location: '"AMS Nest"',
             memberPrice: 3,
             nonMemberPrice: 50,
-            thumbnail:
-                'https://cvxxwlszessyxnqonacw.supabase.co/storage/v1/object/public/event-media/889b13e2-3c59-4757-96a8-10618132e1d5/thumbnail',
             isDisabled: false,
         },
         {
@@ -91,8 +84,6 @@ describe('useEvents', () => {
             location: 'ubc henry angus',
             memberPrice: 8,
             nonMemberPrice: 20,
-            thumbnail:
-                'https://cvxxwlszessyxnqonacw.supabase.co/storage/v1/object/public/event-media/3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45/thumbnail',
             isDisabled: true,
         },
     ];
@@ -109,7 +100,6 @@ describe('useEvents', () => {
         location: 'sauder building',
         member_price: 5,
         non_member_price: 10,
-        thumbnail: 'https://someurl.com',
         is_disabled: false,
         media: [],
         max_attendees: 100,
@@ -130,8 +120,6 @@ describe('useEvents', () => {
         location: 'sauder building',
         memberPrice: 5,
         nonMemberPrice: 10,
-        thumbnail:
-            'https://cvxxwlszessyxnqonacw.supabase.co/storage/v1/object/public/event-media/d8651b2d-7337-4f7c-81f8-62190ee71d0c/thumbnail',
         isDisabled: false,
         media: [],
         maxAttendees: 100,

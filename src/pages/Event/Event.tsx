@@ -393,7 +393,7 @@ export default function Event() {
                 {/* Event Image */}
                 <div>
                     <img
-                        src={event.thumbnail}
+                        src={`https://cvxxwlszessyxnqonacw.supabase.co/storage/v1/object/public/event-media/${event.eventId}/thumbnail`}
                         alt={event.name}
                         className="rounded-2xl object-cover shadow-2xl"
                     />
