@@ -1,52 +1,52 @@
 name: Build and Deploy to Cloud Run (STAGING)
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 env:
-  PROJECT_ID: ${{ secrets.PROJECT_ID }}
-  APP_NAME: ${{ secrets.APP_NAME }}
-  REGION: us-west1
+    PROJECT_ID: ${{ secrets.PROJECT_ID }}
+    APP_NAME: ${{ secrets.APP_NAME }}
+    REGION: us-west1
 
 jobs:
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    environment: staging
+    deploy:
+        name: Deploy
+        runs-on: ubuntu-latest
+        environment: staging
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
 
-      - name: Create .secret folder
-        run: mkdir .secret
+            - name: Create .secret folder
+              run: mkdir .secret
 
-      - name: Create env file
-        run: |
-          touch .secret/.env
-          echo VITE_API_URL=${{ secrets.API_URL }} >> .secret/.env
-          echo VITE_ENVIRONMENT=${{ secrets.ENVIRONMENT }} >> .secret/.env
-          echo VITE_STRIPE_KEY=${{ secrets.STRIPE_KEY }} >> .secret/.env
-          echo VITE_AUTH0_API_URL=${{ secrets.AUTH0_API_URL }} >> .secret/.env
-          echo VITE_AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} >> .secret/.env
-          echo VITE_GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }} >> .secret/.env
-          echo VITE_SUPABASE_STORAGE_URL=${{ secrets.GOOGLE_API_KEY }} >> .secret/.env
+            - name: Create env file
+              run: |
+                  touch .secret/.env
+                  echo VITE_API_URL=${{ secrets.API_URL }} >> .secret/.env
+                  echo VITE_ENVIRONMENT=${{ secrets.ENVIRONMENT }} >> .secret/.env
+                  echo VITE_STRIPE_KEY=${{ secrets.STRIPE_KEY }} >> .secret/.env
+                  echo VITE_AUTH0_API_URL=${{ secrets.AUTH0_API_URL }} >> .secret/.env
+                  echo VITE_AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} >> .secret/.env
+                  echo VITE_GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }} >> .secret/.env
+                  echo VITE_SUPABASE_STORAGE_URL=${{ secrets.SUPABASE_STORAGE_URL }} >> .secret/.env
 
-      - name: Log into Google Cloud
-        uses: "google-github-actions/auth@v1"
-        with:
-          credentials_json: "${{ secrets.GCLOUD_AUTH }}"
+            - name: Log into Google Cloud
+              uses: 'google-github-actions/auth@v1'
+              with:
+                  credentials_json: '${{ secrets.GCLOUD_AUTH }}'
 
-      - name: "Set up Cloud SDK"
-        uses: "google-github-actions/setup-gcloud@v1"
+            - name: 'Set up Cloud SDK'
+              uses: 'google-github-actions/setup-gcloud@v1'
 
-      - name: Run Cloud Build
-        run: |
-          gcloud builds submit --tag gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_NAME }}
+            - name: Run Cloud Build
+              run: |
+                  gcloud builds submit --tag gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_NAME }}
 
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud config set project ${{ env.PROJECT_ID }}
-          gcloud run deploy ${{ env.APP_NAME }} --image gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_NAME }} --region ${{ env.REGION }} --allow-unauthenticated --set-env-vars $(cat .secret/.env | tr '\n' ',' | sed 's/,$//')
+            - name: Deploy to Cloud Run
+              run: |
+                  gcloud config set project ${{ env.PROJECT_ID }}
+                  gcloud run deploy ${{ env.APP_NAME }} --image gcr.io/${{ env.PROJECT_ID }}/${{ env.APP_NAME }} --region ${{ env.REGION }} --allow-unauthenticated --set-env-vars $(cat .secret/.env | tr '\n' ',' | sed 's/,$//')
