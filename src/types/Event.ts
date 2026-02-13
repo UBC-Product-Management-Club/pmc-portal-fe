@@ -67,7 +67,7 @@ const EventCardSchema = RawEventSchema.pick({
     startTime: event.start_time,
     endTime: event.end_time,
     location: event.location,
-    thumbnail: `https://cvxxwlszessyxnqonacw.supabase.co/storage/v1/object/public/event-media/${event.event_id}/thumbnail`,
+    thumbnail: `${import.meta.env.VITE_SUPABASE_STORAGE_URL}/event-media/${event.event_id}/thumbnail`,
     memberPrice: event.member_price,
     nonMemberPrice: event.non_member_price,
     isDisabled: event.is_disabled,
