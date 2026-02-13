@@ -30,6 +30,7 @@ jobs:
                   echo VITE_AUTH0_API_URL=${{ secrets.AUTH0_API_URL }} >> .secret/.env
                   echo VITE_AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} >> .secret/.env
                   echo VITE_GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }} >> .secret/.env
+                  echo VITE_SUPABASE_STORAGE_URL=${{ secrets.SUPABASE_STORAGE_URL }} >> .secret/.env
 
             - name: Log into Google Cloud
               uses: 'google-github-actions/auth@v1'
