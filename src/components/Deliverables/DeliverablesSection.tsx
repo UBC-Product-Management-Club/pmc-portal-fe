@@ -24,7 +24,13 @@ type DeliverableResponse = {
     };
 };
 
-export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
+export const DeliverablesSection = ({
+    eventId,
+    phaseId = 'default',
+}: {
+    eventId: string;
+    phaseId?: string;
+}) => {
     const {
         register,
         handleSubmit,
@@ -65,10 +71,13 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
         try {
             if (!eventId) return;
 
-            const res = await submitDeliverable(eventId, formData);
+            const res = await submitDeliverable(eventId, phaseId, formData);
             console.log('Deliverables submitted successfully:', res);
 
-            const refreshed = (await getDeliverable(eventId)) as DeliverableResponse | null;
+            const refreshed = (await getDeliverable(
+                eventId,
+                phaseId
+            )) as DeliverableResponse | null;
             if (refreshed) {
                 const firstLink = refreshed.submission.file_links?.[0] ?? null;
                 setExistingFileUrl(firstLink);
@@ -92,7 +101,10 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
             if (!eventId) return;
 
             try {
-                const existing = (await getDeliverable(eventId)) as DeliverableResponse | null;
+                const existing = (await getDeliverable(
+                    eventId,
+                    phaseId
+                )) as DeliverableResponse | null;
                 if (!existing) return;
 
                 const { submission, submitted_at, User } = existing;
@@ -117,7 +129,7 @@ export const DeliverablesSection = ({ eventId }: { eventId: string }) => {
         };
 
         loadExistingDeliverable();
-    }, [eventId, getDeliverable, reset]);
+    }, [eventId, phaseId, getDeliverable, reset]);
 
     const formattedSubmittedAt =
         submissionMeta && new Date(submissionMeta.submitted_at).toLocaleString();
