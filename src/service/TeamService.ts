@@ -30,12 +30,19 @@ class TeamService {
         return this.client.delete<{ message: string }>(`/${eventId}/team`);
     }
 
-    submitDeliverable(eventId: string, deliverableData: FormData): Promise<{ message: string }> {
-        return this.client.post<{ message: string }>(`/${eventId}/deliverable`, deliverableData);
+    submitDeliverable(
+        eventId: string,
+        phaseId: string,
+        deliverableData: FormData
+    ): Promise<{ message: string }> {
+        return this.client.post<{ message: string }>(
+            `/${eventId}/deliverable/${phaseId}`,
+            deliverableData
+        );
     }
 
-    getDeliverable(eventId: string): Promise<DeliverableVersion | null> {
-        return this.client.get<DeliverableVersion | null>(`/${eventId}/deliverable`);
+    getDeliverable(eventId: string, phaseId: string): Promise<DeliverableVersion | null> {
+        return this.client.get<DeliverableVersion | null>(`/${eventId}/deliverable/${phaseId}`);
     }
 }
 

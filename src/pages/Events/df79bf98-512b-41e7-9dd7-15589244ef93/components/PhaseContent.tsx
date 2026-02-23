@@ -6,6 +6,7 @@ import {
     canSubmitDeliverable,
     type DeliverableFlag,
 } from '../../../../hooks/useDeliverableFlags';
+import { useTeam } from '../../../../hooks/useTeam';
 import type { Phase, Submission, SubmittedFile } from '../types';
 import { getResourceIcon, formatDate, formatDateRange, PHASE_FLAG_MAP } from '../types';
 
@@ -19,6 +20,7 @@ interface PhaseContentProps {
 export default function PhaseContent({ phase }: PhaseContentProps) {
     const { event_id } = useParams();
     const { getFlags } = useDeliverableFlags();
+    const { submitDeliverable, getDeliverable } = useTeam();
 
     // Tasks state - load from localStorage
     const [tasksState, setTasksState] = useState<Record<string, boolean>>(() => {
@@ -51,6 +53,7 @@ export default function PhaseContent({ phase }: PhaseContentProps) {
 
     // Last submission
     const [submission, setSubmission] = useState<Submission | null>(null);
+    const [submitting, setSubmitting] = useState(false);
 
     // Deliverable flags
     const [phaseFlag, setPhaseFlag] = useState<DeliverableFlag | null>(null);
@@ -66,15 +69,39 @@ export default function PhaseContent({ phase }: PhaseContentProps) {
         }
     }, [tasksState, event_id, phase.id]);
 
-    // Fetch deliverable flags
+    // Fetch deliverable flags and existing submission
     useEffect(() => {
-        const fetchFlags = async (eventId: string) => {
+        const fetchData = async (eventId: string) => {
+            // Clear previous submission when switching phases
+            setSubmission(null);
+            setFlagsLoading(true);
+
             try {
                 const flags = await getFlags(eventId);
-                // Find the flag for this phase using the mapping
                 const flagId = PHASE_FLAG_MAP[phase.id];
                 const flag = flags.find((f) => f.id === flagId);
                 setPhaseFlag(flag || null);
+
+                // Fetch existing submission for this phase
+                const existing = await getDeliverable(eventId, phase.id);
+                if (existing) {
+                    const submissionData = existing.submission as unknown as
+                        | Record<string, unknown>
+                        | undefined;
+                    const fileLinks = (submissionData?.file_links as string[]) || [];
+                    const files: SubmittedFile[] = fileLinks.map((link: string, index: number) => {
+                        const filename = link.substring(link.lastIndexOf('/') + 1);
+                        return {
+                            deliverableId: `file-${index}`,
+                            fileName: filename,
+                        };
+                    });
+
+                    setSubmission({
+                        submittedAt: new Date(existing.submitted_at || new Date()),
+                        files,
+                    });
+                }
             } catch {
                 setPhaseFlag(null);
             } finally {
@@ -82,9 +109,9 @@ export default function PhaseContent({ phase }: PhaseContentProps) {
             }
         };
         if (event_id) {
-            fetchFlags(event_id);
+            fetchData(event_id);
         }
-    }, [event_id, getFlags, phase.id]);
+    }, [event_id, getFlags, getDeliverable, phase.id]);
 
     // Calculate task progress
     const completedTasks = Object.values(tasksState).filter(Boolean).length;
@@ -119,21 +146,49 @@ export default function PhaseContent({ phase }: PhaseContentProps) {
     const canSubmit = isSubmissionOpen && requiredSelected === requiredDeliverables.length;
 
     // Handle submit
-    const handleSubmit = () => {
-        const files: SubmittedFile[] = Object.entries(selectedFiles)
-            .filter(([, file]) => file !== null)
-            .map(([deliverableId, file]) => ({
-                deliverableId,
-                fileName: file!.name,
-            }));
+    const handleSubmit = async () => {
+        if (!event_id || !canSubmit) return;
 
-        setSubmission({
-            submittedAt: new Date(),
-            files,
-        });
+        setSubmitting(true);
+        try {
+            const formData = new FormData();
 
-        // Clear selected files after submission
-        setSelectedFiles(Object.fromEntries(Object.keys(selectedFiles).map((k) => [k, null])));
+            Object.entries(selectedFiles).forEach(([deliverableId, file]) => {
+                if (file) {
+                    formData.append(deliverableId, file);
+                }
+            });
+
+            await submitDeliverable(event_id, phase.id, formData);
+
+            // Re-fetch to get actual file URLs
+            const saved = await getDeliverable(event_id, phase.id);
+            if (saved) {
+                const submissionData = saved.submission as unknown as
+                    | Record<string, unknown>
+                    | undefined;
+                const fileLinks = (submissionData?.file_links as string[]) || [];
+                const files: SubmittedFile[] = fileLinks.map((link: string, index: number) => {
+                    const filename = link.substring(link.lastIndexOf('/') + 1);
+                    return {
+                        deliverableId: `file-${index}`,
+                        fileName: filename,
+                    };
+                });
+
+                setSubmission({
+                    submittedAt: new Date(saved.submitted_at || new Date()),
+                    files,
+                });
+            }
+
+            // Clear selected files after submission
+            setSelectedFiles(Object.fromEntries(Object.keys(selectedFiles).map((k) => [k, null])));
+        } catch (error) {
+            console.error('Error submitting deliverables:', error);
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -470,17 +525,17 @@ export default function PhaseContent({ phase }: PhaseContentProps) {
                                     )}
                                 </span>
                                 <button
-                                    disabled={!canSubmit}
+                                    disabled={!canSubmit || submitting}
                                     onClick={handleSubmit}
                                     className={`px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-200
                                         ${
-                                            !canSubmit
+                                            !canSubmit || submitting
                                                 ? 'bg-gray-500/30 text-white/50 cursor-not-allowed'
                                                 : 'text-white cursor-pointer hover:-translate-y-0.5'
                                         }
                                     `}
                                     style={
-                                        canSubmit
+                                        canSubmit && !submitting
                                             ? {
                                                   background: `linear-gradient(135deg, ${phase.color}, ${phase.color}cc)`,
                                                   boxShadow: `0 4px 15px ${phase.color}44`,
@@ -488,7 +543,7 @@ export default function PhaseContent({ phase }: PhaseContentProps) {
                                             : {}
                                     }
                                 >
-                                    Submit All Deliverables
+                                    {submitting ? 'Submitting...' : 'Submit All Deliverables'}
                                 </button>
                             </div>
                         </>

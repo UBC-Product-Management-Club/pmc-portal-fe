@@ -37,15 +37,15 @@ function useTeam() {
     );
 
     const submitDeliverable = useCallback(
-        async (eventId: string, deliverableData: FormData) => {
-            return await teamService.submitDeliverable(eventId, deliverableData);
+        async (eventId: string, phaseId: string, deliverableData: FormData) => {
+            return await teamService.submitDeliverable(eventId, phaseId, deliverableData);
         },
         [teamService]
     );
 
     const getDeliverable = useCallback(
-        async (eventId: string) => {
-            return await teamService.getDeliverable(eventId);
+        async (eventId: string, phaseId: string) => {
+            return await teamService.getDeliverable(eventId, phaseId);
         },
         [teamService]
     );
