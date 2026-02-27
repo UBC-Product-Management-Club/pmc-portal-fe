@@ -37,7 +37,9 @@ const WORKSHOPS = [
 ];
 
 // Notion embed URL (replace with actual URL)
-const NOTION_EMBED_URL = 'https://pmcubc.notion.site/Product-Sprint-2026-1234567890abcdef';
+const NOTION_PAGE_URL =
+    'https://ubcpm.notion.site/Product-Sprint-Attendee-Package-30a9cae258be8081a3d3e54998173b7f?source=copy_link';
+const NOTION_EMBED_URL = 'https://ubcpm.notion.site/ebd//30a9cae258be8081a3d3e54998173b7f';
 
 export default function OverviewPhase() {
     const { event_id } = useParams();
@@ -336,7 +338,7 @@ export default function OverviewPhase() {
                         📋 Event Information
                     </h2>
                     <a
-                        href={NOTION_EMBED_URL}
+                        href={NOTION_PAGE_URL}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-xs text-[#8d9beb] hover:underline"
@@ -350,13 +352,12 @@ export default function OverviewPhase() {
                             src={NOTION_EMBED_URL}
                             className="w-full h-[500px] border-0"
                             title="Product Sprint Information"
-                            loading="lazy"
                         />
                     </div>
                     <p className="text-xs text-gray-400 mt-3 text-center">
                         Having trouble viewing?{' '}
                         <a
-                            href={NOTION_EMBED_URL}
+                            href={NOTION_PAGE_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-[#8d9beb] hover:underline"
