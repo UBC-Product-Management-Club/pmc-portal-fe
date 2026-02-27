@@ -276,17 +276,6 @@ export default function PhaseContent({ phase }: PhaseContentProps) {
                             </div>
                         </div>
                     </div>
-                    <div className="w-[120px] h-[120px] relative animate-bounce max-sm:hidden">
-                        <div
-                            className="w-full h-full rounded-full flex items-center justify-center text-5xl"
-                            style={{
-                                background: `linear-gradient(135deg, ${phase.color}44, ${phase.color}11)`,
-                                border: `3px solid ${phase.color}`,
-                            }}
-                        >
-                            ⚙️
-                        </div>
-                    </div>
                 </div>
             </div>
 

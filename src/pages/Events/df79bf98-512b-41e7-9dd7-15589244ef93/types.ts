@@ -12,6 +12,7 @@ export interface Deliverable {
     id: string;
     title: string;
     required: boolean;
+    due?: string;
 }
 
 export interface Resource {
@@ -47,10 +48,10 @@ export interface Submission {
 // Map phase IDs to deliverable flag IDs from the backend
 // Update these IDs to match your database flag IDs
 export const PHASE_FLAG_MAP: Record<PhaseId, string> = {
-    discovery: '64847f5c-1d1c-45b1-a185-4688abeaa42f', // Replace with actual flag ID
-    planning: '3cbcf89e-e3a4-47a8-84d8-0fea6c0b5b5d', // Replace with actual flag ID
-    prototyping: '5a544940-c2ca-4c56-9c2e-8afce5c3adb4', // Replace with actual flag ID
-    pitching: 'fdb89c71-9e8a-45ba-b8db-1a9d84be1d5b', // Replace with actual flag ID
+    discovery: '64847f5c-1d1c-45b1-a185-4688abeaa42f',
+    planning: '3cbcf89e-e3a4-47a8-84d8-0fea6c0b5b5d',
+    prototyping: '5a544940-c2ca-4c56-9c2e-8afce5c3adb4',
+    pitching: 'fdb89c71-9e8a-45ba-b8db-1a9d84be1d5b',
 };
 
 // Phase configuration with dates
@@ -63,21 +64,37 @@ export const PHASES: Phase[] = [
         color: '#00D4FF',
         glowColor: 'rgba(0, 212, 255, 0.3)',
         startDate: new Date(2026, 2, 1), // Mar 1
-        endDate: new Date(2026, 2, 3, 23, 59, 59), // Mar 3
+        endDate: new Date(2026, 2, 4, 23, 59, 59), // Mar 4
         tasks: [
-            { id: 'd1', title: 'Define your target user persona', completed: false },
-            { id: 'd2', title: 'Conduct user research interviews (min 3)', completed: false },
-            { id: 'd3', title: 'Identify key pain points and opportunities', completed: false },
-            { id: 'd4', title: 'Analyze competitive landscape', completed: false },
+            { id: 'd1', title: 'Define target user', completed: false },
+            { id: 'd2', title: 'Define the problem', completed: false },
+            { id: 'd3', title: 'Conduct primary research', completed: false },
+            { id: 'd4', title: 'Explore different user research methods', completed: false },
+            { id: 'd5', title: 'Identify competitors', completed: false },
+            { id: 'd6', title: 'Draft User Insights One-Pager deliverable', completed: false },
+            { id: 'd7', title: 'Schedule a meeting with your mentor this week', completed: false },
         ],
         deliverables: [
-            { id: 'dd1', title: 'User Research Summary', required: true },
-            { id: 'dd2', title: 'Competitive Analysis Document', required: true },
+            {
+                id: 'dd1',
+                title: 'Draft User Insights One-Pager (PDF)',
+                required: true,
+                due: 'Mar 4, 11:59PM PST',
+            },
         ],
         resources: [
-            { id: 'dr1', title: 'Discovery Workshop Slides', link: '#', type: 'slides' },
-            { id: 'dr2', title: 'User Interview Template', link: '#', type: 'template' },
-            { id: 'dr3', title: 'Competitive Analysis Framework', link: '#', type: 'template' },
+            {
+                id: 'dr1',
+                title: 'User Insights One-Pager Template',
+                link: 'https://docs.google.com/document/d/10kyrSEyViMPFkP6jgOU9lj02rzGRsIxUg1v9AvZfjq0/edit?tab=t.0',
+                type: 'template',
+            },
+            {
+                id: 'dr2',
+                title: 'Judging Rubric',
+                link: 'https://docs.google.com/document/d/1gmN9fDvHBbjMZ83xcKHdM8JLKdxp96YHmhqR0gaY69s/edit?tab=t.0',
+                type: 'material',
+            },
         ],
     },
     {
@@ -86,22 +103,37 @@ export const PHASES: Phase[] = [
         description: 'Define your product vision, prioritize features, and create a roadmap.',
         color: '#FF8C00',
         glowColor: 'rgba(255, 140, 0, 0.3)',
-        startDate: new Date(2026, 2, 4), // Mar 4
+        startDate: new Date(2026, 2, 5), // Mar 5
         endDate: new Date(2026, 2, 7, 23, 59, 59), // Mar 7
         tasks: [
-            { id: 'p1', title: 'Write product vision statement', completed: false },
-            { id: 'p2', title: 'Create user stories for MVP features', completed: false },
-            { id: 'p3', title: 'Prioritize features using MoSCoW method', completed: false },
-            { id: 'p4', title: 'Define success metrics and KPIs', completed: false },
+            { id: 'p1', title: 'Define clear goals and metrics', completed: false },
+            { id: 'p2', title: 'Define MVP scope', completed: false },
+            { id: 'p3', title: 'Experiment and select a prioritization method', completed: false },
+            { id: 'p4', title: 'Identify risks and constraints', completed: false },
+            { id: 'p5', title: 'Draft PRD deliverable', completed: false },
+            { id: 'p6', title: 'Schedule a meeting with your mentor this week', completed: false },
         ],
         deliverables: [
-            { id: 'pd1', title: 'Product Requirements Document (PRD)', required: true },
-            { id: 'pd2', title: 'Feature Prioritization Matrix', required: true },
+            {
+                id: 'pd1',
+                title: 'Draft PRD Document (PDF)',
+                required: true,
+                due: 'Mar 7, 11:59PM PST',
+            },
         ],
         resources: [
-            { id: 'pr1', title: 'Product Planning Workshop Slides', link: '#', type: 'slides' },
-            { id: 'pr2', title: 'PRD Template', link: '#', type: 'template' },
-            { id: 'pr3', title: 'User Story Writing Guide', link: '#', type: 'material' },
+            {
+                id: 'pr1',
+                title: 'Product Requirements Document Template',
+                link: 'https://docs.google.com/document/d/1Tm-k1COmBhWO0hZyo6kYiLPmfu61z21no6Ca0aYPOss/edit?tab=t.0',
+                type: 'template',
+            },
+            {
+                id: 'pr2',
+                title: 'Judging Rubric',
+                link: 'https://docs.google.com/document/d/1gmN9fDvHBbjMZ83xcKHdM8JLKdxp96YHmhqR0gaY69s/edit?tab=t.0',
+                type: 'material',
+            },
         ],
     },
     {
@@ -111,21 +143,43 @@ export const PHASES: Phase[] = [
         color: '#A855F7',
         glowColor: 'rgba(168, 85, 247, 0.3)',
         startDate: new Date(2026, 2, 8), // Mar 8
-        endDate: new Date(2026, 2, 10, 23, 59, 59), // Mar 10
+        endDate: new Date(2026, 2, 11, 23, 59, 59), // Mar 11
         tasks: [
-            { id: 'pt1', title: 'Create low-fidelity wireframes', completed: false },
-            { id: 'pt2', title: 'Design high-fidelity mockups', completed: false },
-            { id: 'pt3', title: 'Build interactive prototype', completed: false },
-            { id: 'pt4', title: 'Conduct usability testing', completed: false },
+            {
+                id: 'pt1',
+                title: 'Experiment with Lovable or any other prototyping platform',
+                completed: false,
+            },
+            { id: 'pt2', title: 'Create functional MVP', completed: false },
+            { id: 'pt3', title: 'Perform user testing', completed: false },
+            { id: 'pt4', title: 'Schedule a meeting with your mentor this week', completed: false },
+            {
+                id: 'pt5',
+                title: 'Schedule a meeting with a UX/technical mentor (optional)',
+                completed: false,
+            },
         ],
         deliverables: [
-            { id: 'ptd1', title: 'Figma Prototype Link', required: true },
-            { id: 'ptd2', title: 'Usability Testing Report', required: false },
+            {
+                id: 'ptd1',
+                title: 'Draft Prototype Link',
+                required: true,
+                due: 'Mar 11, 11:59PM PST',
+            },
         ],
         resources: [
-            { id: 'ptr1', title: 'Prototyping Workshop Slides', link: '#', type: 'slides' },
-            { id: 'ptr2', title: 'Figma Design System Template', link: '#', type: 'template' },
-            { id: 'ptr3', title: 'Usability Testing Guide', link: '#', type: 'material' },
+            {
+                id: 'ptr1',
+                title: 'Lovable',
+                link: 'https://lovable.dev/?utm_device=c&utm_source=google&utm_medium=paid_search_branded&utm_campaign=google-global-b2c-prospecting-evergreen-subscription-XX+-+Search+-+Lovable+-+CORE&campaignid=23078175989&gad_source=1&gad_campaignid=23078175989&gbraid=0AAAAA-iIxGcGU3VgNdVqiXyVVEakoXiqj&gclid=CjwKCAiA2PrMBhA4EiwAwpHyC5LIoXJ-x2CXQ95hcyYl7B3qLys1c62Leg6zylfmK-54uB_sEweA5xoCyMoQAvD_BwE',
+                type: 'material',
+            },
+            {
+                id: 'ptr2',
+                title: 'Judging Rubric',
+                link: 'https://docs.google.com/document/d/1gmN9fDvHBbjMZ83xcKHdM8JLKdxp96YHmhqR0gaY69s/edit?tab=t.0',
+                type: 'material',
+            },
         ],
     },
     {
@@ -134,22 +188,59 @@ export const PHASES: Phase[] = [
         description: 'Craft your story and present your product to the judges.',
         color: '#EC4899',
         glowColor: 'rgba(236, 72, 153, 0.3)',
-        startDate: new Date(2026, 2, 11), // Mar 11
-        endDate: new Date(2026, 2, 14, 23, 59, 59), // Mar 14
+        startDate: new Date(2026, 2, 12), // Mar 12
+        endDate: new Date(2026, 2, 13, 23, 59, 59), // Mar 13
         tasks: [
-            { id: 'pi1', title: 'Create pitch deck (max 10 slides)', completed: false },
-            { id: 'pi2', title: 'Prepare product demo', completed: false },
-            { id: 'pi3', title: 'Practice pitch presentation', completed: false },
-            { id: 'pi4', title: 'Prepare for Q&A session', completed: false },
+            { id: 'pi1', title: 'Storyboard your presentation', completed: false },
+            { id: 'pi2', title: 'Create slide deck', completed: false },
+            { id: 'pi3', title: 'Review judging rubric', completed: false },
+            { id: 'pi4', title: 'Finalize all deliverables', completed: false },
+            { id: 'pi5', title: 'Practice, Practice, Practice!', completed: false },
+            {
+                id: 'pi6',
+                title: 'Brainstorm potential Q&A questions from judges',
+                completed: false,
+            },
+            { id: 'pi7', title: 'Schedule a meeting with your mentor this week', completed: false },
+            {
+                id: 'pi8',
+                title: 'Schedule a meeting with a UX/technical mentor (optional)',
+                completed: false,
+            },
         ],
         deliverables: [
-            { id: 'pid1', title: 'Pitch Deck (PDF)', required: true },
-            { id: 'pid2', title: 'Demo Video (optional)', required: false },
+            {
+                id: 'pid1',
+                title: 'Final User Insights One-Pager (PDF)',
+                required: true,
+                due: 'Mar 13, 11:59PM PST',
+            },
+            {
+                id: 'pid2',
+                title: 'Final Draft PRD Document (PDF)',
+                required: true,
+                due: 'Mar 13, 11:59PM PST',
+            },
+            {
+                id: 'pid3',
+                title: 'Final Prototype Link',
+                required: true,
+                due: 'Mar 13, 11:59PM PST',
+            },
+            {
+                id: 'pid4',
+                title: 'Final Presentation Slides (PDF or PPTX)',
+                required: true,
+                due: 'Mar 13, 11:59PM PST',
+            },
         ],
         resources: [
-            { id: 'pir1', title: 'Pitching Workshop Slides', link: '#', type: 'slides' },
-            { id: 'pir2', title: 'Pitch Deck Template', link: '#', type: 'template' },
-            { id: 'pir3', title: 'Storytelling Framework', link: '#', type: 'material' },
+            {
+                id: 'pir1',
+                title: 'Judging Rubric',
+                link: 'https://docs.google.com/document/d/1gmN9fDvHBbjMZ83xcKHdM8JLKdxp96YHmhqR0gaY69s/edit?tab=t.0',
+                type: 'material',
+            },
         ],
     },
 ];

@@ -9,35 +9,53 @@ const WORKSHOPS = [
     {
         id: 'w1',
         title: 'Discovery Workshop',
-        date: new Date(2026, 2, 1, 14, 0), // Mar 1, 2:00 PM
-        duration: '2 hours',
-        description: 'Learn user research techniques and competitive analysis frameworks.',
+        date: new Date(2026, 2, 1, 13, 0), // Mar 1, 1:00 PM
+        duration: '1 hour',
+        location: 'HA 098',
+        host: 'Divya Rakhiani, Senior PM @ Roofr',
+        topic: 'Discovery and Introduction to the User Insights One-Pager',
+        description:
+            'This workshop covers understanding users/pain points, conducting user interviews, identifying key user personas and journeys, and tackling ambiguous business problems.',
     },
     {
         id: 'w2',
         title: 'Product Planning Workshop',
-        date: new Date(2026, 2, 4, 14, 0), // Mar 4, 2:00 PM
-        duration: '2 hours',
-        description: 'Master PRD writing and feature prioritization methods.',
+        date: new Date(2026, 2, 5, 18, 0), // Mar 5, 6:00 PM
+        duration: '1 hour 15 min',
+        location: 'SHRM B1001',
+        host: 'Simran Sran, Sr. Technical Product Manager @ Flair Airlines Ltd.',
+        topic: 'Product Planning and Introduction to PRDs',
+        description:
+            'This workshop covers crafting requirements/user stories, creating robust acceptance criteria, prioritizing features for MVP, developing product roadmaps, and introducing the PRD deliverable document.',
     },
     {
         id: 'w3',
         title: 'Prototyping Workshop',
         date: new Date(2026, 2, 8, 14, 0), // Mar 8, 2:00 PM
-        duration: '2 hours',
-        description: 'Hands-on Figma session and usability testing techniques.',
+        duration: '1 hour 15 min',
+        location: 'IKB 182',
+        host: 'Kasey Fu, PM @ Disco',
+        topic: 'AI Prototyping with Lovable',
+        description:
+            'This hands-on workshop teaches students how to effectively use no/low code AI prototyping tools (Lovable). Participants are also taught how to turn requirements and features into mockups.',
     },
     {
         id: 'w4',
         title: 'Pitching Workshop',
-        date: new Date(2026, 2, 11, 14, 0), // Mar 11, 2:00 PM
-        duration: '2 hours',
-        description: 'Craft your story and practice your pitch presentation.',
+        date: new Date(2026, 2, 12, 18, 0), // Mar 12, 6:00 PM
+        duration: '1 hour 15 min',
+        location: 'SHRM B1001',
+        host: 'Fahim Gbon, APM @ Salesforce AI',
+        topic: 'Pitching',
+        description:
+            'This workshop focuses on tying in all of the prior deliverables into an effective competition pitch. Participants are taught how to sell ideas to leadership/C-suite executives, effective communication, and tips/tricks on developing a great pitch and demo.',
     },
 ];
 
 // Notion embed URL (replace with actual URL)
-const NOTION_EMBED_URL = 'https://pmcubc.notion.site/Product-Sprint-2026-1234567890abcdef';
+const NOTION_PAGE_URL =
+    'https://ubcpm.notion.site/Product-Sprint-Attendee-Package-30a9cae258be8081a3d3e54998173b7f?source=copy_link';
+const NOTION_EMBED_URL = 'https://ubcpm.notion.site/ebd//30a9cae258be8081a3d3e54998173b7f';
 
 export default function OverviewPhase() {
     const { event_id } = useParams();
@@ -316,7 +334,10 @@ export default function OverviewPhase() {
                                         </div>
                                         <p className="text-xs text-gray-400 mb-1">
                                             {formatWorkshopDate(workshop.date)} •{' '}
-                                            {workshop.duration}
+                                            {workshop.duration} • {workshop.location}
+                                        </p>
+                                        <p className="text-xs text-[#8d9beb] mb-1">
+                                            {workshop.host}
                                         </p>
                                         <p className="text-sm text-gray-300">
                                             {workshop.description}
@@ -336,7 +357,7 @@ export default function OverviewPhase() {
                         📋 Event Information
                     </h2>
                     <a
-                        href={NOTION_EMBED_URL}
+                        href={NOTION_PAGE_URL}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-xs text-[#8d9beb] hover:underline"
@@ -350,13 +371,12 @@ export default function OverviewPhase() {
                             src={NOTION_EMBED_URL}
                             className="w-full h-[500px] border-0"
                             title="Product Sprint Information"
-                            loading="lazy"
                         />
                     </div>
                     <p className="text-xs text-gray-400 mt-3 text-center">
                         Having trouble viewing?{' '}
                         <a
-                            href={NOTION_EMBED_URL}
+                            href={NOTION_PAGE_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-[#8d9beb] hover:underline"
