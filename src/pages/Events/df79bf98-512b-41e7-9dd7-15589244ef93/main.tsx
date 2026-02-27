@@ -136,8 +136,8 @@ export default function ProductSprintDashboard() {
 
             {/* Content Wrapper */}
             <div className="relative z-10 flex min-h-screen">
-                {/* Sidebar */}
-                <aside className="w-[320px] min-w-[320px] bg-[rgba(38,45,71,0.6)] backdrop-blur-xl border-r border-[rgba(141,155,235,0.15)] pt-24 px-6 pb-8 flex-col gap-4 hidden md:flex">
+                {/* Sidebar — fixed, does not scroll with page */}
+                <aside className="w-[320px] min-w-[320px] fixed top-0 left-0 bottom-0 bg-[rgba(38,45,71,0.6)] backdrop-blur-xl border-r border-[rgba(141,155,235,0.15)] pt-24 px-6 pb-8 flex-col gap-4 overflow-y-auto hidden md:flex z-40">
                     {/* Overview Button */}
                     <button
                         onClick={() => setSelectedViewId('overview')}
@@ -225,8 +225,8 @@ export default function ProductSprintDashboard() {
                     </div>
                 </aside>
 
-                {/* Main Content */}
-                <main className="flex-1 pt-24 px-8 pb-8 overflow-y-auto max-md:px-4 max-md:pt-20">
+                {/* Main Content — offset by sidebar width on md+ */}
+                <main className="flex-1 md:ml-[320px] pt-24 px-8 pb-8 overflow-y-auto max-md:px-4 max-md:pt-20">
                     {/* Mobile View Picker */}
                     <div className="hidden max-md:block mb-6">
                         <select
