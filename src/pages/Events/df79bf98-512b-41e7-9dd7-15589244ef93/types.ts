@@ -217,7 +217,7 @@ export const PHASES: Phase[] = [
             },
             {
                 id: 'pid2',
-                title: 'Final Draft PRD Document (PDF)',
+                title: 'Final PRD Document (PDF)',
                 required: true,
                 due: 'Mar 13, 11:59PM PST',
             },
