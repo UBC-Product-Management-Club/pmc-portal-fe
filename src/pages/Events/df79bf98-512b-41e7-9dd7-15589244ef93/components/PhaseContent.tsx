@@ -460,6 +460,7 @@ export default function PhaseContent({ phase }: PhaseContentProps) {
                                                 }`}
                                             >
                                                 <input
+                                                    key={file ? file.name : deliverable.id}
                                                     type="file"
                                                     className="hidden"
                                                     disabled={!isSubmissionOpen}
