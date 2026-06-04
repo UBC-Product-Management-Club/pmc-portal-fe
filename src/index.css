@@ -44,57 +44,6 @@ html {
     background-color: var(--pmc-dark-blue);
 }
 
-.width-fit {
-    width: 90vw;
-    height: 95vh;
-    max-width: 100%; /* Ensures the element doesn't overflow the viewport */
-    margin: 0 auto; /* Centers the element horizontally */
-}
-
-.container {
-    margin-bottom: 32vh;
-}
-
-.footer {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}
-
-@media only screen and (min-width: 992px) {
-    .width-fit {
-        width: 65vw;
-    }
-}
-
-.container {
-    padding: 3rem 0 3rem 0;
-}
-
-.button-dark-purple {
-    font-family: inherit;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #ffffff;
-    background-color: var(--pmc-dark-purple);
-    border: none;
-    border-radius: 4px;
-    padding: 8px 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.button-dark-purple:hover {
-    background-color: var(--pmc-light-blue);
-    /* Change background color on hover */
-}
-
-@media screen and (max-width: 600px) {
-    .width-fit {
-        width: 90vw;
-        max-width: 100%; /* Ensures the element doesn't overflow the viewport */
-        margin: 0 auto; /* Centers the element horizontally */
-    }
-}
 
 @keyframes drawCircle {
     0% {

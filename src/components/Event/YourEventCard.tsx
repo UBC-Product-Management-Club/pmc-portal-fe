@@ -61,7 +61,7 @@ export function YourEventCard({ event, disabled }: YourEventCardProps) {
             {disabled ? (
                 contents
             ) : (
-                <Link to={`/events/${event.eventId}`} style={{ textDecoration: 'none' }}>
+                <Link to={`/events/${event.eventId}`} className="no-underline">
                     {contents}
                 </Link>
             )}

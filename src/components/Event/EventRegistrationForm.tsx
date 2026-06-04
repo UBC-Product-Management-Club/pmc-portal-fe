@@ -51,7 +51,7 @@ export default function EventRegistrationForm({
     }, [formId]);
 
     if (isLoading || !formData) {
-        return <div style={{ color: 'white' }}>Loading form...</div>;
+        return <div className="text-white">Loading form...</div>;
     }
 
     const handleFileSelect = (files: File[] | null) => {
@@ -119,7 +119,7 @@ export default function EventRegistrationForm({
 
     return (
         <form
-            className="form-content form-bg-dark-blue"
+            className="flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-150px)]"
             autoComplete="off"
             onSubmit={handleSubmit(
                 (data) => onSubmit(data, uploadedFiles),
@@ -127,24 +127,17 @@ export default function EventRegistrationForm({
                     window.alert('Please fill in all required fields');
                 }
             )}
-            style={{
-                overflowY: 'auto',
-                maxHeight: 'calc(100vh - 150px)',
-            }}
         >
-            <h2>{formData.title}</h2>
-            <small style={{ color: '#999', marginBottom: '16px', display: 'block' }}>
-                * indicates required field
-            </small>
+            <h2 className="text-white">{formData.title}</h2>
+            <small className="mb-4 block text-gray-400">* indicates required field</small>
             {formData.questions.map((question, index) => (
-                <div key={index} className="form-field">
+                <div key={index} className="flex flex-col gap-1">
                     {renderQuestion(question)}
                 </div>
             ))}
             <button
-                className="pmc-button pmc-button-white"
+                className="mt-4 rounded-lg bg-white px-8 py-2 font-semibold text-pmc-midnight-blue"
                 type="submit"
-                style={{ marginTop: '16px' }}
             >
                 Continue to Payment
             </button>

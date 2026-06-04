@@ -50,19 +50,20 @@ const EventRegFileUpload: React.FC<EventRegFileUploadProps> = ({
     const containerClass = 'flex flex-col justify-center gap-2';
     const labelClass = 'mb-2 text-sm font-medium text-white';
     const uploadButtonClass =
-        'inline-flex items-center gap-2 rounded-full border-2 border-[#5c5cff] bg-white px-6 py-3 text-sm text-[#5c5cff] transition-all hover:bg-[#f8f8ff]';
-    const progressContainerClass = 'flex items-center gap-3 rounded-lg bg-[#f8f8ff] p-3';
+        'inline-flex items-center gap-2 rounded-full border-2 border-pmc-dark-purple bg-white px-6 py-3 text-sm text-pmc-dark-purple transition-all hover:bg-gray-50';
+    const progressContainerClass = 'flex items-center gap-3 rounded-lg bg-gray-50 p-3';
     const fileIconClass =
-        'flex h-10 w-10 items-center justify-center rounded-lg bg-[#3b3b54] text-white';
-    const progressBarClass = 'h-2 flex-1 overflow-hidden rounded bg-[#e0e0e0]';
-    const progressFillClass = 'h-full bg-[#5c5cff] transition-all';
-    const resetButtonClass = 'ml-auto cursor-pointer border-0 bg-transparent px-2 text-[#5c5cff]';
+        'flex h-10 w-10 items-center justify-center rounded-lg bg-pmc-midnight-blue text-white';
+    const progressBarClass = 'h-2 flex-1 overflow-hidden rounded bg-gray-200';
+    const progressFillClass = 'h-full bg-pmc-dark-purple transition-all';
+    const resetButtonClass =
+        'ml-auto cursor-pointer border-0 bg-transparent px-2 text-pmc-dark-purple';
 
     return (
         <div className={containerClass}>
             <label className={labelClass}>
                 {name}
-                {required && <span style={{ color: 'red', marginLeft: '4px' }}>*</span>}
+                {required && <span className="ml-1 text-red-500">*</span>}
             </label>
 
             {uploadState === 'initial' && (
@@ -71,7 +72,7 @@ const EventRegFileUpload: React.FC<EventRegFileUploadProps> = ({
                         type="file"
                         id="file-upload"
                         onChange={handleFileSelect}
-                        style={{ display: 'none' }}
+                        className="hidden"
                         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
                         {...(register && register)}
                         required={required}
@@ -109,7 +110,7 @@ const EventRegFileUpload: React.FC<EventRegFileUploadProps> = ({
                             <polyline points="14 2 14 8 20 8" />
                         </svg>
                     </div>
-                    <div style={{ flex: 1 }}>
+                    <div className="flex-1">
                         <div>{fileName}</div>
                         <div className={progressBarClass}>
                             <div className={progressFillClass} style={{ width: `${progress}%` }} />

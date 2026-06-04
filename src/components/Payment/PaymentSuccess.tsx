@@ -9,14 +9,14 @@ const PaymentSuccess = () => {
     return (
         <>
             <h1 className={headerClass}>
-                Welcome to PMC! <span style={{ fontSize: 'x-large' }}>🥳</span>
+                Welcome to PMC! <span className="text-2xl">🥳</span>
             </h1>
             <div className={containerClass}>
                 <img src={checkmark} width={40} />
                 <h3>Payment Successful</h3>
                 <p>We've processed your payment</p>
                 <br />
-                <Link to="/dashboard" color="white" style={{ textDecoration: 'None' }}>
+                <Link to="/dashboard" className="no-underline">
                     <button className={buttonClass}>Continue to dashboard</button>
                 </Link>
             </div>
