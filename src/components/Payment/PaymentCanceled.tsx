@@ -9,7 +9,7 @@ const PaymentCanceled = () => {
         <>
             <h1 className={headerClass}>Payment Canceled </h1>
             <div className={containerClass}>
-                <Link to="/dashboard" color="white" style={{ textDecoration: 'None' }}>
+                <Link to="/dashboard" className="no-underline">
                     <button className={buttonClass}>Continue to dashboard</button>
                 </Link>
             </div>

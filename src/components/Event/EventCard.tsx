@@ -57,11 +57,11 @@ export function EventCard({ event, disabled, link }: EventCardProps) {
     );
     const isExternal = link.startsWith('https://');
     const navigateTo = isExternal ? (
-        <a href={link} style={{ textDecoration: 'none' }} target="_blank" rel="noopener noreferrer">
+        <a href={link} className="no-underline" target="_blank" rel="noopener noreferrer">
             {contents}
         </a>
     ) : (
-        <Link to={link} style={{ textDecoration: 'none' }}>
+        <Link to={link} className="no-underline">
             {contents}
         </Link>
     );

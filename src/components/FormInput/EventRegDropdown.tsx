@@ -22,7 +22,7 @@ export default function EventRegDropdown({
 }: EventRegDropdownProps) {
     return (
         <select
-            className={'form-select event-form-select'}
+            className="w-full rounded-full bg-pmc-blue px-3 py-2 text-sm text-white focus:outline-none"
             required={required}
             {...register(name, { required: 'please select a value' })}
         >

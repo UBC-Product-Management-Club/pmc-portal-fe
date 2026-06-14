@@ -7,7 +7,7 @@ export default function EventRegistrationGuest({
     onSubmit: (data: UserDataFromUser) => Promise<void>;
 }) {
     return (
-        <div className={'form-bg-dark-blue'}>
+        <div>
             <UserDataForm onSubmit={onSubmit} buttonText="Continue" responses={{}} />
         </div>
     );

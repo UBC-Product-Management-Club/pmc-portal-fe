@@ -174,18 +174,14 @@ export default function Onboarding() {
                         <>
                             <h1 className={contentHeaderClass}>
                                 Welcome to PMC {user?.firstName}!{' '}
-                                <span style={{ fontSize: 'x-large' }}>🥳</span>
+                                <span className="text-2xl">🥳</span>
                             </h1>
                             <div className={paymentSuccessClass}>
                                 <img src={checkmark} width={40} />
                                 <h3>Payment Successful</h3>
                                 <p>We've processed your {charge} charge</p>
                                 <br />
-                                <Link
-                                    to="/dashboard"
-                                    color="white"
-                                    style={{ textDecoration: 'None' }}
-                                >
+                                <Link to="/dashboard" className="no-underline">
                                     <button className={primaryButtonClass}>
                                         Continue to dashboard
                                     </button>
