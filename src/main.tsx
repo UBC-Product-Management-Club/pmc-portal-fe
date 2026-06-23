@@ -12,6 +12,7 @@ import { Layout } from './layout';
 import Onboarding from './components/Onboarding/Onboarding.tsx';
 import { UserDataProvider } from './providers/UserData/UserDataProvider.tsx';
 import AuthorizedRouter from './components/AuthorizedRouter/AuthorizedRouter.tsx';
+import ConstructionGate from './components/ConstructionGate/ConstructionGate.tsx';
 import PaymentSuccess from './components/Payment/PaymentSuccess.tsx';
 import PaymentCanceled from './components/Payment/PaymentCanceled.tsx';
 import EventDashboard from './pages/Events/EventDashboard.tsx';
@@ -31,19 +32,27 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 cacheLocation="localstorage"
             >
                 <UserDataProvider>
-                    <Routes>
-                        <Route path={'/'} element={<Login />} />
-                        <Route path={'/authorized'} element={<AuthorizedRouter />} />
-                        <Route path={'/onboarding'} element={<Onboarding />} />
-                        <Route element={<Layout />}>
-                            <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/events/:event_id/register" element={<Event />} />
-                            <Route path="/profile" element={<Profile />} />
-                            <Route path="/dashboard/success" element={<PaymentSuccess />}></Route>
-                            <Route path="/dashboard/canceled" element={<PaymentCanceled />}></Route>
-                        </Route>
-                        <Route path={'/events/:event_id'} element={<EventDashboard />} />
-                    </Routes>
+                    <ConstructionGate>
+                        <Routes>
+                            <Route path={'/'} element={<Login />} />
+                            <Route path={'/authorized'} element={<AuthorizedRouter />} />
+                            <Route path={'/onboarding'} element={<Onboarding />} />
+                            <Route element={<Layout />}>
+                                <Route path="/dashboard" element={<Dashboard />} />
+                                <Route path="/events/:event_id/register" element={<Event />} />
+                                <Route path="/profile" element={<Profile />} />
+                                <Route
+                                    path="/dashboard/success"
+                                    element={<PaymentSuccess />}
+                                ></Route>
+                                <Route
+                                    path="/dashboard/canceled"
+                                    element={<PaymentCanceled />}
+                                ></Route>
+                            </Route>
+                            <Route path={'/events/:event_id'} element={<EventDashboard />} />
+                        </Routes>
+                    </ConstructionGate>
                 </UserDataProvider>
             </Auth0Provider>
         </Router>
