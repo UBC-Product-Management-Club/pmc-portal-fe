@@ -21,6 +21,7 @@ const RawEventSchema = z.object({
     needs_review: z.boolean(),
     external_page: z.url().nullable().optional(),
     waitlist_form: z.url().nullable().optional(),
+    thumbnail: z.string().nullable().optional(),
 });
 
 const EventSchema = RawEventSchema.transform((event) => ({
@@ -34,7 +35,7 @@ const EventSchema = RawEventSchema.transform((event) => ({
     startTime: event.start_time,
     endTime: event.end_time,
     location: event.location,
-    thumbnail: `${import.meta.env.VITE_SUPABASE_STORAGE_URL}/event-media/${event.event_id}/thumbnail`,
+    thumbnail: event.thumbnail ?? null,
     memberPrice: event.member_price,
     nonMemberPrice: event.non_member_price,
     maxAttendees: event.max_attendees,
@@ -59,6 +60,7 @@ const EventCardSchema = RawEventSchema.pick({
     non_member_price: true,
     is_disabled: true,
     external_page: true,
+    thumbnail: true,
 }).transform((event) => ({
     eventId: event.event_id,
     name: event.name,
@@ -67,7 +69,7 @@ const EventCardSchema = RawEventSchema.pick({
     startTime: event.start_time,
     endTime: event.end_time,
     location: event.location,
-    thumbnail: `${import.meta.env.VITE_SUPABASE_STORAGE_URL}/event-media/${event.event_id}/thumbnail`,
+    thumbnail: event.thumbnail ?? null,
     memberPrice: event.member_price,
     nonMemberPrice: event.non_member_price,
     isDisabled: event.is_disabled,
@@ -79,5 +81,5 @@ const EventCardsSchema = z.array(EventCardSchema);
 type Event = z.infer<typeof EventSchema>;
 type EventCard = z.infer<typeof EventCardSchema>;
 
-export { EventSchema, EventCardSchema, EventCardsSchema };
+export { EventCardSchema, EventCardsSchema, EventSchema };
 export type { Event, EventCard };

@@ -1,7 +1,7 @@
 import moment from 'moment';
-import { type EventCard } from '../../types/Event';
-import { Link } from 'react-router-dom';
 import { FaRegCalendarAlt, FaRegClock } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { type EventCard } from '../../types/Event';
 
 type YourEventCardProps = {
     event: EventCard;
@@ -51,7 +51,7 @@ export function YourEventCard({ event, disabled }: YourEventCardProps) {
                 <p className={descClass}>{event.blurb}</p>
             </div>
             <div className={columnClass}>
-                <img className={thumbClass} src={event.thumbnail} alt="Event thumbnail" />
+                <img className={thumbClass} src={event.thumbnail || ''} alt="Event thumbnail" />
             </div>
         </div>
     );

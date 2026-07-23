@@ -1,8 +1,8 @@
-import { type EventCard } from '../../types/Event';
-import { Link } from 'react-router-dom';
-import { renderDate, renderTime, useInAppBrowser } from '../../utils';
+import { FaMapPin, FaRegCalendarAlt, FaRegClock } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
-import { FaRegCalendarAlt, FaRegClock, FaMapPin } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { type EventCard } from '../../types/Event';
+import { renderDate, renderTime, useInAppBrowser } from '../../utils';
 
 type EventCardProps = {
     event: EventCard;
@@ -52,7 +52,7 @@ export function EventCard({ event, disabled, link }: EventCardProps) {
 
                 {!isMobile && <ReactMarkdown>{event.blurb}</ReactMarkdown>}
             </div>
-            <img className={thumbnailClass} src={event.thumbnail} alt="Event thumbnail" />
+            <img className={thumbnailClass} src={event.thumbnail || ''} alt="Event thumbnail" />
         </div>
     );
     const isExternal = link.startsWith('https://');

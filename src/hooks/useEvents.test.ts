@@ -22,6 +22,7 @@ describe('useEvents', () => {
             member_price: 5,
             non_member_price: 10,
             is_disabled: false,
+            thumbnail: `${import.meta.env.VITE_SUPABASE_STORAGE_URL}/event-media/d8651b2d-7337-4f7c-81f8-62190ee71d0c/thumbnail`,
         },
         {
             event_id: '889b13e2-3c59-4757-96a8-10618132e1d5',
@@ -35,6 +36,7 @@ describe('useEvents', () => {
             non_member_price: 50,
             is_disabled: false,
             registered: 0,
+            thumbnail: `${import.meta.env.VITE_SUPABASE_STORAGE_URL}/event-media/889b13e2-3c59-4757-96a8-10618132e1d5/thumbnail`,
         },
         {
             event_id: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
@@ -47,6 +49,7 @@ describe('useEvents', () => {
             member_price: 8,
             non_member_price: 20,
             is_disabled: true,
+            thumbnail: `${import.meta.env.VITE_SUPABASE_STORAGE_URL}/event-media/3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45/thumbnail`,
         },
     ];
     const parsedEvents = [
@@ -62,6 +65,7 @@ describe('useEvents', () => {
             nonMemberPrice: 10,
             thumbnail: `${import.meta.env.VITE_SUPABASE_STORAGE_URL}/event-media/d8651b2d-7337-4f7c-81f8-62190ee71d0c/thumbnail`,
             isDisabled: false,
+            externalPage: undefined,
         },
         {
             eventId: '889b13e2-3c59-4757-96a8-10618132e1d5',
@@ -75,6 +79,7 @@ describe('useEvents', () => {
             nonMemberPrice: 50,
             thumbnail: `${import.meta.env.VITE_SUPABASE_STORAGE_URL}/event-media/889b13e2-3c59-4757-96a8-10618132e1d5/thumbnail`,
             isDisabled: false,
+            externalPage: undefined,
         },
         {
             eventId: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
@@ -88,6 +93,7 @@ describe('useEvents', () => {
             nonMemberPrice: 20,
             thumbnail: `${import.meta.env.VITE_SUPABASE_STORAGE_URL}/event-media/3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45/thumbnail`,
             isDisabled: true,
+            externalPage: undefined,
         },
     ];
     const event = {
@@ -109,6 +115,7 @@ describe('useEvents', () => {
         event_form_questions: {},
         registered: 0,
         needs_review: false,
+        thumbnail: `${import.meta.env.VITE_SUPABASE_STORAGE_URL}/event-media/d8651b2d-7337-4f7c-81f8-62190ee71d0c/thumbnail`,
     };
     const parsedEvent = {
         eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
@@ -130,6 +137,8 @@ describe('useEvents', () => {
         eventFormQuestions: {},
         registered: 0,
         needsReview: false,
+        externalPage: undefined,
+        waitlistForm: undefined,
     };
     beforeEach(() => {
         mockGetAllEvents = vi.fn().mockResolvedValue(rawEvents);
