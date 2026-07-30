@@ -99,7 +99,11 @@ export default function Paywall() {
                         {loadingCheckout ? 'Loading...' : 'Secure Your Spot'}
                     </button>
                 </div>
-                <img className={thumbClass} src={event.thumbnail} alt={`${event.name} thumbnail`} />
+                <img
+                    className={thumbClass}
+                    src={event.thumbnail ?? undefined}
+                    alt={`${event.name} thumbnail`}
+                />
             </div>
         </div>
     );

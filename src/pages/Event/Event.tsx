@@ -393,7 +393,7 @@ export default function Event() {
                 {/* Event Image */}
                 <div>
                     <img
-                        src={event.thumbnail}
+                        src={event.thumbnail ?? undefined}
                         alt={event.name}
                         className="rounded-2xl object-cover shadow-2xl"
                     />
