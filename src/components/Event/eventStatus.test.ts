@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Attendee } from '../../types/Attendee';
 import { Event } from '../../types/Event';
-import { formatPacific, getEventStatus } from './eventStatus';
+import { formatPacific, getEventStatus, homeStatus } from './eventStatus';
 
 const day = 24 * 60 * 60 * 1000;
 const iso = (offset: number) => new Date(Date.now() + offset).toISOString();
@@ -55,5 +55,32 @@ describe('getEventStatus', () => {
 describe('formatPacific', () => {
     it('writes the deadline in Pacific time', () => {
         expect(formatPacific('2026-11-22T20:00:00.000Z')).toBe('Sun Nov 22, 12:00 PM PT');
+    });
+});
+
+describe('homeStatus', () => {
+    const row = (
+        status: Attendee['status'] | null,
+        hasDraft = false,
+        paymentDueAt: string | null = null
+    ) => ({
+        status,
+        hasDraft,
+        paymentDueAt,
+    });
+
+    it('maps each status to the event page label', () => {
+        expect(homeStatus(undefined)).toBeNull();
+        expect(homeStatus(row(null, true))).toBe('DRAFT');
+        expect(homeStatus(row('APPLIED'))).toBe('UNDER_REVIEW');
+        expect(homeStatus(row('ACCEPTED', false, iso(day)))).toBe('PAYMENT_WINDOW_OPEN');
+        expect(homeStatus(row('ACCEPTED', false, iso(-day)))).toBe('PAYMENT_WINDOW_PASSED');
+        expect(homeStatus(row('PROCESSING'))).toBe('PAYMENT_PROCESSING');
+        expect(homeStatus(row('REGISTERED'))).toBe('REGISTERED');
+        expect(homeStatus(row('REJECTED'))).toBe('NOT_SELECTED');
+    });
+
+    it('lets an attendee row win over a stale draft', () => {
+        expect(homeStatus(row('APPLIED', true))).toBe('UNDER_REVIEW');
     });
 });

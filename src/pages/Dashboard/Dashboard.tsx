@@ -1,166 +1,212 @@
-import { useUserData } from '../../providers/UserData/UserDataProvider';
+import { useEffect, useId, useState } from 'react';
+import moment from 'moment-timezone';
+import { MdExpandMore, MdOutlineCalendarToday, MdOutlineLocationOn } from 'react-icons/md';
 import { useEvents } from '../../hooks/useEvents';
-import { useEffect, useState } from 'react';
-import type { EventCard as EventCardType } from '../../types/Event';
-import { EventCard } from '../../components/Event/EventCard';
-import moment from 'moment';
-import { Carousel } from '../../components/Dashboard/Carousel';
-import { usePaymentService } from '../../hooks/usePaymentService';
-import GearyNormal from '../../assets/geary normal.png';
+import { useUserData } from '../../providers/UserData/UserDataProvider';
+import { EventCard } from '../../types/Event';
+import { Announcement, EventStatusRow } from '../../types/Home';
+import { renderDate, renderTime } from '../../utils';
+import { Badge } from '../../components/Portal/Badge';
+import { Button, ButtonLink } from '../../components/Portal/Button';
+import { homeStatus, STATUS_BADGES } from '../../components/Event/eventStatus';
+
+// Multi-day events already show both dates in the time range
+const sameDay = (start: string, end: string) =>
+    moment
+        .utc(start)
+        .tz('America/Vancouver')
+        .isSame(moment.utc(end).tz('America/Vancouver'), 'day');
+
+function Announcements({ items }: { items: Announcement[] }) {
+    const [open, setOpen] = useState(true);
+    const listId = useId();
+
+    return (
+        <section className="flex flex-col gap-2">
+            <div className="flex items-center gap-1">
+                <h2 className="text-xl leading-7 font-medium">Announcements</h2>
+                {/* Proposed interaction, pending designer approval: collapse the whole section */}
+                <button
+                    type="button"
+                    onClick={() => setOpen(!open)}
+                    aria-expanded={open}
+                    aria-controls={listId}
+                    aria-label={open ? 'Collapse announcements' : 'Expand announcements'}
+                    className="flex size-11 items-center justify-center rounded-[10px] hover:bg-white/50"
+                >
+                    <MdExpandMore
+                        className={`size-6 transition-transform ${open ? 'rotate-180' : ''}`}
+                        aria-hidden
+                    />
+                </button>
+            </div>
+            <div id={listId} hidden={!open} className="glass flex flex-col gap-4 p-4">
+                {items.length === 0 ? (
+                    <p>No announcements right now.</p>
+                ) : (
+                    items.map((item) => (
+                        <article
+                            key={item.announcementId}
+                            className="rounded-[10px] bg-white/60 p-4"
+                        >
+                            <h3 className="mb-2 text-2xl leading-8 font-medium">{item.title}</h3>
+                            <p className="text-base">{item.body}</p>
+                        </article>
+                    ))
+                )}
+            </div>
+        </section>
+    );
+}
+
+function HomeEventCard({
+    event,
+    row,
+    past,
+}: {
+    event: EventCard;
+    row?: EventStatusRow;
+    past: boolean;
+}) {
+    const status = homeStatus(row);
+    const badge = status && STATUS_BADGES[status];
+    const link = `/events/${event.eventId}`;
+
+    return (
+        <article className="glass flex flex-col gap-6 p-4 md:flex-row md:gap-8">
+            <div className="order-first aspect-[205/256] w-full max-w-[200px] shrink-0 self-center overflow-hidden rounded-[10px] bg-[#919191] md:order-last md:self-start">
+                {event.thumbnail && (
+                    <img src={event.thumbnail} alt="" className="size-full object-cover" />
+                )}
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col gap-4">
+                <div className="flex flex-wrap items-center gap-4">
+                    <h3 className="text-2xl leading-8 font-medium">{event.name}</h3>
+                    {badge && <Badge tone={badge.tone}>{badge.label}</Badge>}
+                </div>
+                <p>{event.blurb}</p>
+                <div className="flex flex-col gap-2 rounded-[10px] bg-white/60 p-4 font-medium">
+                    <p className="flex items-center gap-2">
+                        <MdOutlineCalendarToday className="size-6 shrink-0" aria-hidden />
+                        {sameDay(event.startTime, event.endTime)
+                            ? `${renderDate(event.startTime, event.endTime)} · ${renderTime(event.startTime, event.endTime)}`
+                            : renderTime(event.startTime, event.endTime)}
+                    </p>
+                    <p className="flex items-center gap-2">
+                        <MdOutlineLocationOn className="size-6 shrink-0" aria-hidden />
+                        {event.location}
+                    </p>
+                </div>
+                <ButtonLink to={link} className="w-full">
+                    View Event
+                </ButtonLink>
+                {past ? (
+                    <Button className="w-full" disabled>
+                        Registration closed
+                    </Button>
+                ) : (
+                    <ButtonLink to={link} className="w-full">
+                        Register
+                    </ButtonLink>
+                )}
+            </div>
+        </article>
+    );
+}
+
+function EventList({
+    title,
+    events,
+    rows,
+    past,
+    empty,
+}: {
+    title: string;
+    events: EventCard[];
+    rows: EventStatusRow[];
+    past: boolean;
+    empty: string;
+}) {
+    return (
+        <section className="flex flex-col gap-2">
+            <h2 className="text-xl leading-7 font-medium">{title}</h2>
+            {events.length === 0 ? (
+                <div className="glass p-4">{empty}</div>
+            ) : (
+                events.map((event) => (
+                    <HomeEventCard
+                        key={event.eventId}
+                        event={event}
+                        row={rows.find((row) => row.eventId === event.eventId)}
+                        past={past}
+                    />
+                ))
+            )}
+        </section>
+    );
+}
 
 export default function Dashboard() {
-    const { user, isMember } = useUserData();
-    const paymentService = usePaymentService();
-    const { getAll, getUserCurrentEvents } = useEvents();
-    const [userEvents, setUserEvents] = useState<EventCardType[] | undefined>();
-    const [events, setEvents] = useState<EventCardType[] | undefined>();
-    const [error, setError] = useState<boolean>(false);
+    const { user } = useUserData();
+    const { getAll, getStatuses, getAnnouncements } = useEvents();
+    const [events, setEvents] = useState<EventCard[]>();
+    const [rows, setRows] = useState<EventStatusRow[]>([]);
+    const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         getAll()
             .then(setEvents)
-            .catch((e) => {
-                console.error(e);
-                setError(true);
-            });
-    }, [getAll]);
+            .catch(() => setError(true));
+        getAnnouncements()
+            .then(setAnnouncements)
+            .catch(() => setAnnouncements([]));
+    }, [getAll, getAnnouncements]);
 
     useEffect(() => {
-        if (user && user.userId) {
-            getUserCurrentEvents()
-                .then(setUserEvents)
-                .catch((e) => {
-                    console.error(e);
-                    setError(true);
-                });
-        }
-    }, [getUserCurrentEvents, user]);
+        if (!user) return;
+        getStatuses()
+            .then(setRows)
+            .catch(() => setRows([]));
+    }, [user, getStatuses]);
 
-    const navigateToStripeMembershipPayment = async () => {
-        if (user && user.userId) {
-            const resp = await paymentService.createStripeSessionUrl();
-            window.location.href = resp.url;
-        }
-    };
+    const now = new Date();
+    const visible = (events ?? []).filter((event) => !event.isDisabled);
+    const upcoming = visible
+        .filter((event) => new Date(event.endTime) > now)
+        .sort((a, b) => a.startTime.localeCompare(b.startTime));
+    const past = visible
+        .filter((event) => new Date(event.endTime) <= now)
+        .sort((a, b) => b.startTime.localeCompare(a.startTime));
 
     return (
-        <div className="flex flex-col items-center gap-8 text-white">
-            {/* Hero Section */}
-            <section className="w-full">
-                {/* Membership CTA Banner */}
-                {isMember === false && (
-                    <div className="mb-6 rounded-xl border border-gray-300 bg-linear-to-r from-(--pmc-dark-purple) to-(--pmc-purple) p-5 text-white shadow-lg">
-                        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-                            <div className="flex items-center gap-3">
-                                <div className="flex h-12 w-12 items-center justify-center">
-                                    <img
-                                        src={GearyNormal}
-                                        alt="Geary"
-                                        className="h-12 w-12 object-contain"
-                                    />
-                                </div>
-                                <p className="text-base font-medium">
-                                    Want to become a member and enjoy discounted event prices?
-                                </p>
-                            </div>
-                            <button
-                                onClick={navigateToStripeMembershipPayment}
-                                className="cursor-pointer rounded-full bg-white px-6 py-2 text-sm font-semibold text-(--pmc-dark-purple) transition-all duration-200 hover:scale-105 hover:bg-gray-100"
-                            >
-                                Join Now
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {/* Header */}
-                <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-baseline">
-                    {/* <h2 className="text-3xl font-bold tracking-tight">PMC Dashboard</h2> */}
-                    <h2 className="text-3xl font-bold tracking-tight text-(--pmc-light-blue)">
-                        Welcome {user ? user.firstName : '...'}
-                    </h2>
-                </div>
-
-                {/* Mission Statement */}
-                <div className="mt-4 rounded-lg bg-(--pmc-midnight-blue)/50 p-5">
-                    <p className="leading-relaxed text-gray-200">
-                        At PMC, our mission is to empower aspiring product managers by providing
-                        valuable insights, hands-on experiences, and opportunities to connect with
-                        industry leaders. Check out our upcoming events to support you on your
-                        product journey and help you grow your skills, expand your network, and
-                        explore new opportunities in the field!
-                    </p>
-                    <p className="mt-3 text-sm font-semibold">
-                        * All times listed are in Vancouver time (PST).
-                    </p>
-                </div>
-            </section>
-
-            {/* User's Registered Events Section */}
-            {userEvents && userEvents.length > 0 && (
-                <section className="w-full">
-                    <div className="mb-4 flex items-center gap-3">
-                        <div className="h-1 w-8 rounded-full bg-(--pmc-purple)"></div>
-                        <h2 className="text-2xl font-bold">Your Events</h2>
-                    </div>
-                    <Carousel
-                        items={userEvents}
-                        showArrows={false}
-                        renderItem={(event) => (
-                            <EventCard
-                                data-testid={`registered-${event.eventId}`}
-                                event={event}
-                                disabled={event.isDisabled}
-                                link={event.externalPage ?? `/events/${event.eventId}`}
-                            />
-                        )}
+        <div className="flex flex-col gap-12">
+            <h1 className="text-4xl leading-none font-medium md:text-5xl">
+                {user?.firstName ? `Hey, ${user.firstName}!` : 'Hey there!'}
+            </h1>
+            <Announcements items={announcements} />
+            {error ? (
+                <div className="glass p-4">Couldn't load events. Refresh to try again.</div>
+            ) : !events ? (
+                <p>Loading events…</p>
+            ) : (
+                <>
+                    <EventList
+                        title="Upcoming Events"
+                        events={upcoming}
+                        rows={rows}
+                        past={false}
+                        empty="No upcoming events yet"
                     />
-                </section>
+                    <EventList
+                        title="Past Events"
+                        events={past}
+                        rows={rows}
+                        past
+                        empty="No past events"
+                    />
+                </>
             )}
-
-            {/* Upcoming Events Section */}
-            <section className="w-full">
-                <h2 className="text-2xl font-bold mb-4">Upcoming Events</h2>
-
-                {events === undefined ? (
-                    <div className="flex min-h-[200px] items-center justify-center">
-                        {error ? (
-                            <div className="text-center">
-                                <p className="text-xl font-semibold text-(--pmc-red)">
-                                    An error occurred fetching events :(
-                                </p>
-                                <p className="mt-2 text-gray-400">Please try again later</p>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center gap-3">
-                                <div className="h-10 w-10 animate-spin rounded-full border-4 border-(--pmc-light-blue) border-t-transparent"></div>
-                                <p className="text-lg text-gray-300">Loading</p>
-                            </div>
-                        )}
-                    </div>
-                ) : events.length > 0 ? (
-                    <Carousel
-                        items={events}
-                        renderItem={(event) => (
-                            <EventCard
-                                data-testid={event.eventId}
-                                event={event}
-                                disabled={event.isDisabled || moment().isAfter(moment(event.date))}
-                                link={`/events/${event.eventId}/register`}
-                            />
-                        )}
-                    />
-                ) : (
-                    <div className="flex min-h-[200px] flex-col items-center justify-center rounded-xl border border-dashed border-gray-500 bg-(--pmc-midnight-blue)/30 p-8">
-                        <p className="text-center text-xl font-bold text-white">
-                            Stay tuned for future events!
-                        </p>
-                        <p className="mt-2 text-gray-400">
-                            We're working on exciting new events for you
-                        </p>
-                    </div>
-                )}
-            </section>
         </div>
     );
 }

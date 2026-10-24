@@ -256,3 +256,16 @@ export const mockPhase = () => ({
     extended_until: null,
     server_time: new Date().toISOString(),
 });
+
+export const mockAnnouncements = [
+    {
+        announcement_id: 'welcome',
+        title: 'Product Jackpot applications are open',
+        body: 'Apply by Nov 15. Teams of 1 to 4, beginners welcome.',
+    },
+    {
+        announcement_id: 'membership',
+        title: 'Become a member for discounted events',
+        body: 'Members pay less for every PMC event this year.',
+    },
+];

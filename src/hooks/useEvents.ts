@@ -3,6 +3,7 @@ import { JsonValue } from '../service/EventService';
 import { createEventService } from '../service/services';
 import { EventCard, EventCardsSchema, EventSchema } from '../types/Event';
 import { RegisteredContentSchema } from '../types/EventDay';
+import { AnnouncementSchema, EventStatusRowSchema } from '../types/Home';
 
 function useEvents() {
     const eventService = useMemo(() => createEventService(), []);
@@ -59,6 +60,14 @@ function useEvents() {
         [eventService]
     );
 
+    const getStatuses = useCallback(async () => {
+        return EventStatusRowSchema.array().parse(await eventService.getStatuses());
+    }, [eventService]);
+
+    const getAnnouncements = useCallback(async () => {
+        return AnnouncementSchema.array().parse(await eventService.getAnnouncements());
+    }, [eventService]);
+
     return {
         getAll,
         getUserCurrentEvents,
@@ -68,6 +77,8 @@ function useEvents() {
         saveDraft,
         deleteDraft,
         getRegisteredContent,
+        getStatuses,
+        getAnnouncements,
     };
 }
 export { useEvents };

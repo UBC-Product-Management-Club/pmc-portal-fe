@@ -1,5 +1,5 @@
 import moment from 'moment-timezone';
-import { Attendee, WorkflowState } from '../../types/Attendee';
+import { Attendee, AttendeeStatus, WorkflowState } from '../../types/Attendee';
 import { Event } from '../../types/Event';
 
 export type EventStatus =
@@ -69,4 +69,32 @@ export function formatPacific(iso: string) {
 
 export function formatPrice(amount: number) {
     return amount === 0 ? 'Free' : `$${amount.toFixed(2)}`;
+}
+
+// Home only displays status: an attendee row always wins, Draft shows only without one
+export function homeStatus(
+    row:
+        | { status: AttendeeStatus | null; hasDraft: boolean; paymentDueAt: string | null }
+        | undefined,
+    now = new Date()
+): EventStatus | null {
+    if (!row) return null;
+    switch (row.status) {
+        case 'APPLIED':
+            return 'UNDER_REVIEW';
+        case 'ACCEPTED':
+            return row.paymentDueAt && now > new Date(row.paymentDueAt)
+                ? 'PAYMENT_WINDOW_PASSED'
+                : 'PAYMENT_WINDOW_OPEN';
+        case 'PROCESSING':
+            return 'PAYMENT_PROCESSING';
+        case 'REGISTERED':
+            return 'REGISTERED';
+        case 'REJECTED':
+            return 'NOT_SELECTED';
+        case null:
+            return row.hasDraft ? 'DRAFT' : null;
+        default:
+            return null;
+    }
 }

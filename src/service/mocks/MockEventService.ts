@@ -3,6 +3,8 @@ import type {
     AddAttendeeResponse,
     EventService,
     JsonValue,
+    RawAnnouncement,
+    RawEventStatusRow,
     RawRegisteredContent,
 } from '../EventService';
 import {
@@ -11,7 +13,14 @@ import {
     setMockAnswers,
     setMockState,
 } from './MockAttendeeService';
-import { delay, mockError, mockEvent, mockRegisteredContent } from './mockData';
+import {
+    delay,
+    MOCK_EVENT_ID,
+    mockAnnouncements,
+    mockError,
+    mockEvent,
+    mockRegisteredContent,
+} from './mockData';
 
 // Drafts live in memory for the tab, with a version for the STALE_DRAFT check
 let draft: { draft: Record<string, JsonValue>; version: number } | null = null;
@@ -66,6 +75,25 @@ class MockEventService implements Pick<EventService, keyof EventService> {
     async deleteDraft(): Promise<void> {
         await delay();
         draft = null;
+    }
+
+    async getStatuses(): Promise<RawEventStatusRow[]> {
+        const attendee = await new MockAttendeeService().getAttendee(MOCK_EVENT_ID);
+        const raw = attendee as unknown as { status: string; payment_due_at: string | null } | null;
+        if (!raw && !draft) return [];
+        return [
+            {
+                event_id: MOCK_EVENT_ID,
+                status: (raw?.status ?? null) as RawEventStatusRow['status'],
+                has_draft: !!draft,
+                payment_due_at: raw?.payment_due_at ?? null,
+            },
+        ];
+    }
+
+    async getAnnouncements(): Promise<RawAnnouncement[]> {
+        await delay();
+        return mockAnnouncements;
     }
 
     async getRegisteredContent(): Promise<RawRegisteredContent> {
