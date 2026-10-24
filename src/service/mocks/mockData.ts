@@ -61,9 +61,27 @@ export const mockEvent = () => ({
     start_time: '2026-11-21T17:00:00.000Z',
     end_time: '2026-11-23T00:00:00.000Z',
     location: 'Location TBA',
-    blurb: 'A two-day product challenge for students of every year and faculty.',
-    description:
-        'Product Jackpot is a two-day product challenge. Teams of 1 to 4 turn an idea into a product pitch, with mentors and workshops along the way.',
+    blurb: "PMC's 24 hour product challenge: understand users, bet on an idea and pitch it to industry judges.",
+    // Admin-written markdown, taken from the public Product Jackpot page
+    description: [
+        "Product Jackpot is PMC's product competition where students turn ideas into solutions. Participants go through the full PM process: understanding users, brainstorming solutions, creating a product strategy, and pitching their ideas.",
+        "It's a beginner-friendly, 24 hour challenge built around a real-world product case from an industry sponsor, with guidance from experienced mentors along the way. Every successful product starts with a bet. Compete to find the strongest opportunity and build the next winning solution.",
+        '### How it works',
+        [
+            "1. **Understand users.** Dig into who you're building for and what they actually need.",
+            '2. **Brainstorm solutions.** Generate ideas, then place your bet on the strongest one.',
+            '3. **Create a product strategy.** Turn the idea into a plan, a mockup, and a reason to win.',
+            '4. **Pitch your idea.** Take the final hand to a panel of industry judges.',
+        ].join('\n'),
+        '### Why join?',
+        [
+            '- Learn product management fundamentals',
+            '- Build a project for your portfolio',
+            '- Connect with industry mentors',
+            '- Network with other students',
+            '- Compete for prizes',
+        ].join('\n'),
+    ].join('\n\n'),
     media: [],
     member_price: 3.4,
     non_member_price: 8.55,
@@ -107,7 +125,7 @@ export const mockEvent = () => ({
     needs_review: true,
     external_page: null,
     waitlist_form: null,
-    thumbnail: null,
+    thumbnail: '/mock/product-jackpot.png',
     schedule: {
         days: [
             {

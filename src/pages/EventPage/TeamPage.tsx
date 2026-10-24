@@ -1,5 +1,6 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { MdLockOutline } from 'react-icons/md';
 import { useEvents } from '../../hooks/useEvents';
 import { useTeam } from '../../hooks/useTeam';
 import { useSubmission } from '../../hooks/useSubmission';
@@ -59,6 +60,23 @@ export default function TeamPage() {
     const submitWindow = phase ? windowState(phase, new Date(phase.serverTime)) : null;
     const afterDeadline = submitWindow === 'closed';
     const rosterLocked = !!submission;
+
+    // One line under the members list; after the deadline or a submission it explains the lock instead
+    const rosterNote = afterDeadline
+        ? `Teams have 1 to ${maxTeamSize} members. The deadline has passed, so the team can no longer change.`
+        : rosterLocked
+          ? `Your team has submitted, so its members can't change. Any member can still rename the team or edit the submission until the deadline.`
+          : `Teams have 1 to ${maxTeamSize} members.${members.length < maxTeamSize ? ` Share the code ${code} so others can join.` : ''} Any member can rename the team or edit the submission until the deadline.`;
+
+    const nextStep = !afterDeadline
+        ? submission
+            ? 'Review or update your submission'
+            : 'Submit your project'
+        : team.Team.is_finalist
+          ? 'Get ready to pitch at the Grand Finals'
+          : submission
+            ? 'Your project is in. Results come after judging'
+            : 'Submissions are closed';
 
     const copyCode = async () => {
         try {
@@ -182,16 +200,16 @@ export default function TeamPage() {
                 </div>
                 <div className="glass flex flex-col gap-2 p-4">
                     <span className="text-sm text-slate-600">Next step</span>
-                    <span className="font-medium">
-                        {submission ? 'Review or update your submission' : 'Submit your project'}
-                    </span>
-                    <ButtonLink
-                        to={`/events/${eventId}/submit`}
-                        variant="primary"
-                        className="self-start"
-                    >
-                        Open submission
-                    </ButtonLink>
+                    <span className="font-medium">{nextStep}</span>
+                    {(!afterDeadline || submission) && (
+                        <ButtonLink
+                            to={`/events/${eventId}/submit`}
+                            variant={afterDeadline ? 'default' : 'primary'}
+                            className="self-start"
+                        >
+                            {afterDeadline ? 'View submission' : 'Open submission'}
+                        </ButtonLink>
+                    )}
                 </div>
             </div>
 
@@ -218,27 +236,22 @@ export default function TeamPage() {
                     })}
                 </ul>
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                    <span className="text-sm text-slate-600">
-                        Teams have 1 to {maxTeamSize} members.
-                        {members.length < maxTeamSize &&
-                            ` Share the code ${code} so others can join.`}{' '}
-                        Any member can rename the team or edit the submission until the deadline.
-                    </span>
-                    <Button
-                        onClick={leave}
-                        disabled={busy || afterDeadline || rosterLocked}
-                        className="shrink-0 whitespace-nowrap text-red-700"
-                    >
-                        Leave team
-                    </Button>
-                </div>
-                {(afterDeadline || rosterLocked) && (
-                    <p className="text-sm text-slate-600">
-                        {rosterLocked
-                            ? "Your team has submitted, so its members can't change."
-                            : 'The deadline has passed, so the team can no longer change.'}
+                    <p className="flex items-start gap-1.5 text-sm text-slate-600">
+                        {(afterDeadline || rosterLocked) && (
+                            <MdLockOutline className="mt-0.5 size-4 shrink-0" aria-hidden />
+                        )}
+                        <span>{rosterNote}</span>
                     </p>
-                )}
+                    {!afterDeadline && !rosterLocked && (
+                        <Button
+                            onClick={leave}
+                            disabled={busy}
+                            className="shrink-0 whitespace-nowrap text-red-700"
+                        >
+                            Leave team
+                        </Button>
+                    )}
+                </div>
             </section>
         </div>
     );

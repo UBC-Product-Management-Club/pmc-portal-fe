@@ -29,6 +29,7 @@ type QuestionFieldProps = {
     error?: string;
     disabled?: boolean;
     onChange: (value: string) => void;
+    onBlur?: () => void;
     onFile: (file: File | null) => void;
 };
 
@@ -39,6 +40,7 @@ export function QuestionField({
     error,
     disabled,
     onChange,
+    onBlur,
     onFile,
 }: QuestionFieldProps) {
     const fileInput = useRef<HTMLInputElement>(null);
@@ -143,17 +145,22 @@ export function QuestionField({
         );
     }
 
+    const isPhone = q.id === 'phone';
     return (
         <Field
             label={label}
             error={error}
-            help={q.id === 'phone' ? 'Only the organizers see this' : undefined}
+            help={isPhone ? 'Only the organizers see this' : undefined}
         >
             <input
-                className={inputClass}
+                className={`${inputClass} ${error ? 'border-red-500' : ''}`}
                 value={value}
                 disabled={disabled}
+                type={isPhone ? 'tel' : 'text'}
+                autoComplete={isPhone ? 'tel' : undefined}
+                placeholder={isPhone ? '604-555-0123' : undefined}
                 onChange={(e) => onChange(e.target.value)}
+                onBlur={onBlur}
             />
         </Field>
     );

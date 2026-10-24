@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { MdOutlineCalendarToday, MdOutlineLocationOn } from 'react-icons/md';
+import { MdOutlineCalendarToday, MdOutlineLocationOn, MdOutlineSell } from 'react-icons/md';
 import { Event } from '../../types/Event';
 import { renderDate } from '../../utils';
 import { Badge } from '../Portal/Badge';
@@ -35,14 +35,23 @@ export function EventHeader({ event, status, message, priceLine, action }: Event
                             <MdOutlineLocationOn className="size-6 shrink-0" aria-hidden />
                             {event.location}
                         </p>
+                        {priceLine && (
+                            <div className="flex items-start gap-2">
+                                <MdOutlineSell className="size-6 shrink-0" aria-hidden />
+                                {priceLine}
+                            </div>
+                        )}
                     </div>
-                    {priceLine}
                     {action}
                 </div>
             </div>
-            <div className="order-first aspect-[205/256] w-full max-w-[230px] shrink-0 self-center overflow-hidden rounded-[10px] bg-[#919191] md:order-last md:self-start">
+            <div className="order-first aspect-[205/256] w-full max-w-[230px] shrink-0 self-center overflow-hidden rounded-[10px] bg-[#919191] shadow-md md:order-last md:self-start">
                 {event.thumbnail && (
-                    <img src={event.thumbnail} alt="" className="size-full object-cover" />
+                    <img
+                        src={event.thumbnail}
+                        alt={`${event.name} event art`}
+                        className="size-full object-cover"
+                    />
                 )}
             </div>
         </section>

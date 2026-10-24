@@ -16,6 +16,23 @@ export function checkFile(q: FileRules, file: File | null): string | undefined {
     }
 }
 
+export function checkEmail(value: string): string | undefined {
+    const email = value.trim();
+    if (!email) return 'Please enter your email.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        return 'Enter an email like you@example.com';
+    }
+}
+
+// Ten-digit North American numbers, with or without +1, spaces, dashes or brackets
+export function checkPhone(value: string, required: boolean): string | undefined {
+    const phone = value.trim();
+    if (!phone) return required ? 'Please enter your phone number.' : undefined;
+    if (!/^(\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(phone)) {
+        return 'Enter a phone number like 604-555-0123';
+    }
+}
+
 // Submission links must be full https:// links of at most 2,048 characters
 export function checkLink(value: string, required: boolean): string | undefined {
     const link = value.trim();

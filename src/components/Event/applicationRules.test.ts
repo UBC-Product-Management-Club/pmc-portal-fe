@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Question } from '../../types/Question';
-import { checkFile, checkLink, countWords } from './applicationRules';
+import { checkEmail, checkFile, checkLink, checkPhone, countWords } from './applicationRules';
 
 const resume = {
     id: 'resume',
@@ -51,5 +51,29 @@ describe('checkLink', () => {
         const base = 'https://example.com/';
         expect(checkLink(base + 'a'.repeat(2048 - base.length), true)).toBeUndefined();
         expect(checkLink(base + 'a'.repeat(2049 - base.length), true)).toMatch(/2,048/);
+    });
+});
+
+describe('checkEmail', () => {
+    it('accepts a normal address and rejects malformed ones', () => {
+        expect(checkEmail('you@example.com')).toBeUndefined();
+        expect(checkEmail('')).toBe('Please enter your email.');
+        expect(checkEmail('you@example')).toBeDefined();
+        expect(checkEmail('you example.com')).toBeDefined();
+    });
+});
+
+describe('checkPhone', () => {
+    it('accepts common North American formats', () => {
+        for (const phone of ['604-555-0123', '(604) 555-0123', '6045550123', '+1 604 555 0123']) {
+            expect(checkPhone(phone, true)).toBeUndefined();
+        }
+    });
+
+    it('rejects short or lettered numbers and respects optional', () => {
+        expect(checkPhone('555-0123', true)).toBeDefined();
+        expect(checkPhone('604-555-01ab', true)).toBeDefined();
+        expect(checkPhone('', true)).toBe('Please enter your phone number.');
+        expect(checkPhone('', false)).toBeUndefined();
     });
 });

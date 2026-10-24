@@ -1,6 +1,12 @@
-import { useEffect, useId, useState } from 'react';
+import { ReactNode, useEffect, useId, useState } from 'react';
 import moment from 'moment-timezone';
-import { MdExpandMore, MdOutlineCalendarToday, MdOutlineLocationOn } from 'react-icons/md';
+import { IconType } from 'react-icons';
+import {
+    MdExpandMore,
+    MdOutlineCalendarToday,
+    MdOutlineLocationOn,
+    MdOutlineSell,
+} from 'react-icons/md';
 import { useEvents } from '../../hooks/useEvents';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { EventCard } from '../../types/Event';
@@ -8,7 +14,7 @@ import { Announcement, EventStatusRow } from '../../types/Home';
 import { renderDate, renderTime } from '../../utils';
 import { Badge } from '../../components/Portal/Badge';
 import { Button, ButtonLink } from '../../components/Portal/Button';
-import { homeStatus, STATUS_BADGES } from '../../components/Event/eventStatus';
+import { formatPrice, homeStatus, STATUS_BADGES } from '../../components/Event/eventStatus';
 
 // Multi-day events already show both dates in the time range
 const sameDay = (start: string, end: string) =>
@@ -59,6 +65,15 @@ function Announcements({ items }: { items: Announcement[] }) {
     );
 }
 
+function Chip({ icon: Icon, children }: { icon: IconType; children: ReactNode }) {
+    return (
+        <li className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1.5 text-sm font-medium">
+            <Icon className="size-4 shrink-0" aria-hidden />
+            {children}
+        </li>
+    );
+}
+
 function HomeEventCard({
     event,
     row,
@@ -73,42 +88,49 @@ function HomeEventCard({
     const link = `/events/${event.eventId}`;
 
     return (
-        <article className="glass flex flex-col gap-6 p-4 md:flex-row md:gap-8">
-            <div className="order-first aspect-[205/256] w-full max-w-[200px] shrink-0 self-center overflow-hidden rounded-[10px] bg-[#919191] md:order-last md:self-start">
+        <article className="glass flex flex-col gap-5 p-4 md:flex-row md:gap-6">
+            <div className="order-first aspect-[205/256] w-full max-w-[200px] shrink-0 self-center overflow-hidden rounded-[10px] bg-[#919191] shadow-md md:order-last md:max-w-[180px] md:self-start">
                 {event.thumbnail && (
-                    <img src={event.thumbnail} alt="" className="size-full object-cover" />
+                    <img
+                        src={event.thumbnail}
+                        alt={`${event.name} event art`}
+                        className="size-full object-cover"
+                    />
                 )}
             </div>
             <div className="flex min-w-0 flex-1 flex-col gap-4">
-                <div className="flex flex-wrap items-center gap-4">
-                    <h3 className="text-2xl leading-8 font-medium">{event.name}</h3>
+                <div className="flex flex-wrap items-center gap-3">
+                    <h3 className="text-3xl leading-tight font-medium">{event.name}</h3>
                     {badge && <Badge tone={badge.tone}>{badge.label}</Badge>}
                 </div>
-                <p>{event.blurb}</p>
-                <div className="flex flex-col gap-2 rounded-[10px] bg-white/60 p-4 font-medium">
-                    <p className="flex items-center gap-2">
-                        <MdOutlineCalendarToday className="size-6 shrink-0" aria-hidden />
+                <p className="text-lg leading-snug text-slate-800">{event.blurb}</p>
+                <ul className="flex flex-wrap gap-2">
+                    <Chip icon={MdOutlineCalendarToday}>
                         {sameDay(event.startTime, event.endTime)
                             ? `${renderDate(event.startTime, event.endTime)} · ${renderTime(event.startTime, event.endTime)}`
                             : renderTime(event.startTime, event.endTime)}
-                    </p>
-                    <p className="flex items-center gap-2">
-                        <MdOutlineLocationOn className="size-6 shrink-0" aria-hidden />
-                        {event.location}
-                    </p>
-                </div>
-                <ButtonLink to={link} className="w-full">
-                    View Event
-                </ButtonLink>
-                {past ? (
-                    <Button className="w-full" disabled>
-                        Registration closed
-                    </Button>
-                ) : (
-                    <ButtonLink to={link} variant="primary" className="w-full">
-                        Register
+                    </Chip>
+                    <Chip icon={MdOutlineLocationOn}>{event.location}</Chip>
+                    <Chip icon={MdOutlineSell}>
+                        {event.memberPrice < event.nonMemberPrice
+                            ? `Members ${formatPrice(event.memberPrice)} · Others ${formatPrice(event.nonMemberPrice)}`
+                            : formatPrice(event.nonMemberPrice)}
+                    </Chip>
+                </ul>
+                <div className="mt-auto flex flex-col gap-3 md:flex-row">
+                    <ButtonLink to={link} className="w-full md:flex-1">
+                        View Event
                     </ButtonLink>
-                )}
+                    {past ? (
+                        <Button className="w-full md:flex-1" disabled>
+                            Registration closed
+                        </Button>
+                    ) : (
+                        <ButtonLink to={link} variant="primary" className="w-full md:flex-1">
+                            Register
+                        </ButtonLink>
+                    )}
+                </div>
             </div>
         </article>
     );

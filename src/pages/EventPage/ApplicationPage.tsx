@@ -13,7 +13,13 @@ import { renderDate, showToast } from '../../utils';
 import { Badge } from '../../components/Portal/Badge';
 import { Button, ButtonLink } from '../../components/Portal/Button';
 import { Field, QuestionField } from '../../components/Event/ApplicationField';
-import { checkFile, countWords, inputClass } from '../../components/Event/applicationRules';
+import {
+    checkEmail,
+    checkFile,
+    checkPhone,
+    countWords,
+    inputClass,
+} from '../../components/Event/applicationRules';
 import { formatPrice, getEventStatus } from '../../components/Event/eventStatus';
 
 const without = (errors: Record<string, string>, key: string) =>
@@ -59,12 +65,11 @@ export default function ApplicationPage() {
             .catch(() => setAttendee(null));
     }, [eventId, user, getAttendee]);
 
-    // Name and email start from the profile; a restored draft wins
+    // Name starts from the profile; a restored draft wins
     useEffect(() => {
         if (!draft.loaded || !user) return;
         setValues({
             name: [user.firstName, user.lastName].filter(Boolean).join(' '),
-            email: user.email ?? '',
             ...draft.initial,
         });
     }, [draft.loaded, draft.initial, user]);
@@ -119,13 +124,32 @@ export default function ApplicationPage() {
         draft.queueSave(next);
     };
 
+    // Email and phone are checked when the field loses focus and again on submit
+    const formatError = (key: string) => {
+        const value = values[key] ?? '';
+        if (key === 'email') return checkEmail(value);
+        if (key === 'phone') {
+            return checkPhone(value, questions.find((q) => q.id === 'phone')?.required ?? false);
+        }
+    };
+
+    const checkOnBlur = (key: string) => {
+        if (!values[key]?.trim()) return;
+        const error = formatError(key);
+        if (error) setErrors((current) => ({ ...current, [key]: error }));
+    };
+
     const validate = () => {
         const found: Record<string, string> = {};
         if (!values.name?.trim()) found.name = 'Please enter your name.';
-        if (!/^\S+@\S+\.\S+$/.test(values.email ?? '')) found.email = 'Please enter a valid email.';
+        const emailError = formatError('email');
+        if (emailError) found.email = emailError;
         for (const q of questions) {
             const answer = values[q.id] ?? '';
-            if (q.type === 'file') {
+            const phoneError = q.id === 'phone' ? formatError('phone') : undefined;
+            if (phoneError) {
+                found[q.id] = phoneError;
+            } else if (q.type === 'file') {
                 const fileError = checkFile(q, files[q.id] ?? null);
                 if (fileError) found[q.id] = fileError;
             } else if (q.required && !answer.trim()) {
@@ -223,16 +247,19 @@ export default function ApplicationPage() {
                     </Field>
                     <Field label="Email address" error={errors.email}>
                         <input
-                            className={inputClass}
+                            className={`${inputClass} ${errors.email ? 'border-red-500' : ''}`}
                             type="email"
                             value={values.email ?? ''}
                             autoComplete="email"
+                            placeholder="you@example.com"
                             onChange={(e) => update('email', e.target.value)}
+                            onBlur={() => checkOnBlur('email')}
                         />
                     </Field>
                 </div>
                 <p className="-mt-3 text-xs text-slate-600">
-                    Filled in from your PMC profile; changes here apply to this application only.
+                    Your name comes from your PMC profile; changes here apply to this application
+                    only.
                 </p>
                 {questions.map((q) => (
                     <QuestionField
@@ -242,6 +269,7 @@ export default function ApplicationPage() {
                         file={files[q.id] ?? null}
                         error={errors[q.id]}
                         onChange={(value) => update(q.id, value)}
+                        onBlur={() => checkOnBlur(q.id)}
                         onFile={(file) => {
                             setFiles({ ...files, [q.id]: file });
                             const fileError = file ? checkFile(q, file) : undefined;

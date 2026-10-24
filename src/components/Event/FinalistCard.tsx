@@ -4,10 +4,13 @@ import { MdEmojiEvents } from 'react-icons/md';
 export function FinalistCard({ isFinalist }: { isFinalist?: boolean }) {
     if (isFinalist !== true) return null;
     return (
-        <div className="glass flex items-center gap-3 border-amber-300 p-4">
-            <MdEmojiEvents className="size-8 shrink-0 text-amber-500" aria-hidden />
+        <div className="glass relative flex items-center gap-4 overflow-hidden p-4 pl-5">
+            <span className="portal-accent absolute inset-y-0 left-0 w-1.5" aria-hidden />
+            <span className="portal-accent flex size-12 shrink-0 items-center justify-center rounded-full text-white shadow-sm">
+                <MdEmojiEvents className="size-6" aria-hidden />
+            </span>
             <div>
-                <p className="font-semibold">Finalist</p>
+                <p className="text-lg font-semibold">Finalist</p>
                 <p className="text-sm text-slate-700">
                     Your team made the finals. Congratulations, and good luck on stage!
                 </p>

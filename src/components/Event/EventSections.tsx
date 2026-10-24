@@ -21,28 +21,45 @@ export function Section({
     );
 }
 
+// List items wrap their text so the step number or check sits beside it
+const markdownComponents = {
+    li: ({ children }: { children?: ReactNode }) => (
+        <li>
+            <span>{children}</span>
+        </li>
+    ),
+};
+
 export function AboutSection({ description }: { description: string }) {
     return (
         <Section title="About">
-            <div className="glass p-4 text-base [&_a]:underline [&_li]:ml-5 [&_li]:list-disc [&_p+p]:mt-3">
-                <Markdown>{description}</Markdown>
+            <div className="glass event-markdown p-4 text-base">
+                <Markdown components={markdownComponents}>{description}</Markdown>
             </div>
         </Section>
     );
 }
 
-// One card per day; check-in buttons stay hidden for now
+// Days side by side; the label's part before " · " is the heading. Check-in buttons stay hidden for now
 export function ScheduleSection({ schedule }: { schedule: Schedule }) {
     return (
         <Section title="Schedule">
-            <div className="glass flex flex-col gap-4 p-4">
+            <div className="grid items-start gap-4 md:grid-cols-2">
                 {schedule.days.map((day) => (
-                    <div key={day.date} className="rounded-[10px] bg-white/60 p-4">
-                        <h3 className="mb-3 text-2xl leading-8 font-medium">{day.label}</h3>
-                        <ul className="flex flex-col gap-2">
+                    <div key={day.date} className="glass p-4">
+                        <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 border-b border-slate-200/80 pb-2">
+                            <h3 className="text-xl font-semibold">{day.label.split(' · ')[0]}</h3>
+                            <p className="text-xs font-semibold tracking-wider text-slate-600 uppercase">
+                                {moment(day.date, 'YYYY-MM-DD').format('dddd, MMMM D')}
+                            </p>
+                        </div>
+                        <ul className="flex flex-col">
                             {day.items.map((item) => (
-                                <li key={`${item.time}-${item.title}`} className="flex gap-4">
-                                    <span className="w-20 shrink-0 font-medium text-slate-600">
+                                <li
+                                    key={`${item.time}-${item.title}`}
+                                    className="flex gap-4 py-1.5 text-sm"
+                                >
+                                    <span className="w-[4.75rem] shrink-0 font-semibold whitespace-nowrap tabular-nums">
                                         {moment(item.time, 'HH:mm').format('h:mm A')}
                                     </span>
                                     <span>{item.title}</span>

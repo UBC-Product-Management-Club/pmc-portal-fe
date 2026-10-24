@@ -208,17 +208,17 @@ export default function EventPage() {
         'PAYMENT_PROCESSING',
     ].includes(status);
     const priceLine = showPrice && (
-        <p className="text-base">
+        <p>
             <span className="font-semibold">Your price: {formatPrice(amountDue)}</span>
             {!isMember && event.memberPrice < event.nonMemberPrice && (
                 <>
                     {' · '}
                     {isSignedIn ? (
-                        <Link to={MEMBERSHIP_PATH} className="underline">
+                        <Link to={MEMBERSHIP_PATH} className="font-normal underline">
                             Become a member to pay {formatPrice(event.memberPrice)}
                         </Link>
                     ) : (
-                        <span className="text-slate-600">
+                        <span className="font-normal text-slate-600">
                             Members pay {formatPrice(event.memberPrice)}
                         </span>
                     )}

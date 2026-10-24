@@ -7,6 +7,7 @@ import Geary from '../../assets/geary normal.png';
 import { useEvents } from '../../hooks/useEvents';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { EventCard } from '../../types/Event';
+import { resetMemberBar } from './memberBar';
 
 type SidebarProps = {
     onNavigate?: () => void;
@@ -27,8 +28,11 @@ export function Sidebar({ onNavigate }: SidebarProps) {
     }, [getAll]);
 
     return (
-        <nav className="flex h-full w-full flex-col bg-white/90 font-geist" aria-label="Main">
-            <div className="flex items-center gap-2 p-4">
+        <nav
+            className="flex h-full w-full flex-col border-r border-portal-stroke bg-white font-geist"
+            aria-label="Main"
+        >
+            <div className="flex items-center gap-2 border-b border-portal-stroke bg-white p-4">
                 <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-pmc-dark-blue">
                     <img src={PMCLogo} alt="UBC PMC" className="size-7 object-contain" />
                 </div>
@@ -57,14 +61,14 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 
             <div className="flex-1 overflow-y-auto">
                 {events.length > 0 && (
-                    <ul className="ml-12 overflow-hidden rounded-l-[10px] bg-portal-surface">
+                    <ul className="bg-portal-surface">
                         {events.map((event) => (
                             <li key={event.eventId}>
                                 <NavLink
                                     to={`/events/${event.eventId}`}
                                     onClick={onNavigate}
                                     className={({ isActive }) =>
-                                        `${rowClass} ${isActive ? 'bg-[#f1f1f4] font-semibold' : ''}`
+                                        `${rowClass} pl-12 ${isActive ? 'bg-[#f1f1f4] font-semibold' : ''}`
                                     }
                                 >
                                     {event.name}
@@ -76,7 +80,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
             </div>
 
             {user && (
-                <div className="flex items-center gap-2 p-4">
+                <div className="flex items-center gap-2 border-t border-portal-stroke bg-white p-4">
                     <NavLink
                         to="/profile"
                         onClick={onNavigate}
@@ -96,10 +100,11 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                     </NavLink>
                     <button
                         type="button"
-                        onClick={() =>
-                            logout({ logoutParams: { returnTo: window.location.origin } })
-                        }
-                        className="flex size-11 shrink-0 items-center justify-center rounded-[10px] text-black hover:bg-white/60"
+                        onClick={() => {
+                            resetMemberBar();
+                            logout({ logoutParams: { returnTo: window.location.origin } });
+                        }}
+                        className="flex size-11 shrink-0 items-center justify-center rounded-[10px] text-black hover:bg-[#f1f1f4]"
                         aria-label="Log out"
                     >
                         <MdLogout className="size-5" aria-hidden />
