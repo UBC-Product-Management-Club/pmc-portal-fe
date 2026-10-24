@@ -2,14 +2,21 @@ import { DeliverableVersion, TeamResponse } from '../../types/Team';
 import type { TeamService } from '../TeamService';
 import { delay, mockError, mockTeam } from './mockData';
 
-// Join with the code R4827 to get the sample team back after leaving it
+// Join with the code R4827 to get the sample team back after leaving it.
+// ?finalist=yes|no plays results being published; without it is_finalist is left out.
+const withFinalist = (current: TeamResponse): TeamResponse => {
+    const finalist = new URLSearchParams(window.location.search).get('finalist');
+    if (finalist !== 'yes' && finalist !== 'no') return current;
+    return { ...current, Team: { ...current.Team, is_finalist: finalist === 'yes' } };
+};
+
 let team: TeamResponse | null = mockTeam();
 
 class MockTeamService implements Pick<TeamService, keyof TeamService> {
     async getTeam(): Promise<TeamResponse> {
         await delay();
         if (!team) throw mockError(404, 'NOT_ON_TEAM');
-        return team;
+        return withFinalist(team);
     }
 
     async createTeam(_eventId: string, teamName: string): Promise<TeamResponse> {

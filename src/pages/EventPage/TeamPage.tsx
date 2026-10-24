@@ -14,6 +14,7 @@ import { inputClass } from '../../components/Event/applicationRules';
 import { formatPacific } from '../../components/Event/eventStatus';
 import { effectiveDeadline, windowState } from '../../components/Event/submissionWindow';
 import { teamErrorMessage } from '../../components/Event/teamErrors';
+import { FinalistCard } from '../../components/Event/FinalistCard';
 
 export default function TeamPage() {
     const { event_id: eventId = '' } = useParams<{ event_id: string }>();
@@ -159,6 +160,8 @@ export default function TeamPage() {
                     </div>
                 </div>
             </div>
+
+            <FinalistCard isFinalist={team.Team.is_finalist} />
 
             <div className="grid gap-4 md:grid-cols-2">
                 <div className="glass flex flex-col gap-2 p-4">
