@@ -1,5 +1,16 @@
 import { z } from 'zod/v4';
 
+// Event.schedule: display text only, times in America/Vancouver
+const ScheduleSchema = z.object({
+    days: z.array(
+        z.object({
+            date: z.iso.date(),
+            label: z.string(),
+            items: z.array(z.object({ time: z.string(), title: z.string() })),
+        })
+    ),
+});
+
 const RawEventSchema = z.object({
     event_id: z.uuidv4(),
     name: z.string(),
@@ -22,6 +33,7 @@ const RawEventSchema = z.object({
     external_page: z.url().nullable().optional(),
     waitlist_form: z.url().nullable().optional(),
     thumbnail: z.string().nullable().optional(),
+    schedule: ScheduleSchema.nullable().optional(),
 });
 
 const EventSchema = RawEventSchema.transform((event) => ({
@@ -46,6 +58,7 @@ const EventSchema = RawEventSchema.transform((event) => ({
     needsReview: event.needs_review,
     externalPage: event.external_page,
     waitlistForm: event.waitlist_form,
+    schedule: event.schedule ?? null,
 }));
 
 const EventCardSchema = RawEventSchema.pick({
@@ -80,6 +93,7 @@ const EventCardsSchema = z.array(EventCardSchema);
 
 type Event = z.infer<typeof EventSchema>;
 type EventCard = z.infer<typeof EventCardSchema>;
+type Schedule = z.infer<typeof ScheduleSchema>;
 
-export { EventCardSchema, EventCardsSchema, EventSchema };
-export type { Event, EventCard };
+export { EventCardSchema, EventCardsSchema, EventSchema, ScheduleSchema };
+export type { Event, EventCard, Schedule };

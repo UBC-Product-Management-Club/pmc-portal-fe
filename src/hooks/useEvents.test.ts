@@ -139,6 +139,7 @@ describe('useEvents', () => {
         needsReview: false,
         externalPage: undefined,
         waitlistForm: undefined,
+        schedule: null,
     };
     beforeEach(() => {
         mockGetAllEvents = vi.fn().mockResolvedValue(rawEvents);

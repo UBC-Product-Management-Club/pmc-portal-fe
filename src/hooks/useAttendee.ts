@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react';
-import { AttendeeService } from '../service/AttendeeService';
+import { createAttendeeService } from '../service/services';
 import { AttendeeSchema } from '../types/Attendee';
 
 function useAttendee() {
-    const attendeeService = useMemo(() => new AttendeeService(), []);
+    const attendeeService = useMemo(() => createAttendeeService(), []);
 
     const getAttendee = useCallback(
         async (eventId: string) => {

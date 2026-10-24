@@ -1,9 +1,11 @@
 import { useCallback, useMemo } from 'react';
-import { EventService, JsonValue } from '../service/EventService';
+import { JsonValue } from '../service/EventService';
+import { createEventService } from '../service/services';
 import { EventCard, EventCardsSchema, EventSchema } from '../types/Event';
+import { RegisteredContentSchema } from '../types/EventDay';
 
 function useEvents() {
-    const eventService = useMemo(() => new EventService(), []);
+    const eventService = useMemo(() => createEventService(), []);
 
     const getAll = useCallback(async (): Promise<EventCard[]> => {
         const data = await eventService.getAll();
@@ -37,8 +39,8 @@ function useEvents() {
     );
 
     const saveDraft = useCallback(
-        async (eventId: string, draft: Record<string, JsonValue>) => {
-            return eventService.saveDraft(eventId, draft);
+        async (eventId: string, draft: Record<string, JsonValue>, version?: number) => {
+            return eventService.saveDraft(eventId, draft, version);
         },
         [eventService]
     );
@@ -46,6 +48,13 @@ function useEvents() {
     const deleteDraft = useCallback(
         async (eventId: string) => {
             return eventService.deleteDraft(eventId);
+        },
+        [eventService]
+    );
+
+    const getRegisteredContent = useCallback(
+        async (eventId: string) => {
+            return RegisteredContentSchema.parse(await eventService.getRegisteredContent(eventId));
         },
         [eventService]
     );
@@ -58,6 +67,7 @@ function useEvents() {
         loadDraft,
         saveDraft,
         deleteDraft,
+        getRegisteredContent,
     };
 }
 export { useEvents };

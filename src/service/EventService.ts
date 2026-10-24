@@ -1,6 +1,10 @@
+import { z } from 'zod/v4';
 import { Attendee } from '../types/Attendee';
 import { Event, EventCard } from '../types/Event';
+import { RegisteredContentSchema } from '../types/EventDay';
 import { RestClient } from './RestClient';
+
+export type RawRegisteredContent = z.input<typeof RegisteredContentSchema>;
 
 export type AddAttendeeResponse = {
     message: string;
@@ -42,12 +46,18 @@ class EventService {
         return this.client.get<Record<string, JsonValue> | null>(`/drafts/${eventId}`);
     }
 
-    saveDraft(eventId: string, draft: Record<string, JsonValue>): Promise<void> {
-        return this.client.post<void>(`/drafts/${eventId}`, JSON.stringify({ draft }));
+    // version is the draft version this save builds on; an out-of-date save is a 409 STALE_DRAFT
+    saveDraft(eventId: string, draft: Record<string, JsonValue>, version?: number): Promise<void> {
+        return this.client.post<void>(`/drafts/${eventId}`, JSON.stringify({ draft, version }));
     }
 
     deleteDraft(eventId: string): Promise<void> {
         return this.client.delete<void>(`/drafts/${eventId}`);
+    }
+
+    // Registered students only
+    getRegisteredContent(eventId: string): Promise<RawRegisteredContent> {
+        return this.client.get<RawRegisteredContent>(`/${eventId}/registered-content`);
     }
 }
 

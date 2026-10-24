@@ -61,6 +61,7 @@ describe('Event', () => {
             needsReview: false,
             externalPage: 'https://google.com',
             waitlistForm: 'https://waitlist.form',
+            schedule: null,
         };
         (useUserData as Mock).mockReturnValue({
             user: mockUser,
