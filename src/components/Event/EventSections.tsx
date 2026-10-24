@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 import { MdLockOutline } from 'react-icons/md';
 import Markdown from 'react-markdown';
 import moment from 'moment-timezone';
@@ -57,9 +56,10 @@ export function ScheduleSection({ schedule }: { schedule: Schedule }) {
     );
 }
 
-type LinkCardProps = { title: string; description: string; to: string; locked: boolean };
+type LinkCardProps = { title: string; description: string; href: string; locked: boolean };
 
-function LinkCard({ title, description, to, locked }: LinkCardProps) {
+// Jumps to the section further down the page once registered
+function LinkCard({ title, description, href, locked }: LinkCardProps) {
     const body = (
         <>
             <h3 className="flex items-center gap-2 text-2xl leading-8 font-medium">
@@ -75,28 +75,28 @@ function LinkCard({ title, description, to, locked }: LinkCardProps) {
     return locked ? (
         <div className="glass flex flex-1 flex-col gap-2 p-4 opacity-80">{body}</div>
     ) : (
-        <Link
-            to={to}
+        <a
+            href={href}
             className="glass flex flex-1 flex-col gap-2 p-4 text-black no-underline hover:bg-white/60"
         >
             {body}
-        </Link>
+        </a>
     );
 }
 
-export function EventLinkCards({ eventId, registered }: { eventId: string; registered: boolean }) {
+export function EventLinkCards({ registered }: { registered: boolean }) {
     return (
         <div className="flex flex-col gap-4 md:flex-row">
             <LinkCard
                 title="Getting Ready / Q&A"
                 description="Mentors, what to prepare and answers to common questions"
-                to={`/events/${eventId}#getting-ready`}
+                href="#getting-ready"
                 locked={!registered}
             />
             <LinkCard
                 title="Team Formation"
                 description="Create a team, join one with a code, or compete on your own"
-                to={`/events/${eventId}/team`}
+                href="#team-formation"
                 locked={!registered}
             />
         </div>

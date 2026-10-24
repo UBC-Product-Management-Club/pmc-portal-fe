@@ -7,6 +7,7 @@ import { usePaymentService } from '../../hooks/usePaymentService';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { Attendee } from '../../types/Attendee';
 import { Event } from '../../types/Event';
+import { RegisteredContent } from '../../types/EventDay';
 import { showToast } from '../../utils';
 import { Button, ButtonLink } from '../../components/Portal/Button';
 import { EventHeader } from '../../components/Event/EventHeader';
@@ -15,6 +16,8 @@ import {
     EventLinkCards,
     ScheduleSection,
 } from '../../components/Event/EventSections';
+import { GettingReady } from '../../components/Event/GettingReady';
+import { TeamFormation } from '../../components/Event/TeamFormation';
 import {
     EventStatus,
     formatPacific,
@@ -32,7 +35,7 @@ export default function EventPage() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const { user, isMember } = useUserData();
-    const { getById, loadDraft } = useEvents();
+    const { getById, loadDraft, getRegisteredContent } = useEvents();
     const { getAttendee } = useAttendee();
     const { getTeam } = useTeam();
     const paymentService = usePaymentService();
@@ -41,6 +44,7 @@ export default function EventPage() {
     const [attendee, setAttendee] = useState<Attendee | null>(null);
     const [hasDraft, setHasDraft] = useState(false);
     const [onTeam, setOnTeam] = useState(false);
+    const [content, setContent] = useState<RegisteredContent | null>(null);
     const [error, setError] = useState(false);
     const [paying, setPaying] = useState(false);
 
@@ -84,7 +88,10 @@ export default function EventPage() {
         getTeam(eventId)
             .then(() => setOnTeam(true))
             .catch(() => setOnTeam(false));
-    }, [status, eventId, getTeam]);
+        getRegisteredContent(eventId)
+            .then(setContent)
+            .catch(() => setContent(null));
+    }, [status, eventId, getTeam, getRegisteredContent]);
 
     if (error) {
         return (
@@ -238,7 +245,18 @@ export default function EventPage() {
             )}
             <AboutSection description={event.description} />
             {event.schedule && <ScheduleSection schedule={event.schedule} />}
-            <EventLinkCards eventId={eventId} registered={status === 'REGISTERED'} />
+            <EventLinkCards registered={status === 'REGISTERED'} />
+            {status === 'REGISTERED' && (
+                <>
+                    <GettingReady eventId={eventId} content={content?.pageContent ?? null} />
+                    <TeamFormation
+                        eventId={eventId}
+                        discordUrl={content?.discordUrl ?? null}
+                        maxTeamSize={content?.maxTeamSize ?? 4}
+                        onTeam={onTeam}
+                    />
+                </>
+            )}
         </div>
     );
 }
