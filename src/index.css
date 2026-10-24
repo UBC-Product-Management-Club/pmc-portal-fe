@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap');
 @import 'tailwindcss';
 
 :root {
@@ -35,6 +36,31 @@
     --color-pmc-dark-blue: var(--pmc-dark-blue);
     --color-pmc-midnight-grey: var(--pmc-midnight-grey);
     --color-pmc-midnight-blue: var(--pmc-midnight-blue);
+
+    /* Member portal redesign (Figma) */
+    --font-geist: 'Geist', sans-serif;
+    --color-portal-surface: #fafafa;
+    --color-portal-badge: #f0f0f0;
+    --color-portal-stroke: #e2e8f0;
+    --color-portal-muted: #94a3b8;
+}
+
+/* Pink-to-lavender page background and the sidebar/top bar tint */
+@utility portal-bg {
+    background-image: linear-gradient(29deg, #fbd3e4 0%, #e9e2fb 100%);
+}
+
+@utility portal-tint {
+    background-image: linear-gradient(160deg, #fff9fc 0%, #f0ecff 100%);
+}
+
+/* Frosted-glass card */
+@utility glass {
+    background-color: rgb(255 255 255 / 0.45);
+    border: 1px solid rgb(255 255 255 / 0.7);
+    border-radius: 10px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
 }
 
 body,
@@ -43,7 +69,6 @@ html {
     padding: 0;
     background-color: var(--pmc-dark-blue);
 }
-
 
 @keyframes drawCircle {
     0% {
