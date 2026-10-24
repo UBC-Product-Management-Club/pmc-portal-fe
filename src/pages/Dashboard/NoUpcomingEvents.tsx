@@ -1,9 +1,43 @@
 import { MdOutlineEventNote, MdOutlineMarkEmailUnread } from 'react-icons/md';
 import Stargazer from '../../assets/no-events-stargazer.png';
-import Rocket from '../../assets/no-events-rocket.png';
 
-// Shown in Upcoming Events when nothing is scheduled. The two illustrations fade into the
-// card at their inner edges, so they sit flush against its left and right sides
+// Four-point sparkle centred on (x, y)
+const sparkle = (x: number, y: number, r: number) =>
+    `M${x} ${y - r}Q${x + r * 0.2} ${y - r * 0.2} ${x + r} ${y}Q${x + r * 0.2} ${y + r * 0.2} ${x} ${y + r}Q${x - r * 0.2} ${y + r * 0.2} ${x - r} ${y}Q${x - r * 0.2} ${y - r * 0.2} ${x} ${y - r}Z`;
+
+// Line-art rocket with a dashed trail, drawn so the card shows through around it
+function Rocket() {
+    return (
+        <svg viewBox="0 0 120 220" className="h-auto w-full" aria-hidden>
+            <path d={sparkle(14, 20, 9)} fill="#c4b5fd" />
+            <path d={sparkle(102, 196, 7)} fill="#f9a8d4" />
+            <path
+                d="M70 80 C80 104 60 118 52 132 C40 156 62 180 86 178"
+                stroke="#c4b5fd"
+                strokeWidth="2.5"
+                strokeDasharray="6 7"
+                fill="none"
+                strokeLinecap="round"
+            />
+            <g
+                transform="rotate(35 82 46)"
+                stroke="#7c5ce0"
+                strokeWidth="3"
+                fill="none"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+            >
+                <path d="M82 18 C95 30 96 54 89 66 H75 C68 54 69 30 82 18Z" />
+                <path d="M75 56 L66 70 L75 67 M89 56 L98 70 L89 67" />
+                <circle cx="82" cy="40" r="5" />
+                <path d="M79 72 L78 79 M85 72 L86 79" />
+            </g>
+        </svg>
+    );
+}
+
+// Shown in Upcoming Events when nothing is scheduled. The illustration fades into the
+// card at its right edge, so it sits flush against the card's left side
 export function NoUpcomingEvents() {
     return (
         <div className="glass flex flex-col overflow-hidden md:flex-row">
@@ -25,7 +59,9 @@ export function NoUpcomingEvents() {
                     We'll announce new events by email, so keep an eye on your inbox.
                 </div>
             </div>
-            <img src={Rocket} alt="" className="hidden w-[17%] max-w-[200px] self-end md:block" />
+            <div className="hidden w-28 shrink-0 self-center pr-6 md:block">
+                <Rocket />
+            </div>
         </div>
     );
 }
