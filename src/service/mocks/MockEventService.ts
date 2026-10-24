@@ -5,7 +5,12 @@ import type {
     JsonValue,
     RawRegisteredContent,
 } from '../EventService';
-import { getMockState, MockAttendeeService, setMockState } from './MockAttendeeService';
+import {
+    getMockState,
+    MockAttendeeService,
+    setMockAnswers,
+    setMockState,
+} from './MockAttendeeService';
 import { delay, mockError, mockEvent, mockRegisteredContent } from './mockData';
 
 // Drafts live in memory for the tab, with a version for the STALE_DRAFT check
@@ -27,9 +32,14 @@ class MockEventService implements Pick<EventService, keyof EventService> {
         return mockEvent() as unknown as Event;
     }
 
-    async addAttendee(eventId: string): Promise<AddAttendeeResponse> {
+    async addAttendee(eventId: string, answers: FormData): Promise<AddAttendeeResponse> {
         await delay(800);
         if (getMockState()) throw mockError(409, 'ALREADY_APPLIED');
+        const text: Record<string, string> = {};
+        answers.forEach((value, key) => {
+            text[key] = value instanceof File ? value.name : value;
+        });
+        setMockAnswers(text);
         setMockState('applied');
         draft = null;
         const attendee = await new MockAttendeeService().getAttendee(eventId);
@@ -38,7 +48,7 @@ class MockEventService implements Pick<EventService, keyof EventService> {
 
     async loadDraft(): Promise<Record<string, JsonValue> | null> {
         await delay();
-        return draft?.draft ?? null;
+        return draft ? { draft: draft.draft, version: draft.version } : null;
     }
 
     async saveDraft(
