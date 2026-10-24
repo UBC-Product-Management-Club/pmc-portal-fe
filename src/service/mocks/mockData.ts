@@ -71,7 +71,7 @@ export const mockEvent = () => ({
     registration_opens: getWindows().registration[0],
     registration_closes: getWindows().registration[1],
     ...eventTimes(),
-    location: 'Location TBA',
+    location: 'TBA',
     blurb: "PMC's 24 hour product challenge: understand users, bet on an idea and pitch it to industry judges.",
     // Admin-written markdown, taken from the public Product Jackpot page
     description: [

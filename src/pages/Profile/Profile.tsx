@@ -9,7 +9,9 @@ import { showToast } from '../../utils';
 import { Badge } from '../../components/Portal/Badge';
 import { Button } from '../../components/Portal/Button';
 import { inputClass } from '../../components/Event/applicationRules';
+import { getPassportBadges } from '../../service/services';
 import Geary from '../../assets/geary normal.png';
+import { EventPassport } from './EventPassport';
 
 type Form = Required<ProfileUpdate>;
 type Key = keyof Form;
@@ -140,121 +142,118 @@ export function Profile() {
 
     const whyDirty = Object.keys(changesIn(WHY_KEYS)).length > 0;
 
+    const badges = getPassportBadges();
+
     return (
-        <div className="flex flex-col gap-12">
-            <section className="glass grid gap-8 p-4 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:p-8">
-                <div className="flex flex-col gap-6">
-                    <div className="flex items-start justify-between gap-4">
-                        <img
-                            src={Geary}
-                            alt=""
-                            className="size-28 rounded-full bg-white object-cover md:size-[140px]"
-                        />
-                        {!editing && (
-                            <Button onClick={() => setEditing(true)} className="gap-2">
-                                <MdOutlineEdit className="size-5" aria-hidden />
-                                Edit details
-                            </Button>
-                        )}
-                    </div>
-
-                    {editing ? (
-                        <div className="flex flex-col gap-4">
-                            <div className="grid gap-3 sm:grid-cols-2">
-                                {field('first_name', 'First name')}
-                                {field('last_name', 'Last name')}
-                                {field('pronouns', 'Pronouns')}
-                                {field(
-                                    'year',
-                                    'Year',
-                                    <select
-                                        className={inputClass}
-                                        value={form.year}
-                                        onChange={(e) => set('year', e.target.value)}
-                                    >
-                                        <option value="">Select…</option>
-                                        {years.map((year) => (
-                                            <option key={year} value={year}>
-                                                Year {year}
-                                            </option>
-                                        ))}
-                                    </select>
-                                )}
-                                {field('faculty', 'Faculty')}
-                                {field('major', 'Major')}
-                            </div>
-                            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-                                <Button onClick={cancel} disabled={saving !== null}>
-                                    Cancel
-                                </Button>
-                                <Button
-                                    variant="primary"
-                                    onClick={() => save('details')}
-                                    disabled={saving !== null}
-                                >
-                                    {saving === 'details' ? 'Saving…' : 'Save changes'}
-                                </Button>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="flex flex-col gap-3">
-                            <h1 className="text-4xl leading-tight font-medium break-words">
-                                {form.first_name} {form.last_name}
-                            </h1>
-                            <div className="flex flex-wrap items-center gap-2">
-                                <Badge tone={isMember ? 'good' : 'neutral'}>
-                                    {isMember ? 'Member' : 'Non-Member'}
-                                </Badge>
-                                {form.pronouns && <Badge>{form.pronouns}</Badge>}
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="flex flex-col gap-2">
-                        <h2 className="text-xl leading-7 font-medium">Email</h2>
-                        <Locked why="You sign in with this, so it can't be changed here.">
-                            {user.email}
-                        </Locked>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <h2 className="text-xl leading-7 font-medium">Academics</h2>
-                        {!editing && (
-                            <div className="flex flex-wrap items-center gap-2">
-                                {form.year && <Badge>Year {form.year}</Badge>}
-                                {form.faculty && <Badge>{form.faculty}</Badge>}
-                                {form.major && <Badge>{form.major}</Badge>}
-                            </div>
-                        )}
-                        {user.university && (
-                            <Locked why="Your university sets your membership price, so it can't be changed here.">
-                                {user.university}
-                            </Locked>
-                        )}
+        <div className="flex flex-col gap-8">
+            {/* Who you are: avatar, name, membership and pronouns */}
+            <section className="glass flex flex-col gap-4 p-4 sm:flex-row sm:items-center md:p-6">
+                <img
+                    src={Geary}
+                    alt=""
+                    className="size-20 shrink-0 rounded-full bg-white object-cover md:size-24"
+                />
+                <div className="flex min-w-0 flex-1 flex-col gap-2">
+                    <h1 className="text-3xl leading-tight font-medium break-words md:text-4xl">
+                        {form.first_name} {form.last_name}
+                    </h1>
+                    <div className="flex flex-wrap items-center gap-2">
+                        <Badge tone={isMember ? 'good' : 'neutral'}>
+                            {isMember ? 'Member' : 'Non-Member'}
+                        </Badge>
+                        {form.pronouns && <Badge>{form.pronouns}</Badge>}
                     </div>
                 </div>
+                {!editing && (
+                    <Button
+                        onClick={() => setEditing(true)}
+                        className="gap-2 self-start sm:self-center"
+                    >
+                        <MdOutlineEdit className="size-5" aria-hidden />
+                        Edit details
+                    </Button>
+                )}
+            </section>
 
-                <div className="flex flex-col gap-2">
+            <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
+                <section className="flex flex-col gap-2">
+                    <h2 className="text-xl leading-7 font-medium">Details</h2>
+                    <div className="glass flex flex-col gap-5 p-4 md:p-6">
+                        {editing ? (
+                            <div className="flex flex-col gap-4">
+                                <div className="grid gap-3 sm:grid-cols-2">
+                                    {field('first_name', 'First name')}
+                                    {field('last_name', 'Last name')}
+                                    {field('pronouns', 'Pronouns')}
+                                    {field(
+                                        'year',
+                                        'Year',
+                                        <select
+                                            className={inputClass}
+                                            value={form.year}
+                                            onChange={(e) => set('year', e.target.value)}
+                                        >
+                                            <option value="">Select…</option>
+                                            {years.map((year) => (
+                                                <option key={year} value={year}>
+                                                    Year {year}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
+                                    {field('faculty', 'Faculty')}
+                                    {field('major', 'Major')}
+                                </div>
+                                <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                                    <Button onClick={cancel} disabled={saving !== null}>
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        variant="primary"
+                                        onClick={() => save('details')}
+                                        disabled={saving !== null}
+                                    >
+                                        {saving === 'details' ? 'Saving…' : 'Save changes'}
+                                    </Button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col gap-2">
+                                <h3 className="text-sm font-semibold">Academics</h3>
+                                <div className="flex flex-wrap items-center gap-2">
+                                    {form.year && <Badge>Year {form.year}</Badge>}
+                                    {form.faculty && <Badge>{form.faculty}</Badge>}
+                                    {form.major && <Badge>{form.major}</Badge>}
+                                </div>
+                            </div>
+                        )}
+                        <div className="flex flex-col gap-2">
+                            <h3 className="text-sm font-semibold">Email</h3>
+                            <Locked why="You sign in with this, so it can't be changed here.">
+                                {user.email}
+                            </Locked>
+                        </div>
+                        {user.university && (
+                            <div className="flex flex-col gap-2">
+                                <h3 className="text-sm font-semibold">University</h3>
+                                <Locked why="Your university sets your membership price, so it can't be changed here.">
+                                    {user.university}
+                                </Locked>
+                            </div>
+                        )}
+                    </div>
+                </section>
+
+                <section className="flex flex-col gap-2">
                     <div className="flex flex-wrap items-baseline gap-2">
                         <h2 className="text-xl leading-7 font-medium">Event Passport</h2>
                         <p className="text-slate-600">Attend events to collect badges!</p>
                     </div>
-                    {/* Badges arrive with the Digital Passport feature; empty until then */}
-                    <div className="flex flex-1 flex-col justify-center gap-6 rounded-[10px] bg-white/60 p-6 md:p-8">
-                        <div className="grid grid-cols-3 gap-6 sm:grid-cols-5">
-                            {Array.from({ length: 10 }, (_, i) => (
-                                <span
-                                    key={i}
-                                    className="aspect-square w-full max-w-[90px] justify-self-center rounded-full border-2 border-dashed border-slate-300"
-                                />
-                            ))}
-                        </div>
-                        <p className="text-center text-slate-600">
-                            No badges yet. Your first one arrives after your first event.
-                        </p>
+                    <div className="glass p-4 md:p-6">
+                        <EventPassport badges={badges} />
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
 
             <section className="flex flex-col gap-2">
                 <div className="flex flex-wrap items-baseline gap-2">

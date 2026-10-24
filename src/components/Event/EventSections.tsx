@@ -101,7 +101,7 @@ function LinkCard({ title, description, href, locked }: LinkCardProps) {
     );
 }
 
-export function EventLinkCards({ registered }: { registered: boolean }) {
+export function EventLinkCards({ registered, ended }: { registered: boolean; ended: boolean }) {
     return (
         <div className="flex flex-col gap-4 md:flex-row">
             <LinkCard
@@ -111,8 +111,12 @@ export function EventLinkCards({ registered }: { registered: boolean }) {
                 locked={!registered}
             />
             <LinkCard
-                title="Team Formation"
-                description="Create a team, join one with a code, or compete on your own"
+                title={ended ? 'Your Team' : 'Team Formation'}
+                description={
+                    ended
+                        ? 'Teams are final; see your members and submission'
+                        : 'Create a team, join one with a code, or compete on your own'
+                }
                 href="#team-formation"
                 locked={!registered}
             />

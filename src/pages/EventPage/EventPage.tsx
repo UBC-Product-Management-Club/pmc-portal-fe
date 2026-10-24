@@ -258,7 +258,7 @@ export default function EventPage() {
             )}
             <AboutSection description={event.description} />
             {event.schedule && <ScheduleSection schedule={event.schedule} />}
-            <EventLinkCards registered={status === 'REGISTERED'} />
+            <EventLinkCards registered={status === 'REGISTERED'} ended={timing === 'ended'} />
             {status === 'REGISTERED' && (
                 <>
                     <GettingReady eventId={eventId} content={content?.pageContent ?? null} />
@@ -267,6 +267,7 @@ export default function EventPage() {
                         discordUrl={content?.discordUrl ?? null}
                         maxTeamSize={content?.maxTeamSize ?? 4}
                         onTeam={onTeam}
+                        ended={timing === 'ended'}
                     />
                 </>
             )}

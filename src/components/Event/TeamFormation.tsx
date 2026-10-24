@@ -7,11 +7,36 @@ type TeamFormationProps = {
     discordUrl: string | null;
     maxTeamSize: number;
     onTeam: boolean;
+    ended: boolean;
 };
 
 const cardClass = 'flex flex-col items-start gap-1.5 rounded-[10px] bg-white/60 p-3.5';
 
-export function TeamFormation({ eventId, discordUrl, maxTeamSize, onTeam }: TeamFormationProps) {
+export function TeamFormation({
+    eventId,
+    discordUrl,
+    maxTeamSize,
+    onTeam,
+    ended,
+}: TeamFormationProps) {
+    // After the event teams are final: no Discord or create/join, just a way back to the team
+    if (ended) {
+        return (
+            <Section title="Your Team" id="team-formation">
+                <div className="glass flex flex-col items-start gap-3 p-4 md:flex-row md:items-center">
+                    <p className="flex-1 text-sm text-slate-700">
+                        {onTeam
+                            ? 'Teams are final now that the event is over. Your team page keeps your members and what you submitted.'
+                            : "Teams are final now that the event is over, and you weren't on a team for this one."}
+                    </p>
+                    {onTeam && (
+                        <ButtonLink to={`/events/${eventId}/team`}>View your team</ButtonLink>
+                    )}
+                </div>
+            </Section>
+        );
+    }
+
     return (
         <Section title="Team Formation" id="team-formation">
             <div className="glass grid items-start gap-3.5 p-3.5 md:grid-cols-2">

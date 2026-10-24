@@ -20,6 +20,7 @@ import {
     formatPrice,
     homeStatus,
 } from '../../components/Event/eventStatus';
+import { NoUpcomingEvents } from './NoUpcomingEvents';
 
 // Multi-day events already show both dates in the time range
 const sameDay = (start: string, end: string) =>
@@ -28,21 +29,22 @@ const sameDay = (start: string, end: string) =>
         .tz('America/Vancouver')
         .isSame(moment.utc(end).tz('America/Vancouver'), 'day');
 
-function Announcements({ items }: { items: Announcement[] }) {
+// Heading with a chevron that hides or shows the whole section (Announcements, Past Events)
+function CollapsibleSection({ title, children }: { title: string; children: ReactNode }) {
     const [open, setOpen] = useState(true);
     const listId = useId();
 
     return (
         <section className="flex flex-col gap-2">
             <div className="flex items-center gap-1">
-                <h2 className="text-xl leading-7 font-medium">Announcements</h2>
+                <h2 className="text-xl leading-7 font-medium">{title}</h2>
                 {/* Proposed interaction, pending designer approval: collapse the whole section */}
                 <button
                     type="button"
                     onClick={() => setOpen(!open)}
                     aria-expanded={open}
                     aria-controls={listId}
-                    aria-label={open ? 'Collapse announcements' : 'Expand announcements'}
+                    aria-label={`${open ? 'Collapse' : 'Expand'} ${title.toLowerCase()}`}
                     className="flex size-11 items-center justify-center rounded-[10px] hover:bg-white/50"
                 >
                     <MdExpandMore
@@ -51,7 +53,17 @@ function Announcements({ items }: { items: Announcement[] }) {
                     />
                 </button>
             </div>
-            <div id={listId} hidden={!open} className="glass flex flex-col gap-4 p-4">
+            <div id={listId} hidden={!open}>
+                {children}
+            </div>
+        </section>
+    );
+}
+
+function Announcements({ items }: { items: Announcement[] }) {
+    return (
+        <CollapsibleSection title="Announcements">
+            <div className="glass flex flex-col gap-4 p-4">
                 {items.length === 0 ? (
                     <p>No announcements right now.</p>
                 ) : (
@@ -66,7 +78,7 @@ function Announcements({ items }: { items: Announcement[] }) {
                     ))
                 )}
             </div>
-        </section>
+        </CollapsibleSection>
     );
 }
 
@@ -164,21 +176,33 @@ function EventList({
     past: boolean;
     empty: string;
 }) {
-    return (
-        <section className="flex flex-col gap-2">
-            <h2 className="text-xl leading-7 font-medium">{title}</h2>
-            {events.length === 0 ? (
+    const list =
+        events.length === 0 ? (
+            past ? (
                 <div className="glass p-4">{empty}</div>
             ) : (
-                events.map((event) => (
+                <NoUpcomingEvents />
+            )
+        ) : (
+            <div className="flex flex-col gap-4">
+                {events.map((event) => (
                     <HomeEventCard
                         key={event.eventId}
                         event={event}
                         row={rows.find((row) => row.eventId === event.eventId)}
                         past={past}
                     />
-                ))
-            )}
+                ))}
+            </div>
+        );
+
+    // Past events can be collapsed like announcements; upcoming events always show
+    return past ? (
+        <CollapsibleSection title={title}>{list}</CollapsibleSection>
+    ) : (
+        <section className="flex flex-col gap-2">
+            <h2 className="text-xl leading-7 font-medium">{title}</h2>
+            {list}
         </section>
     );
 }
