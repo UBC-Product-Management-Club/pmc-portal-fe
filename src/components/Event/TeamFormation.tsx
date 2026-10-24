@@ -26,8 +26,8 @@ export function TeamFormation({
                 <div className="glass flex flex-col items-start gap-3 p-4 md:flex-row md:items-center">
                     <p className="flex-1 text-sm text-slate-700">
                         {onTeam
-                            ? 'Teams are final now that the event is over. Your team page keeps your members and what you submitted.'
-                            : "Teams are final now that the event is over, and you weren't on a team for this one."}
+                            ? "That's a wrap, thanks for competing! Your teammates and project are saved on your team page whenever you want to look back."
+                            : "That's a wrap! You weren't on a team for this one, but we hope to see you competing at the next event."}
                     </p>
                     {onTeam && (
                         <ButtonLink to={`/events/${eventId}/team`}>View your team</ButtonLink>

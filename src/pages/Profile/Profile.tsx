@@ -236,7 +236,7 @@ export function Profile() {
                         {user.university && (
                             <div className="flex flex-col gap-2">
                                 <h3 className="text-sm font-semibold">University</h3>
-                                <Locked why="Your university sets your membership price, so it can't be changed here.">
+                                <Locked why="This was set when you signed up. Reach out to the PMC team if it needs to change.">
                                     {user.university}
                                 </Locked>
                             </div>

@@ -17,7 +17,7 @@ export function mockPassportBadges(): PassportBadge[] {
     return Array.from({ length: count }, (_, i) => ({
         eventId: `sample-${i}`,
         name: NAMES[i % NAMES.length],
-        icon: i % NAMES.length === 0 ? '/mock/product-jackpot-icon.svg' : null,
+        icon: i % NAMES.length === 0 ? '/mock/product-jackpot-icon.png' : null,
         date: new Date(Date.UTC(2026, 10 - (i % 12), 21)).toISOString(),
     }));
 }

@@ -137,7 +137,7 @@ export const mockEvent = () => ({
     external_page: null,
     waitlist_form: null,
     thumbnail: '/mock/product-jackpot.png',
-    icon: '/mock/product-jackpot-icon.svg',
+    icon: '/mock/product-jackpot-icon.png',
     schedule: {
         days: [
             {
