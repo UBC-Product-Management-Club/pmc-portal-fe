@@ -205,7 +205,18 @@ export const mockTeam = () => ({
         team_name: 'Royal Flush',
         team_code: 'R4827',
         Team_Member: [
-            member('8f3c2a1e-4b7d-4c1a-9e2f-0d5b6a7c8e91', 'Simoon', 'Song', 'simoon@example.com'),
+            {
+                ...member(
+                    '8f3c2a1e-4b7d-4c1a-9e2f-0d5b6a7c8e91',
+                    'Simoon',
+                    'Song',
+                    'simoon@example.com'
+                ),
+                Attendee: {
+                    user_id: mockUser.user_id,
+                    User: { email: mockUser.email, first_name: 'Simoon', last_name: 'Song' },
+                },
+            },
             member('6b8d0f2a-4c6e-4a1b-9d3f-5e7a9c1b3d5f', 'Alex', 'Kim', 'alex@example.com'),
             member('3e5a9c1b-7d2f-4b8e-a0c6-9f1e2d3c4b5a', 'Priya', 'Shah', 'priya@example.com'),
         ],

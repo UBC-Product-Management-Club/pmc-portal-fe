@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useEvents } from '../../hooks/useEvents';
 import { useAttendee } from '../../hooks/useAttendee';
 import { useTeam } from '../../hooks/useTeam';
@@ -33,6 +33,7 @@ const POLL_MS = 3000;
 export default function EventPage() {
     const { event_id: eventId = '' } = useParams<{ event_id: string }>();
     const [searchParams] = useSearchParams();
+    const { hash } = useLocation();
     const navigate = useNavigate();
     const { user, isMember } = useUserData();
     const { getById, loadDraft, getRegisteredContent } = useEvents();
@@ -92,6 +93,11 @@ export default function EventPage() {
             .then(setContent)
             .catch(() => setContent(null));
     }, [status, eventId, getTeam, getRegisteredContent]);
+
+    // Links like #team-formation jump to the section once it has rendered
+    useEffect(() => {
+        if (hash && content) document.getElementById(hash.slice(1))?.scrollIntoView();
+    }, [hash, content]);
 
     if (error) {
         return (
