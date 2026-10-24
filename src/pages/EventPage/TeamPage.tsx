@@ -185,7 +185,11 @@ export default function TeamPage() {
                     <span className="font-medium">
                         {submission ? 'Review or update your submission' : 'Submit your project'}
                     </span>
-                    <ButtonLink to={`/events/${eventId}/submit`} className="self-start">
+                    <ButtonLink
+                        to={`/events/${eventId}/submit`}
+                        variant="primary"
+                        className="self-start"
+                    >
                         Open submission
                     </ButtonLink>
                 </div>

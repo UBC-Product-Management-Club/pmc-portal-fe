@@ -52,7 +52,7 @@ export function TeamJoinForms({ eventId }: { eventId: string }) {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
-                <Button type="submit" disabled={!name.trim() || busy !== null}>
+                <Button type="submit" variant="primary" disabled={!name.trim() || busy !== null}>
                     {busy === 'create' ? 'Creating…' : 'Create a team'}
                 </Button>
                 {error?.form === 'create' && (

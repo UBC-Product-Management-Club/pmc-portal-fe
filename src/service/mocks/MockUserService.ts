@@ -2,7 +2,7 @@ import { UserDocument } from '../../types/User';
 import type { ProfileUpdate, UserService } from '../UserService';
 import { delay, mockError, mockUser } from './mockData';
 
-const EDITABLE = ['first_name', 'last_name', 'pronouns', 'year', 'major', 'why_pm'];
+const EDITABLE = ['first_name', 'last_name', 'pronouns', 'year', 'faculty', 'major', 'why_pm'];
 
 let user = { ...mockUser };
 

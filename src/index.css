@@ -45,20 +45,25 @@
     --color-portal-muted: #94a3b8;
 }
 
-/* Pink-to-lavender page background and the sidebar/top bar tint */
+/* Pink-to-lavender page background and the bar tint (spec mockups, based on the Figma) */
 @utility portal-bg {
-    background-image: linear-gradient(29deg, #fbd3e4 0%, #e9e2fb 100%);
+    background-image: linear-gradient(135deg, #f8c8dc 0%, #f3d3e6 40%, #e4dbf7 75%, #dcd6fb 100%);
 }
 
 @utility portal-tint {
-    background-image: linear-gradient(160deg, #fff9fc 0%, #f0ecff 100%);
+    background-color: rgb(255 255 255 / 0.55);
+}
+
+/* Main action on each page */
+@utility portal-accent {
+    background-image: linear-gradient(90deg, #f472b6, #a78bfa);
 }
 
 /* Frosted-glass card */
 @utility glass {
-    background-color: rgb(255 255 255 / 0.45);
-    border: 1px solid rgb(255 255 255 / 0.7);
-    border-radius: 10px;
+    background-color: rgb(255 255 255 / 0.42);
+    border: 1px solid rgb(255 255 255 / 0.75);
+    border-radius: 12px;
     backdrop-filter: blur(12px);
     box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
 }

@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { MdOutlineDashboard, MdOutlineEvent, MdLogout } from 'react-icons/md';
 import PMCLogo from '../../assets/pmclogo-ahover.png';
+import Geary from '../../assets/geary normal.png';
 import { useEvents } from '../../hooks/useEvents';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { EventCard } from '../../types/Event';
@@ -26,8 +27,8 @@ export function Sidebar({ onNavigate }: SidebarProps) {
     }, [getAll]);
 
     return (
-        <nav className="flex h-full w-full flex-col bg-white font-geist" aria-label="Main">
-            <div className="portal-tint flex items-center gap-2 p-4">
+        <nav className="flex h-full w-full flex-col bg-white/90 font-geist" aria-label="Main">
+            <div className="flex items-center gap-2 p-4">
                 <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-pmc-dark-blue">
                     <img src={PMCLogo} alt="UBC PMC" className="size-7 object-contain" />
                 </div>
@@ -42,7 +43,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                 end
                 onClick={onNavigate}
                 className={({ isActive }) =>
-                    `${rowClass} font-medium ${isActive ? 'bg-portal-surface' : 'bg-white'}`
+                    `${rowClass} font-medium ${isActive ? 'bg-[#f1f1f4] font-semibold' : ''}`
                 }
             >
                 <MdOutlineDashboard className="size-6 shrink-0" aria-hidden />
@@ -63,7 +64,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                                     to={`/events/${event.eventId}`}
                                     onClick={onNavigate}
                                     className={({ isActive }) =>
-                                        `${rowClass} ${isActive ? 'bg-portal-badge font-medium' : ''}`
+                                        `${rowClass} ${isActive ? 'bg-[#f1f1f4] font-semibold' : ''}`
                                     }
                                 >
                                     {event.name}
@@ -75,13 +76,17 @@ export function Sidebar({ onNavigate }: SidebarProps) {
             </div>
 
             {user && (
-                <div className="portal-tint flex items-center gap-2 p-4">
+                <div className="flex items-center gap-2 p-4">
                     <NavLink
                         to="/profile"
                         onClick={onNavigate}
                         className="flex min-w-0 flex-1 items-center gap-2"
                     >
-                        <img src={user.pfp} alt="" className="size-8 shrink-0 rounded-full" />
+                        <img
+                            src={Geary}
+                            alt=""
+                            className="size-8 shrink-0 rounded-full bg-white object-cover"
+                        />
                         <div className="min-w-0 text-black">
                             <p className="truncate text-sm leading-5 font-medium">
                                 {user.firstName} {user.lastName}

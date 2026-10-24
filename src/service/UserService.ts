@@ -7,6 +7,7 @@ export type ProfileUpdate = Partial<{
     last_name: string;
     pronouns: string;
     year: string;
+    faculty: string;
     major: string;
     why_pm: string;
 }>;

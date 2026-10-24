@@ -17,6 +17,8 @@ import {
     ScheduleSection,
 } from '../../components/Event/EventSections';
 import { GettingReady } from '../../components/Event/GettingReady';
+import { MainAction } from '../../components/Event/MainAction';
+import { MEMBERSHIP_PATH } from '../../components/Layout/paths';
 import { TeamFormation } from '../../components/Event/TeamFormation';
 import {
     EventStatus,
@@ -124,26 +126,21 @@ export default function EventPage() {
         }
     };
 
-    const becomeMember = async () => {
-        const { url } = await paymentService.createStripeSessionUrl();
-        window.location.href = url;
-    };
-
     const applyPath = `/events/${eventId}/apply`;
     const wide = 'w-full';
     const actions: Partial<Record<EventStatus, ReactNode>> = {
         SIGNED_OUT: (
-            <Button className={wide} onClick={() => navigate('/')}>
+            <Button variant="primary" className={wide} onClick={() => navigate('/')}>
                 RSVP
             </Button>
         ),
         NOT_APPLIED: (
-            <ButtonLink to={applyPath} className={wide}>
+            <ButtonLink to={applyPath} variant="primary" className={wide}>
                 RSVP
             </ButtonLink>
         ),
         DRAFT: (
-            <ButtonLink to={applyPath} className={wide}>
+            <ButtonLink to={applyPath} variant="primary" className={wide}>
                 Continue application
             </ButtonLink>
         ),
@@ -167,12 +164,17 @@ export default function EventPage() {
             </Button>
         ),
         UNDER_REVIEW: (
-            <Button className={wide} disabled>
-                Application submitted, under review
-            </Button>
+            <div className="flex flex-col gap-2">
+                <Button className={wide} disabled>
+                    Application submitted, under review
+                </Button>
+                <p className="text-center text-sm text-slate-600">
+                    We'll let you know once the organizers have reviewed it.
+                </p>
+            </div>
         ),
         PAYMENT_WINDOW_OPEN: attendee?.paymentDueAt && (
-            <Button className={wide} onClick={pay} disabled={paying}>
+            <Button variant="primary" className={wide} onClick={pay} disabled={paying}>
                 Pay {formatPrice(amountDue)} by {formatPacific(attendee.paymentDueAt)}
             </Button>
         ),
@@ -182,7 +184,7 @@ export default function EventPage() {
             </Button>
         ),
         REGISTERED: (
-            <ButtonLink to={`/events/${eventId}/team`} className={wide}>
+            <ButtonLink to={`/events/${eventId}/team`} variant="primary" className={wide}>
                 {onTeam ? 'Go to your team' : 'Create / join a team'}
             </ButtonLink>
         ),
@@ -212,9 +214,9 @@ export default function EventPage() {
                 <>
                     {' · '}
                     {isSignedIn ? (
-                        <button type="button" onClick={becomeMember} className="underline">
+                        <Link to={MEMBERSHIP_PATH} className="underline">
                             Become a member to pay {formatPrice(event.memberPrice)}
-                        </button>
+                        </Link>
                     ) : (
                         <span className="text-slate-600">
                             Members pay {formatPrice(event.memberPrice)}
@@ -235,14 +237,7 @@ export default function EventPage() {
                 status={status}
                 message={messages[status]}
                 priceLine={priceLine}
-                action={
-                    action && (
-                        // Phone: the main button stays visible at the bottom while scrolling
-                        <div className="fixed inset-x-0 bottom-0 z-20 bg-white/80 p-4 backdrop-blur md:static md:bg-transparent md:p-0 md:backdrop-blur-none">
-                            {action}
-                        </div>
-                    )
-                }
+                action={action && <MainAction>{action}</MainAction>}
             />
             {status === 'REGISTERED' && hasLegacyDashboard && (
                 <Link to={`/events/${eventId}/dashboard`} className="underline">

@@ -1,23 +1,39 @@
-import { MdMenu } from 'react-icons/md';
-import { usePaymentService } from '../../hooks/usePaymentService';
+import { useState } from 'react';
+import { MdExpandLess, MdExpandMore, MdMenu } from 'react-icons/md';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
+import { ButtonLink } from '../Portal/Button';
+import { MEMBERSHIP_PATH } from './paths';
 
-type TopBarProps = {
-    onOpenMenu: () => void;
-};
+const COLLAPSED_KEY = 'member-bar-collapsed';
 
-export function TopBar({ onOpenMenu }: TopBarProps) {
-    const { user, isMember } = useUserData();
-    const paymentService = usePaymentService();
-
-    const becomeMember = async () => {
-        if (!user) return;
-        const { url } = await paymentService.createStripeSessionUrl();
-        window.location.href = url;
+function useCollapsed() {
+    const [collapsed, setCollapsed] = useState(() => {
+        try {
+            return localStorage.getItem(COLLAPSED_KEY) === 'true';
+        } catch {
+            return false;
+        }
+    });
+    const toggle = () => {
+        setCollapsed(!collapsed);
+        try {
+            localStorage.setItem(COLLAPSED_KEY, String(!collapsed));
+        } catch {
+            // stays collapsed for this visit only
+        }
     };
+    return { collapsed, toggle };
+}
+
+export function TopBar({ onOpenMenu }: { onOpenMenu: () => void }) {
+    const { isMember } = useUserData();
+    const { collapsed, toggle } = useCollapsed();
+    const showOffer = !isMember && !collapsed;
 
     return (
-        <header className="portal-tint sticky top-0 z-30 flex min-h-[68px] items-center gap-4 px-4 font-geist md:justify-center md:gap-12">
+        <header
+            className={`portal-tint sticky top-0 z-30 flex items-center gap-4 px-4 font-geist backdrop-blur md:justify-center md:gap-6 ${showOffer ? 'min-h-[60px]' : 'min-h-[60px] md:min-h-0 md:py-1'}`}
+        >
             <button
                 type="button"
                 onClick={onOpenMenu}
@@ -27,18 +43,32 @@ export function TopBar({ onOpenMenu }: TopBarProps) {
                 <MdMenu className="size-6" aria-hidden />
             </button>
             {!isMember && (
-                <>
-                    <p className="hidden text-base font-medium text-black md:block">
-                        Want to enjoy discounted event prices?
-                    </p>
+                <div className="ml-auto flex items-center gap-2 md:ml-0 md:gap-6">
+                    {showOffer && (
+                        <>
+                            <p className="hidden text-base font-medium text-black md:block">
+                                Want to enjoy discounted event prices?
+                            </p>
+                            <ButtonLink to={MEMBERSHIP_PATH} className="text-sm">
+                                Become a PMC Member
+                            </ButtonLink>
+                        </>
+                    )}
                     <button
                         type="button"
-                        onClick={becomeMember}
-                        className="ml-auto min-h-9 rounded-[10px] border border-portal-stroke bg-portal-surface px-4 py-2 text-sm font-semibold text-black hover:bg-white md:ml-0"
+                        onClick={toggle}
+                        aria-expanded={showOffer}
+                        aria-label={showOffer ? 'Hide membership offer' : 'Show membership offer'}
+                        className="flex min-h-11 items-center gap-1 rounded-[10px] px-2 text-sm text-slate-600 hover:bg-white/60"
                     >
-                        Become a PMC Member
+                        {!showOffer && 'Membership'}
+                        {showOffer ? (
+                            <MdExpandLess className="size-5" aria-hidden />
+                        ) : (
+                            <MdExpandMore className="size-5" aria-hidden />
+                        )}
                     </button>
-                </>
+                </div>
             )}
         </header>
     );

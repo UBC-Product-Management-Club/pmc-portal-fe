@@ -105,7 +105,7 @@ function HomeEventCard({
                         Registration closed
                     </Button>
                 ) : (
-                    <ButtonLink to={link} className="w-full">
+                    <ButtonLink to={link} variant="primary" className="w-full">
                         Register
                     </ButtonLink>
                 )}

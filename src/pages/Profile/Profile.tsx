@@ -9,6 +9,7 @@ import { showToast } from '../../utils';
 import { Badge } from '../../components/Portal/Badge';
 import { Button } from '../../components/Portal/Button';
 import { inputClass } from '../../components/Event/applicationRules';
+import Geary from '../../assets/geary normal.png';
 
 type Form = Required<ProfileUpdate>;
 type Group = 'name' | 'pronouns' | 'academics';
@@ -20,6 +21,7 @@ function validate(form: Form) {
     if (!form.last_name.trim()) errors.last_name = 'Please enter a last name.';
     if (!form.pronouns.trim()) errors.pronouns = 'Please enter your pronouns.';
     if (!(years as readonly string[]).includes(form.year)) errors.year = 'Please pick a year.';
+    if (!form.faculty.trim()) errors.faculty = 'Please enter a faculty.';
     if (!form.major.trim()) errors.major = 'Please enter a major.';
     const why = form.why_pm.trim().length;
     if (why < 1 || why > 300) errors.why_pm = 'Must be 1–300 characters.';
@@ -67,6 +69,7 @@ export function Profile() {
                       last_name: user.lastName ?? '',
                       pronouns: user.pronouns ?? '',
                       year: user.year ?? '',
+                      faculty: user.faculty ?? '',
                       major: user.major ?? '',
                       why_pm: user.whyPm ?? '',
                   }
@@ -135,9 +138,9 @@ export function Profile() {
             <section className="grid gap-8 rounded-[10px] bg-white/30 p-4 md:grid-cols-5 md:p-8">
                 <div className="flex flex-col gap-8 md:col-span-2">
                     <img
-                        src={user.pfp}
+                        src={Geary}
                         alt=""
-                        className="size-[140px] rounded-full bg-[#919191] object-cover"
+                        className="size-[140px] rounded-full bg-white object-cover"
                     />
 
                     {editing === 'name' ? (
@@ -195,14 +198,16 @@ export function Profile() {
                                         ))}
                                     </select>
                                 )}
+                                {field('faculty', 'Faculty')}
                                 {field('major', 'Major')}
                             </div>
                         ) : (
                             <div className="flex flex-wrap items-center gap-2">
                                 {form.year && <Pill>Year {form.year}</Pill>}
+                                {form.faculty && <Pill>{form.faculty}</Pill>}
                                 {form.major && <Pill>{form.major}</Pill>}
                                 <EditButton
-                                    label="Edit year and major"
+                                    label="Edit year, faculty and major"
                                     onClick={() => setEditing('academics')}
                                 />
                             </div>
@@ -256,7 +261,12 @@ export function Profile() {
                         {errors.why_pm && (
                             <span className="text-sm text-red-700">{errors.why_pm}</span>
                         )}
-                        <Button onClick={save} disabled={!dirty || saving} className="w-full">
+                        <Button
+                            variant="primary"
+                            onClick={save}
+                            disabled={!dirty || saving}
+                            className="w-full"
+                        >
                             {saving ? 'Saving…' : 'Save Changes'}
                         </Button>
                     </div>

@@ -259,7 +259,12 @@ export default function ApplicationPage() {
                 <span className="text-sm text-slate-600">
                     Once you submit, your answers can't be edited.
                 </span>
-                <Button type="submit" disabled={submitting} className="w-full md:w-auto md:px-8">
+                <Button
+                    type="submit"
+                    variant="primary"
+                    disabled={submitting}
+                    className="w-full md:w-auto md:px-8"
+                >
                     {submitting ? 'Submitting…' : 'Submit application'}
                 </Button>
             </div>

@@ -285,7 +285,12 @@ export default function SubmitPage() {
                             : ''}
                         Any teammate can update it until the deadline.
                     </span>
-                    <Button type="submit" disabled={saving} className="w-full md:w-auto md:px-8">
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        disabled={saving}
+                        className="w-full md:w-auto md:px-8"
+                    >
                         {saving ? 'Saving…' : submission ? 'Update submission' : 'Submit'}
                     </Button>
                 </div>

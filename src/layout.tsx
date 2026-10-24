@@ -18,9 +18,14 @@ export function Layout() {
     return (
         <div className="portal-bg min-h-screen font-geist text-black md:flex">
             <Toaster position="top-center" />
+            {/* Soft colour blobs from the spec mockups */}
+            <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden>
+                <div className="absolute top-1/3 -left-20 size-[420px] rounded-full bg-pink-300 opacity-50 blur-[70px]" />
+                <div className="absolute -right-28 bottom-0 size-[460px] rounded-full bg-violet-300 opacity-50 blur-[70px]" />
+            </div>
 
             {/* Desktop: sidebar always visible on the left */}
-            <aside className="sticky top-0 hidden h-screen w-[255px] shrink-0 md:block">
+            <aside className="sticky top-0 z-10 hidden h-screen w-[255px] shrink-0 md:block">
                 <Sidebar />
             </aside>
 
@@ -47,7 +52,7 @@ export function Layout() {
                 </div>
             )}
 
-            <div className="min-w-0 flex-1">
+            <div className="relative min-w-0 flex-1">
                 <TopBar onOpenMenu={() => setMenuOpen(true)} />
                 <main className="mx-auto max-w-[1257px] px-4 py-8 md:px-12 md:py-12">
                     <Outlet />
