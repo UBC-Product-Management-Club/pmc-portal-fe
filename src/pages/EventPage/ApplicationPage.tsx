@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { MdCheck } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEvents } from '../../hooks/useEvents';
 import { useAttendee } from '../../hooks/useAttendee';
@@ -20,7 +21,7 @@ import {
     countWords,
     inputClass,
 } from '../../components/Event/applicationRules';
-import { formatPrice, getEventStatus } from '../../components/Event/eventStatus';
+import { formatPacific, formatPrice, getEventStatus } from '../../components/Event/eventStatus';
 
 const without = (errors: Record<string, string>, key: string) =>
     Object.fromEntries(Object.entries(errors).filter(([k]) => k !== key));
@@ -312,14 +313,26 @@ function SubmittedAnswers({
     const answers = (attendee.eventFormAnswers ?? {}) as Record<string, unknown>;
     return (
         <div className="flex flex-col gap-6">
-            <div className="flex flex-wrap items-center gap-4">
-                <h1 className="text-3xl font-medium md:text-4xl">Your application</h1>
-                <Badge>Submitted</Badge>
+            <h1 className="text-3xl font-medium md:text-4xl">Your application</h1>
+            <div className="glass flex flex-col gap-4 p-4 md:flex-row md:items-center md:p-6">
+                <span className="portal-accent flex size-12 shrink-0 items-center justify-center rounded-full text-2xl text-white">
+                    <MdCheck aria-hidden />
+                </span>
+                <div className="flex-1">
+                    <p className="text-xl font-semibold">Application submitted</p>
+                    <p className="text-sm text-slate-700">
+                        Sent {formatPacific(attendee.created_at)}. Answers can't be changed after
+                        submitting; your status updates on the event page.
+                    </p>
+                </div>
+                <ButtonLink to={`/events/${event.eventId}`} variant="primary">
+                    See your status
+                </ButtonLink>
             </div>
-            <p>Submitted answers can't be edited. Check the event page for your status.</p>
+            <h2 className="text-xl font-medium">What you sent</h2>
             <dl className="glass flex flex-col gap-4 p-4 md:p-6">
                 {questions.map((q) => (
-                    <div key={q.id}>
+                    <div key={q.id} className="flex flex-col gap-1">
                         <dt className="text-sm font-semibold">{q.label}</dt>
                         <dd className="whitespace-pre-wrap text-slate-700">
                             {q.type === 'file' ? 'Uploaded' : String(answers[q.id] ?? '—')}
@@ -327,9 +340,6 @@ function SubmittedAnswers({
                     </div>
                 ))}
             </dl>
-            <ButtonLink to={`/events/${event.eventId}`} className="self-start">
-                Back to {event.name}
-            </ButtonLink>
         </div>
     );
 }

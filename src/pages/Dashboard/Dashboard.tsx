@@ -14,7 +14,12 @@ import { Announcement, EventStatusRow } from '../../types/Home';
 import { renderDate, renderTime } from '../../utils';
 import { Badge } from '../../components/Portal/Badge';
 import { Button, ButtonLink } from '../../components/Portal/Button';
-import { formatPrice, homeStatus, STATUS_BADGES } from '../../components/Event/eventStatus';
+import {
+    displayBadge,
+    eventTiming,
+    formatPrice,
+    homeStatus,
+} from '../../components/Event/eventStatus';
 
 // Multi-day events already show both dates in the time range
 const sameDay = (start: string, end: string) =>
@@ -83,8 +88,10 @@ function HomeEventCard({
     row?: EventStatusRow;
     past: boolean;
 }) {
+    // Only the price this account pays
+    const { isMember } = useUserData();
     const status = homeStatus(row);
-    const badge = status && STATUS_BADGES[status];
+    const badge = displayBadge(status, eventTiming(event));
     const link = `/events/${event.eventId}`;
 
     return (
@@ -112,9 +119,7 @@ function HomeEventCard({
                     </Chip>
                     <Chip icon={MdOutlineLocationOn}>{event.location}</Chip>
                     <Chip icon={MdOutlineSell}>
-                        {event.memberPrice < event.nonMemberPrice
-                            ? `Members ${formatPrice(event.memberPrice)} · Others ${formatPrice(event.nonMemberPrice)}`
-                            : formatPrice(event.nonMemberPrice)}
+                        {formatPrice(isMember ? event.memberPrice : event.nonMemberPrice)}
                     </Chip>
                 </ul>
                 <div className="mt-auto flex flex-col gap-3 md:flex-row">
@@ -125,10 +130,20 @@ function HomeEventCard({
                         <Button className="w-full md:flex-1" disabled>
                             Registration closed
                         </Button>
-                    ) : (
-                        <ButtonLink to={link} variant="primary" className="w-full md:flex-1">
-                            Register
+                    ) : status === 'DRAFT' ? (
+                        <ButtonLink
+                            to={`${link}/apply`}
+                            variant="primary"
+                            className="w-full md:flex-1"
+                        >
+                            Continue application
                         </ButtonLink>
+                    ) : (
+                        !status && (
+                            <ButtonLink to={link} variant="primary" className="w-full md:flex-1">
+                                Register
+                            </ButtonLink>
+                        )
                     )}
                 </div>
             </div>

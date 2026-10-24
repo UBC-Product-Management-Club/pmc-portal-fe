@@ -43,6 +43,18 @@ function getWindows() {
     return all[mode && mode in all ? (mode as WindowMode) : 'open'];
 }
 
+// Move the event with ?timing=live|ended; without it the real Nov 21-22 dates are used
+const TIMING_KEY = 'mock_timing';
+
+function eventTimes() {
+    const fromUrl = new URLSearchParams(window.location.search).get('timing');
+    if (fromUrl) sessionStorage.setItem(TIMING_KEY, fromUrl);
+    const timing = sessionStorage.getItem(TIMING_KEY);
+    if (timing === 'live') return { start_time: fromNow(-3 * HOUR), end_time: fromNow(DAY) };
+    if (timing === 'ended') return { start_time: fromNow(-2 * DAY), end_time: fromNow(-HOUR) };
+    return { start_time: '2026-11-21T17:00:00.000Z', end_time: '2026-11-23T00:00:00.000Z' };
+}
+
 export const delay = (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export function mockError(status: number, code: string, body?: object): ApiError {
@@ -58,8 +70,7 @@ export const mockEvent = () => ({
     date: '2026-11-21',
     registration_opens: getWindows().registration[0],
     registration_closes: getWindows().registration[1],
-    start_time: '2026-11-21T17:00:00.000Z',
-    end_time: '2026-11-23T00:00:00.000Z',
+    ...eventTimes(),
     location: 'Location TBA',
     blurb: "PMC's 24 hour product challenge: understand users, bet on an idea and pitch it to industry judges.",
     // Admin-written markdown, taken from the public Product Jackpot page
@@ -126,6 +137,7 @@ export const mockEvent = () => ({
     external_page: null,
     waitlist_form: null,
     thumbnail: '/mock/product-jackpot.png',
+    icon: '/mock/product-jackpot-icon.svg',
     schedule: {
         days: [
             {

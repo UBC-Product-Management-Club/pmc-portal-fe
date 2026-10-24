@@ -15,6 +15,23 @@ type SidebarProps = {
 
 const rowClass = 'flex min-h-14 items-center gap-2 p-4 text-sm text-black';
 
+// The brand and profile rows share the pale pink-to-lavender tint from the Figma
+const tintClass = 'bg-linear-to-r from-pink-50 to-violet-100';
+
+function EventIcon({ event }: { event: EventCard }) {
+    if (event.icon) {
+        return <img src={event.icon} alt="" className="size-6 shrink-0 rounded-full" />;
+    }
+    return (
+        <span
+            className="portal-accent flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
+            aria-hidden
+        >
+            {event.name.charAt(0)}
+        </span>
+    );
+}
+
 export function Sidebar({ onNavigate }: SidebarProps) {
     const { user } = useUserData();
     const { logout } = useAuth0();
@@ -32,7 +49,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
             className="flex h-full w-full flex-col border-r border-portal-stroke bg-white font-geist"
             aria-label="Main"
         >
-            <div className="flex items-center gap-2 border-b border-portal-stroke bg-white p-4">
+            <div className={`flex items-center gap-2 p-4 ${tintClass}`}>
                 <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-pmc-dark-blue">
                     <img src={PMCLogo} alt="UBC PMC" className="size-7 object-contain" />
                 </div>
@@ -71,6 +88,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                                         `${rowClass} pl-12 ${isActive ? 'bg-[#f1f1f4] font-semibold' : ''}`
                                     }
                                 >
+                                    <EventIcon event={event} />
                                     {event.name}
                                 </NavLink>
                             </li>
@@ -80,7 +98,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
             </div>
 
             {user && (
-                <div className="flex items-center gap-2 border-t border-portal-stroke bg-white p-4">
+                <div className={`flex items-center gap-2 p-4 ${tintClass}`}>
                     <NavLink
                         to="/profile"
                         onClick={onNavigate}
@@ -104,7 +122,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                             resetMemberBar();
                             logout({ logoutParams: { returnTo: window.location.origin } });
                         }}
-                        className="flex size-11 shrink-0 items-center justify-center rounded-[10px] text-black hover:bg-[#f1f1f4]"
+                        className="flex size-11 shrink-0 items-center justify-center rounded-[10px] text-black hover:bg-white/60"
                         aria-label="Log out"
                     >
                         <MdLogout className="size-5" aria-hidden />

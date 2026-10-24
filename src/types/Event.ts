@@ -33,6 +33,7 @@ const RawEventSchema = z.object({
     external_page: z.url().nullable().optional(),
     waitlist_form: z.url().nullable().optional(),
     thumbnail: z.string().nullable().optional(),
+    icon: z.string().nullable().optional(),
     schedule: ScheduleSchema.nullable().optional(),
 });
 
@@ -48,6 +49,7 @@ const EventSchema = RawEventSchema.transform((event) => ({
     endTime: event.end_time,
     location: event.location,
     thumbnail: event.thumbnail ?? null,
+    icon: event.icon ?? null,
     memberPrice: event.member_price,
     nonMemberPrice: event.non_member_price,
     maxAttendees: event.max_attendees,
@@ -74,6 +76,7 @@ const EventCardSchema = RawEventSchema.pick({
     is_disabled: true,
     external_page: true,
     thumbnail: true,
+    icon: true,
 }).transform((event) => ({
     eventId: event.event_id,
     name: event.name,
@@ -83,6 +86,7 @@ const EventCardSchema = RawEventSchema.pick({
     endTime: event.end_time,
     location: event.location,
     thumbnail: event.thumbnail ?? null,
+    icon: event.icon ?? null,
     memberPrice: event.member_price,
     nonMemberPrice: event.non_member_price,
     isDisabled: event.is_disabled,

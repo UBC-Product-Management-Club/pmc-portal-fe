@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { Attendee } from '../../types/Attendee';
 import { Event } from '../../types/Event';
-import { formatPacific, getEventStatus, homeStatus } from './eventStatus';
+import {
+    displayBadge,
+    eventTiming,
+    formatPacific,
+    getEventStatus,
+    homeStatus,
+} from './eventStatus';
 
 const day = 24 * 60 * 60 * 1000;
 const iso = (offset: number) => new Date(Date.now() + offset).toISOString();
@@ -82,5 +88,27 @@ describe('homeStatus', () => {
 
     it('lets an attendee row win over a stale draft', () => {
         expect(homeStatus(row('APPLIED', true))).toBe('UNDER_REVIEW');
+    });
+});
+
+describe('eventTiming and displayBadge', () => {
+    const times = (start: number, end: number) => ({ startTime: iso(start), endTime: iso(end) });
+
+    it('works out upcoming, live and ended', () => {
+        expect(eventTiming(times(day, 2 * day))).toBe('upcoming');
+        expect(eventTiming(times(-day, day))).toBe('live');
+        expect(eventTiming(times(-2 * day, -day))).toBe('ended');
+    });
+
+    it('shows Ended to everyone once the event is over', () => {
+        expect(displayBadge('REGISTERED', 'ended')?.label).toBe('Ended');
+        expect(displayBadge(null, 'ended')?.label).toBe('Ended');
+    });
+
+    it('shows Happening now to registered students during the event', () => {
+        expect(displayBadge('REGISTERED', 'live')?.label).toBe('Happening now');
+        expect(displayBadge('UNDER_REVIEW', 'live')?.label).toBe('Under review');
+        expect(displayBadge('REGISTERED', 'upcoming')?.label).toBe('Registered');
+        expect(displayBadge(null, 'upcoming')).toBeUndefined();
     });
 });

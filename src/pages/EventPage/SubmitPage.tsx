@@ -1,6 +1,7 @@
-import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { FormEvent, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import moment from 'moment-timezone';
+import { MdCheck, MdLockOutline, MdOutlineSchedule, MdPauseCircleOutline } from 'react-icons/md';
 import { useEvents } from '../../hooks/useEvents';
 import { useTeam } from '../../hooks/useTeam';
 import { useSubmission } from '../../hooks/useSubmission';
@@ -60,6 +61,7 @@ export default function SubmitPage() {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [conflict, setConflict] = useState<Submission | null>(null);
     const [saving, setSaving] = useState(false);
+    const [editing, setEditing] = useState(false);
 
     const loadSubmission = useCallback(
         async (phaseId: string) => {
@@ -147,7 +149,8 @@ export default function SubmitPage() {
             setSubmission(saved);
             setValues(saved.answers);
             setFiles({});
-            showToast('success', 'Submission saved.');
+            setEditing(false);
+            showToast('success', 'Project submitted.');
         } catch (error) {
             if (error instanceof ApiError && error.code === 'STALE') {
                 const latest = await getSubmission(eventId, phase.phaseId).catch(() => null);
@@ -169,22 +172,31 @@ export default function SubmitPage() {
         }
     };
 
-    const closesLabel = (
+    const timer = (state === 'open' || state === 'not-open') && (
         <>
             <small className="text-xs text-slate-600">
-                {state === 'not-open' ? 'Opens' : state === 'closed' ? 'Closed' : 'Closes in'}
+                {state === 'open' ? 'Closes in' : 'Opens in'}
             </small>
-            <span className="text-xl font-semibold">
-                {state === 'open'
-                    ? countdown(new Date(deadline).getTime() - now.getTime())
-                    : formatPacific(state === 'not-open' ? phase.startTime : deadline)}
+            <span className="text-xl font-semibold tabular-nums">
+                {countdown(
+                    new Date(state === 'open' ? deadline : phase.startTime).getTime() -
+                        now.getTime()
+                )}
             </span>
-            {state === 'open' && (
-                <small className="text-xs text-slate-600">
-                    {formatPacific(deadline)}
-                    {phase.extendedUntil && ' (extended)'}
-                </small>
-            )}
+            <small className="text-xs text-slate-600">
+                {formatPacific(state === 'open' ? deadline : phase.startTime)}
+                {state === 'open' && phase.extendedUntil && ' (extended)'}
+            </small>
+        </>
+    );
+
+    // A saved submission is shown as a summary; the form only appears while editing
+    const showForm = editable && (!submission || editing);
+    const savedBy = submission && (
+        <>
+            Last saved
+            {submission.submittedAt && ` at ${formatTime(submission.submittedAt)} PT`} by{' '}
+            {submission.submittedBy ?? 'a teammate'}
         </>
     );
 
@@ -201,37 +213,96 @@ export default function SubmitPage() {
                 › Submission
             </p>
 
-            {/* Phone: the countdown is a sticky bar at the top of the form */}
-            <div className="sticky top-[68px] z-20 -mx-4 flex items-center justify-between gap-2 bg-white/85 px-4 py-2 backdrop-blur md:hidden">
-                {closesLabel}
-            </div>
+            {/* Phone: the countdown is a sticky bar at the top of the page */}
+            {timer && (
+                <div className="sticky top-[68px] z-20 -mx-4 flex items-center justify-between gap-2 bg-white/85 px-4 py-2 backdrop-blur md:hidden">
+                    {timer}
+                </div>
+            )}
 
             <div className="flex items-start justify-between gap-4">
                 <div className="flex flex-wrap items-center gap-4">
-                    <h1 className="text-3xl font-medium md:text-4xl">Submit your project</h1>
+                    <h1 className="text-3xl font-medium md:text-4xl">
+                        {submission && !editing ? 'Your project' : 'Submit your project'}
+                    </h1>
                     {submission ? (
                         <Badge tone="good">Submitted</Badge>
                     ) : (
                         <Badge tone="warn">Not submitted</Badge>
                     )}
                 </div>
-                <div className="glass hidden flex-col items-end px-4 py-2 md:flex">
-                    {closesLabel}
-                </div>
+                {timer && (
+                    <div className="glass hidden flex-col items-end px-4 py-2 md:flex">{timer}</div>
+                )}
             </div>
 
-            <div className="glass p-3 text-sm" aria-live="polite">
-                {submission?.submittedAt ? (
-                    <>
-                        <b>Submitted ✓</b> · meets the requirements; saved at{' '}
-                        {formatTime(submission.submittedAt)} by{' '}
-                        {submission.submittedBy ?? 'a teammate'} (version {submission.version}).
-                    </>
-                ) : (
-                    <b>Not submitted yet.</b>
-                )}{' '}
-                Uploads must finish before the deadline.
-            </div>
+            {submission && !showForm && (
+                <StatusCard
+                    icon={state === 'closed' ? <MdLockOutline /> : <MdCheck />}
+                    title={state === 'closed' ? 'Submissions are closed' : 'Project submitted'}
+                    detail={
+                        <>
+                            {savedBy}.{' '}
+                            {state === 'open'
+                                ? 'Any teammate can still edit it until the deadline.'
+                                : 'This is what the judges will see.'}
+                        </>
+                    }
+                    action={
+                        editable && (
+                            <Button onClick={() => setEditing(true)}>Edit submission</Button>
+                        )
+                    }
+                />
+            )}
+            {!submission && state === 'closed' && (
+                <StatusCard
+                    icon={<MdLockOutline />}
+                    title="Submissions are closed"
+                    detail="Your team didn't submit before the deadline. Reach out to the organizers if something went wrong."
+                />
+            )}
+            {state === 'not-open' && (
+                <StatusCard
+                    icon={<MdOutlineSchedule />}
+                    title={`Submissions open ${formatPacific(phase.startTime)}`}
+                    detail={
+                        <>
+                            Get these ready:
+                            <ul className="mt-1 list-disc pl-5">
+                                {phase.fields.map((field) => (
+                                    <li key={field.id}>{field.label}</li>
+                                ))}
+                            </ul>
+                        </>
+                    }
+                />
+            )}
+            {state === 'disabled' && (
+                <StatusCard
+                    icon={<MdPauseCircleOutline />}
+                    title="Submissions are paused"
+                    detail="The organizers have paused submissions. Check back soon."
+                />
+            )}
+
+            {submission && !showForm && (
+                <dl className="glass flex flex-col divide-y divide-white/70 px-4 md:px-6">
+                    {phase.fields.map((field) => (
+                        <div
+                            key={field.id}
+                            className="flex flex-col gap-1 py-3 md:flex-row md:gap-6"
+                        >
+                            <dt className="text-sm font-semibold md:w-56 md:shrink-0">
+                                {field.label}
+                            </dt>
+                            <dd className="min-w-0 break-words text-slate-700">
+                                <Answer field={field} value={submission.answers[field.id]} />
+                            </dd>
+                        </div>
+                    ))}
+                </dl>
+            )}
 
             {conflict && (
                 <div className="glass flex flex-col gap-3 border-amber-300 p-4 md:flex-row md:items-center">
@@ -244,59 +315,110 @@ export default function SubmitPage() {
                 </div>
             )}
 
-            {state === 'not-open' && (
-                <div className="glass p-4">Submissions open {formatPacific(phase.startTime)}.</div>
-            )}
-            {state === 'disabled' && (
-                <div className="glass p-4">Submissions are paused by the organizers.</div>
-            )}
-            {state === 'closed' && <div className="glass p-4 font-medium">Submissions closed</div>}
+            {showForm && (
+                <>
+                    <div className="glass flex flex-col gap-5 p-4 md:p-6">
+                        <Field label="Team name">
+                            <input className={inputClass} value={team.Team.team_name} disabled />
+                        </Field>
+                        <p className="-mt-3 text-xs text-slate-600">
+                            From your team. Rename it on the team page.
+                        </p>
+                        {phase.fields.map((field) => (
+                            <SubmissionInput
+                                key={field.id}
+                                field={field}
+                                value={values[field.id] ?? ''}
+                                file={files[field.id] ?? null}
+                                error={errors[field.id]}
+                                disabled={saving}
+                                onChange={(value) => update(field.id, value)}
+                                onFile={(file) => {
+                                    setFiles({ ...files, [field.id]: file });
+                                    const fileError = file ? checkFile(field, file) : undefined;
+                                    setErrors(
+                                        fileError ? { ...errors, [field.id]: fileError } : errors
+                                    );
+                                }}
+                            />
+                        ))}
+                    </div>
 
-            <div className="glass flex flex-col gap-5 p-4 md:p-6">
-                <Field label="Team name">
-                    <input className={inputClass} value={team.Team.team_name} disabled />
-                </Field>
-                <p className="-mt-3 text-xs text-slate-600">
-                    From your team. Rename it on the team page.
-                </p>
-                {phase.fields.map((field) => (
-                    <SubmissionInput
-                        key={field.id}
-                        field={field}
-                        value={values[field.id] ?? ''}
-                        file={files[field.id] ?? null}
-                        error={errors[field.id]}
-                        disabled={!editable}
-                        onChange={(value) => update(field.id, value)}
-                        onFile={(file) => {
-                            setFiles({ ...files, [field.id]: file });
-                            const fileError = file ? checkFile(field, file) : undefined;
-                            setErrors(fileError ? { ...errors, [field.id]: fileError } : errors);
-                        }}
-                    />
-                ))}
-            </div>
-
-            {editable && (
-                <div className="flex flex-col-reverse gap-3 md:flex-row md:items-center md:justify-between">
-                    <span className="text-sm text-slate-600">
-                        {submission?.submittedBy
-                            ? `Last submitted by ${submission.submittedBy}${submission.submittedAt ? ` at ${formatTime(submission.submittedAt)}` : ''}. `
-                            : ''}
-                        Any teammate can update it until the deadline.
-                    </span>
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        disabled={saving}
-                        className="w-full md:w-auto md:px-8"
-                    >
-                        {saving ? 'Saving…' : submission ? 'Update submission' : 'Submit'}
-                    </Button>
-                </div>
+                    <div className="flex flex-col-reverse gap-3 md:flex-row md:items-center md:justify-between">
+                        <span className="text-sm text-slate-600">
+                            Any teammate can update it until the deadline. Uploads must finish
+                            before then.
+                        </span>
+                        <div className="flex flex-col-reverse gap-3 md:flex-row">
+                            {submission && (
+                                <Button
+                                    onClick={() => {
+                                        loadSubmission(phase.phaseId);
+                                        setEditing(false);
+                                    }}
+                                    disabled={saving}
+                                    className="w-full md:w-auto"
+                                >
+                                    Cancel
+                                </Button>
+                            )}
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                disabled={saving}
+                                className="w-full md:w-auto md:px-8"
+                            >
+                                {saving
+                                    ? 'Saving…'
+                                    : submission
+                                      ? 'Save changes'
+                                      : 'Submit project'}
+                            </Button>
+                        </div>
+                    </div>
+                </>
             )}
         </form>
     );
+}
+
+function StatusCard({
+    icon,
+    title,
+    detail,
+    action,
+}: {
+    icon: ReactNode;
+    title: string;
+    detail: ReactNode;
+    action?: ReactNode;
+}) {
+    return (
+        <div className="glass flex flex-col gap-4 p-4 md:flex-row md:items-center md:p-6">
+            <span className="portal-accent flex size-12 shrink-0 items-center justify-center rounded-full text-2xl text-white">
+                {icon}
+            </span>
+            <div className="flex-1">
+                <p className="text-xl font-semibold">{title}</p>
+                <div className="text-sm text-slate-700">{detail}</div>
+            </div>
+            {action}
+        </div>
+    );
+}
+
+// Read-only answer: links open in a new tab, files show their name
+function Answer({ field, value }: { field: SubmissionField; value?: string }) {
+    if (!value) return <span className="text-slate-500">Not provided</span>;
+    if (field.type === 'url') {
+        return (
+            <a href={value} target="_blank" rel="noreferrer" className="underline">
+                {value}
+            </a>
+        );
+    }
+    if (field.type === 'file') return <span>📄 {value}</span>;
+    return <span className="whitespace-pre-wrap">{value}</span>;
 }
 
 type SubmissionInputProps = {

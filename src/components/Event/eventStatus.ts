@@ -62,6 +62,23 @@ export const STATUS_BADGES: Partial<Record<EventStatus, { label: string; tone: B
 
 export type BadgeTone = 'neutral' | 'warn' | 'info' | 'good' | 'bad';
 
+export type EventTiming = 'upcoming' | 'live' | 'ended';
+
+export function eventTiming(event: { startTime: string; endTime: string }, now = new Date()) {
+    if (now >= new Date(event.endTime)) return 'ended';
+    if (now >= new Date(event.startTime)) return 'live';
+    return 'upcoming';
+}
+
+// Once an event is over everyone sees Ended; while it runs, registered students see Happening now
+export function displayBadge(status: EventStatus | null, timing: EventTiming) {
+    if (timing === 'ended') return { label: 'Ended', tone: 'neutral' as const };
+    if (timing === 'live' && status === 'REGISTERED') {
+        return { label: 'Happening now', tone: 'info' as const };
+    }
+    return status ? STATUS_BADGES[status] : undefined;
+}
+
 // "Thu Nov 5, 2:14 PM PT"
 export function formatPacific(iso: string) {
     return `${moment.utc(iso).tz('America/Vancouver').format('ddd MMM D, h:mm A')} PT`;

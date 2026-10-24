@@ -3,7 +3,7 @@ import { MdOutlineCalendarToday, MdOutlineLocationOn, MdOutlineSell } from 'reac
 import { Event } from '../../types/Event';
 import { renderDate } from '../../utils';
 import { Badge } from '../Portal/Badge';
-import { EventStatus, STATUS_BADGES } from './eventStatus';
+import { displayBadge, EventStatus, eventTiming } from './eventStatus';
 
 type EventHeaderProps = {
     event: Event;
@@ -15,7 +15,7 @@ type EventHeaderProps = {
 
 // Figma "Events" frame: title and badge, glass card with tagline, details and the main button, image on the right
 export function EventHeader({ event, status, message, priceLine, action }: EventHeaderProps) {
-    const badge = STATUS_BADGES[status];
+    const badge = displayBadge(status, eventTiming(event));
 
     return (
         <section className="flex flex-col gap-6 md:flex-row md:gap-8">

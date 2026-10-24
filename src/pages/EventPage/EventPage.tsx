@@ -22,6 +22,7 @@ import { MEMBERSHIP_PATH } from '../../components/Layout/paths';
 import { TeamFormation } from '../../components/Event/TeamFormation';
 import {
     EventStatus,
+    eventTiming,
     formatPacific,
     formatPrice,
     getEventStatus,
@@ -112,6 +113,7 @@ export default function EventPage() {
     }
     if (!event || !status) return <p className="text-center">Loading…</p>;
 
+    const timing = eventTiming(event);
     const yourPrice = isMember ? event.memberPrice : event.nonMemberPrice;
     const amountDue = attendee?.amountDue ?? yourPrice;
 
@@ -196,17 +198,19 @@ export default function EventPage() {
             "Contact the organizers if you still want to attend. If you paid before the deadline and this page hasn't updated, don't pay again: refresh shortly or contact us.",
         PAYMENT_PROCESSING:
             "We're confirming your payment with Stripe. This page updates on its own.",
-        REGISTERED: 'Your spot is confirmed. See you there!',
+        REGISTERED: {
+            upcoming: 'Your spot is confirmed. See you there!',
+            live: `${event.name} is happening now. Check the schedule below, and submit from your team page.`,
+            ended: 'Thanks for taking part! Your team and submission are still here to look back on.',
+        }[timing],
         NOT_SELECTED:
             "Thanks for applying. We couldn't offer you a spot this time, but we'd love to see you at our next event.",
     };
 
-    const showPrice = ![
-        'REGISTERED',
-        'NOT_SELECTED',
-        'PAYMENT_WINDOW_PASSED',
-        'PAYMENT_PROCESSING',
-    ].includes(status);
+    const showPrice =
+        !['REGISTERED', 'NOT_SELECTED', 'PAYMENT_WINDOW_PASSED', 'PAYMENT_PROCESSING'].includes(
+            status
+        ) && timing !== 'ended';
     const priceLine = showPrice && (
         <p>
             <span className="font-semibold">Your price: {formatPrice(amountDue)}</span>
@@ -227,7 +231,15 @@ export default function EventPage() {
         </p>
     );
 
-    const action = actions[status];
+    // After the event only registered students keep a button, and only to look back at their team
+    const action =
+        timing !== 'ended'
+            ? actions[status]
+            : status === 'REGISTERED' && onTeam && actions.REGISTERED;
+    const message =
+        timing === 'ended' && status !== 'REGISTERED'
+            ? 'This event has ended. Keep an eye on the dashboard for the next one.'
+            : messages[status];
     const hasLegacyDashboard = legacyDashboards.some((path) => path.includes(`/${eventId}/`));
 
     return (
@@ -235,7 +247,7 @@ export default function EventPage() {
             <EventHeader
                 event={event}
                 status={status}
-                message={messages[status]}
+                message={message}
                 priceLine={priceLine}
                 action={action && <MainAction>{action}</MainAction>}
             />
