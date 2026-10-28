@@ -94,8 +94,8 @@ export const mockEvent = () => ({
         ].join('\n'),
     ].join('\n\n'),
     media: [],
-    member_price: 3.4,
-    non_member_price: 8.55,
+    member_price: 9,
+    non_member_price: 15,
     max_attendees: 52,
     event_form_questions: {
         questions: [

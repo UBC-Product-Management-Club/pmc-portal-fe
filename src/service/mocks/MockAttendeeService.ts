@@ -67,7 +67,7 @@ class MockAttendeeService implements Pick<AttendeeService, keyof AttendeeService
             workflow_state,
             payment_due_at: due === undefined ? null : fromNow(due),
             acceptance_version: due === undefined ? 0 : 1,
-            amount_due: status === 'ACCEPTED' ? 8.55 : null,
+            amount_due: status === 'ACCEPTED' ? 15 : null,
             server_time: new Date().toISOString(),
         } as unknown as Attendee;
     }
