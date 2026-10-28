@@ -1,6 +1,7 @@
 import { Attendee } from '../../types/Attendee';
 import type { AttendeeService } from '../AttendeeService';
 import { delay, fromNow, MOCK_EVENT_ID } from './mockData';
+import { isMockMember } from './MockUserService';
 
 const HOUR = 60 * 60 * 1000;
 
@@ -67,7 +68,8 @@ class MockAttendeeService implements Pick<AttendeeService, keyof AttendeeService
             workflow_state,
             payment_due_at: due === undefined ? null : fromNow(due),
             acceptance_version: due === undefined ? 0 : 1,
-            amount_due: status === 'ACCEPTED' ? 15 : null,
+            // The price for the student's membership today, like the backend
+            amount_due: status === 'ACCEPTED' ? (isMockMember() ? 9 : 15) : null,
             server_time: new Date().toISOString(),
         } as unknown as Attendee;
     }

@@ -208,7 +208,7 @@ function EventList({
 }
 
 export default function Dashboard() {
-    const { user } = useUserData();
+    const { user, isMember } = useUserData();
     const { getAll, getStatuses, getAnnouncements } = useEvents();
     const [events, setEvents] = useState<EventCard[]>();
     const [rows, setRows] = useState<EventStatusRow[]>([]);
@@ -245,7 +245,11 @@ export default function Dashboard() {
             <h1 className="text-4xl leading-none font-medium md:text-5xl">
                 {user?.firstName ? `Hey, ${user.firstName}!` : 'Hey there!'}
             </h1>
-            <Announcements items={announcements} />
+            <Announcements
+                items={announcements.filter(
+                    (a) => a.audience === 'everyone' || (a.audience === 'members') === !!isMember
+                )}
+            />
             {error ? (
                 <div className="glass p-4">Couldn't load events. Refresh to try again.</div>
             ) : !events ? (

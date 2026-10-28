@@ -49,9 +49,16 @@ describe('Dashboard', () => {
                     event('d', 'Hidden Event', 3 * day, { isDisabled: true }),
                 ]),
             getStatuses,
-            getAnnouncements: vi
-                .fn()
-                .mockResolvedValue([{ announcementId: '1', title: 'Welcome back', body: 'Hello' }]),
+            getAnnouncements: vi.fn().mockResolvedValue([
+                { announcementId: '1', title: 'Welcome back', body: 'Hello', audience: 'everyone' },
+                {
+                    announcementId: '2',
+                    title: 'Become a member',
+                    body: 'Save',
+                    audience: 'non_members',
+                },
+                { announcementId: '3', title: 'Member perks', body: 'Thanks', audience: 'members' },
+            ]),
         });
     });
 
@@ -85,6 +92,21 @@ describe('Dashboard', () => {
         renderPage();
         expect(await screen.findByText('Under review')).toBeInTheDocument();
         expect(screen.queryByText('Draft')).not.toBeInTheDocument();
+    });
+
+    it('shows a non-member the membership offer but not member-only news', async () => {
+        renderPage();
+        expect(await screen.findByText('Become a member')).toBeInTheDocument();
+        expect(screen.getByText('Welcome back')).toBeInTheDocument();
+        expect(screen.queryByText('Member perks')).not.toBeInTheDocument();
+    });
+
+    it('never shows a member the membership offer', async () => {
+        (useUserData as Mock).mockReturnValue({ user: { firstName: 'Simoon' }, isMember: true });
+        renderPage();
+        expect(await screen.findByText('Member perks')).toBeInTheDocument();
+        expect(screen.getByText('Welcome back')).toBeInTheDocument();
+        expect(screen.queryByText('Become a member')).not.toBeInTheDocument();
     });
 
     it('shows announcements and lets the section collapse', async () => {

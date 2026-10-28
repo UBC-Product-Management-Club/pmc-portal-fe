@@ -6,12 +6,21 @@ const EDITABLE = ['first_name', 'last_name', 'pronouns', 'year', 'faculty', 'maj
 
 let user = { ...mockUser };
 
+// ?member=yes|no makes the student a PMC member or not; remembered for the tab
+const MEMBER_KEY = 'mock_member';
+
+export function isMockMember() {
+    const fromUrl = new URLSearchParams(window.location.search).get('member');
+    if (fromUrl) sessionStorage.setItem(MEMBER_KEY, fromUrl);
+    return sessionStorage.getItem(MEMBER_KEY) === 'yes';
+}
+
 class MockUserService implements Pick<UserService, keyof UserService> {
     create() {}
 
     async me(): Promise<UserDocument> {
         await delay();
-        return user as unknown as UserDocument;
+        return { ...user, is_payment_verified: isMockMember() } as unknown as UserDocument;
     }
 
     async getProfile(): Promise<UserDocument> {

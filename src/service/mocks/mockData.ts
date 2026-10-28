@@ -297,5 +297,6 @@ export const mockAnnouncements = [
         announcement_id: 'membership',
         title: 'Become a member for discounted events',
         body: 'Members pay less for every PMC event this year.',
+        audience: 'non_members' as const,
     },
 ];
