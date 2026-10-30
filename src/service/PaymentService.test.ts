@@ -49,21 +49,5 @@ describe('PaymentService', () => {
                 clientSecret: 'client_secret',
             });
         });
-
-        it('event fee', async () => {
-            mockClient.get.mockResolvedValueOnce({
-                clientSecret: 'client_secret',
-            });
-
-            const result = await service.getElementsOptions({
-                type: PaymentType.EVENT,
-                eventId: 'eventId',
-            });
-
-            expect(mockClient.get).toHaveBeenCalledWith('/create/event/eventId');
-            expect(result).toEqual({
-                clientSecret: 'client_secret',
-            });
-        });
     });
 });

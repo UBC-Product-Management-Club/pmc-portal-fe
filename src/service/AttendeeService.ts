@@ -8,8 +8,11 @@ class AttendeeService {
         this.client = client ?? new RestClient(`${import.meta.env.VITE_API_URL}/api/v2/attendee`);
     }
 
-    getAttendee(eventId: string): Promise<Attendee> {
-        return this.client.get<Attendee>(`/${eventId}`);
+    // sessionId is the Stripe session from the success redirect, so the server can say
+    // the payment is processing while the webhook is on its way
+    getAttendee(eventId: string, sessionId?: string): Promise<Attendee> {
+        const query = sessionId ? `?session_id=${encodeURIComponent(sessionId)}` : '';
+        return this.client.get<Attendee>(`/${eventId}${query}`);
     }
 
     deleteAttendee(eventId: string): Promise<{ message: string }> {

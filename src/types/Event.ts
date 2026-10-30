@@ -22,12 +22,20 @@ const RawEventSchema = z.object({
     location: z.string(),
     blurb: z.string(),
     description: z.string(),
-    media: z.array(z.url()),
+    media: z
+        .array(z.url())
+        .nullable()
+        .optional()
+        .transform((media) => media ?? []),
     member_price: z.number(),
     non_member_price: z.number(),
     max_attendees: z.number(),
     event_form_questions: z.json(),
-    is_disabled: z.boolean(),
+    is_disabled: z
+        .boolean()
+        .nullable()
+        .optional()
+        .transform((disabled) => disabled ?? false),
     registered: z.number(),
     needs_review: z.boolean(),
     external_page: z.url().nullable().optional(),
