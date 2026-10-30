@@ -6,8 +6,8 @@ function useAttendee() {
     const attendeeService = useMemo(() => createAttendeeService(), []);
 
     const getAttendee = useCallback(
-        async (eventId: string) => {
-            const attendee = await attendeeService.getAttendee(eventId);
+        async (eventId: string, sessionId?: string) => {
+            const attendee = await attendeeService.getAttendee(eventId, sessionId);
             return attendee ? AttendeeSchema.parse(attendee) : null;
         },
         [attendeeService]

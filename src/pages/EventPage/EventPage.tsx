@@ -16,6 +16,7 @@ import {
     Section,
 } from '../../components/Event/EventSections';
 import { MainAction } from '../../components/Event/MainAction';
+import { paymentErrorMessage } from '../../components/Event/eventErrors';
 import { MEMBERSHIP_PATH } from '../../components/Layout/paths';
 import {
     EventStatus,
@@ -48,12 +49,13 @@ export default function EventPage() {
 
     const isSignedIn = !!user;
     const returnedFromStripe = searchParams.has('success');
+    const stripeSessionId = searchParams.get('session_id') ?? undefined;
 
     const fetchAttendee = useCallback(async () => {
-        const result = await getAttendee(eventId).catch(() => null);
+        const result = await getAttendee(eventId, stripeSessionId).catch(() => null);
         setAttendee(result);
         return result;
-    }, [eventId, getAttendee]);
+    }, [eventId, stripeSessionId, getAttendee]);
 
     useEffect(() => {
         getById(eventId)
@@ -104,11 +106,12 @@ export default function EventPage() {
     const pay = async () => {
         setPaying(true);
         try {
-            const { url } = await paymentService.getOrCreateRSVPCheckoutSession(eventId);
+            const { url } = await paymentService.getOrCreateEventCheckoutSession(eventId);
             window.location.href = url;
-        } catch {
-            showToast('error', "Couldn't start checkout. Please try again.");
+        } catch (error) {
+            showToast('error', paymentErrorMessage(error));
             setPaying(false);
+            fetchAttendee();
         }
     };
 

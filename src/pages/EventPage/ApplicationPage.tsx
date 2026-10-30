@@ -21,6 +21,7 @@ import {
     countWords,
     inputClass,
 } from '../../components/Event/applicationRules';
+import { applicationErrorMessage, paymentErrorMessage } from '../../components/Event/eventErrors';
 import { formatPacific, formatPrice, getEventStatus } from '../../components/Event/eventStatus';
 
 const without = (errors: Record<string, string>, key: string) =>
@@ -179,23 +180,40 @@ export default function ApplicationPage() {
         setSubmitting(true);
         try {
             await addAttendee(eventId, formData);
-            await draft.clear();
-            if (!event.needsReview) {
-                const { url } = await paymentService.getOrCreateEventCheckoutSession(eventId);
-                window.location.href = url;
-                return;
-            }
-            showToast('success', 'Application submitted. We’ll let you know once it’s reviewed.');
-            navigate(`/events/${eventId}`);
         } catch (error) {
             if (error instanceof ApiError && error.fields) setErrors(error.fields);
-            const messages: Record<string, string> = {
-                EVENT_FULL: 'This event filled up before you submitted.',
-                CLOSED: 'Applications closed before you submitted.',
-            };
-            const code = error instanceof ApiError ? error.code : undefined;
-            showToast('error', (code && messages[code]) ?? "Couldn't submit. Please try again.");
+            showToast('error', applicationErrorMessage(error));
             setSubmitting(false);
+            // Applied from another tab: show what they sent instead of a form that can't submit
+            if (error instanceof ApiError && error.code === 'ALREADY_APPLIED') {
+                getAttendee(eventId)
+                    .then(setAttendee)
+                    .catch(() => undefined);
+            }
+            return;
+        }
+
+        await draft.clear();
+        if (event.needsReview) {
+            showToast('success', 'Application submitted. We’ll let you know once it’s reviewed.');
+            navigate(`/events/${eventId}`);
+            return;
+        }
+
+        // No review: free events register straight away, paid ones go to Stripe
+        try {
+            if (price === 0) {
+                await paymentService.getOrCreateRSVPCheckoutSession(eventId);
+                showToast('success', "You're registered.");
+                navigate(`/events/${eventId}`);
+                return;
+            }
+            const { url } = await paymentService.getOrCreateEventCheckoutSession(eventId);
+            window.location.href = url;
+        } catch (error) {
+            // The application is saved, so the event page takes it from here
+            showToast('error', paymentErrorMessage(error));
+            navigate(`/events/${eventId}`);
         }
     };
 
