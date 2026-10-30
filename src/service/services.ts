@@ -1,10 +1,12 @@
 import { AttendeeService } from './AttendeeService';
 import { EventService } from './EventService';
+import { PaymentService } from './PaymentService';
 import { SubmissionService } from './SubmissionService';
 import { TeamService } from './TeamService';
 import { UserService } from './UserService';
 import { MockAttendeeService } from './mocks/MockAttendeeService';
 import { MockEventService } from './mocks/MockEventService';
+import { MockPaymentService } from './mocks/MockPaymentService';
 import { MockSubmissionService } from './mocks/MockSubmissionService';
 import { MockTeamService } from './mocks/MockTeamService';
 import { MockUserService } from './mocks/MockUserService';
@@ -29,6 +31,9 @@ export const createTeamService = (): Api<TeamService> =>
 
 export const createSubmissionService = (): Api<SubmissionService> =>
     useMocks ? new MockSubmissionService() : new SubmissionService();
+
+export const createPaymentService = (): Api<PaymentService> =>
+    useMocks ? new MockPaymentService() : new PaymentService();
 
 export const createUserService = (): Api<UserService> =>
     useMocks ? new MockUserService() : new UserService();

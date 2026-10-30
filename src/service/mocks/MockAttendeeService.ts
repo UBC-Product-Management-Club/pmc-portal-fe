@@ -22,6 +22,8 @@ const STATES = {
 
 type MockState = keyof typeof STATES;
 const STORAGE_KEY = 'mock_attendee_state';
+const PAID_AT_KEY = 'mock_paid_at';
+const WEBHOOK_MS = 3000;
 
 let appliedFromUrl: string | null = null;
 
@@ -32,8 +34,19 @@ export function getMockState(): MockState | null {
         appliedFromUrl = fromUrl;
         sessionStorage.setItem(STORAGE_KEY, fromUrl);
     }
+    const paidAt = Number(sessionStorage.getItem(PAID_AT_KEY));
+    if (paidAt && Date.now() - paidAt >= WEBHOOK_MS) {
+        sessionStorage.removeItem(PAID_AT_KEY);
+        sessionStorage.setItem(STORAGE_KEY, 'registered');
+    }
     const state = sessionStorage.getItem(STORAGE_KEY);
     return state && state in STATES ? (state as MockState) : null;
+}
+
+// Stubbed checkout: shows Payment processing until the pretend webhook arrives
+export function markMockPaid() {
+    sessionStorage.setItem(STORAGE_KEY, 'processing');
+    sessionStorage.setItem(PAID_AT_KEY, String(Date.now()));
 }
 
 export function setMockState(state: MockState) {

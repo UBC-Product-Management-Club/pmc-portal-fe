@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { PaymentService } from '../service/PaymentService';
+import { createPaymentService } from '../service/services';
 
 export function usePaymentService() {
-    return useMemo(() => new PaymentService(), []);
+    return useMemo(() => createPaymentService(), []);
 }
