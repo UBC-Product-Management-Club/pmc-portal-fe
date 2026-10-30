@@ -18,6 +18,7 @@ import EventPage from './pages/EventPage/EventPage.tsx';
 import ApplicationPage from './pages/EventPage/ApplicationPage.tsx';
 import RegisterRedirect from './pages/EventPage/RegisterRedirect.tsx';
 import TeamPage from './pages/EventPage/TeamPage.tsx';
+import SubmitPage from './pages/EventPage/SubmitPage.tsx';
 
 Modal.setAppElement('#root');
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -43,6 +44,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                             <Route path="/events/:event_id" element={<EventPage />} />
                             <Route path="/events/:event_id/apply" element={<ApplicationPage />} />
                             <Route path="/events/:event_id/team" element={<TeamPage />} />
+                            <Route path="/events/:event_id/submit" element={<SubmitPage />} />
                             <Route
                                 path="/events/:event_id/register"
                                 element={<RegisterRedirect />}

@@ -43,7 +43,8 @@ const PhaseSchema = z
     .object({
         id: z.string(),
         event_id: z.uuid(),
-        starttime: z.iso.datetime({ offset: true }),
+        // No start time means the window is already open
+        starttime: z.iso.datetime({ offset: true }).nullable(),
         deadline: z.iso.datetime({ offset: true }),
         is_enabled: z.boolean(),
         fields: z.array(SubmissionFieldSchema),
