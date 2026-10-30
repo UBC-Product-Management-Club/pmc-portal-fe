@@ -27,6 +27,8 @@ const TeamResponseSchema = z.object({
     Team: z.object({
         team_name: z.string(),
         team_code: z.string(),
+        // Only sent once results are published
+        is_finalist: z.boolean().optional(),
         Team_Member: z.array(
             z.object({
                 attendee_id: z.uuid(),

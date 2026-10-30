@@ -19,6 +19,7 @@ describe('EventCard', () => {
         memberOnly: false,
         isDisabled: false,
         externalPage: null,
+        icon: null,
     };
 
     async function renderComponent(disabled?: boolean) {

@@ -40,6 +40,8 @@ describe('Event', () => {
         mockNavigateTo = vi.fn();
         mockEvent = {
             eventId: 'aj',
+            icon: null,
+            schedule: null,
             name: 'Product Conference',
             date: '2025-01-01',
             blurb: 'sdsd',
