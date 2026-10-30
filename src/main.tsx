@@ -6,7 +6,6 @@ import Login from './pages/Login/Login.tsx';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Auth0Provider } from '@auth0/auth0-react';
 import Dashboard from './pages/Dashboard/Dashboard.tsx';
-import Event from './pages/Event/Event.tsx';
 import { Profile } from './pages/Profile/Profile';
 import { Layout } from './layout';
 import Onboarding from './components/Onboarding/Onboarding.tsx';
@@ -15,6 +14,9 @@ import AuthorizedRouter from './components/AuthorizedRouter/AuthorizedRouter.tsx
 import PaymentSuccess from './components/Payment/PaymentSuccess.tsx';
 import PaymentCanceled from './components/Payment/PaymentCanceled.tsx';
 import EventDashboard from './pages/Events/EventDashboard.tsx';
+import EventPage from './pages/EventPage/EventPage.tsx';
+import ApplicationPage from './pages/EventPage/ApplicationPage.tsx';
+import RegisterRedirect from './pages/EventPage/RegisterRedirect.tsx';
 
 Modal.setAppElement('#root');
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -37,12 +39,18 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                         <Route path={'/onboarding'} element={<Onboarding />} />
                         <Route element={<Layout />}>
                             <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/events/:event_id/register" element={<Event />} />
+                            <Route path="/events/:event_id" element={<EventPage />} />
+                            <Route path="/events/:event_id/apply" element={<ApplicationPage />} />
+                            <Route
+                                path="/events/:event_id/register"
+                                element={<RegisterRedirect />}
+                            />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/dashboard/success" element={<PaymentSuccess />}></Route>
                             <Route path="/dashboard/canceled" element={<PaymentCanceled />}></Route>
                         </Route>
-                        <Route path={'/events/:event_id'} element={<EventDashboard />} />
+                        {/* Past events' own registered dashboards */}
+                        <Route path={'/events/:event_id/dashboard'} element={<EventDashboard />} />
                     </Routes>
                 </UserDataProvider>
             </Auth0Provider>
