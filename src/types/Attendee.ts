@@ -6,6 +6,18 @@ const ATTENDEE_STATUS = z.enum([
     'APPLIED',
     'REGISTERED',
     'ACCEPTED',
+    'REJECTED',
+] as const);
+
+// Display state the server works out, so pages never derive it themselves
+const WORKFLOW_STATE = z.enum([
+    'DRAFT',
+    'UNDER_REVIEW',
+    'PAYMENT_WINDOW_OPEN',
+    'PAYMENT_WINDOW_PASSED',
+    'PAYMENT_PROCESSING',
+    'REGISTERED',
+    'NOT_SELECTED',
 ] as const);
 
 const RawAttendee = z.object({
@@ -18,6 +30,12 @@ const RawAttendee = z.object({
     is_payment_verified: z.boolean().nullable(),
     status: ATTENDEE_STATUS,
     payment_id: z.string().nullable(),
+    // Optional until the backend returns them
+    workflow_state: WORKFLOW_STATE.optional(),
+    payment_due_at: z.iso.datetime({ offset: true }).nullable().optional(),
+    acceptance_version: z.number().optional(),
+    amount_due: z.number().nullable().optional(),
+    server_time: z.iso.datetime({ offset: true }).optional(),
 });
 
 const AttendeeSchema = RawAttendee.transform((attendee) => ({
@@ -30,10 +48,16 @@ const AttendeeSchema = RawAttendee.transform((attendee) => ({
     isPaymentVerified: attendee.is_payment_verified,
     status: attendee.status,
     paymentId: attendee.payment_id,
+    workflowState: attendee.workflow_state,
+    paymentDueAt: attendee.payment_due_at ?? null,
+    acceptanceVersion: attendee.acceptance_version,
+    amountDue: attendee.amount_due ?? null,
+    serverTime: attendee.server_time,
 }));
 
 type Attendee = z.infer<typeof AttendeeSchema>;
 type AttendeeStatus = z.infer<typeof ATTENDEE_STATUS>;
+type WorkflowState = z.infer<typeof WORKFLOW_STATE>;
 
-export { AttendeeSchema, ATTENDEE_STATUS };
-export type { Attendee, AttendeeStatus };
+export { AttendeeSchema, ATTENDEE_STATUS, WORKFLOW_STATE };
+export type { Attendee, AttendeeStatus, WorkflowState };

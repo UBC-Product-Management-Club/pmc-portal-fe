@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap');
 @import 'tailwindcss';
 
 :root {
@@ -35,6 +36,102 @@
     --color-pmc-dark-blue: var(--pmc-dark-blue);
     --color-pmc-midnight-grey: var(--pmc-midnight-grey);
     --color-pmc-midnight-blue: var(--pmc-midnight-blue);
+
+    /* Member portal redesign (Figma) */
+    --font-geist: 'Geist', sans-serif;
+    --color-portal-surface: #fafafa;
+    --color-portal-badge: #f0f0f0;
+    --color-portal-stroke: #e2e8f0;
+    --color-portal-muted: #94a3b8;
+}
+
+/* Pink-to-lavender page background and the bar tint (spec mockups, based on the Figma) */
+@utility portal-bg {
+    background-image: linear-gradient(135deg, #f8c8dc 0%, #f3d3e6 40%, #e4dbf7 75%, #dcd6fb 100%);
+}
+
+@utility portal-tint {
+    background-color: rgb(255 255 255 / 0.55);
+}
+
+/* Main action on each page */
+@utility portal-accent {
+    background-image: linear-gradient(90deg, #f472b6, #a78bfa);
+}
+
+/* Frosted-glass card */
+@utility glass {
+    background-color: rgb(255 255 255 / 0.42);
+    border: 1px solid rgb(255 255 255 / 0.75);
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+}
+
+/* Event descriptions: numbered lists become step cards, bullets get a check */
+.event-markdown h3 {
+    margin: 1.25rem 0 0.625rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.event-markdown a {
+    text-decoration: underline;
+}
+.event-markdown p + p {
+    margin-top: 0.75rem;
+}
+.event-markdown ol,
+.event-markdown ul {
+    display: grid;
+    gap: 0.625rem;
+}
+@media (min-width: 640px) {
+    .event-markdown ol,
+    .event-markdown ul {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+.event-markdown ol {
+    counter-reset: step;
+}
+.event-markdown ol > li {
+    counter-increment: step;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border-radius: 10px;
+    background-color: rgb(255 255 255 / 0.6);
+    padding: 0.875rem;
+    font-size: 0.875rem;
+}
+.event-markdown ol > li::before {
+    content: counter(step);
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+    background-image: linear-gradient(90deg, #f472b6, #a78bfa);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+.event-markdown ul > li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+}
+.event-markdown ul > li::before {
+    content: '';
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.125rem;
+    background-image: linear-gradient(90deg, #f472b6, #a78bfa);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 15-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z'/%3E%3C/svg%3E")
+        center / contain no-repeat;
 }
 
 body,
@@ -43,7 +140,6 @@ html {
     padding: 0;
     background-color: var(--pmc-dark-blue);
 }
-
 
 @keyframes drawCircle {
     0% {

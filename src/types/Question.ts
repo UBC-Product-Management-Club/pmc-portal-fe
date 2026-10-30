@@ -12,6 +12,7 @@ const shortAnsQuestionSchema = baseQuestionSchema.extend({
 
 const longAnsQuestionSchema = baseQuestionSchema.extend({
     type: z.literal('long-answer'),
+    maxWords: z.number().optional(),
 });
 
 const dropdownQuestionSchema = baseQuestionSchema.extend({
@@ -21,6 +22,8 @@ const dropdownQuestionSchema = baseQuestionSchema.extend({
 
 const fileQuestionSchema = baseQuestionSchema.extend({
     type: z.literal('file'),
+    accept: z.array(z.string()).optional(),
+    maxSizeMB: z.number().optional(),
 });
 
 const questionSchema = z.discriminatedUnion('type', [
@@ -34,3 +37,10 @@ type Question = z.infer<typeof questionSchema>;
 
 export type { Question };
 export const questionsSchema = z.array(questionSchema);
+
+// Events store their questions as { questions: [...] }; a bare list also works
+export function parseQuestions(raw: unknown): Question[] {
+    const list = raw && typeof raw === 'object' && 'questions' in raw ? raw.questions : raw;
+    const result = questionsSchema.safeParse(list);
+    return result.success ? result.data : [];
+}
