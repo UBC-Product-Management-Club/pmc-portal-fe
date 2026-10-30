@@ -7,7 +7,7 @@ import { Universities, UserDataFromUser, UserDataFromUserSchema } from '../../ty
 import { ActionTypes, useUserData } from '../../providers/UserData/UserDataProvider';
 import { Payment } from '../Payment/Payment';
 import { FetchFeeResponse, PaymentType } from '../../service/PaymentService';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { formatPrice } from '../../utils';
 import { ZodError } from 'zod/v4';
 import { PaymentIntent } from '@stripe/stripe-js';
@@ -24,7 +24,13 @@ enum Pages {
 
 export default function Onboarding() {
     const [responses, setResponses] = useState<Partial<UserDataFromUser>>({});
-    const [currPage, setCurrPage] = useState<Pages>(Pages.USER_INFO);
+    // Signed-in non-members arrive at ?step=membership from Become a PMC Member
+    const [searchParams] = useSearchParams();
+    const fromMemberButton = searchParams.get('step') === 'membership';
+    const navigate = useNavigate();
+    const [currPage, setCurrPage] = useState<Pages>(
+        fromMemberButton ? Pages.MEMBERSHIP : Pages.USER_INFO
+    );
     const [fee, setFee] = useState<FetchFeeResponse>();
     const { user: auth0User, logout } = useAuth0();
     const { user, update } = useUserData();
@@ -65,7 +71,8 @@ export default function Onboarding() {
                 });
                 break;
             case Pages.MEMBERSHIP:
-                setCurrPage(Pages.USER_INFO);
+                if (fromMemberButton) navigate(-1);
+                else setCurrPage(Pages.USER_INFO);
                 break;
             case Pages.PAYMENT:
                 setCurrPage(Pages.MEMBERSHIP);
