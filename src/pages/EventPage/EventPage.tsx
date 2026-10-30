@@ -2,10 +2,12 @@ import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useEvents } from '../../hooks/useEvents';
 import { useAttendee } from '../../hooks/useAttendee';
+import { useTeam } from '../../hooks/useTeam';
 import { usePaymentService } from '../../hooks/usePaymentService';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { Attendee } from '../../types/Attendee';
 import { Event } from '../../types/Event';
+import { RegisteredContent } from '../../types/EventDay';
 import { showToast } from '../../utils';
 import { Button, ButtonLink } from '../../components/Portal/Button';
 import { EventHeader } from '../../components/Event/EventHeader';
@@ -13,11 +15,12 @@ import {
     AboutSection,
     EventLinkCards,
     ScheduleSection,
-    Section,
 } from '../../components/Event/EventSections';
+import { GettingReady } from '../../components/Event/GettingReady';
 import { MainAction } from '../../components/Event/MainAction';
 import { paymentErrorMessage } from '../../components/Event/eventErrors';
 import { MEMBERSHIP_PATH } from '../../components/Layout/paths';
+import { TeamFormation } from '../../components/Event/TeamFormation';
 import {
     EventStatus,
     eventTiming,
@@ -37,13 +40,16 @@ export default function EventPage() {
     const { hash } = useLocation();
     const navigate = useNavigate();
     const { user, isMember } = useUserData();
-    const { getById, loadDraft } = useEvents();
+    const { getById, loadDraft, getRegisteredContent } = useEvents();
     const { getAttendee } = useAttendee();
+    const { getTeam } = useTeam();
     const paymentService = usePaymentService();
 
     const [event, setEvent] = useState<Event>();
     const [attendee, setAttendee] = useState<Attendee | null>(null);
     const [hasDraft, setHasDraft] = useState(false);
+    const [onTeam, setOnTeam] = useState(false);
+    const [content, setContent] = useState<RegisteredContent | null>(null);
     const [error, setError] = useState(false);
     const [paying, setPaying] = useState(false);
 
@@ -83,10 +89,20 @@ export default function EventPage() {
         return () => clearInterval(timer);
     }, [status, returnedFromStripe, fetchAttendee]);
 
+    useEffect(() => {
+        if (status !== 'REGISTERED') return;
+        getTeam(eventId)
+            .then(() => setOnTeam(true))
+            .catch(() => setOnTeam(false));
+        getRegisteredContent(eventId)
+            .then(setContent)
+            .catch(() => setContent(null));
+    }, [status, eventId, getTeam, getRegisteredContent]);
+
     // Links like #team-formation jump to the section once it has rendered
     useEffect(() => {
-        if (hash && status) document.getElementById(hash.slice(1))?.scrollIntoView();
-    }, [hash, status]);
+        if (hash && content) document.getElementById(hash.slice(1))?.scrollIntoView();
+    }, [hash, content]);
 
     if (error) {
         return (
@@ -172,6 +188,11 @@ export default function EventPage() {
                 Checking your payment
             </Button>
         ),
+        REGISTERED: (
+            <ButtonLink to={`/events/${eventId}/team`} variant="primary" className={wide}>
+                {onTeam ? 'Go to your team' : 'Create / join a team'}
+            </ButtonLink>
+        ),
     };
 
     const messages: Partial<Record<EventStatus, string>> = {
@@ -182,8 +203,8 @@ export default function EventPage() {
             "We're confirming your payment with Stripe. This page updates on its own.",
         REGISTERED: {
             upcoming: 'Your spot is confirmed. See you there!',
-            live: `${event.name} is happening now. Check the schedule below.`,
-            ended: 'Thanks for taking part!',
+            live: `${event.name} is happening now. Check the schedule below, and submit from your team page.`,
+            ended: 'Thanks for taking part! Your team and submission are still here to look back on.',
         }[timing],
         NOT_SELECTED:
             "Thanks for applying. We couldn't offer you a spot this time, but we'd love to see you at our next event.",
@@ -213,7 +234,11 @@ export default function EventPage() {
         </p>
     );
 
-    const action = timing !== 'ended' && actions[status];
+    // After the event only registered students keep a button, and only to look back at their team
+    const action =
+        timing !== 'ended'
+            ? actions[status]
+            : status === 'REGISTERED' && onTeam && actions.REGISTERED;
     const message =
         timing === 'ended' && status !== 'REGISTERED'
             ? 'This event has ended. Keep an eye on the dashboard for the next one.'
@@ -239,12 +264,14 @@ export default function EventPage() {
             <EventLinkCards registered={status === 'REGISTERED'} ended={timing === 'ended'} />
             {status === 'REGISTERED' && (
                 <>
-                    <Section title="Getting Ready" id="getting-ready">
-                        <div className="glass p-4">Coming soon</div>
-                    </Section>
-                    <Section title="Team Formation" id="team-formation">
-                        <div className="glass p-4">Coming soon</div>
-                    </Section>
+                    <GettingReady eventId={eventId} content={content?.pageContent ?? null} />
+                    <TeamFormation
+                        eventId={eventId}
+                        discordUrl={content?.discordUrl ?? null}
+                        maxTeamSize={content?.maxTeamSize ?? 4}
+                        onTeam={onTeam}
+                        ended={timing === 'ended'}
+                    />
                 </>
             )}
         </div>

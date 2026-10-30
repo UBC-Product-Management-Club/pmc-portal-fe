@@ -17,6 +17,7 @@ import EventDashboard from './pages/Events/EventDashboard.tsx';
 import EventPage from './pages/EventPage/EventPage.tsx';
 import ApplicationPage from './pages/EventPage/ApplicationPage.tsx';
 import RegisterRedirect from './pages/EventPage/RegisterRedirect.tsx';
+import TeamPage from './pages/EventPage/TeamPage.tsx';
 
 Modal.setAppElement('#root');
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -41,6 +42,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                             <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/events/:event_id" element={<EventPage />} />
                             <Route path="/events/:event_id/apply" element={<ApplicationPage />} />
+                            <Route path="/events/:event_id/team" element={<TeamPage />} />
                             <Route
                                 path="/events/:event_id/register"
                                 element={<RegisterRedirect />}
