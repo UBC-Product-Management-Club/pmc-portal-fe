@@ -1,144 +1,290 @@
-import { useEffect, useState } from 'react';
-import { FiBook } from 'react-icons/fi';
-import { TbSchool } from 'react-icons/tb';
-import { ProfileWhyPM } from '../../components/Profile/ProfileWhyPM';
-import { useEvents } from '../../hooks/useEvents';
-import { useUserData } from '../../providers/UserData/UserDataProvider';
-import type { EventCard } from '../../types/Event';
-import GearyConstruction from '../../assets/geary_construction.svg';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { MdLockOutline, MdOutlineEdit } from 'react-icons/md';
+import { useUserService } from '../../hooks/useUserService';
+import { ActionTypes, useUserData } from '../../providers/UserData/UserDataProvider';
+import { ApiError } from '../../service/RestClient';
+import { ProfileUpdate } from '../../service/UserService';
+import { years } from '../../types/User';
+import { showToast } from '../../utils';
+import { Badge } from '../../components/Portal/Badge';
+import { Button } from '../../components/Portal/Button';
+import { inputClass } from '../../components/Event/applicationRules';
+import { getPassportBadges } from '../../service/services';
+import Geary from '../../assets/geary normal.png';
+import { EventPassport } from './EventPassport';
+
+type Form = Required<ProfileUpdate>;
+type Key = keyof Form;
+
+// Each card saves only its own fields
+const DETAIL_KEYS: Key[] = ['first_name', 'last_name', 'pronouns', 'year', 'faculty', 'major'];
+const WHY_KEYS: Key[] = ['why_pm'];
+
+// Same rules as the onboarding form and the PATCH
+function validate(form: Form) {
+    const errors: Partial<Record<Key, string>> = {};
+    if (!form.first_name.trim()) errors.first_name = 'Please enter a first name.';
+    if (!form.last_name.trim()) errors.last_name = 'Please enter a last name.';
+    if (!form.pronouns.trim()) errors.pronouns = 'Please enter your pronouns.';
+    if (!(years as readonly string[]).includes(form.year)) errors.year = 'Please pick a year.';
+    if (!form.faculty.trim()) errors.faculty = 'Please enter a faculty.';
+    if (!form.major.trim()) errors.major = 'Please enter a major.';
+    const why = form.why_pm.trim().length;
+    if (why < 1 || why > 300) errors.why_pm = 'Must be 1–300 characters.';
+    return errors;
+}
+
+// A value that can't be edited here says why in words, not only with an icon
+function Locked({ children, why }: { children: ReactNode; why: string }) {
+    return (
+        <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2 rounded-[10px] bg-white/60 px-4 py-3">
+                <span className="min-w-0 flex-1 truncate">{children}</span>
+                <MdLockOutline className="size-5 shrink-0 text-slate-500" aria-hidden />
+            </div>
+            <span className="text-xs text-slate-600">{why}</span>
+        </div>
+    );
+}
 
 export function Profile() {
-    const { user, isMember } = useUserData();
-    const { getUserCurrentEvents } = useEvents();
-    const [userEvents, setUserEvents] = useState<EventCard[]>([]);
-    const [eventsLoading, setEventsLoading] = useState(true);
-    const containerClass = 'flex flex-col gap-10 text-white';
-    const panelClass =
-        'rounded-3xl border border-white/10 bg-[var(--pmc-midnight-blue)]/40 p-6 shadow-lg backdrop-blur-md sm:p-8';
-    const twoColClass = 'grid gap-10 lg:grid-cols-2 lg:items-start';
-    const photoWrapClass =
-        'inline-flex h-32 w-32 items-center justify-center rounded-full border border-pmc-blue/70 p-1.5';
-    const infoClass = 'flex flex-1 flex-col gap-4';
-    const nameRowClass = 'flex flex-wrap items-center gap-3';
-    const pillClass =
-        'flex w-fit items-center gap-2 rounded-full bg-pmc-blue/80 px-4 py-2 text-sm text-white shadow-sm';
-    const badgeClass =
-        'flex h-16 w-16 items-center justify-center text-[10px] font-semibold uppercase tracking-wide text-white/90';
-    const mutedTextClass = 'text-white/70';
-    const labelClass = 'text-xs font-semibold uppercase tracking-wide text-white/60';
+    const { user, isMember, update } = useUserData();
+    const { updateProfile } = useUserService();
+    const [editing, setEditing] = useState(false);
+    const [form, setForm] = useState<Form | null>(null);
+    const [errors, setErrors] = useState<Partial<Record<Key, string>>>({});
+    const [saving, setSaving] = useState<'details' | 'why' | null>(null);
+
+    const original: Form | null = useMemo(
+        () =>
+            user
+                ? {
+                      first_name: user.firstName ?? '',
+                      last_name: user.lastName ?? '',
+                      pronouns: user.pronouns ?? '',
+                      year: user.year ?? '',
+                      faculty: user.faculty ?? '',
+                      major: user.major ?? '',
+                      why_pm: user.whyPm ?? '',
+                  }
+                : null,
+        [user]
+    );
 
     useEffect(() => {
-        if (!user?.userId) return;
+        if (original && !form) setForm(original);
+    }, [original, form]);
 
-        setEventsLoading(true);
-        getUserCurrentEvents()
-            .then(setUserEvents)
-            .catch((error) => {
-                console.error('Failed to fetch user events', error);
-                setUserEvents([]);
-            })
-            .finally(() => setEventsLoading(false));
-    }, [getUserCurrentEvents, user?.userId]);
+    if (!user || !form || !original) return <p className="text-center">Loading…</p>;
+
+    const set = (key: Key, value: string) => {
+        setForm({ ...form, [key]: value });
+        setErrors({ ...errors, [key]: undefined });
+    };
+
+    const changesIn = (keys: Key[]) =>
+        Object.fromEntries(
+            keys
+                .map((key) => [key, form[key].trim()])
+                .filter(([key, value]) => value !== original[key as Key].trim())
+        ) as ProfileUpdate;
+
+    // Sends one PATCH with only the changed fields of that card
+    const save = async (card: 'details' | 'why') => {
+        const keys = card === 'details' ? DETAIL_KEYS : WHY_KEYS;
+        const changes = changesIn(keys);
+        if (Object.keys(changes).length === 0) {
+            if (card === 'details') setEditing(false);
+            return;
+        }
+        const found = validate(form);
+        const relevant = Object.fromEntries(
+            Object.entries(found).filter(([key]) => key in changes)
+        );
+        setErrors(relevant);
+        if (Object.keys(relevant).length > 0) return;
+
+        setSaving(card);
+        try {
+            const saved = await updateProfile(changes);
+            update({ type: ActionTypes.LOAD, payload: saved });
+            // Keep unsaved edits in the other card
+            setForm({ ...form, ...changes });
+            if (card === 'details') setEditing(false);
+            showToast('success', 'Profile saved.');
+        } catch (error) {
+            if (error instanceof ApiError && error.fields) setErrors(error.fields);
+            showToast('error', "Couldn't save your profile. Please try again.");
+        } finally {
+            setSaving(null);
+        }
+    };
+
+    const cancel = () => {
+        setForm({ ...form, ...Object.fromEntries(DETAIL_KEYS.map((key) => [key, original[key]])) });
+        setErrors({});
+        setEditing(false);
+    };
+
+    const field = (key: Key, label: string, children?: ReactNode) => (
+        <label className="flex flex-col gap-1">
+            <span className="text-sm font-semibold">{label}</span>
+            {children ?? (
+                <input
+                    className={`${inputClass} ${errors[key] ? 'border-red-500' : ''}`}
+                    value={form[key]}
+                    onChange={(e) => set(key, e.target.value)}
+                />
+            )}
+            {errors[key] && <span className="text-sm text-red-700">{errors[key]}</span>}
+        </label>
+    );
+
+    const whyDirty = Object.keys(changesIn(WHY_KEYS)).length > 0;
+
+    const badges = getPassportBadges();
 
     return (
-        user && (
-            <div className={containerClass}>
-                <section className={panelClass}>
-                    <div className={twoColClass}>
-                        <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-(--pmc-midnight-blue)/70 p-5 shadow-md">
-                            <div className="absolute inset-x-0 top-0 h-10 bg-linear-to-r from-(--pmc-light-blue)/30 via-(--pmc-purple)/30 to-(--pmc-red)/30" />
-                            <div className="relative flex flex-col gap-5">
-                                <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.2em] text-white/60">
-                                    <span>{isMember ? 'PMC Member' : 'PMC Non-Member'}</span>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <div className={photoWrapClass}>
-                                        <div className="flex h-full w-full items-center justify-center rounded-full bg-linear-to-br from-(--pmc-light-blue) via-(--pmc-purple) to-(--pmc-red) text-xl font-semibold text-white">
-                                            {`${user.firstName?.[0] ?? ''}${user.lastName?.[0] ?? ''}`.toUpperCase()}
-                                        </div>
-                                    </div>
-                                    <div className={infoClass}>
-                                        <div className={nameRowClass}>
-                                            <h2 className="text-xl font-semibold">
-                                                {user.firstName} {user.lastName}
-                                            </h2>
-                                            {user.pronouns && (
-                                                <span className="rounded-full border border-white/20 px-2.5 py-0.5 text-[10px] font-medium text-white/80">
-                                                    {user.pronouns}
-                                                </span>
-                                            )}
-                                        </div>
-                                        {user.email && (
-                                            <p className={`text-xs ${mutedTextClass}`}>
-                                                {user.email}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="grid gap-3 text-sm">
-                                    {user.university && (
-                                        <div className="flex flex-col gap-2">
-                                            <div className={labelClass}>Academics</div>
-                                            <div className="flex flex-col gap-2">
-                                                <div className={pillClass}>
-                                                    <TbSchool />
-                                                    <span>{user.university}</span>
-                                                </div>
-                                                <div className={pillClass}>
-                                                    <FiBook />
-                                                    <span>
-                                                        Year {user.year}, {user.faculty},{' '}
-                                                        {user.major}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
+        <div className="flex flex-col gap-8">
+            {/* Who you are: avatar, name, membership and pronouns */}
+            <section className="glass flex flex-col gap-4 p-4 sm:flex-row sm:items-center md:p-6">
+                <img
+                    src={Geary}
+                    alt=""
+                    className="size-20 shrink-0 rounded-full bg-white object-cover md:size-24"
+                />
+                <div className="flex min-w-0 flex-1 flex-col gap-2">
+                    <h1 className="text-3xl leading-tight font-medium break-words md:text-4xl">
+                        {form.first_name} {form.last_name}
+                    </h1>
+                    <div className="flex flex-wrap items-center gap-2">
+                        <Badge tone={isMember ? 'good' : 'neutral'}>
+                            {isMember ? 'Member' : 'Non-Member'}
+                        </Badge>
+                        {form.pronouns && <Badge>{form.pronouns}</Badge>}
+                    </div>
+                </div>
+                {!editing && (
+                    <Button
+                        onClick={() => setEditing(true)}
+                        className="gap-2 self-start sm:self-center"
+                    >
+                        <MdOutlineEdit className="size-5" aria-hidden />
+                        Edit details
+                    </Button>
+                )}
+            </section>
+
+            <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
+                <section className="flex flex-col gap-2">
+                    <h2 className="text-xl leading-7 font-medium">Details</h2>
+                    <div className="glass flex flex-col gap-5 p-4 md:p-6">
+                        {editing ? (
+                            <div className="flex flex-col gap-4">
+                                <div className="grid gap-3 sm:grid-cols-2">
+                                    {field('first_name', 'First name')}
+                                    {field('last_name', 'Last name')}
+                                    {field('pronouns', 'Pronouns')}
+                                    {field(
+                                        'year',
+                                        'Year',
+                                        <select
+                                            className={inputClass}
+                                            value={form.year}
+                                            onChange={(e) => set('year', e.target.value)}
+                                        >
+                                            <option value="">Select…</option>
+                                            {years.map((year) => (
+                                                <option key={year} value={year}>
+                                                    Year {year}
+                                                </option>
+                                            ))}
+                                        </select>
                                     )}
-                                    {/* removed Product Management Club row */}
+                                    {field('faculty', 'Faculty')}
+                                    {field('major', 'Major')}
+                                </div>
+                                <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                                    <Button onClick={cancel} disabled={saving !== null}>
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        variant="primary"
+                                        onClick={() => save('details')}
+                                        disabled={saving !== null}
+                                    >
+                                        {saving === 'details' ? 'Saving…' : 'Save changes'}
+                                    </Button>
                                 </div>
                             </div>
-                        </div>
-                        <div className="flex flex-col gap-8">
-                            <ProfileWhyPM />
-                            <div className="flex flex-col gap-3">
-                                <div className={labelClass}>Events attended</div>
-                                {eventsLoading ? (
-                                    <p className={`text-sm ${mutedTextClass}`}>Loading events...</p>
-                                ) : userEvents.length > 0 ? (
-                                    <div className="flex flex-wrap gap-3">
-                                        {userEvents.map((event) => (
-                                            <div
-                                                key={event.eventId}
-                                                className={badgeClass}
-                                                style={{
-                                                    clipPath:
-                                                        'polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%)',
-                                                    backgroundImage: `url(${event.thumbnail})`,
-                                                    backgroundSize: 'cover',
-                                                    backgroundPosition: 'center',
-                                                    boxShadow: '0 10px 20px rgba(36, 38, 64, 0.35)',
-                                                }}
-                                                title={event.name}
-                                            >
-                                                <span className="sr-only">{event.name}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center gap-2 text-sm text-white/60">
-                                        <img
-                                            src={GearyConstruction}
-                                            alt="Geary construction"
-                                            className="h-9 w-9"
-                                        />
-                                        <span>Attend more events to collect badges.</span>
-                                    </div>
-                                )}
+                        ) : (
+                            <div className="flex flex-col gap-2">
+                                <h3 className="text-sm font-semibold">Academics</h3>
+                                <div className="flex flex-wrap items-center gap-2">
+                                    {form.year && <Badge>Year {form.year}</Badge>}
+                                    {form.faculty && <Badge>{form.faculty}</Badge>}
+                                    {form.major && <Badge>{form.major}</Badge>}
+                                </div>
                             </div>
+                        )}
+                        <div className="flex flex-col gap-2">
+                            <h3 className="text-sm font-semibold">Email</h3>
+                            <Locked why="You sign in with this, so it can't be changed here.">
+                                {user.email}
+                            </Locked>
                         </div>
+                        {user.university && (
+                            <div className="flex flex-col gap-2">
+                                <h3 className="text-sm font-semibold">University</h3>
+                                <Locked why="This was set when you signed up. Reach out to the PMC team if it needs to change.">
+                                    {user.university}
+                                </Locked>
+                            </div>
+                        )}
+                    </div>
+                </section>
+
+                <section className="flex flex-col gap-2">
+                    <div className="flex flex-wrap items-baseline gap-2">
+                        <h2 className="text-xl leading-7 font-medium">Event Passport</h2>
+                        <p className="text-slate-600">Attend events to collect badges!</p>
+                    </div>
+                    <div className="glass p-4 md:p-6">
+                        <EventPassport badges={badges} />
                     </div>
                 </section>
             </div>
-        )
+
+            <section className="flex flex-col gap-2">
+                <div className="flex flex-wrap items-baseline gap-2">
+                    <h2 className="text-xl leading-7 font-medium">Why Product Management?</h2>
+                    <p className="text-slate-600">Tell us about yourself!</p>
+                </div>
+                <div className="glass flex flex-col gap-2 p-4">
+                    <textarea
+                        className={`${inputClass} min-h-28 ${errors.why_pm ? 'border-red-500' : ''}`}
+                        value={form.why_pm}
+                        maxLength={300}
+                        aria-label="Why Product Management?"
+                        onChange={(e) => set('why_pm', e.target.value)}
+                    />
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <span className="text-xs text-slate-600">
+                            {form.why_pm.trim().length} / 300 characters
+                            {whyDirty && ' · Unsaved changes'}
+                        </span>
+                        <Button
+                            variant="primary"
+                            onClick={() => save('why')}
+                            disabled={!whyDirty || saving !== null}
+                            className="sm:px-8"
+                        >
+                            {saving === 'why' ? 'Saving…' : 'Save Changes'}
+                        </Button>
+                    </div>
+                    {errors.why_pm && <span className="text-sm text-red-700">{errors.why_pm}</span>}
+                </div>
+            </section>
+        </div>
     );
 }
