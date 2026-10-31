@@ -13,7 +13,7 @@ export type WindowState = 'disabled' | 'not-open' | 'open' | 'closed';
 // Half-open window: open from the start time up to (not including) the deadline
 export function windowState(phase: Phase, now: Date): WindowState {
     if (!phase.isEnabled) return 'disabled';
-    if (now < new Date(phase.startTime)) return 'not-open';
+    if (phase.startTime && now < new Date(phase.startTime)) return 'not-open';
     if (now >= new Date(effectiveDeadline(phase))) return 'closed';
     return 'open';
 }

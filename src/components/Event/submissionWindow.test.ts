@@ -23,6 +23,12 @@ describe('submission window', () => {
         );
     });
 
+    it('is open until the deadline when there is no start time, like the server', () => {
+        const noStart = phase({ startTime: null });
+        expect(windowState(noStart, new Date('2026-11-01T00:00:00.000Z'))).toBe('open');
+        expect(windowState(noStart, new Date('2026-11-22T20:00:00.000Z'))).toBe('closed');
+    });
+
     it('is half-open: an exact-deadline save is closed', () => {
         expect(windowState(phase(), new Date('2026-11-21T18:00:00.000Z'))).toBe('open');
         expect(windowState(phase(), new Date('2026-11-22T19:59:59.999Z'))).toBe('open');
