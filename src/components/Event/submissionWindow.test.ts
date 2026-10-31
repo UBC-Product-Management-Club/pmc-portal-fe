@@ -39,6 +39,7 @@ describe('team codes', () => {
 
     it('explains each team error code', () => {
         expect(teamErrorMessage(new ApiError('x', 409, 'ROSTER_LOCKED'))).toMatch(/submitted/);
+        expect(teamErrorMessage(new ApiError('x', 409, 'TEAM_CHANGES_CLOSED'))).toMatch(/locked/);
         expect(teamErrorMessage(new ApiError('x', 429, 'RATE_LIMITED'))).toMatch(/Too many/);
         expect(teamErrorMessage(new Error('network'))).toMatch(/Something went wrong/);
     });

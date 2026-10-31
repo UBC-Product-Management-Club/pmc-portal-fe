@@ -7,6 +7,8 @@ const MESSAGES: Record<string, string> = {
     TEAM_NAME_TAKEN: 'Another team already has that name.',
     NOT_ON_TEAM: "You're not on a team for this event.",
     ROSTER_LOCKED: "This team has already submitted, so its members can't change.",
+    TEAM_CHANGES_CLOSED:
+        "Teams are locked, so members can't join or leave. If you're not on a team, you can still create your own until the deadline.",
     RATE_LIMITED: 'Too many tries. Wait a minute, then try again.',
     NOT_REGISTERED: 'Only registered students can join teams.',
     VALIDATION_ERROR: 'Team names must be 1 to 80 characters.',
