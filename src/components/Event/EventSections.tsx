@@ -44,7 +44,7 @@ export function AboutSection({ description }: { description: string }) {
 export function ScheduleSection({ schedule }: { schedule: Schedule }) {
     return (
         <Section title="Schedule">
-            <div className="grid items-start gap-4 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2">
                 {schedule.days.map((day) => (
                     <div key={day.date} className="glass p-4">
                         <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 border-b border-slate-200/80 pb-2">
