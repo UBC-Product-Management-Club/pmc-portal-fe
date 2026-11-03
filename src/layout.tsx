@@ -33,7 +33,7 @@ export function Layout() {
                         onClick={() => setMenuOpen(false)}
                         aria-label="Close menu"
                     />
-                    <div className="relative h-full w-[min(85vw,320px)] shadow-xl">
+                    <div className="relative h-full w-[min(85vw,320px)] bg-pmc-bg shadow-xl">
                         <Sidebar onNavigate={() => setMenuOpen(false)} />
                         <button
                             type="button"

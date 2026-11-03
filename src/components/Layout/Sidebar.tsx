@@ -16,7 +16,7 @@ type SidebarProps = {
 const rowClass = 'flex min-h-14 items-center gap-2 p-4 text-sm text-pmc-ink';
 
 // The brand and profile rows share the pale pink-to-lavender tint from the Figma
-const tintClass = 'bg-portal-badge';
+const tintClass = 'bg-white/50';
 
 function EventIcon({ event }: { event: EventCard }) {
     if (event.icon) {
@@ -46,7 +46,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 
     return (
         <nav
-            className="flex h-full w-full flex-col border-r border-portal-stroke bg-white font-pmc"
+            className="portal-tint flex h-full w-full flex-col border-r border-portal-stroke font-pmc"
             aria-label="Main"
         >
             <div className={`flex items-center gap-2 p-4 ${tintClass}`}>
