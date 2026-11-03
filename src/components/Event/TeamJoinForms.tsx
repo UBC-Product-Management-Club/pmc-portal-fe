@@ -52,12 +52,12 @@ export function TeamJoinForms({ eventId }: { eventId: string }) {
                     Join with a code
                 </Button>
             </div>
-            <p className="text-xs text-slate-600">
+            <p className="text-xs text-pmc-mute">
                 Your teammates will see your name and the email you applied with.
             </p>
             {mode && (
                 <form onSubmit={submit} className="flex flex-col gap-2">
-                    <label className="text-[13px] font-semibold" htmlFor="team-input">
+                    <label className="text-sm font-semibold" htmlFor="team-input">
                         {mode === 'create' ? 'Team name' : 'Team code'}
                     </label>
                     <div className="flex gap-2">

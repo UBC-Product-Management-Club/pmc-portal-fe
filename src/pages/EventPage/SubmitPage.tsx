@@ -188,7 +188,7 @@ export default function SubmitPage() {
 
     const timer = (state === 'open' || state === 'not-open') && (
         <>
-            <small className="text-xs text-slate-600">
+            <small className="text-xs text-pmc-mute">
                 {state === 'open' ? 'Closes in' : 'Opens in'}
             </small>
             <span className="text-xl font-semibold tabular-nums">
@@ -198,7 +198,7 @@ export default function SubmitPage() {
                     ).getTime() - now.getTime()
                 )}
             </span>
-            <small className="text-xs text-slate-600">
+            <small className="text-xs text-pmc-mute">
                 {formatPacific(state === 'open' ? deadline : (phase.startTime ?? deadline))}
                 {state === 'open' && phase.extendedUntil && ' (extended)'}
             </small>
@@ -217,7 +217,7 @@ export default function SubmitPage() {
 
     return (
         <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-pmc-mute">
                 <Link to={`/events/${eventId}`} className="underline">
                     {event.name}
                 </Link>{' '}
@@ -230,7 +230,7 @@ export default function SubmitPage() {
 
             {/* Phone: the countdown is a sticky bar at the top of the page */}
             {timer && (
-                <div className="sticky top-[68px] z-20 -mx-4 flex items-center justify-between gap-2 bg-white/85 px-4 py-2 backdrop-blur md:hidden">
+                <div className="sticky top-[68px] z-20 -mx-4 flex items-center justify-between gap-2 bg-pmc-bg px-4 py-2 backdrop-blur md:hidden">
                     {timer}
                 </div>
             )}
@@ -311,7 +311,7 @@ export default function SubmitPage() {
                             <dt className="text-sm font-semibold md:w-56 md:shrink-0">
                                 {field.label}
                             </dt>
-                            <dd className="min-w-0 break-words text-slate-700">
+                            <dd className="min-w-0 break-words text-pmc-mute">
                                 <Answer field={field} value={submission.answers[field.id]} />
                             </dd>
                         </div>
@@ -336,7 +336,7 @@ export default function SubmitPage() {
                         <Field label="Team name">
                             <input className={inputClass} value={team.Team.team_name} disabled />
                         </Field>
-                        <p className="-mt-3 text-xs text-slate-600">
+                        <p className="-mt-3 text-xs text-pmc-mute">
                             From your team. Rename it on the team page.
                         </p>
                         {phase.fields.map((field) => (
@@ -360,7 +360,7 @@ export default function SubmitPage() {
                     </div>
 
                     <div className="flex flex-col-reverse gap-3 md:flex-row md:items-center md:justify-between">
-                        <span className="text-sm text-slate-600">
+                        <span className="text-sm text-pmc-mute">
                             Any teammate can update it until the deadline. Uploads must finish
                             before then.
                         </span>
@@ -410,12 +410,12 @@ function StatusCard({
 }) {
     return (
         <div className="glass flex flex-col gap-4 p-4 md:flex-row md:items-center md:p-6">
-            <span className="portal-accent flex size-12 shrink-0 items-center justify-center rounded-full text-2xl text-white">
+            <span className="pmc-deep flex size-12 shrink-0 items-center justify-center rounded-full text-2xl text-white">
                 {icon}
             </span>
             <div className="flex-1">
                 <p className="text-xl font-semibold">{title}</p>
-                <div className="text-sm text-slate-700">{detail}</div>
+                <div className="text-sm text-pmc-mute">{detail}</div>
             </div>
             {action}
         </div>
@@ -424,7 +424,7 @@ function StatusCard({
 
 // Read-only answer: links open in a new tab, files show their name
 function Answer({ field, value }: { field: SubmissionField; value?: string }) {
-    if (!value) return <span className="text-slate-500">Not provided</span>;
+    if (!value) return <span className="text-pmc-mute">Not provided</span>;
     if (field.type === 'url') {
         return (
             <a href={value} target="_blank" rel="noreferrer" className="underline">
@@ -478,7 +478,7 @@ function SubmissionInput({
                     type="button"
                     disabled={disabled}
                     onClick={() => fileInput.current?.click()}
-                    className={`flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 rounded-[10px] border border-dashed bg-white/60 px-3 py-2 text-left transition-colors duration-200 outline-none enabled:hover:border-violet-400 enabled:hover:bg-white/90 enabled:hover:text-violet-700 focus-visible:border-violet-500 focus-visible:bg-white/90 disabled:cursor-not-allowed ${error ? 'border-red-500' : 'border-slate-400'}`}
+                    className={`flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 rounded-[10px] border border-dashed bg-pmc-bg px-3 py-2 text-left transition-colors duration-200 outline-none enabled:hover:border-pmc-accent/60 enabled:hover:bg-white/90 enabled:hover:text-pmc-accent focus-visible:border-pmc-accent focus-visible:bg-white/90 disabled:cursor-not-allowed ${error ? 'border-red-500' : 'border-slate-400'}`}
                 >
                     <span className="truncate">{current ? `📄 ${current}` : 'Choose a PDF'}</span>
                     {current && !disabled && (
@@ -499,7 +499,7 @@ function SubmissionInput({
                 footer={
                     field.maxWords !== undefined && (
                         <span
-                            className={`text-right text-xs ${over ? 'font-semibold text-red-700' : 'text-slate-600'}`}
+                            className={`text-right text-xs ${over ? 'font-semibold text-red-700' : 'text-pmc-mute'}`}
                         >
                             {words} / {field.maxWords} words
                         </span>

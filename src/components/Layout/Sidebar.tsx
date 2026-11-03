@@ -13,10 +13,10 @@ type SidebarProps = {
     onNavigate?: () => void;
 };
 
-const rowClass = 'flex min-h-14 items-center gap-2 p-4 text-sm text-black';
+const rowClass = 'flex min-h-14 items-center gap-2 p-4 text-sm text-pmc-ink';
 
 // The brand and profile rows share the pale pink-to-lavender tint from the Figma
-const tintClass = 'bg-linear-to-r from-pink-50 to-violet-100';
+const tintClass = 'bg-portal-badge';
 
 function EventIcon({ event }: { event: EventCard }) {
     if (event.icon) {
@@ -24,7 +24,7 @@ function EventIcon({ event }: { event: EventCard }) {
     }
     return (
         <span
-            className="portal-accent flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
+            className="pmc-deep flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
             aria-hidden
         >
             {event.name.charAt(0)}
@@ -46,14 +46,14 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 
     return (
         <nav
-            className="flex h-full w-full flex-col border-r border-portal-stroke bg-white font-geist"
+            className="flex h-full w-full flex-col border-r border-portal-stroke bg-white font-pmc"
             aria-label="Main"
         >
             <div className={`flex items-center gap-2 p-4 ${tintClass}`}>
                 <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-pmc-dark-blue">
                     <img src={PMCLogo} alt="UBC PMC" className="size-7 object-contain" />
                 </div>
-                <div className="flex flex-col gap-0.5 text-black">
+                <div className="flex flex-col gap-0.5 text-pmc-ink">
                     <p className="text-sm leading-5 font-semibold">UBC PMC</p>
                     <p className="text-xs leading-4">Member</p>
                 </div>
@@ -64,7 +64,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                 end
                 onClick={onNavigate}
                 className={({ isActive }) =>
-                    `${rowClass} font-medium ${isActive ? 'bg-[#f1f1f4] font-semibold' : ''}`
+                    `${rowClass} font-medium ${isActive ? 'bg-portal-badge font-semibold' : ''}`
                 }
             >
                 <MdOutlineDashboard className="size-6 shrink-0" aria-hidden />
@@ -85,7 +85,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                                     to={`/events/${event.eventId}`}
                                     onClick={onNavigate}
                                     className={({ isActive }) =>
-                                        `${rowClass} pl-12 ${isActive ? 'bg-[#f1f1f4] font-semibold' : ''}`
+                                        `${rowClass} pl-12 ${isActive ? 'bg-portal-badge font-semibold' : ''}`
                                     }
                                 >
                                     <EventIcon event={event} />
@@ -109,7 +109,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                             alt=""
                             className="size-8 shrink-0 rounded-full bg-white object-cover"
                         />
-                        <div className="min-w-0 text-black">
+                        <div className="min-w-0 text-pmc-ink">
                             <p className="truncate text-sm leading-5 font-medium">
                                 {user.firstName} {user.lastName}
                             </p>
@@ -122,7 +122,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                             resetMemberBar();
                             logout({ logoutParams: { returnTo: window.location.origin } });
                         }}
-                        className="flex size-11 shrink-0 items-center justify-center rounded-[10px] text-black hover:bg-white/60"
+                        className="flex size-11 shrink-0 items-center justify-center rounded-[10px] text-pmc-ink hover:bg-pmc-bg"
                         aria-label="Log out"
                     >
                         <MdLogout className="size-5" aria-hidden />

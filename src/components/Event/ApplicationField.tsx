@@ -15,7 +15,7 @@ export function Field({ label, error, help, children, footer }: FieldProps) {
         <label className="flex flex-col gap-1.5">
             <span className="text-sm font-semibold">{label}</span>
             {children}
-            {help && <span className="text-xs text-slate-600">{help}</span>}
+            {help && <span className="text-xs text-pmc-mute">{help}</span>}
             {footer}
             {error && <span className="text-sm font-medium text-red-700">{error}</span>}
         </label>
@@ -56,7 +56,7 @@ export function QuestionField({
                 footer={
                     q.maxWords !== undefined && (
                         <span
-                            className={`text-right text-xs ${over ? 'font-semibold text-red-700' : 'text-slate-600'}`}
+                            className={`text-right text-xs ${over ? 'font-semibold text-red-700' : 'text-pmc-mute'}`}
                         >
                             {over && `Over the limit: cut ${words - q.maxWords} words to submit · `}
                             {words} / {q.maxWords} words
@@ -110,7 +110,7 @@ export function QuestionField({
                     onChange={(e) => onFile(e.target.files?.[0] ?? null)}
                 />
                 <span
-                    className={`group flex min-h-12 items-center justify-between gap-3 rounded-[10px] border border-dashed bg-white/60 px-3 py-2 transition-colors duration-200 ${error ? 'border-red-500' : 'border-slate-400'} ${file || disabled ? '' : 'hover:border-violet-400 hover:bg-white/90 has-[button:focus-visible]:border-violet-500 has-[button:focus-visible]:bg-white/90'}`}
+                    className={`group flex min-h-12 items-center justify-between gap-3 rounded-[10px] border border-dashed bg-pmc-bg px-3 py-2 transition-colors duration-200 ${error ? 'border-red-500' : 'border-slate-400'} ${file || disabled ? '' : 'hover:border-pmc-accent/60 hover:bg-white/90 has-[button:focus-visible]:border-pmc-accent has-[button:focus-visible]:bg-white/90'}`}
                 >
                     {file ? (
                         <>
@@ -133,7 +133,7 @@ export function QuestionField({
                     ) : (
                         <button
                             type="button"
-                            className="min-h-11 w-full cursor-pointer text-left text-slate-600 transition-colors duration-200 outline-none group-hover:text-violet-700 focus-visible:text-violet-700 disabled:cursor-not-allowed"
+                            className="min-h-11 w-full cursor-pointer text-left text-pmc-mute transition-colors duration-200 outline-none group-hover:text-pmc-accent focus-visible:text-pmc-accent disabled:cursor-not-allowed"
                             disabled={disabled}
                             onClick={() => fileInput.current?.click()}
                         >

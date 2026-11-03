@@ -228,7 +228,7 @@ export default function ApplicationPage() {
                     </h1>
                     <Badge>Draft</Badge>
                 </div>
-                <span className="text-sm text-slate-600" aria-live="polite">
+                <span className="text-sm text-pmc-mute" aria-live="polite">
                     {SAVE_LABELS[draft.status]}
                     {draft.status === 'error' && (
                         <button type="button" onClick={draft.retry} className="ml-2 underline">
@@ -237,7 +237,7 @@ export default function ApplicationPage() {
                     )}
                 </span>
             </div>
-            <p className="-mt-3 text-slate-700">
+            <p className="-mt-3 text-pmc-mute">
                 {renderDate(event.startTime, event.endTime)} · Your price {formatPrice(price)}
             </p>
 
@@ -276,7 +276,7 @@ export default function ApplicationPage() {
                         />
                     </Field>
                 </div>
-                <p className="-mt-3 text-xs text-slate-600">
+                <p className="-mt-3 text-xs text-pmc-mute">
                     Your name comes from your PMC profile; changes here apply to this application
                     only.
                 </p>
@@ -303,7 +303,7 @@ export default function ApplicationPage() {
             </div>
 
             <div className="flex flex-col-reverse gap-3 md:flex-row md:items-center md:justify-between">
-                <span className="text-sm text-slate-600">
+                <span className="text-sm text-pmc-mute">
                     Once you submit, your answers can't be edited.
                 </span>
                 <Button
@@ -333,12 +333,12 @@ function SubmittedAnswers({
         <div className="flex flex-col gap-6">
             <h1 className="text-3xl font-medium md:text-4xl">Your application</h1>
             <div className="glass flex flex-col gap-4 p-4 md:flex-row md:items-center md:p-6">
-                <span className="portal-accent flex size-12 shrink-0 items-center justify-center rounded-full text-2xl text-white">
+                <span className="pmc-deep flex size-12 shrink-0 items-center justify-center rounded-full text-2xl text-white">
                     <MdCheck aria-hidden />
                 </span>
                 <div className="flex-1">
                     <p className="text-xl font-semibold">Application submitted</p>
-                    <p className="text-sm text-slate-700">
+                    <p className="text-sm text-pmc-mute">
                         Sent {formatPacific(attendee.created_at)}. Answers can't be changed after
                         submitting; your status updates on the event page.
                     </p>
@@ -352,7 +352,7 @@ function SubmittedAnswers({
                 {questions.map((q) => (
                     <div key={q.id} className="flex flex-col gap-1">
                         <dt className="text-sm font-semibold">{q.label}</dt>
-                        <dd className="whitespace-pre-wrap text-slate-700">
+                        <dd className="whitespace-pre-wrap text-pmc-mute">
                             {q.type === 'file' ? 'Uploaded' : String(answers[q.id] ?? '—')}
                         </dd>
                     </div>

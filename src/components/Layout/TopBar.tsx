@@ -17,19 +17,19 @@ export function TopBar({ onOpenMenu }: { onOpenMenu: () => void }) {
 
     return (
         <header
-            className={`portal-tint sticky top-0 z-30 flex min-h-[60px] items-center gap-4 px-4 font-geist backdrop-blur md:justify-center md:gap-6 ${showOffer ? '' : 'md:hidden'}`}
+            className={`portal-tint sticky top-0 z-30 flex min-h-[60px] items-center gap-4 px-4 font-pmc backdrop-blur md:justify-center md:gap-6 ${showOffer ? '' : 'md:hidden'}`}
         >
             <button
                 type="button"
                 onClick={onOpenMenu}
-                className="flex size-11 items-center justify-center rounded-[10px] text-black hover:bg-white/60 md:hidden"
+                className="flex size-11 items-center justify-center rounded-[10px] text-pmc-ink hover:bg-pmc-bg md:hidden"
                 aria-label="Open menu"
             >
                 <MdMenu className="size-6" aria-hidden />
             </button>
             {showOffer && (
                 <div className="ml-auto flex items-center gap-2 md:ml-0 md:gap-6">
-                    <p className="hidden text-base font-medium text-black md:block">
+                    <p className="hidden text-base font-medium text-pmc-ink md:block">
                         Want to enjoy discounted event prices?
                     </p>
                     <ButtonLink to={MEMBERSHIP_PATH} className="text-sm">
@@ -39,7 +39,7 @@ export function TopBar({ onOpenMenu }: { onOpenMenu: () => void }) {
                         type="button"
                         onClick={close}
                         aria-label="Close membership offer"
-                        className="flex size-11 items-center justify-center rounded-[10px] text-slate-600 hover:bg-white/60"
+                        className="flex size-11 items-center justify-center rounded-[10px] text-pmc-mute hover:bg-pmc-bg"
                     >
                         <MdClose className="size-5" aria-hidden />
                     </button>

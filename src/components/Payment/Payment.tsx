@@ -18,7 +18,7 @@ type PaymentComponentProps = Omit<PaymentProps, 'type' | 'options'>;
 function PaymentComponent({ onPayment, onError }: PaymentComponentProps) {
     const { pay, processing } = usePayments();
     const submitClass =
-        'ml-auto mt-2 block rounded-lg bg-white px-8 py-2 font-semibold text-pmc-midnight-blue';
+        'pmc-deep mt-4 ml-auto flex min-h-12 cursor-pointer items-center rounded-full px-7 font-medium text-white shadow-[0_10px_24px_-12px_rgb(138_88_207/0.7)] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pmc-accent';
     return (
         <>
             {processing && <p>processing</p>}
@@ -55,7 +55,11 @@ function Payment({ onPayment, onError, options }: PaymentProps) {
             theme: 'stripe',
             labels: 'floating',
             variables: {
+                fontFamily: 'Poppins, system-ui, sans-serif',
                 fontWeightNormal: '500',
+                colorPrimary: '#5a54c9',
+                colorText: '#1d1838',
+                colorTextSecondary: '#6b6584',
             },
             rules: {
                 '.Tab, .Input, .Block, .CheckboxInput, .CodeInput': {
@@ -71,11 +75,11 @@ function Payment({ onPayment, onError, options }: PaymentProps) {
                     border: '0',
                 },
                 '.Tab--selected, .Tab--selected:hover': {
-                    backgroundColor: '#f360a6',
+                    backgroundColor: '#5a54c9',
                     color: '#fff',
                 },
                 '.Input': {
-                    color: 'black',
+                    color: '#1d1838',
                 },
                 '.Error': {
                     fontSize: 'small',
@@ -87,7 +91,18 @@ function Payment({ onPayment, onError, options }: PaymentProps) {
 
     if (elementsOptions) {
         return (
-            <Elements stripe={stripe_key} options={{ appearance, ...elementsOptions }}>
+            <Elements
+                stripe={stripe_key}
+                options={{
+                    appearance,
+                    fonts: [
+                        {
+                            cssSrc: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap',
+                        },
+                    ],
+                    ...elementsOptions,
+                }}
+            >
                 <PaymentComponent onPayment={onPayment} onError={onError} />
             </Elements>
         );

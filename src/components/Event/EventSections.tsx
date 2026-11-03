@@ -49,7 +49,7 @@ export function ScheduleSection({ schedule }: { schedule: Schedule }) {
                     <div key={day.date} className="glass p-4">
                         <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 border-b border-slate-200/80 pb-2">
                             <h3 className="text-xl font-semibold">{day.label.split(' · ')[0]}</h3>
-                            <p className="text-xs font-semibold tracking-wider text-slate-600 uppercase">
+                            <p className="text-xs font-semibold tracking-wider text-pmc-mute uppercase">
                                 {moment(day.date, 'YYYY-MM-DD').format('dddd, MMMM D')}
                             </p>
                         </div>
@@ -83,7 +83,7 @@ function LinkCard({ title, description, href, locked }: LinkCardProps) {
                 {locked && <MdLockOutline className="size-5" aria-hidden />}
                 {title}
             </h3>
-            <p className="text-base text-slate-600">
+            <p className="text-base text-pmc-mute">
                 {locked ? "Available once you're registered" : description}
             </p>
         </>
@@ -94,7 +94,7 @@ function LinkCard({ title, description, href, locked }: LinkCardProps) {
     ) : (
         <a
             href={href}
-            className="glass flex flex-1 flex-col gap-2 p-4 text-black no-underline hover:bg-white/60"
+            className="glass flex flex-1 flex-col gap-2 p-4 text-pmc-ink no-underline hover:bg-pmc-bg"
         >
             {body}
         </a>

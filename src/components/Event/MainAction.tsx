@@ -23,7 +23,7 @@ export function MainAction({ children }: { children: ReactNode }) {
             {/* Rendered on <body>: the glass card's blur would otherwise trap a fixed bar */}
             {scrolledAway &&
                 createPortal(
-                    <div className="fixed inset-x-0 bottom-0 z-20 bg-white/85 p-4 font-geist shadow-lg backdrop-blur md:hidden">
+                    <div className="fixed inset-x-0 bottom-0 z-20 bg-pmc-bg p-4 font-pmc shadow-lg backdrop-blur md:hidden">
                         {children}
                     </div>,
                     document.body

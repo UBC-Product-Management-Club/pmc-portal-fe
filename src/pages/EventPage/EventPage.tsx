@@ -173,7 +173,7 @@ export default function EventPage() {
                 <Button className={wide} disabled>
                     Application submitted, under review
                 </Button>
-                <p className="text-center text-sm text-slate-600">
+                <p className="text-center text-sm text-pmc-mute">
                     We'll let you know once the organizers have reviewed it.
                 </p>
             </div>
@@ -225,7 +225,7 @@ export default function EventPage() {
                             Become a member to pay {formatPrice(event.memberPrice)}
                         </Link>
                     ) : (
-                        <span className="font-normal text-slate-600">
+                        <span className="font-normal text-pmc-mute">
                             Members pay {formatPrice(event.memberPrice)}
                         </span>
                     )}

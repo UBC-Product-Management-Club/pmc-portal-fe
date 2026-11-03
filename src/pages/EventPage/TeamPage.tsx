@@ -116,7 +116,7 @@ export default function TeamPage() {
 
     return (
         <div className="flex flex-col gap-6">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-pmc-mute">
                 <Link to={`/events/${eventId}`} className="underline">
                     {event.name}
                 </Link>{' '}
@@ -161,8 +161,8 @@ export default function TeamPage() {
                 )}
                 {/* Phone: large code with Copy and Share on their own row */}
                 <div className="flex flex-col gap-2 md:flex-row md:items-center">
-                    <span className="text-xs text-slate-600">Team code</span>
-                    <span className="rounded-[10px] bg-white/70 px-3 py-1 font-mono text-2xl tracking-widest md:text-lg">
+                    <span className="text-xs text-pmc-mute">Team code</span>
+                    <span className="rounded-[10px] bg-pmc-bg px-3 py-1 font-mono text-2xl tracking-widest md:text-lg">
                         {code}
                     </span>
                     <div className="flex gap-2">
@@ -180,7 +180,7 @@ export default function TeamPage() {
 
             <div className="grid gap-4 md:grid-cols-2">
                 <div className="glass flex flex-col gap-2 p-4">
-                    <span className="text-sm text-slate-600">Submission</span>
+                    <span className="text-sm text-pmc-mute">Submission</span>
                     <div>
                         {submission ? (
                             <Badge tone="good">Submitted ✓</Badge>
@@ -189,14 +189,14 @@ export default function TeamPage() {
                         )}
                     </div>
                     {deadline && (
-                        <span className="text-sm text-slate-600">
+                        <span className="text-sm text-pmc-mute">
                             {afterDeadline ? 'Closed' : 'Closes'} {formatPacific(deadline)}
                             {phase?.extendedUntil && ' (extended)'}
                         </span>
                     )}
                 </div>
                 <div className="glass flex flex-col gap-2 p-4">
-                    <span className="text-sm text-slate-600">Next step</span>
+                    <span className="text-sm text-pmc-mute">Next step</span>
                     <span className="font-medium">{nextStep}</span>
                     {(!afterDeadline || submission) && (
                         <ButtonLink
@@ -224,16 +224,16 @@ export default function TeamPage() {
                                 <span className="font-medium md:w-64">
                                     {first_name} {last_name}
                                     {isYou && (
-                                        <span className="ml-1 text-sm text-slate-600">(you)</span>
+                                        <span className="ml-1 text-sm text-pmc-mute">(you)</span>
                                     )}
                                 </span>
-                                <span className="text-slate-700">{email}</span>
+                                <span className="text-pmc-mute">{email}</span>
                             </li>
                         );
                     })}
                 </ul>
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                    <p className="flex items-start gap-1.5 text-sm text-slate-600">
+                    <p className="flex items-start gap-1.5 text-sm text-pmc-mute">
                         {(afterDeadline || rosterLocked) && (
                             <MdLockOutline className="mt-0.5 size-4 shrink-0" aria-hidden />
                         )}

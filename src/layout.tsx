@@ -16,13 +16,8 @@ export function Layout() {
     if (isLoading) return null;
 
     return (
-        <div className="portal-bg min-h-screen font-geist text-black md:flex">
+        <div className="portal-bg min-h-screen pmc-type md:flex">
             <Toaster position="top-center" />
-            {/* Soft colour blobs from the spec mockups */}
-            <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden>
-                <div className="absolute top-1/3 -left-20 size-[420px] rounded-full bg-pink-300 opacity-50 blur-[70px]" />
-                <div className="absolute -right-28 bottom-0 size-[460px] rounded-full bg-violet-300 opacity-50 blur-[70px]" />
-            </div>
 
             {/* Desktop: sidebar always visible on the left */}
             <aside className="sticky top-0 z-10 hidden h-screen w-[255px] shrink-0 md:block">
@@ -43,7 +38,7 @@ export function Layout() {
                         <button
                             type="button"
                             onClick={() => setMenuOpen(false)}
-                            className="absolute top-4 right-2 flex size-11 items-center justify-center rounded-[10px] text-black"
+                            className="absolute top-4 right-2 flex size-11 items-center justify-center rounded-[10px] text-pmc-ink"
                             aria-label="Close menu"
                         >
                             <MdClose className="size-6" aria-hidden />

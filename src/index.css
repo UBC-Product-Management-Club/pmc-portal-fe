@@ -1,9 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
+/* Poppins loads from index.html; this fallback is sized to Poppins so text doesn't jump when it arrives */
+@font-face {
+    font-family: 'Poppins Fallback';
+    src: local('Arial');
+    size-adjust: 112.16%;
+    ascent-override: 93.62%;
+    descent-override: 31.21%;
+    line-gap-override: 8.92%;
+}
+
 :root {
-    font-family: 'poppins';
+    font-family: 'Poppins', 'Poppins Fallback', system-ui, sans-serif;
     line-height: 1.5;
 
     font-synthesis: none;
@@ -37,40 +45,62 @@
     --color-pmc-midnight-grey: var(--pmc-midnight-grey);
     --color-pmc-midnight-blue: var(--pmc-midnight-blue);
 
-    /* Member portal redesign (Figma) */
-    --font-geist: 'Geist', sans-serif;
+    /* Member portal, matched to ubcpmc.com */
+    --font-pmc: 'Poppins', 'Poppins Fallback', system-ui, sans-serif;
+    --color-pmc-bg: #fbf9fe;
+    --color-pmc-ink: #1d1838;
+    --color-pmc-mute: #6b6584;
+    --color-pmc-accent: #5a54c9;
     --color-portal-surface: #fafafa;
-    --color-portal-badge: #f0f0f0;
-    --color-portal-stroke: #e2e8f0;
+    --color-portal-badge: #efeaf9;
+    --color-portal-stroke: rgb(29 24 56 / 0.12);
     --color-portal-muted: #94a3b8;
 }
 
-/* Pink-to-lavender page background and the bar tint (spec mockups, based on the Figma) */
+/* ubcpmc.com page background: near-white lavender with a faint periwinkle wash */
 @utility portal-bg {
-    background-image: linear-gradient(135deg, #f8c8dc 0%, #f3d3e6 40%, #e4dbf7 75%, #dcd6fb 100%);
+    background-color: var(--color-pmc-bg);
+    background-image: linear-gradient(160deg, rgb(139 156 242 / 0.14) 0%, rgb(251 249 254 / 0) 45%);
 }
 
 @utility portal-tint {
-    background-color: rgb(255 255 255 / 0.55);
+    background-color: rgb(251 249 254 / 0.85);
 }
 
-/* Main action on each page */
-@utility portal-accent {
-    background-image: linear-gradient(90deg, #f472b6, #a78bfa);
-}
-
-/* The ubcpmc.com brand gradient, used for the login button */
+/* ubcpmc.com brand gradient for each page's main action. The first stop is a shade darker
+   than the site's #5f6fdc so white button text clears 4.5:1 */
 @utility pmc-deep {
-    background-image: linear-gradient(120deg, #5f6fdc 0%, #8a58cf 38%, #bf418c 72%, #d23350 100%);
+    background-image: linear-gradient(120deg, #5662d4 0%, #8a58cf 38%, #bf418c 72%, #d23350 100%);
 }
 
-/* Frosted-glass card */
+/* Card surface, as on ubcpmc.com: white with a fine ink border and soft shadow */
 @utility glass {
-    background-color: rgb(255 255 255 / 0.42);
-    border: 1px solid rgb(255 255 255 / 0.75);
+    background-color: #fff;
+    border: 1px solid rgb(29 24 56 / 0.1);
     border-radius: 12px;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+    box-shadow:
+        0 1px 2px rgb(29 24 56 / 0.06),
+        0 14px 34px -14px rgb(29 24 56 / 0.18);
+}
+
+/* ubcpmc.com type: bold Poppins headings with tight tracking, readable placeholders.
+   Unlayered so it outranks the heading weights set per page */
+.pmc-type {
+    font-family: var(--font-pmc);
+    color: var(--color-pmc-ink);
+}
+.pmc-type :is(h1, h2) {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+.pmc-type h3 {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+.pmc-type ::placeholder {
+    color: var(--color-pmc-mute);
+    opacity: 1;
 }
 
 /* Event descriptions: numbered lists become step cards, bullets get a check */
@@ -118,7 +148,7 @@
     width: 1.75rem;
     height: 1.75rem;
     border-radius: 9999px;
-    background-image: linear-gradient(90deg, #f472b6, #a78bfa);
+    background-image: linear-gradient(120deg, #5662d4 0%, #8a58cf 38%, #bf418c 72%, #d23350 100%);
     color: #fff;
     font-size: 0.8125rem;
     font-weight: 600;
@@ -134,7 +164,7 @@
     width: 1.25rem;
     height: 1.25rem;
     margin-top: 0.125rem;
-    background-image: linear-gradient(90deg, #f472b6, #a78bfa);
+    background-image: linear-gradient(120deg, #5662d4 0%, #8a58cf 38%, #bf418c 72%, #d23350 100%);
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 15-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z'/%3E%3C/svg%3E")
         center / contain no-repeat;
 }
@@ -143,8 +173,8 @@ body,
 html {
     margin: 0;
     padding: 0;
-    /* Matches the portal gradient so overscroll doesn't flash dark blue */
-    background-color: #f3d3e6;
+    /* Matches the portal background so overscroll doesn't flash dark blue */
+    background-color: #fbf9fe;
 }
 
 @keyframes drawCircle {

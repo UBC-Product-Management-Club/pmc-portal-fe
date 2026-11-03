@@ -2,10 +2,10 @@ import { ReactNode } from 'react';
 import { BadgeTone } from '../Event/eventStatus';
 
 const TONES: Record<BadgeTone, string> = {
-    neutral: 'bg-portal-badge text-black',
+    neutral: 'bg-portal-badge text-pmc-ink',
     warn: 'bg-amber-100 text-amber-800',
-    info: 'bg-violet-100 text-violet-700',
-    good: 'bg-green-100 text-green-700',
+    info: 'bg-portal-badge text-pmc-accent',
+    good: 'bg-green-100 text-green-800',
     bad: 'bg-red-100 text-red-700',
 };
 

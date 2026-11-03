@@ -6,7 +6,7 @@ import { Section } from './EventSections';
 // Mentors without a photo get one of these circles in turn
 const AVATAR_COLOURS = ['bg-[#c9b8e8]', 'bg-[#f5b5cf]', 'bg-[#b8c8f0]'];
 
-const labelClass = 'mb-1.5 text-[13px] font-semibold';
+const labelClass = 'mb-1.5 text-sm font-semibold';
 
 // Prep ticks live in this browser only
 function usePrepTicks(eventId: string) {
@@ -57,7 +57,7 @@ export function GettingReady({
                             {content.mentors.map((mentor, index) => (
                                 <li
                                     key={`${mentor.name}-${index}`}
-                                    className="flex items-center gap-3 rounded-[10px] bg-white/60 p-3.5"
+                                    className="flex items-center gap-3 rounded-[10px] bg-pmc-bg p-3.5"
                                 >
                                     {mentor.photo ? (
                                         <img
@@ -80,7 +80,7 @@ export function GettingReady({
                                                 mentor.name
                                             )}
                                         </p>
-                                        <p className="text-xs text-slate-600">{mentor.role}</p>
+                                        <p className="text-xs text-pmc-mute">{mentor.role}</p>
                                     </div>
                                 </li>
                             ))}
@@ -88,7 +88,7 @@ export function GettingReady({
                     </div>
                 )}
                 <div className="grid items-start gap-3.5 md:grid-cols-2">
-                    <div className="rounded-[10px] bg-white/60 p-3.5">
+                    <div className="rounded-[10px] bg-pmc-bg p-3.5">
                         <h3 className={labelClass}>What to prepare</h3>
                         <ul className="flex flex-col">
                             {content.prep.map((item, index) => (
@@ -106,7 +106,7 @@ export function GettingReady({
                             ))}
                         </ul>
                     </div>
-                    <div className="rounded-[10px] bg-white/60 p-3.5">
+                    <div className="rounded-[10px] bg-pmc-bg p-3.5">
                         <h3 className={labelClass}>Q&amp;A</h3>
                         <div className="flex flex-col divide-y divide-slate-200/90">
                             {content.faq.map(({ q, a }) => (
@@ -114,15 +114,15 @@ export function GettingReady({
                                     <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 text-sm group-open:font-semibold">
                                         {q}
                                         <MdAdd
-                                            className="size-4 shrink-0 text-slate-600 group-open:hidden"
+                                            className="size-4 shrink-0 text-pmc-mute group-open:hidden"
                                             aria-hidden
                                         />
                                         <MdRemove
-                                            className="hidden size-4 shrink-0 text-slate-600 group-open:block"
+                                            className="hidden size-4 shrink-0 text-pmc-mute group-open:block"
                                             aria-hidden
                                         />
                                     </summary>
-                                    <p className="pb-3 text-[13px] text-slate-600">{a}</p>
+                                    <p className="pb-3 text-sm text-pmc-mute">{a}</p>
                                 </details>
                             ))}
                         </div>

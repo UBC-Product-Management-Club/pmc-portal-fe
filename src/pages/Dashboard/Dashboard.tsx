@@ -45,7 +45,7 @@ function CollapsibleSection({ title, children }: { title: string; children: Reac
                     aria-expanded={open}
                     aria-controls={listId}
                     aria-label={`${open ? 'Collapse' : 'Expand'} ${title.toLowerCase()}`}
-                    className="flex size-11 items-center justify-center rounded-[10px] hover:bg-white/50"
+                    className="flex size-11 items-center justify-center rounded-[10px] hover:bg-pmc-bg"
                 >
                     <MdExpandMore
                         className={`size-6 transition-transform ${open ? 'rotate-180' : ''}`}
@@ -68,10 +68,7 @@ function Announcements({ items }: { items: Announcement[] }) {
                     <p>No announcements right now.</p>
                 ) : (
                     items.map((item) => (
-                        <article
-                            key={item.announcementId}
-                            className="rounded-[10px] bg-white/60 p-4"
-                        >
+                        <article key={item.announcementId} className="rounded-[10px] bg-pmc-bg p-4">
                             <h3 className="mb-2 text-2xl leading-8 font-medium">{item.title}</h3>
                             <p className="text-base">{item.body}</p>
                         </article>
@@ -84,7 +81,7 @@ function Announcements({ items }: { items: Announcement[] }) {
 
 function Chip({ icon: Icon, children }: { icon: IconType; children: ReactNode }) {
     return (
-        <li className="inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1.5 text-sm font-medium">
+        <li className="inline-flex items-center gap-1.5 rounded-full bg-pmc-bg px-3 py-1.5 text-sm font-medium">
             <Icon className="size-4 shrink-0" aria-hidden />
             {children}
         </li>
@@ -122,7 +119,7 @@ function HomeEventCard({
                     <h3 className="text-3xl leading-tight font-medium">{event.name}</h3>
                     {badge && <Badge tone={badge.tone}>{badge.label}</Badge>}
                 </div>
-                <p className="text-lg leading-snug text-slate-800">{event.blurb}</p>
+                <p className="text-lg leading-snug text-pmc-ink">{event.blurb}</p>
                 <ul className="flex flex-wrap gap-2">
                     <Chip icon={MdOutlineCalendarToday}>
                         {sameDay(event.startTime, event.endTime)

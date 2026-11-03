@@ -1,9 +1,9 @@
 import { FaInstagram } from 'react-icons/fa';
 
 export default function Footer() {
-    const textClass = 'flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-[#6b6584]';
+    const textClass = 'flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-pmc-mute';
     const linkClass =
-        'inline-flex items-center gap-1 font-medium text-[#1d1838] underline decoration-[#1d1838]/25 underline-offset-4 hover:decoration-[#5a54c9]';
+        'inline-flex items-center gap-1 font-medium text-pmc-ink underline decoration-pmc-ink/25 underline-offset-4 hover:decoration-pmc-accent';
     return (
         <p className={textClass}>
             Need help? Email{' '}

@@ -9,9 +9,7 @@ import { showToast } from '../../utils';
 import { Badge } from '../../components/Portal/Badge';
 import { Button } from '../../components/Portal/Button';
 import { inputClass } from '../../components/Event/applicationRules';
-import { getPassportBadges } from '../../service/services';
 import Geary from '../../assets/geary normal.png';
-import { EventPassport } from './EventPassport';
 
 type Form = Required<ProfileUpdate>;
 type Key = keyof Form;
@@ -38,11 +36,11 @@ function validate(form: Form) {
 function Locked({ children, why }: { children: ReactNode; why: string }) {
     return (
         <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 rounded-[10px] bg-white/60 px-4 py-3">
+            <div className="flex items-center gap-2 rounded-[10px] bg-pmc-bg px-4 py-3">
                 <span className="min-w-0 flex-1 truncate">{children}</span>
-                <MdLockOutline className="size-5 shrink-0 text-slate-500" aria-hidden />
+                <MdLockOutline className="size-5 shrink-0 text-pmc-mute" aria-hidden />
             </div>
-            <span className="text-xs text-slate-600">{why}</span>
+            <span className="text-xs text-pmc-mute">{why}</span>
         </div>
     );
 }
@@ -142,8 +140,6 @@ export function Profile() {
 
     const whyDirty = Object.keys(changesIn(WHY_KEYS)).length > 0;
 
-    const badges = getPassportBadges();
-
     return (
         <div className="flex flex-col gap-8">
             {/* Who you are: avatar, name, membership and pronouns */}
@@ -175,7 +171,7 @@ export function Profile() {
                 )}
             </section>
 
-            <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
+            <div>
                 <section className="flex flex-col gap-2">
                     <h2 className="text-xl leading-7 font-medium">Details</h2>
                     <div className="glass flex flex-col gap-5 p-4 md:p-6">
@@ -243,22 +239,12 @@ export function Profile() {
                         )}
                     </div>
                 </section>
-
-                <section className="flex flex-col gap-2">
-                    <div className="flex flex-wrap items-baseline gap-2">
-                        <h2 className="text-xl leading-7 font-medium">Event Passport</h2>
-                        <p className="text-slate-600">Attend events to collect badges!</p>
-                    </div>
-                    <div className="glass p-4 md:p-6">
-                        <EventPassport badges={badges} />
-                    </div>
-                </section>
             </div>
 
             <section className="flex flex-col gap-2">
                 <div className="flex flex-wrap items-baseline gap-2">
                     <h2 className="text-xl leading-7 font-medium">Why Product Management?</h2>
-                    <p className="text-slate-600">Tell us about yourself!</p>
+                    <p className="text-pmc-mute">Tell us about yourself!</p>
                 </div>
                 <div className="glass flex flex-col gap-2 p-4">
                     <textarea
@@ -269,7 +255,7 @@ export function Profile() {
                         onChange={(e) => set('why_pm', e.target.value)}
                     />
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                        <span className="text-xs text-slate-600">
+                        <span className="text-xs text-pmc-mute">
                             {form.why_pm.trim().length} / 300 characters
                             {whyDirty && ' · Unsaved changes'}
                         </span>

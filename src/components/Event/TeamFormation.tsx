@@ -10,7 +10,7 @@ type TeamFormationProps = {
     ended: boolean;
 };
 
-const cardClass = 'flex flex-col items-start gap-1.5 rounded-[10px] bg-white/60 p-3.5';
+const cardClass = 'flex flex-col items-start gap-1.5 rounded-[10px] bg-pmc-bg p-3.5';
 
 export function TeamFormation({
     eventId,
@@ -24,7 +24,7 @@ export function TeamFormation({
         return (
             <Section title="Your Team" id="team-formation">
                 <div className="glass flex flex-col items-start gap-3 p-4 md:flex-row md:items-center">
-                    <p className="flex-1 text-sm text-slate-700">
+                    <p className="flex-1 text-sm text-pmc-mute">
                         {onTeam
                             ? "That's a wrap, thanks for competing! Your teammates and project are saved on your team page whenever you want to look back."
                             : "That's a wrap! You weren't on a team for this one, but we hope to see you competing at the next event."}
@@ -41,8 +41,8 @@ export function TeamFormation({
         <Section title="Team Formation" id="team-formation">
             <div className="glass grid items-start gap-3.5 p-3.5 md:grid-cols-2">
                 <div className={cardClass}>
-                    <h3 className="text-[13px] font-semibold">Before the event</h3>
-                    <p className="mb-1.5 text-[13px] text-slate-600">
+                    <h3 className="text-sm font-semibold">Before the event</h3>
+                    <p className="mb-1.5 text-sm text-pmc-mute">
                         Meet other participants in the Discord channel and form a team of up to{' '}
                         {maxTeamSize}.
                     </p>
@@ -58,10 +58,10 @@ export function TeamFormation({
                     )}
                 </div>
                 <div className={cardClass}>
-                    <h3 className="text-[13px] font-semibold">Record your team here</h3>
+                    <h3 className="text-sm font-semibold">Record your team here</h3>
                     {onTeam ? (
                         <>
-                            <p className="mb-1.5 text-[13px] text-slate-600">
+                            <p className="mb-1.5 text-sm text-pmc-mute">
                                 You're on a team. Rename it, share its code or submit from the team
                                 page.
                             </p>
@@ -71,7 +71,7 @@ export function TeamFormation({
                         </>
                     ) : (
                         <>
-                            <p className="mb-1.5 text-[13px] text-slate-600">
+                            <p className="mb-1.5 text-sm text-pmc-mute">
                                 One person creates the team and shares its code. Teams have 1 to{' '}
                                 {maxTeamSize} members, so you can also compete alone. Still looking
                                 on the day? Find us after opening remarks.
