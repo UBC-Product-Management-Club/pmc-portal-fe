@@ -1,8 +1,7 @@
 export default function Footer() {
     const containerClass = 'flex w-full justify-center';
-    const textClass = 'text-center text-sm font-bold text-white sm:text-base';
-    const linkClass =
-        'bg-gradient-to-r from-[var(--pmc-red)] to-[var(--pmc-light-blue)] bg-clip-text text-transparent no-underline';
+    const textClass = 'text-center text-sm font-medium text-slate-700 sm:text-base';
+    const linkClass = 'font-semibold text-violet-700 underline underline-offset-2';
     return (
         <div className={containerClass}>
             <div>

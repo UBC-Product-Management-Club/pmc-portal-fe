@@ -1,22 +1,20 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import PMCLogo from '../../assets/pmclogo.svg';
+import PMCLogo from '../../assets/pmclogo-ahover.png';
 import Footer from '../../components/Footer/Footer';
+import { Button } from '../../components/Portal/Button';
 import { useInAppBrowser } from '../../utils';
 
 export default function Login() {
     const { loginWithRedirect } = useAuth0();
     const { isInAppBrowser } = useInAppBrowser();
     const containerClass =
-        'relative flex h-screen w-screen flex-row items-center bg-pmc-dark-blue md:flex-col md:justify-around md:bg-pmc-blue';
+        'portal-bg relative flex min-h-screen w-full flex-col items-center justify-center px-4 py-12 font-geist text-black';
     const contentClass =
-        'mx-auto flex w-full flex-col items-center justify-center rounded-none bg-pmc-dark-blue p-8 md:h-[27rem] md:w-[36rem] md:rounded-2xl';
-    const logoClass = 'h-32 w-32 md:h-40 md:w-40';
-    const headerClass =
-        'text-center font-bold font-[Poppins] leading-relaxed text-transparent bg-clip-text bg-white md:text-2xl';
-    const buttonContainerClass = 'flex flex-col';
-    const loginButtonClass =
-        'my-2 w-[300px] cursor-pointer rounded-full border-0 bg-white py-3 text-base font-normal text-[#1c1c1c]';
-    const footerClass = 'absolute bottom-4 w-full';
+        'glass relative flex w-full max-w-[36rem] flex-col items-center gap-6 px-6 py-12 md:px-12 md:py-16';
+    const logoClass = 'size-28 object-contain md:size-32';
+    const headerClass = 'text-center text-2xl font-semibold md:text-3xl';
+    const loginButtonClass = 'w-full max-w-[300px] cursor-pointer';
+    const footerClass = 'absolute bottom-6 w-full px-4';
 
     function handleLogin() {
         if (isInAppBrowser) {
@@ -34,14 +32,17 @@ export default function Login() {
 
     return (
         <div className={containerClass}>
+            {/* Same soft colour blobs as the portal layout */}
+            <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden>
+                <div className="absolute top-1/3 -left-20 size-[420px] rounded-full bg-pink-300 opacity-50 blur-[70px]" />
+                <div className="absolute -right-28 bottom-0 size-[460px] rounded-full bg-violet-300 opacity-50 blur-[70px]" />
+            </div>
             <div className={contentClass}>
                 <img className={logoClass} src={PMCLogo} data-testid="logo" alt="PMC Logo" />
-                <h1 className={headerClass}> PMC Membership Portal</h1>
-                <div className={buttonContainerClass}>
-                    <button className={loginButtonClass} onClick={handleLogin}>
-                        Log in / sign up
-                    </button>
-                </div>
+                <h1 className={headerClass}>PMC Membership Portal</h1>
+                <Button variant="primary" className={loginButtonClass} onClick={handleLogin}>
+                    Log in / sign up
+                </Button>
             </div>
             <div className={footerClass}>
                 <Footer />
