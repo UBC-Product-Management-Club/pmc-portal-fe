@@ -169,6 +169,55 @@
 .portal-bg .text-pmc-mute:not(:is(.glass, .portal-tint) .text-pmc-mute) {
     color: rgb(29 24 56 / 0.78);
 }
+/* Page changes: the old page steps back quickly and the new one rises into place. Only the
+   main column animates; the sidebar and top bar stay put while the sidebar highlight glides */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+}
+::view-transition-old(portal-main) {
+    animation: 140ms ease-in both pmc-page-out;
+}
+::view-transition-new(portal-main) {
+    animation: 420ms cubic-bezier(0.16, 1, 0.3, 1) 60ms both pmc-page-in;
+}
+@keyframes pmc-page-out {
+    to {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+}
+@keyframes pmc-page-in {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+        filter: blur(4px);
+    }
+}
+@keyframes pmc-drawer-in {
+    from {
+        translate: -100% 0;
+    }
+}
+@keyframes pmc-fade-in {
+    from {
+        opacity: 0;
+    }
+}
+@keyframes pmc-fade-out {
+    to {
+        opacity: 0;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(portal-main) {
+        animation: 120ms ease-in both pmc-fade-out;
+    }
+    ::view-transition-new(portal-main) {
+        animation: 160ms ease-out both pmc-fade-in;
+    }
+}
+
 /* Text links and underlined text buttons turn the accent colour on hover */
 .pmc-type :is(a, button).underline {
     text-underline-offset: 3px;

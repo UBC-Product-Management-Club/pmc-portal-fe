@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { MdOutlineDashboard, MdOutlineEvent, MdLogout } from 'react-icons/md';
 import PMCLogo from '../../assets/pmclogo-ahover.png';
@@ -14,7 +14,51 @@ type SidebarProps = {
 };
 
 const rowClass =
-    'flex min-h-14 items-center gap-2 p-4 text-sm text-pmc-ink transition-colors duration-200 hover:bg-portal-badge/70';
+    'relative flex min-h-14 items-center gap-2 p-4 text-sm text-pmc-ink transition-colors duration-200 hover:bg-portal-badge/50';
+
+// One highlight glides to whichever row holds the current page, so moving between pages reads
+// as one continuous motion instead of a background jumping from row to row
+function useActiveIndicator() {
+    const navRef = useRef<HTMLElement>(null);
+    const [box, setBox] = useState<{ top: number; height: number } | null>(null);
+    const [animate, setAnimate] = useState(false);
+    const { pathname } = useLocation();
+
+    const measure = useCallback(() => {
+        const nav = navRef.current;
+        const row = nav?.querySelector('[aria-current="page"]')?.closest('[data-nav-row]');
+        if (!nav || !row) return setBox(null);
+        const top = row.getBoundingClientRect().top - nav.getBoundingClientRect().top;
+        setBox({ top, height: row.getBoundingClientRect().height });
+    }, []);
+
+    // First placement is instant; later moves glide
+    useLayoutEffect(() => {
+        measure();
+        const id = requestAnimationFrame(() => setAnimate(true));
+        return () => cancelAnimationFrame(id);
+    }, [pathname, measure]);
+
+    useEffect(() => {
+        const nav = navRef.current;
+        if (!nav) return;
+        const observer = new ResizeObserver(measure);
+        observer.observe(nav);
+        // Rows inside the scrolling events list move with it, so follow without gliding
+        const follow = () => {
+            setAnimate(false);
+            measure();
+            requestAnimationFrame(() => setAnimate(true));
+        };
+        nav.addEventListener('scroll', follow, true);
+        return () => {
+            observer.disconnect();
+            nav.removeEventListener('scroll', follow, true);
+        };
+    }, [measure]);
+
+    return { navRef, box, animate, measure };
+}
 
 // The brand and profile rows share the pale pink-to-lavender tint from the Figma
 const tintClass = 'bg-white/50';
@@ -38,6 +82,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
     const { logout } = useAuth0();
     const { getAll } = useEvents();
     const [events, setEvents] = useState<EventCard[]>([]);
+    const { navRef, box, animate, measure } = useActiveIndicator();
 
     useEffect(() => {
         getAll()
@@ -45,11 +90,24 @@ export function Sidebar({ onNavigate }: SidebarProps) {
             .catch(() => setEvents([]));
     }, [getAll]);
 
+    // Event rows arrive after the first paint; place the highlight once they exist
+    useLayoutEffect(measure, [events, user, measure]);
+
     return (
         <nav
-            className="portal-tint flex h-full w-full flex-col border-r border-portal-stroke font-pmc"
+            ref={navRef}
+            className="portal-tint relative isolate flex h-full w-full flex-col border-r border-portal-stroke font-pmc"
             aria-label="Main"
         >
+            <span
+                aria-hidden
+                className={`pointer-events-none absolute inset-x-0 top-0 -z-10 bg-portal-badge before:pmc-deep before:absolute before:inset-y-2 before:left-0 before:w-[3px] before:rounded-r-full ${animate ? 'transition-[translate,height,opacity] duration-[420ms] ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-opacity' : ''}`}
+                style={{
+                    translate: `0 ${box?.top ?? 0}px`,
+                    height: box?.height ?? 0,
+                    opacity: box ? 1 : 0,
+                }}
+            />
             <div className={`flex items-center gap-2 p-4 ${tintClass}`}>
                 <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-pmc-dark-blue">
                     <img src={PMCLogo} alt="UBC PMC" className="size-7 object-contain" />
@@ -64,8 +122,9 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                 to="/dashboard"
                 end
                 onClick={onNavigate}
+                data-nav-row
                 className={({ isActive }) =>
-                    `${rowClass} font-medium ${isActive ? 'bg-portal-badge font-semibold' : ''}`
+                    `${rowClass} font-medium ${isActive ? 'font-semibold hover:bg-transparent' : ''}`
                 }
             >
                 <MdOutlineDashboard className="size-6 shrink-0" aria-hidden />
@@ -79,14 +138,14 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 
             <div className="flex-1 overflow-y-auto">
                 {events.length > 0 && (
-                    <ul className="bg-portal-surface">
+                    <ul>
                         {events.map((event) => (
-                            <li key={event.eventId}>
+                            <li key={event.eventId} data-nav-row>
                                 <NavLink
                                     to={`/events/${event.eventId}`}
                                     onClick={onNavigate}
                                     className={({ isActive }) =>
-                                        `${rowClass} pl-12 ${isActive ? 'bg-portal-badge font-semibold' : ''}`
+                                        `${rowClass} pl-12 ${isActive ? 'font-semibold hover:bg-transparent' : ''}`
                                     }
                                 >
                                     <EventIcon event={event} />
@@ -99,11 +158,11 @@ export function Sidebar({ onNavigate }: SidebarProps) {
             </div>
 
             {user && (
-                <div className={`flex items-center gap-2 p-4 ${tintClass}`}>
+                <div data-nav-row className={`flex items-center gap-2 p-4 ${tintClass}`}>
                     <NavLink
                         to="/profile"
                         onClick={onNavigate}
-                        className="flex min-w-0 flex-1 items-center gap-2"
+                        className="flex min-w-0 flex-1 items-center gap-2 rounded-[10px]"
                     >
                         <img
                             src={Geary}

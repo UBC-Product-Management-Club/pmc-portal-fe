@@ -32,6 +32,7 @@ const sameDay = (start: string, end: string) =>
 // Heading with a chevron that hides or shows the whole section (Announcements, Past Events)
 function CollapsibleSection({ title, children }: { title: string; children: ReactNode }) {
     const [open, setOpen] = useState(true);
+    const [settled, setSettled] = useState(true);
     const listId = useId();
 
     return (
@@ -41,7 +42,10 @@ function CollapsibleSection({ title, children }: { title: string; children: Reac
                 {/* Proposed interaction, pending designer approval: collapse the whole section */}
                 <button
                     type="button"
-                    onClick={() => setOpen(!open)}
+                    onClick={() => {
+                        setSettled(false);
+                        setOpen(!open);
+                    }}
                     aria-expanded={open}
                     aria-controls={listId}
                     aria-label={`${open ? 'Collapse' : 'Expand'} ${title.toLowerCase()}`}
@@ -53,8 +57,17 @@ function CollapsibleSection({ title, children }: { title: string; children: Reac
                     />
                 </button>
             </div>
-            <div id={listId} hidden={!open}>
-                {children}
+            {/* Height eases open and shut; content stays clipped only while it moves */}
+            <div
+                id={listId}
+                inert={!open}
+                aria-hidden={!open}
+                onTransitionEnd={(e) => e.target === e.currentTarget && setSettled(true)}
+                className={`grid transition-[grid-template-rows,opacity] ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:duration-150 ${open ? 'grid-rows-[1fr] opacity-100 duration-[420ms]' : 'grid-rows-[0fr] opacity-0 duration-300'}`}
+            >
+                <div className={`min-h-0 ${open && settled ? '' : 'overflow-hidden'}`}>
+                    {children}
+                </div>
             </div>
         </section>
     );
