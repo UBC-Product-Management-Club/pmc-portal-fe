@@ -203,7 +203,7 @@ export const mockRegisteredContent = () => ({
             },
         ],
     },
-    discord_url: 'https://ubcpmc.slack.com/archives/placeholder',
+    slack_url: 'https://ubcpmc.slack.com/archives/placeholder',
     max_team_size: 4,
 });
 

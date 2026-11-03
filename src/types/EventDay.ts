@@ -19,13 +19,15 @@ const PageContentSchema = z.object({
 const RegisteredContentSchema = z
     .object({
         page_content: PageContentSchema,
-        // Still named discord_url in the API; it now holds the event's Slack channel link
-        discord_url: z.url().nullable(),
+        slack_url: z.url().nullish(),
+        // Older backends still send the link as discord_url; read either so the
+        // frontend and backend can deploy in any order
+        discord_url: z.url().nullish(),
         max_team_size: z.number(),
     })
     .transform((content) => ({
         pageContent: content.page_content,
-        slackUrl: content.discord_url,
+        slackUrl: content.slack_url ?? content.discord_url ?? null,
         maxTeamSize: content.max_team_size,
     }));
 
