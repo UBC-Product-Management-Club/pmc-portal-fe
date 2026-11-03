@@ -138,7 +138,8 @@ body,
 html {
     margin: 0;
     padding: 0;
-    background-color: var(--pmc-dark-blue);
+    /* Matches the portal gradient so overscroll doesn't flash dark blue */
+    background-color: #f3d3e6;
 }
 
 @keyframes drawCircle {

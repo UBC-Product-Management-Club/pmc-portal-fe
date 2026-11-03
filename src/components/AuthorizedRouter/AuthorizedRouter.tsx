@@ -42,5 +42,5 @@ export default function AuthorizedRouter() {
     }, [auth0User]);
 
     // TODO: Design a loading page
-    return <h1 className="text-white">loading...</h1>;
+    return <h1 className="text-black">loading...</h1>;
 }
