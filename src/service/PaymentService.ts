@@ -3,7 +3,6 @@ import { RestClient } from './RestClient';
 
 enum PaymentType {
     MEMBERSHIP = 'membership',
-    EVENT = 'event',
 }
 
 interface CreatePaymentIntentResponse {
@@ -21,9 +20,7 @@ interface FetchFeeResponse {
     nonUbcPrice: number;
 }
 
-type getElementOptionsOptions =
-    | { type: PaymentType.MEMBERSHIP; userId: string }
-    | { type: PaymentType.EVENT; eventId: string };
+type getElementOptionsOptions = { type: PaymentType.MEMBERSHIP; userId: string };
 
 class PaymentService {
     private client: RestClient;
@@ -46,21 +43,10 @@ class PaymentService {
         return await this.client.get<FetchFeeResponse>(`/membership`);
     }
 
-    async getEventRegistrationFee(eventId: string): Promise<number> {
-        if (!eventId) {
-            throw new Error('Invalid event Id!');
-        }
-        return new Promise(() => {
-            return 0;
-        });
-    }
-
     async getElementsOptions(options: getElementOptionsOptions): Promise<StripeElementsOptions> {
         switch (options.type) {
             case PaymentType.MEMBERSHIP:
                 return this.getMembershipFeeElementsOptions();
-            case PaymentType.EVENT:
-                return this.getEventRegFeeElementsOptions(options.eventId);
             default:
                 throw new Error('invalid payment type');
         }
@@ -86,17 +72,6 @@ class PaymentService {
         return {
             clientSecret: (await this.client.get<CreatePaymentIntentResponse>(`/create/membership`))
                 .clientSecret,
-        };
-    }
-
-    private async getEventRegFeeElementsOptions(eventId: string): Promise<StripeElementsOptions> {
-        if (!eventId) {
-            throw new Error('Missing event Id');
-        }
-        return {
-            clientSecret: (
-                await this.client.get<CreatePaymentIntentResponse>(`/create/event/${eventId}`)
-            ).clientSecret,
         };
     }
 }

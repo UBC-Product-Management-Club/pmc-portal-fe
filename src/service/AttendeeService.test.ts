@@ -22,6 +22,14 @@ describe('AttendeeService', () => {
         paymentId: 'payment_id',
     };
 
+    it('sends the Stripe session id when there is one', async () => {
+        mockClient.get.mockResolvedValueOnce(mockAttendee);
+
+        await service.getAttendee('event_id', 'cs_test_1');
+
+        expect(mockClient.get).toHaveBeenCalledWith('/event_id?session_id=cs_test_1');
+    });
+
     it('get an attendee by event_id', async () => {
         mockClient.get.mockResolvedValueOnce(mockAttendee);
 

@@ -1,3 +1,17 @@
+// Carries the API error code, e.g. STALE, STALE_DRAFT, ROSTER_LOCKED, RATE_LIMITED
+export class ApiError extends Error {
+    public constructor(
+        message: string,
+        public readonly status: number,
+        public readonly code?: string,
+        public readonly fields?: Record<string, string>,
+        public readonly body?: unknown
+    ) {
+        super(message);
+        this.name = 'ApiError';
+    }
+}
+
 export class RestClient {
     public constructor(private readonly baseUrl: string) {}
 
@@ -6,8 +20,7 @@ export class RestClient {
         const response = await fetch(`${this.baseUrl}${path}`, { ...options, headers });
 
         if (!response.ok) {
-            // Optionally log or throw a custom error
-            throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
+            throw await this.toApiError(response);
         }
 
         const contentType = response.headers.get('Content-Type') || '';
@@ -60,12 +73,44 @@ export class RestClient {
         });
     }
 
+    public patch<TRequest, TResponse>(
+        path: string,
+        body: TRequest,
+        headers: HeadersInit = {}
+    ): Promise<TResponse> {
+        return this.request<TResponse>(path, {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                ...headers,
+            },
+            body: JSON.stringify(body),
+        });
+    }
+
     public delete<TResponse>(path: string, headers: HeadersInit = {}): Promise<TResponse> {
         return this.request<TResponse>(path, {
             method: 'DELETE',
             credentials: 'include',
             headers,
         });
+    }
+
+    // Handles both { error: "message" } (older routes) and { error: { code, message, fields } }
+    private async toApiError(response: Response): Promise<ApiError> {
+        const message = `HTTP error ${response.status}: ${response.statusText}`;
+        const contentType = response.headers.get('Content-Type') || '';
+        if (!contentType.includes('application/json')) {
+            return new ApiError(message, response.status);
+        }
+
+        const body = await response.json().catch(() => undefined);
+        const error = body?.error;
+        if (error && typeof error === 'object') {
+            return new ApiError(message, response.status, error.code, error.fields, body);
+        }
+        return new ApiError(message, response.status, undefined, undefined, body);
     }
 
     private async buildHeaders(body?: unknown): Promise<HeadersInit> {

@@ -1,216 +1,121 @@
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+import { render, screen, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { useEvents } from '../../hooks/useEvents';
-import { EventCard } from '../../components/Event/EventCard';
-import { type EventCard as EventCardType } from '../../types/Event';
-import { act, render, screen } from '@testing-library/react';
 import Dashboard from './Dashboard';
-import { MemoryRouter } from 'react-router-dom';
 
 vi.mock('../../providers/UserData/UserDataProvider', () => ({
     useUserData: vi.fn(),
 }));
 vi.mock('../../hooks/useEvents');
-vi.mock('../../components/Event/EventCard');
+
+const day = 24 * 60 * 60 * 1000;
+const iso = (offset: number) => new Date(Date.now() + offset).toISOString();
+
+const event = (eventId: string, name: string, start: number, extra = {}) => ({
+    eventId,
+    name,
+    blurb: `${name} tagline`,
+    date: iso(start).slice(0, 10),
+    startTime: iso(start),
+    endTime: iso(start + day / 4),
+    location: 'Sauder',
+    thumbnail: null,
+    memberPrice: 3,
+    nonMemberPrice: 8,
+    isDisabled: false,
+    ...extra,
+});
 
 describe('Dashboard', () => {
-    let mockUseUserData: Mock;
-    let mockGetAllEvents: Mock;
-    let mockGetUserCurrentEvents: Mock;
-
-    const testEvents = [
-        {
-            eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
-            name: 'test product conference',
-            blurb: 'test event product conference',
-            date: '2025-08-02',
-            startTime: '2025-08-02t15:30:00+00:00',
-            endTime: '2025-08-03t00:00:00+00:00',
-            location: 'sauder building',
-            memberPrice: 5,
-            nonMemberPrice: 10,
-            thumbnail: 'url1',
-        },
-        {
-            eventId: '889b13e2-3c59-4757-96a8-10618132e1d5',
-            name: '"Sample Event"',
-            blurb: '"Test event"',
-            date: '2025-08-01',
-            startTime: '2025-08-01T09:00:00+00:00',
-            endTime: '2025-08-01T17:00:00+00:00',
-            location: '"AMS Nest"',
-            memberPrice: 3,
-            nonMemberPrice: 50,
-            thumbnail: 'url2',
-        },
-        {
-            eventId: '3f8b1a2e-7d9c-4f5e-8a2b-9c7e4d123f45',
-            name: 'test product sprint',
-            blurb: 'product sprint yay',
-            date: '2026-09-01',
-            startTime: '2026-09-01T20:30:00+00:00',
-            endTime: '2026-09-02T08:00:00+00:00',
-            location: 'ubc henry angus',
-            memberPrice: 8,
-            nonMemberPrice: 20,
-            thumbnail: 'url3',
-        },
-    ];
-    const testUserEvents = [
-        {
-            eventId: 'd8651b2d-7337-4f7c-81f8-62190ee71d0c',
-            name: 'test your event',
-            blurb: 'test desc',
-            date: '2025-08-02',
-            startTime: '2025-08-02t15:30:00+00:00',
-            endTime: '2025-08-03t00:00:00+00:00',
-            location: 'sauder building',
-            memberPrice: 5,
-            nonMemberPrice: 10,
-            thumbnail: 'url1',
-        },
-        {
-            eventId: '889b13e2-3c59-4757-96a8-10618132e1d5',
-            name: 'your sample event',
-            blurb: 'your desc',
-            date: '2025-08-01',
-            startTime: '2025-08-01T09:00:00+00:00',
-            endTime: '2025-08-01T17:00:00+00:00',
-            location: '"AMS Nest"',
-            memberPrice: 3,
-            nonMemberPrice: 50,
-            thumbnail: 'url2',
-        },
-    ];
+    let getStatuses: Mock;
 
     beforeEach(() => {
         vi.clearAllMocks();
-        mockGetAllEvents = vi.fn().mockResolvedValue(testEvents);
-        mockUseUserData = (useUserData as Mock).mockReturnValue({
-            user: undefined,
-        });
-        mockGetUserCurrentEvents = vi.fn().mockResolvedValue([]);
+        (useUserData as Mock).mockReturnValue({ user: { firstName: 'Simoon' } });
+        getStatuses = vi
+            .fn()
+            .mockResolvedValue([
+                { eventId: 'b', status: 'APPLIED', hasDraft: true, paymentDueAt: null },
+            ]);
         vi.mocked(useEvents, { partial: true }).mockReturnValue({
-            getAll: mockGetAllEvents,
-            getUserCurrentEvents: mockGetUserCurrentEvents,
-        });
-
-        vi.mocked(EventCard).mockImplementation(({ event }: { event: EventCardType }) => {
-            return (
-                <>
-                    <div>{event.eventId}</div>
-                    <div>{event.name}</div>
-                    <div>{event.date}</div>
-                    <div>{event.location}</div>
-                    <div>{event.blurb}</div>
-                    <div>{event.startTime}</div>
-                    <div>{event.endTime}</div>
-                    <div>{event.thumbnail}</div>
-                    <div>{event.nonMemberPrice}</div>
-                    <div>{event.memberPrice}</div>
-                </>
-            );
+            getAll: vi
+                .fn()
+                .mockResolvedValue([
+                    event('a', 'Later Event', 10 * day),
+                    event('b', 'Soon Event', 2 * day),
+                    event('c', 'Old Event', -10 * day),
+                    event('d', 'Hidden Event', 3 * day, { isDisabled: true }),
+                ]),
+            getStatuses,
+            getAnnouncements: vi.fn().mockResolvedValue([
+                { announcementId: '1', title: 'Welcome back', body: 'Hello', audience: 'everyone' },
+                {
+                    announcementId: '2',
+                    title: 'Become a member',
+                    body: 'Save',
+                    audience: 'non_members',
+                },
+                { announcementId: '3', title: 'Member perks', body: 'Thanks', audience: 'members' },
+            ]),
         });
     });
 
-    async function renderComponent() {
-        return render(
+    const renderPage = () =>
+        render(
             <MemoryRouter>
                 <Dashboard />
             </MemoryRouter>
         );
-    }
 
-    it('renders member name when logged in', async () => {
-        mockUseUserData.mockReturnValueOnce({
-            user: { firstName: 'geary' },
-        });
-        await renderComponent();
-
-        expect(screen.getByText('Welcome geary')).toBeInTheDocument();
+    it('greets the student by first name', async () => {
+        renderPage();
+        expect(await screen.findByText('Hey, Simoon!')).toBeInTheDocument();
     });
 
-    it("renders loading when events haven't loaded", async () => {
-        mockGetAllEvents.mockResolvedValueOnce(new Promise(() => {}));
-        await renderComponent();
+    it('splits upcoming and past events, soonest first, without disabled ones', async () => {
+        renderPage();
+        const upcoming = (await screen.findByText('Upcoming Events')).closest('section')!;
+        const names = within(upcoming)
+            .getAllByRole('heading', { level: 3 })
+            .map((h) => h.textContent);
+        expect(names).toEqual(['Soon Event', 'Later Event']);
+        expect(screen.queryByText('Hidden Event')).not.toBeInTheDocument();
 
-        expect(screen.getByText('Loading')).toBeInTheDocument();
+        const past = screen.getByText('Past Events').closest('section')!;
+        expect(within(past).getByText('Old Event')).toBeInTheDocument();
+        expect(within(past).getByRole('button', { name: 'Registration closed' })).toBeDisabled();
     });
 
-    it('renders stay tuned text when no events', async () => {
-        mockGetAllEvents.mockResolvedValueOnce([]);
-        await act(() => renderComponent());
-
-        expect(screen.getByText('Stay tuned for future events!')).toBeInTheDocument();
+    it('shows the status badge, with the attendee row winning over a draft', async () => {
+        renderPage();
+        expect(await screen.findByText('Under review')).toBeInTheDocument();
+        expect(screen.queryByText('Draft')).not.toBeInTheDocument();
     });
 
-    it('renders error message when events fail to fetch', async () => {
-        mockGetAllEvents.mockRejectedValueOnce(new Error('Error fetching events'));
-        await act(() => renderComponent());
-
-        expect(screen.getByText('An error occurred fetching events :(')).toBeInTheDocument();
+    it('shows a non-member the membership offer but not member-only news', async () => {
+        renderPage();
+        expect(await screen.findByText('Become a member')).toBeInTheDocument();
+        expect(screen.getByText('Welcome back')).toBeInTheDocument();
+        expect(screen.queryByText('Member perks')).not.toBeInTheDocument();
     });
 
-    it('renders events correctly', async () => {
-        await act(() => renderComponent());
-
-        expect(screen.queryByText('Your Events')).not.toBeInTheDocument();
-        expect(screen.getByText('Upcoming Events')).toBeInTheDocument();
-        testEvents.map((event) => {
-            Object.values(event).map((value) => {
-                expect(screen.getByText(value)).toBeInTheDocument();
-            });
-        });
+    it('never shows a member the membership offer', async () => {
+        (useUserData as Mock).mockReturnValue({ user: { firstName: 'Simoon' }, isMember: true });
+        renderPage();
+        expect(await screen.findByText('Member perks')).toBeInTheDocument();
+        expect(screen.getByText('Welcome back')).toBeInTheDocument();
+        expect(screen.queryByText('Become a member')).not.toBeInTheDocument();
     });
 
-    it('doesnt render Membership ad when isMember undefined', async () => {
-        mockUseUserData.mockReturnValueOnce({
-            user: { firstName: 'geary' },
-            isMember: undefined,
-        });
-        await renderComponent();
-        expect(
-            screen.queryByText(/want to become a member and enjoy discounted event prices/i)
-        ).not.toBeInTheDocument();
-    });
-
-    it('renders Membership ad when not member', async () => {
-        mockUseUserData.mockReturnValueOnce({
-            user: { firstName: 'geary' },
-            isMember: false,
-        });
-        await renderComponent();
-        expect(
-            screen.getByText(/want to become a member and enjoy discounted event prices/i)
-        ).toBeInTheDocument();
-    });
-
-    it('does not render Membership ad when member', async () => {
-        mockUseUserData.mockReturnValueOnce({
-            user: { firstName: 'geary' },
-            isMember: true,
-        });
-        await renderComponent();
-        expect(
-            screen.queryByText(/want to become a member and enjoy discounted event prices/i)
-        ).not.toBeInTheDocument();
-    });
-
-    it('renders events when user has registered events', async () => {
-        mockUseUserData.mockReturnValueOnce({
-            user: { firstName: 'geary', userId: '123' },
-        });
-        mockGetUserCurrentEvents.mockResolvedValueOnce(testUserEvents);
-
-        await act(() => renderComponent());
-
-        expect(screen.getByText('Your Events')).toBeInTheDocument();
-        expect(screen.getByText('Upcoming Events')).toBeInTheDocument();
-        testUserEvents.forEach((event) => {
-            expect(screen.getByText(event.name)).toBeInTheDocument();
-        });
-        testEvents.forEach((event) => {
-            expect(screen.getByText(event.name)).toBeInTheDocument();
-        });
+    it('shows announcements and lets the section collapse', async () => {
+        renderPage();
+        expect(await screen.findByText('Welcome back')).toBeVisible();
+        screen.getByRole('button', { name: 'Collapse announcements' }).click();
+        expect(await screen.findByRole('button', { name: 'Expand announcements' })).toHaveAttribute(
+            'aria-expanded',
+            'false'
+        );
     });
 });

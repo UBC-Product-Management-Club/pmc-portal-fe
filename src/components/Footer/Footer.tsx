@@ -1,19 +1,25 @@
+import { FaInstagram } from 'react-icons/fa';
+
 export default function Footer() {
-    const containerClass = 'flex w-full justify-center';
-    const textClass = 'text-center text-sm font-bold text-white sm:text-base';
+    const textClass = 'flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-pmc-mute';
     const linkClass =
-        'bg-gradient-to-r from-[var(--pmc-red)] to-[var(--pmc-light-blue)] bg-clip-text text-transparent no-underline';
+        'inline-flex items-center gap-1 font-medium text-pmc-ink underline decoration-pmc-ink/25 underline-offset-4 hover:decoration-pmc-accent';
     return (
-        <div className={containerClass}>
-            <div>
-                <p className={textClass}>
-                    Need help? Contact{' '}
-                    <a className={linkClass} href="mailto:tech@ubcpmc.com">
-                        tech@ubcpmc.com
-                    </a>{' '}
-                    for support.
-                </p>
-            </div>
-        </div>
+        <p className={textClass}>
+            Need help? Email{' '}
+            <a className={linkClass} href="mailto:tech@ubcpmc.com">
+                tech@ubcpmc.com
+            </a>{' '}
+            or message us on{' '}
+            <a
+                className={linkClass}
+                href="https://www.instagram.com/ubcpmc"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                <FaInstagram className="size-4" aria-hidden />
+                Instagram
+            </a>
+        </p>
     );
 }

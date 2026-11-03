@@ -1,6 +1,6 @@
 // import { useEffect, useState } from 'react';
 // import { eventType } from '../../../types/api';
-// import { EventCard } from '../../../components/Event/EventCard';
+// (the old EventCard component was removed with the Home redesign)
 // import { useNavigate } from 'react-router-dom';
 // const AllEvents = () => {
 //   const [allEvents, setAllEvents] = useState<eventType[]>([]);

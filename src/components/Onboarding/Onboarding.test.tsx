@@ -182,7 +182,7 @@ describe('Onboarding Component', () => {
 
         expect(mockCreateUser).toHaveBeenCalled();
         expect(screen.getByText(/Welcome to PMC/)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Continue to dashboard' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Continue to dashboard' })).toBeInTheDocument();
     });
 
     it('for non students', async () => {
@@ -209,7 +209,7 @@ describe('Onboarding Component', () => {
 
         expect(mockCreateUser).toHaveBeenCalled();
         expect(screen.getByText(/Welcome to PMC/)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Continue to dashboard' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Continue to dashboard' })).toBeInTheDocument();
     });
 
     it('navigates back correctly from onboarding', async () => {

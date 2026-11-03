@@ -1,8 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
+/* Poppins loads from index.html; this fallback is sized to Poppins so text doesn't jump when it arrives */
+@font-face {
+    font-family: 'Poppins Fallback';
+    src: local('Arial');
+    size-adjust: 112.16%;
+    ascent-override: 93.62%;
+    descent-override: 31.21%;
+    line-gap-override: 8.92%;
+}
+
 :root {
-    font-family: 'poppins';
+    font-family: 'Poppins', 'Poppins Fallback', system-ui, sans-serif;
     line-height: 1.5;
 
     font-synthesis: none;
@@ -35,15 +44,292 @@
     --color-pmc-dark-blue: var(--pmc-dark-blue);
     --color-pmc-midnight-grey: var(--pmc-midnight-grey);
     --color-pmc-midnight-blue: var(--pmc-midnight-blue);
+
+    /* Member portal, matched to ubcpmc.com */
+    --font-pmc: 'Poppins', 'Poppins Fallback', system-ui, sans-serif;
+    --color-pmc-bg: #fbf9fe;
+    --color-pmc-ink: #1d1838;
+    --color-pmc-mute: #6b6584;
+    --color-pmc-accent: #5a54c9;
+    --color-portal-surface: #fafafa;
+    --color-portal-badge: #efeaf9;
+    --color-portal-stroke: rgb(29 24 56 / 0.12);
+    --color-portal-muted: #94a3b8;
+}
+
+/* ubcpmc.com page background: near-white lavender with a faint periwinkle wash */
+/* PMC brand colours as soft glows around the page edges: magenta rising from the bottom,
+   periwinkle in the top-right, violet behind the sidebar. The middle stays pale so text
+   on the page itself keeps 4.5:1; cards are frosted so the colour shows through them */
+@utility portal-bg {
+    background-color: var(--color-pmc-bg);
+    background-image:
+        radial-gradient(90% 75% at 55% 112%, rgb(210 95 166 / 0.6), rgb(210 95 166 / 0) 70%),
+        radial-gradient(70% 70% at 100% 0%, rgb(139 156 242 / 0.6), rgb(139 156 242 / 0) 70%),
+        radial-gradient(60% 80% at 0% 60%, rgb(169 127 220 / 0.45), rgb(169 127 220 / 0) 70%);
+    background-attachment: fixed;
+}
+
+@utility portal-tint {
+    background-color: rgb(255 255 255 / 0.6);
+    backdrop-filter: blur(16px) saturate(140%);
+}
+
+/* ubcpmc.com brand gradient for each page's main action. The first stop is a shade darker
+   than the site's #5f6fdc so white button text clears 4.5:1 */
+@utility pmc-deep {
+    background-image: linear-gradient(120deg, #5662d4 0%, #8a58cf 38%, #bf418c 72%, #d23350 100%);
+}
+
+/* PMC in the heading wears the brand gradient (large bold text: every stop clears 3:1) */
+@utility pmc-gradient-text {
+    background-image: linear-gradient(120deg, #5662d4 0%, #8a58cf 38%, #bf418c 72%, #d23350 100%);
+    background-clip: text;
+    color: transparent;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+/* Frosted card: mostly white so text keeps AA contrast over the strongest glow,
+   with a fine ink border and soft shadow as on ubcpmc.com */
+@utility glass {
+    background-color: rgb(255 255 255 / 0.78);
+    backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid rgb(29 24 56 / 0.08);
+    border-radius: 12px;
+    box-shadow:
+        0 1px 2px rgb(29 24 56 / 0.06),
+        0 14px 34px -14px rgb(29 24 56 / 0.18);
+}
+
+/* Pointer on everything clickable (Tailwind v4 no longer sets it on buttons) */
+@layer base {
+    :where(
+        button,
+        [role='button'],
+        summary,
+        select,
+        a[href],
+        input[type='checkbox'],
+        input[type='radio'],
+        input[type='file'],
+        label:has(> input[type='checkbox'])
+    ):not(:disabled) {
+        cursor: pointer;
+    }
+    :where(button, select, input, textarea):disabled {
+        cursor: not-allowed;
+    }
+}
+
+/* Icon buttons (collapse, menu, log out, close): a frosted chip with a fine outline, and a press */
+@utility pmc-hover-chip {
+    transition:
+        background-color 0.2s,
+        box-shadow 0.2s,
+        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    &:hover {
+        background-color: rgb(255 255 255 / 0.75);
+        box-shadow:
+            0 0 0 1px rgb(29 24 56 / 0.08),
+            0 6px 14px -8px rgb(29 24 56 / 0.3);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+        &:active {
+            transform: scale(0.94);
+        }
+    }
+}
+
+/* Brand-gradient buttons: the gradient deepens on hover and a touch more when pressed
+   (an ink wash over the fill, which also raises white text contrast) */
+@utility pmc-btn-gradient {
+    background-image: linear-gradient(120deg, #5662d4 0%, #8a58cf 38%, #bf418c 72%, #d23350 100%);
+    box-shadow:
+        inset 0 0 0 999px rgb(29 24 56 / 0),
+        0 10px 24px -12px rgb(138 88 207 / 0.7);
+    transition: box-shadow 0.25s ease-out;
+    &:not(:disabled):hover {
+        box-shadow:
+            inset 0 0 0 999px rgb(29 24 56 / 0.14),
+            0 10px 24px -12px rgb(138 88 207 / 0.7);
+    }
+    &:not(:disabled):active {
+        box-shadow:
+            inset 0 0 0 999px rgb(29 24 56 / 0.22),
+            0 6px 16px -10px rgb(138 88 207 / 0.7);
+    }
+}
+
+/* Cards that are links fill in solid with an accent border on hover */
+@utility pmc-hover-card {
+    transition:
+        background-color 0.25s ease-out,
+        border-color 0.25s ease-out;
+    &:hover {
+        background-color: #fff;
+        border-color: rgb(90 84 201 / 0.3);
+    }
+}
+
+/* ubcpmc.com type: bold Poppins headings with tight tracking, readable placeholders.
+   Unlayered so it outranks the heading weights set per page */
+.pmc-type {
+    font-family: var(--font-pmc);
+    color: var(--color-pmc-ink);
+}
+.pmc-type :is(h1, h2) {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+.pmc-type h3 {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+/* Muted text sitting straight on the glow (not on a card or bar) uses a deeper ink so it
+   stays above 4.5:1 even when scrolled over the strongest magenta */
+.portal-bg .text-pmc-mute:not(:is(.glass, .portal-tint) .text-pmc-mute) {
+    color: rgb(29 24 56 / 0.78);
+}
+/* Page changes: the old page steps back quickly and the new one rises into place. Only the
+   main column animates; the sidebar and top bar stay put while the sidebar highlight glides */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+}
+::view-transition-old(portal-main) {
+    animation: 140ms ease-in both pmc-page-out;
+}
+::view-transition-new(portal-main) {
+    animation: 420ms cubic-bezier(0.16, 1, 0.3, 1) 60ms both pmc-page-in;
+}
+@keyframes pmc-page-out {
+    to {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+}
+@keyframes pmc-page-in {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+        filter: blur(4px);
+    }
+}
+@keyframes pmc-drawer-in {
+    from {
+        translate: -100% 0;
+    }
+}
+@keyframes pmc-fade-in {
+    from {
+        opacity: 0;
+    }
+}
+@keyframes pmc-fade-out {
+    to {
+        opacity: 0;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(portal-main) {
+        animation: 120ms ease-in both pmc-fade-out;
+    }
+    ::view-transition-new(portal-main) {
+        animation: 160ms ease-out both pmc-fade-in;
+    }
+}
+
+/* Text links and underlined text buttons turn the accent colour on hover */
+.pmc-type :is(a, button).underline {
+    text-underline-offset: 3px;
+    transition:
+        color 0.2s,
+        text-decoration-color 0.2s;
+}
+.pmc-type :is(a, button).underline:hover {
+    color: var(--color-pmc-accent);
+    text-decoration-color: var(--color-pmc-accent);
+}
+.pmc-type ::placeholder {
+    color: var(--color-pmc-mute);
+    opacity: 1;
+}
+
+/* Event descriptions: numbered lists become step cards, bullets get a check */
+.event-markdown h3 {
+    margin: 1.25rem 0 0.625rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.event-markdown a {
+    text-decoration: underline;
+}
+.event-markdown p + p {
+    margin-top: 0.75rem;
+}
+.event-markdown ol,
+.event-markdown ul {
+    display: grid;
+    gap: 0.625rem;
+}
+@media (min-width: 640px) {
+    .event-markdown ol,
+    .event-markdown ul {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+.event-markdown ol {
+    counter-reset: step;
+}
+.event-markdown ol > li {
+    counter-increment: step;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border-radius: 10px;
+    background-color: rgb(255 255 255 / 0.6);
+    padding: 0.875rem;
+    font-size: 0.875rem;
+}
+.event-markdown ol > li::before {
+    content: counter(step);
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+    background-image: linear-gradient(120deg, #5662d4 0%, #8a58cf 38%, #bf418c 72%, #d23350 100%);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+.event-markdown ul > li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+}
+.event-markdown ul > li::before {
+    content: '';
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.125rem;
+    background-image: linear-gradient(120deg, #5662d4 0%, #8a58cf 38%, #bf418c 72%, #d23350 100%);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 15-5-5 1.4-1.4 3.6 3.6 7.6-7.6L19 8l-9 9z'/%3E%3C/svg%3E")
+        center / contain no-repeat;
 }
 
 body,
 html {
     margin: 0;
     padding: 0;
-    background-color: var(--pmc-dark-blue);
+    /* Matches the portal background so overscroll doesn't flash dark blue */
+    background-color: #fbf9fe;
 }
-
 
 @keyframes drawCircle {
     0% {

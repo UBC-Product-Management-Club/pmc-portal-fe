@@ -1,8 +1,9 @@
-import { UserService } from '../service/UserService';
+import { createUserService } from '../service/services';
+import { ProfileUpdate } from '../service/UserService';
 import { UserDocument, UserFromDatabaseSchema } from '../types/User';
 
 function useUserService() {
-    const userService = new UserService();
+    const userService = createUserService();
 
     async function create(user: Partial<UserDocument>): Promise<void> {
         userService.create({ ...user, isPaymentVerified: false });
@@ -17,7 +18,15 @@ function useUserService() {
         }
     }
 
-    return { create, me };
+    async function getProfile() {
+        return UserFromDatabaseSchema.parse(await userService.getProfile());
+    }
+
+    async function updateProfile(changes: ProfileUpdate) {
+        return UserFromDatabaseSchema.parse(await userService.updateProfile(changes));
+    }
+
+    return { create, me, getProfile, updateProfile };
 }
 
 export { useUserService };

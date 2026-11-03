@@ -26,6 +26,13 @@ class TeamService {
         );
     }
 
+    // Any member, until the team's deadline
+    renameTeam(eventId: string, teamName: string): Promise<TeamResponse> {
+        return this.client.patch<{ team_name: string }, TeamResponse>(`/${eventId}/team`, {
+            team_name: teamName,
+        });
+    }
+
     leaveTeam(eventId: string): Promise<{ message: string }> {
         return this.client.delete<{ message: string }>(`/${eventId}/team`);
     }

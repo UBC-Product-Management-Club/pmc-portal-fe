@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react';
-import { TeamService } from '../service/TeamService';
+import { createTeamService } from '../service/services';
 import { TeamResponseSchema } from '../types/Team';
 
 function useTeam() {
-    const teamService = useMemo(() => new TeamService(), []);
+    const teamService = useMemo(() => createTeamService(), []);
 
     const getTeam = useCallback(
         async (eventId: string) => {
@@ -24,6 +24,14 @@ function useTeam() {
     const joinTeam = useCallback(
         async (eventId: string, teamCode: string) => {
             const team = await teamService.joinTeam(eventId, teamCode);
+            return TeamResponseSchema.parse(team);
+        },
+        [teamService]
+    );
+
+    const renameTeam = useCallback(
+        async (eventId: string, teamName: string) => {
+            const team = await teamService.renameTeam(eventId, teamName);
             return TeamResponseSchema.parse(team);
         },
         [teamService]
@@ -50,7 +58,15 @@ function useTeam() {
         [teamService]
     );
 
-    return { getTeam, createTeam, joinTeam, leaveTeam, submitDeliverable, getDeliverable };
+    return {
+        getTeam,
+        createTeam,
+        joinTeam,
+        renameTeam,
+        leaveTeam,
+        submitDeliverable,
+        getDeliverable,
+    };
 }
 
 export { useTeam };

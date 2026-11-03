@@ -4,6 +4,7 @@ import { ActionTypes, useUserData } from '../../providers/UserData/UserDataProvi
 import { UserFromDatabase } from '../../types/User';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { resetMemberBar } from '../Layout/memberBar';
 
 export default function AuthorizedRouter() {
     const navigateTo = useNavigate();
@@ -13,6 +14,7 @@ export default function AuthorizedRouter() {
 
     useEffect(() => {
         if (auth0User && auth0User.sub) {
+            resetMemberBar();
             getAccessTokenSilently()
                 .then((token) => localStorage.setItem('id_token', token))
                 .then(() => {
@@ -40,5 +42,5 @@ export default function AuthorizedRouter() {
     }, [auth0User]);
 
     // TODO: Design a loading page
-    return <h1 className="text-white">loading...</h1>;
+    return <h1 className="text-black">loading...</h1>;
 }

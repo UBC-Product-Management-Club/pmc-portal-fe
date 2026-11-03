@@ -35,11 +35,12 @@ function useUserData() {
 }
 
 const dashboardPath = /\/dashboard/;
+const profilePath = /\/profile\/?$/;
 const eventsPagePath =
     /\/events\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\/|$)/;
 const eventRegistrationPath =
     /\/events\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/register\/?$/;
-const requiresFreshData = [dashboardPath, eventsPagePath, eventRegistrationPath];
+const requiresFreshData = [dashboardPath, profilePath, eventsPagePath, eventRegistrationPath];
 
 function UserDataProvider({ children }: { children: ReactNode }) {
     const [user, update] = useReducer<

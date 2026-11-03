@@ -23,14 +23,14 @@ export function UserDataForm({
     const contentClass = 'flex w-full flex-col justify-evenly gap-4';
     const groupClass = 'flex w-full flex-row items-center gap-3';
     const baseInputClass =
-        'rounded-full bg-pmc-blue px-3 py-2 text-white placeholder:text-pmc-midnight-grey focus:outline-none';
+        'min-h-11 rounded-[10px] bg-white px-3 py-2 text-pmc-ink placeholder:text-pmc-mute outline-none focus-visible:border-pmc-accent focus-visible:ring-2 focus-visible:ring-pmc-accent/20';
     const baseTextAreaClass =
-        'rounded-2xl bg-pmc-blue px-3 py-2 text-white placeholder:text-pmc-midnight-grey focus:outline-none';
+        'min-h-28 rounded-[10px] bg-white px-3 py-2 text-pmc-ink placeholder:text-pmc-mute outline-none focus-visible:border-pmc-accent focus-visible:ring-2 focus-visible:ring-pmc-accent/20';
     const submitClass =
-        'ml-auto rounded-lg bg-white px-8 py-2 font-semibold text-pmc-midnight-blue';
-    const waiverClass = 'm-0 text-white';
-    const waiverLinkClass = 'text-white underline';
-    const errorTextClass = 'mt-1 text-sm text-red-400';
+        'pmc-btn-gradient ml-auto inline-flex min-h-12 cursor-pointer items-center rounded-full px-7 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pmc-accent';
+    const waiverClass = 'm-0 flex flex-col gap-2 text-pmc-ink';
+    const waiverLinkClass = 'font-medium text-pmc-accent underline underline-offset-2';
+    const errorTextClass = 'mt-1 text-sm text-red-700';
     const widthClassMap: Record<number, string> = {
         20: 'w-[20%]',
         40: 'w-[40%]',
@@ -38,16 +38,16 @@ export function UserDataForm({
     };
     const inputClass = (hasError: boolean, width?: number) => {
         const widthClass = width ? widthClassMap[width] : 'flex-1';
-        const errorClass = hasError ? 'border-2 border-red-500' : 'border border-transparent';
+        const errorClass = hasError ? 'border-2 border-red-600' : 'border border-portal-stroke';
         return `${baseInputClass} ${widthClass} ${errorClass}`;
     };
     const dropdownClass = (hasError: boolean, width?: number) => {
         const widthClass = width ? widthClassMap[width] : 'flex-1';
-        const errorClass = hasError ? 'border-2 border-red-500' : 'border border-transparent';
+        const errorClass = hasError ? 'border-2 border-red-600' : 'border border-portal-stroke';
         return `${baseInputClass} ${widthClass} ${errorClass}`;
     };
     const textAreaClass = (hasError: boolean) => {
-        const errorClass = hasError ? 'border-2 border-red-500' : 'border border-transparent';
+        const errorClass = hasError ? 'border-2 border-red-600' : 'border border-portal-stroke';
         return `${baseTextAreaClass} ${errorClass}`;
     };
 
@@ -84,6 +84,7 @@ export function UserDataForm({
                 <div className={contentClass}>
                     <input
                         placeholder="First name"
+                        aria-label="First name"
                         defaultValue={responses.firstName}
                         required
                         {...form.register('firstName')}
@@ -96,6 +97,7 @@ export function UserDataForm({
                     )}
                     <input
                         placeholder="Last name"
+                        aria-label="Last name"
                         defaultValue={responses.lastName}
                         required
                         {...form.register('lastName')}
@@ -108,6 +110,7 @@ export function UserDataForm({
                     )}
                     <input
                         placeholder="Pronouns"
+                        aria-label="Pronouns"
                         defaultValue={responses.pronouns}
                         required
                         {...form.register('pronouns')}
@@ -120,6 +123,7 @@ export function UserDataForm({
                     )}
                     <select
                         data-testid="university-dropdown"
+                        aria-label="What university do you go to?"
                         required
                         {...form.register('university', { required: 'please select a value' })}
                         defaultValue={responses.university}
@@ -145,6 +149,7 @@ export function UserDataForm({
                         <>
                             <input
                                 placeholder="Student ID"
+                                aria-label="Student ID"
                                 defaultValue={responses.studentId}
                                 required
                                 {...form.register('studentId')}
@@ -161,6 +166,7 @@ export function UserDataForm({
                         <>
                             <input
                                 placeholder="Faculty"
+                                aria-label="Faculty"
                                 defaultValue={responses.faculty}
                                 required
                                 {...form.register('faculty')}
@@ -173,6 +179,7 @@ export function UserDataForm({
                             )}
                             <input
                                 placeholder="Major"
+                                aria-label="Major"
                                 defaultValue={responses.major}
                                 required
                                 {...form.register('major')}
@@ -185,6 +192,7 @@ export function UserDataForm({
                             )}
                             <select
                                 data-testid="year-dropdown"
+                                aria-label="Year"
                                 defaultValue={responses.year}
                                 required
                                 {...form.register('year')}
@@ -210,6 +218,7 @@ export function UserDataForm({
                     )}
                     <textarea
                         placeholder="Why Product Management?"
+                        aria-label="Why Product Management?"
                         defaultValue={responses.whyPm}
                         rows={5}
                         required
@@ -230,15 +239,20 @@ export function UserDataForm({
                                     className={waiverLinkClass}
                                     href="https://www.ams.ubc.ca/student-life/clubs/operating-a-club/club-constituency-general-membership-waiver/"
                                     target="_blank"
+                                    rel="noreferrer"
                                 >
                                     {' '}
                                     Insurance/Liability Waiver.
                                 </a>
                             </div>
-                            <div>
-                                <input type="checkbox" required />I have signed the
-                                Insurance/Liability Waiver form.&nbsp;
-                            </div>
+                            <label className="flex cursor-pointer items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    required
+                                    className="size-4 accent-pmc-accent"
+                                />
+                                I have signed the Insurance/Liability Waiver form.
+                            </label>
                         </div>
                     )}
 
@@ -255,6 +269,7 @@ export function UserDataForm({
                     <div className={groupClass}>
                         <input
                             placeholder="First name"
+                            aria-label="First name"
                             defaultValue={responses.firstName}
                             width={40}
                             required
@@ -268,6 +283,7 @@ export function UserDataForm({
                         )}
                         <input
                             placeholder="Last name"
+                            aria-label="Last name"
                             defaultValue={responses.lastName}
                             width={40}
                             required
@@ -281,6 +297,7 @@ export function UserDataForm({
                         )}
                         <input
                             placeholder="Pronouns"
+                            aria-label="Pronouns"
                             defaultValue={responses.pronouns}
                             width={20}
                             required
@@ -296,6 +313,7 @@ export function UserDataForm({
 
                     <select
                         data-testid="university-dropdown"
+                        aria-label="What university do you go to?"
                         required
                         {...form.register('university', { required: 'please select a value' })}
                         defaultValue={responses.university}
@@ -322,6 +340,7 @@ export function UserDataForm({
                         <div className={groupClass}>
                             <input
                                 placeholder="Student ID"
+                                aria-label="Student ID"
                                 defaultValue={responses.studentId}
                                 required
                                 {...form.register('studentId')}
@@ -339,6 +358,7 @@ export function UserDataForm({
                         <div className={groupClass}>
                             <input
                                 placeholder="Faculty"
+                                aria-label="Faculty"
                                 defaultValue={responses.faculty}
                                 width={45}
                                 required
@@ -352,6 +372,7 @@ export function UserDataForm({
                             )}
                             <input
                                 placeholder="Major"
+                                aria-label="Major"
                                 defaultValue={responses.major}
                                 width={45}
                                 required
@@ -365,6 +386,7 @@ export function UserDataForm({
                             )}
                             <select
                                 data-testid="year-dropdown"
+                                aria-label="Year"
                                 defaultValue={responses.year}
                                 required
                                 {...form.register('year')}
@@ -391,6 +413,7 @@ export function UserDataForm({
 
                     <textarea
                         placeholder="Why Product Management?"
+                        aria-label="Why Product Management?"
                         defaultValue={responses.whyPm}
                         rows={5}
                         required
@@ -411,15 +434,20 @@ export function UserDataForm({
                                     className={waiverLinkClass}
                                     href="https://www.ams.ubc.ca/student-life/clubs/operating-a-club/club-constituency-general-membership-waiver/"
                                     target="_blank"
+                                    rel="noreferrer"
                                 >
                                     {' '}
                                     Insurance/Liability Waiver.
                                 </a>
                             </div>
-                            <div>
-                                I have signed the Insurance/Liability Waiver form.&nbsp;
-                                <input type="checkbox" required />
-                            </div>
+                            <label className="flex cursor-pointer items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    required
+                                    className="size-4 accent-pmc-accent"
+                                />
+                                I have signed the Insurance/Liability Waiver form.
+                            </label>
                         </div>
                     )}
 
