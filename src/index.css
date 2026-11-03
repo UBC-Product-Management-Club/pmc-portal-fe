@@ -81,6 +81,15 @@
     background-image: linear-gradient(120deg, #5662d4 0%, #8a58cf 38%, #bf418c 72%, #d23350 100%);
 }
 
+/* PMC in the heading wears the brand gradient (large bold text: every stop clears 3:1) */
+@utility pmc-gradient-text {
+    background-image: linear-gradient(120deg, #5662d4 0%, #8a58cf 38%, #bf418c 72%, #d23350 100%);
+    background-clip: text;
+    color: transparent;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
 /* Frosted card: mostly white so text keeps AA contrast over the strongest glow,
    with a fine ink border and soft shadow as on ubcpmc.com */
 @utility glass {
