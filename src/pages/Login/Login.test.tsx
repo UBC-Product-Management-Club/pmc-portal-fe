@@ -28,7 +28,10 @@ describe('login', () => {
     it('shows text, logo, and buttons', () => {
         renderComponent();
 
-        expect(screen.getByText('PMC Membership Portal')).toBeInTheDocument();
+        expect(
+            screen.getByRole('heading', { name: 'Product Management Club' })
+        ).toBeInTheDocument();
+        expect(screen.getByText('Membership Portal')).toBeInTheDocument();
         expect(screen.getByTestId('logo')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Log in / sign up' }));
     });
