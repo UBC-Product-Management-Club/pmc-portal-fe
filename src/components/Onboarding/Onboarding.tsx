@@ -48,9 +48,9 @@ export default function Onboarding() {
     const paymentSuccessClass = 'flex flex-col items-center gap-1 pt-4 text-center';
     const pillClass =
         'inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full px-6 text-base font-medium no-underline transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pmc-accent';
-    const primaryButtonClass = `${pillClass} pmc-deep mt-2 text-white shadow-[0_10px_24px_-12px_rgb(138_88_207/0.7)] hover:shadow-[0_16px_30px_-12px_rgb(191_65_140/0.6)]`;
+    const primaryButtonClass = `${pillClass} pmc-deep text-white shadow-[0_10px_24px_-12px_rgb(138_88_207/0.7)] hover:shadow-[0_16px_30px_-12px_rgb(191_65_140/0.6)]`;
     const buttonRowClass = 'mt-6 flex flex-col gap-3 sm:flex-row';
-    const choiceButtonClass = `${primaryButtonClass} mt-0 flex-1`;
+    const choiceButtonClass = `${primaryButtonClass} flex-1`;
     const choiceLinkClass = `${pillClass} flex-1 border border-portal-stroke bg-white text-pmc-ink hover:border-pmc-ink/25`;
 
     useEffect(() => {
@@ -133,7 +133,7 @@ export default function Onboarding() {
                     {currPage === Pages.MEMBERSHIP && fee && (
                         <>
                             <p className={paymentHeaderClass}>
-                                To become a PMC member for the 2025/2026 academic year, a {charge}{' '}
+                                To become a PMC member for the 2026/2027 academic year, a {charge}{' '}
                                 membership fee is required. Would you like to become a member?
                             </p>
                             <div className={buttonRowClass}>
@@ -155,7 +155,7 @@ export default function Onboarding() {
                     {currPage === Pages.PAYMENT && fee && user && (
                         <>
                             <p className={paymentHeaderClass}>
-                                To become a PMC member for the 2025/2026 academic year, a {charge}{' '}
+                                To become a PMC member for the 2026/2027 academic year, a {charge}{' '}
                                 membership fee is required.
                             </p>
                             <Payment
@@ -188,7 +188,7 @@ export default function Onboarding() {
                                 <p className="mb-4 text-pmc-mute">
                                     We've processed your {charge} charge
                                 </p>
-                                <Link to="/dashboard" className={primaryButtonClass}>
+                                <Link to="/dashboard" className={`${primaryButtonClass} mt-2`}>
                                     Continue to dashboard
                                 </Link>
                             </div>
