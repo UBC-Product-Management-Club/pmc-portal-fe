@@ -19,7 +19,7 @@ export default function Login() {
     const introClass =
         'mt-4 max-w-[44ch] text-[1.08rem] text-pmc-mute [@media(max-height:520px)]:mt-2';
     const loginButtonClass =
-        'pmc-deep group mt-8 [@media(max-height:520px)]:mt-4 inline-flex w-fit cursor-pointer items-center gap-2 rounded-full border-0 px-6 py-3.5 text-[0.95rem] font-medium text-white shadow-[0_10px_24px_-12px_rgb(138_88_207/0.7)] transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-0.5 hover:shadow-[0_16px_30px_-12px_rgb(191_65_140/0.6)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pmc-accent';
+        'pmc-btn-gradient group mt-8 [@media(max-height:520px)]:mt-4 inline-flex w-fit cursor-pointer items-center gap-2 rounded-full border-0 px-6 py-3.5 text-[0.95rem] font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pmc-accent';
     const footerClass = 'border-t border-pmc-ink/10 py-6 [@media(max-height:520px)]:py-3';
 
     function handleLogin() {

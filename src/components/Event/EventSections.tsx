@@ -94,7 +94,7 @@ function LinkCard({ title, description, href, locked }: LinkCardProps) {
     ) : (
         <a
             href={href}
-            className="glass pmc-hover-lift flex flex-1 flex-col gap-2 p-4 text-pmc-ink no-underline"
+            className="glass pmc-hover-card flex flex-1 flex-col gap-2 p-4 text-pmc-ink no-underline"
         >
             {body}
         </a>

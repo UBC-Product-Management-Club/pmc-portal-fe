@@ -141,20 +141,34 @@
     }
 }
 
-/* Cards that are links lift like the ubcpmc.com buttons */
-@utility pmc-hover-lift {
-    transition:
-        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-        box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    &:hover {
+/* Brand-gradient buttons: the gradient deepens on hover and a touch more when pressed
+   (an ink wash over the fill, which also raises white text contrast) */
+@utility pmc-btn-gradient {
+    background-image: linear-gradient(120deg, #5662d4 0%, #8a58cf 38%, #bf418c 72%, #d23350 100%);
+    box-shadow:
+        inset 0 0 0 999px rgb(29 24 56 / 0),
+        0 10px 24px -12px rgb(138 88 207 / 0.7);
+    transition: box-shadow 0.25s ease-out;
+    &:not(:disabled):hover {
         box-shadow:
-            0 1px 2px rgb(29 24 56 / 0.06),
-            0 20px 40px -16px rgb(29 24 56 / 0.28);
+            inset 0 0 0 999px rgb(29 24 56 / 0.14),
+            0 10px 24px -12px rgb(138 88 207 / 0.7);
     }
-    @media (prefers-reduced-motion: no-preference) {
-        &:hover {
-            transform: translateY(-2px);
-        }
+    &:not(:disabled):active {
+        box-shadow:
+            inset 0 0 0 999px rgb(29 24 56 / 0.22),
+            0 6px 16px -10px rgb(138 88 207 / 0.7);
+    }
+}
+
+/* Cards that are links fill in solid with an accent border on hover */
+@utility pmc-hover-card {
+    transition:
+        background-color 0.25s ease-out,
+        border-color 0.25s ease-out;
+    &:hover {
+        background-color: #fff;
+        border-color: rgb(90 84 201 / 0.3);
     }
 }
 

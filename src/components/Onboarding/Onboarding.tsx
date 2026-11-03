@@ -47,11 +47,11 @@ export default function Onboarding() {
     const paymentHeaderClass = 'mt-6 mb-2 leading-7';
     const paymentSuccessClass = 'flex flex-col items-center gap-1 pt-4 text-center';
     const pillClass =
-        'inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full px-6 text-base font-medium no-underline transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pmc-accent';
-    const primaryButtonClass = `${pillClass} pmc-deep text-white shadow-[0_10px_24px_-12px_rgb(138_88_207/0.7)] hover:shadow-[0_16px_30px_-12px_rgb(191_65_140/0.6)]`;
+        'inline-flex min-h-12 cursor-pointer items-center justify-center rounded-full px-6 text-base font-medium no-underline transition-[background-color,border-color] duration-200 ease-out focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pmc-accent';
+    const primaryButtonClass = `${pillClass} pmc-btn-gradient text-white`;
     const buttonRowClass = 'mt-6 flex flex-col gap-3 sm:flex-row';
     const choiceButtonClass = `${primaryButtonClass} flex-1`;
-    const choiceLinkClass = `${pillClass} flex-1 border border-portal-stroke bg-white text-pmc-ink hover:border-pmc-ink/25`;
+    const choiceLinkClass = `${pillClass} flex-1 border border-portal-stroke bg-white text-pmc-ink hover:border-pmc-accent/30 hover:bg-portal-badge active:bg-[#e4ddf5]`;
 
     useEffect(() => {
         paymentService

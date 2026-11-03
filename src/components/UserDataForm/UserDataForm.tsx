@@ -27,7 +27,7 @@ export function UserDataForm({
     const baseTextAreaClass =
         'min-h-28 rounded-[10px] bg-white px-3 py-2 text-pmc-ink placeholder:text-pmc-mute outline-none focus-visible:border-pmc-accent focus-visible:ring-2 focus-visible:ring-pmc-accent/20';
     const submitClass =
-        'pmc-deep ml-auto inline-flex min-h-12 cursor-pointer items-center rounded-full px-7 font-medium text-white shadow-[0_10px_24px_-12px_rgb(138_88_207/0.7)] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pmc-accent';
+        'pmc-btn-gradient ml-auto inline-flex min-h-12 cursor-pointer items-center rounded-full px-7 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pmc-accent';
     const waiverClass = 'm-0 flex flex-col gap-2 text-pmc-ink';
     const waiverLinkClass = 'font-medium text-pmc-accent underline underline-offset-2';
     const errorTextClass = 'mt-1 text-sm text-red-700';

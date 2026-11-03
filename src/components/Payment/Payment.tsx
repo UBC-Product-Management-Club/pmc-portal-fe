@@ -18,7 +18,7 @@ type PaymentComponentProps = Omit<PaymentProps, 'type' | 'options'>;
 function PaymentComponent({ onPayment, onError }: PaymentComponentProps) {
     const { pay, processing } = usePayments();
     const submitClass =
-        'pmc-deep mt-4 ml-auto flex min-h-12 cursor-pointer items-center rounded-full px-7 font-medium text-white shadow-[0_10px_24px_-12px_rgb(138_88_207/0.7)] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pmc-accent';
+        'pmc-btn-gradient mt-4 ml-auto flex min-h-12 cursor-pointer items-center rounded-full px-7 font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pmc-accent';
     return (
         <>
             {processing && <p>processing</p>}

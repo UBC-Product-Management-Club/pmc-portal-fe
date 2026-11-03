@@ -52,7 +52,7 @@ export function TeamFormation({
                             href={slackUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#4a154b] px-4 text-sm font-semibold text-white shadow-sm transition-[translate,box-shadow,filter] duration-300 ease-[cubic-bezier(.16,1,.3,1)] hover:shadow-[0_10px_22px_-12px_rgb(74_21_75/0.7)] hover:brightness-125 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pmc-accent motion-safe:hover:-translate-y-0.5"
+                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#4a154b] px-4 text-sm font-semibold text-white shadow-sm transition-colors duration-200 ease-out hover:bg-[#611f64] active:bg-[#3b113c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pmc-accent"
                         >
                             <FaSlack className="size-4" aria-hidden />
                             Open Slack
