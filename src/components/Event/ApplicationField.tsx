@@ -110,7 +110,7 @@ export function QuestionField({
                     onChange={(e) => onFile(e.target.files?.[0] ?? null)}
                 />
                 <span
-                    className={`flex min-h-12 items-center justify-between gap-3 rounded-[10px] border border-dashed bg-white/60 px-3 py-2 ${error ? 'border-red-500' : 'border-slate-400'}`}
+                    className={`group flex min-h-12 items-center justify-between gap-3 rounded-[10px] border border-dashed bg-white/60 px-3 py-2 transition-colors duration-200 ${error ? 'border-red-500' : 'border-slate-400'} ${file || disabled ? '' : 'hover:border-violet-400 hover:bg-white/90 has-[button:focus-visible]:border-violet-500 has-[button:focus-visible]:bg-white/90'}`}
                 >
                     {file ? (
                         <>
@@ -133,7 +133,7 @@ export function QuestionField({
                     ) : (
                         <button
                             type="button"
-                            className="min-h-11 w-full text-left text-slate-600"
+                            className="min-h-11 w-full cursor-pointer text-left text-slate-600 transition-colors duration-200 outline-none group-hover:text-violet-700 focus-visible:text-violet-700 disabled:cursor-not-allowed"
                             disabled={disabled}
                             onClick={() => fileInput.current?.click()}
                         >

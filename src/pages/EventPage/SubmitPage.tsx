@@ -478,7 +478,7 @@ function SubmissionInput({
                     type="button"
                     disabled={disabled}
                     onClick={() => fileInput.current?.click()}
-                    className={`flex min-h-12 w-full items-center justify-between gap-3 rounded-[10px] border border-dashed bg-white/60 px-3 py-2 text-left ${error ? 'border-red-500' : 'border-slate-400'}`}
+                    className={`flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 rounded-[10px] border border-dashed bg-white/60 px-3 py-2 text-left transition-colors duration-200 outline-none enabled:hover:border-violet-400 enabled:hover:bg-white/90 enabled:hover:text-violet-700 focus-visible:border-violet-500 focus-visible:bg-white/90 disabled:cursor-not-allowed ${error ? 'border-red-500' : 'border-slate-400'}`}
                 >
                     <span className="truncate">{current ? `📄 ${current}` : 'Choose a PDF'}</span>
                     {current && !disabled && (
