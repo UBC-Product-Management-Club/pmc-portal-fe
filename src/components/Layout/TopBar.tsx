@@ -22,7 +22,7 @@ export function TopBar({ onOpenMenu }: { onOpenMenu: () => void }) {
             <button
                 type="button"
                 onClick={onOpenMenu}
-                className="flex size-11 items-center justify-center rounded-[10px] text-pmc-ink hover:bg-pmc-bg md:hidden"
+                className="flex size-11 items-center justify-center pmc-hover-chip rounded-[10px] text-pmc-ink md:hidden"
                 aria-label="Open menu"
             >
                 <MdMenu className="size-6" aria-hidden />
@@ -39,7 +39,7 @@ export function TopBar({ onOpenMenu }: { onOpenMenu: () => void }) {
                         type="button"
                         onClick={close}
                         aria-label="Close membership offer"
-                        className="flex size-11 items-center justify-center rounded-[10px] text-pmc-mute hover:bg-pmc-bg"
+                        className="flex size-11 items-center justify-center pmc-hover-chip rounded-[10px] text-pmc-mute hover:text-pmc-ink"
                     >
                         <MdClose className="size-5" aria-hidden />
                     </button>

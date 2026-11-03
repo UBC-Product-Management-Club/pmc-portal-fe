@@ -45,10 +45,10 @@ function CollapsibleSection({ title, children }: { title: string; children: Reac
                     aria-expanded={open}
                     aria-controls={listId}
                     aria-label={`${open ? 'Collapse' : 'Expand'} ${title.toLowerCase()}`}
-                    className="flex size-11 items-center justify-center rounded-[10px] hover:bg-pmc-bg"
+                    className="pmc-hover-chip flex size-11 items-center justify-center rounded-[10px]"
                 >
                     <MdExpandMore
-                        className={`size-6 transition-transform ${open ? 'rotate-180' : ''}`}
+                        className={`size-6 transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] ${open ? 'rotate-180' : ''}`}
                         aria-hidden
                     />
                 </button>

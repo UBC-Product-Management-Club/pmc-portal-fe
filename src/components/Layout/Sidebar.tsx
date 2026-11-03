@@ -13,7 +13,8 @@ type SidebarProps = {
     onNavigate?: () => void;
 };
 
-const rowClass = 'flex min-h-14 items-center gap-2 p-4 text-sm text-pmc-ink';
+const rowClass =
+    'flex min-h-14 items-center gap-2 p-4 text-sm text-pmc-ink transition-colors duration-200 hover:bg-portal-badge/70';
 
 // The brand and profile rows share the pale pink-to-lavender tint from the Figma
 const tintClass = 'bg-white/50';
@@ -122,7 +123,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                             resetMemberBar();
                             logout({ logoutParams: { returnTo: window.location.origin } });
                         }}
-                        className="flex size-11 shrink-0 items-center justify-center rounded-[10px] text-pmc-ink hover:bg-pmc-bg"
+                        className="flex size-11 shrink-0 items-center justify-center pmc-hover-chip rounded-[10px] text-pmc-ink"
                         aria-label="Log out"
                     >
                         <MdLogout className="size-5" aria-hidden />

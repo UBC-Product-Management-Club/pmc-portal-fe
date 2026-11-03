@@ -93,10 +93,10 @@ export function GettingReady({
                         <ul className="flex flex-col">
                             {content.prep.map((item, index) => (
                                 <li key={item}>
-                                    <label className="flex min-h-11 cursor-pointer items-center gap-2.5 text-sm">
+                                    <label className="flex min-h-11 cursor-pointer items-center gap-2.5 text-sm transition-colors duration-200 hover:text-pmc-accent">
                                         <input
                                             type="checkbox"
-                                            className="size-4 shrink-0 accent-violet-400"
+                                            className="size-4 shrink-0 accent-pmc-accent"
                                             checked={ticks.includes(index)}
                                             onChange={() => toggle(index)}
                                         />
@@ -111,7 +111,7 @@ export function GettingReady({
                         <div className="flex flex-col divide-y divide-slate-200/90">
                             {content.faq.map(({ q, a }) => (
                                 <details key={q} className="group">
-                                    <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 text-sm group-open:font-semibold">
+                                    <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 text-sm transition-colors duration-200 group-open:font-semibold hover:text-pmc-accent">
                                         {q}
                                         <MdAdd
                                             className="size-4 shrink-0 text-pmc-mute group-open:hidden"

@@ -93,6 +93,62 @@
         0 14px 34px -14px rgb(29 24 56 / 0.18);
 }
 
+/* Pointer on everything clickable (Tailwind v4 no longer sets it on buttons) */
+@layer base {
+    :where(
+        button,
+        [role='button'],
+        summary,
+        select,
+        a[href],
+        input[type='checkbox'],
+        input[type='radio'],
+        input[type='file'],
+        label:has(> input[type='checkbox'])
+    ):not(:disabled) {
+        cursor: pointer;
+    }
+    :where(button, select, input, textarea):disabled {
+        cursor: not-allowed;
+    }
+}
+
+/* Icon buttons (collapse, menu, log out, close): a frosted chip with a fine outline, and a press */
+@utility pmc-hover-chip {
+    transition:
+        background-color 0.2s,
+        box-shadow 0.2s,
+        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    &:hover {
+        background-color: rgb(255 255 255 / 0.75);
+        box-shadow:
+            0 0 0 1px rgb(29 24 56 / 0.08),
+            0 6px 14px -8px rgb(29 24 56 / 0.3);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+        &:active {
+            transform: scale(0.94);
+        }
+    }
+}
+
+/* Cards that are links lift like the ubcpmc.com buttons */
+@utility pmc-hover-lift {
+    transition:
+        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    &:hover {
+        box-shadow:
+            0 1px 2px rgb(29 24 56 / 0.06),
+            0 20px 40px -16px rgb(29 24 56 / 0.28);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+        &:hover {
+            transform: translateY(-2px);
+        }
+    }
+}
+
 /* ubcpmc.com type: bold Poppins headings with tight tracking, readable placeholders.
    Unlayered so it outranks the heading weights set per page */
 .pmc-type {
@@ -112,6 +168,17 @@
    stays above 4.5:1 even when scrolled over the strongest magenta */
 .portal-bg .text-pmc-mute:not(:is(.glass, .portal-tint) .text-pmc-mute) {
     color: rgb(29 24 56 / 0.78);
+}
+/* Text links and underlined text buttons turn the accent colour on hover */
+.pmc-type :is(a, button).underline {
+    text-underline-offset: 3px;
+    transition:
+        color 0.2s,
+        text-decoration-color 0.2s;
+}
+.pmc-type :is(a, button).underline:hover {
+    color: var(--color-pmc-accent);
+    text-decoration-color: var(--color-pmc-accent);
 }
 .pmc-type ::placeholder {
     color: var(--color-pmc-mute);

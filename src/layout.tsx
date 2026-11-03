@@ -38,7 +38,7 @@ export function Layout() {
                         <button
                             type="button"
                             onClick={() => setMenuOpen(false)}
-                            className="absolute top-4 right-2 flex size-11 items-center justify-center rounded-[10px] text-pmc-ink"
+                            className="pmc-hover-chip absolute top-4 right-2 flex size-11 items-center justify-center rounded-[10px] text-pmc-ink"
                             aria-label="Close menu"
                         >
                             <MdClose className="size-6" aria-hidden />
