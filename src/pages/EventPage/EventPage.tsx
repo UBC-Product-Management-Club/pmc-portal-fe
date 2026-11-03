@@ -267,7 +267,7 @@ export default function EventPage() {
                     <GettingReady eventId={eventId} content={content?.pageContent ?? null} />
                     <TeamFormation
                         eventId={eventId}
-                        discordUrl={content?.discordUrl ?? null}
+                        slackUrl={content?.slackUrl ?? null}
                         maxTeamSize={content?.maxTeamSize ?? 4}
                         onTeam={onTeam}
                         ended={timing === 'ended'}

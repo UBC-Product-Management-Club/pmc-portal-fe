@@ -176,7 +176,10 @@ export const mockRegisteredContent = () => ({
             { name: 'Mentor name', role: 'Senior PM, Company' },
             { name: 'Mentor name', role: 'Product Designer, Company' },
         ],
-        prep: ['Join the Product Jackpot Discord', 'Bring your laptop, charger and student ID'],
+        prep: [
+            'Join the Product Jackpot Slack channel',
+            'Bring your laptop, charger and student ID',
+        ],
         faq: [
             {
                 q: 'Who can join?',
@@ -200,7 +203,7 @@ export const mockRegisteredContent = () => ({
             },
         ],
     },
-    discord_url: 'https://discord.gg/placeholder',
+    discord_url: 'https://ubcpmc.slack.com/archives/placeholder',
     max_team_size: 4,
 });
 

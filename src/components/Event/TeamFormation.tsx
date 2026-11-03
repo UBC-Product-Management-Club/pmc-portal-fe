@@ -1,10 +1,11 @@
+import { FaSlack } from 'react-icons/fa';
 import { ButtonLink } from '../Portal/Button';
 import { Section } from './EventSections';
 import { TeamJoinForms } from './TeamJoinForms';
 
 type TeamFormationProps = {
     eventId: string;
-    discordUrl: string | null;
+    slackUrl: string | null;
     maxTeamSize: number;
     onTeam: boolean;
     ended: boolean;
@@ -14,12 +15,12 @@ const cardClass = 'flex flex-col items-start gap-1.5 rounded-[10px] bg-pmc-bg p-
 
 export function TeamFormation({
     eventId,
-    discordUrl,
+    slackUrl,
     maxTeamSize,
     onTeam,
     ended,
 }: TeamFormationProps) {
-    // After the event teams are final: no Discord or create/join, just a way back to the team
+    // After the event teams are final: no Slack or create/join, just a way back to the team
     if (ended) {
         return (
             <Section title="Your Team" id="team-formation">
@@ -43,17 +44,18 @@ export function TeamFormation({
                 <div className={cardClass}>
                     <h3 className="text-sm font-semibold">Before the event</h3>
                     <p className="mb-1.5 text-sm text-pmc-mute">
-                        Meet other participants in the Discord channel and form a team of up to{' '}
+                        Meet other participants in the Slack channel and form a team of up to{' '}
                         {maxTeamSize}.
                     </p>
-                    {discordUrl && (
+                    {slackUrl && (
                         <a
-                            href={discordUrl}
+                            href={slackUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#5865f2] px-4 text-sm font-semibold text-white shadow-sm hover:brightness-110"
+                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#4a154b] px-4 text-sm font-semibold text-white shadow-sm transition-[translate,box-shadow,filter] duration-300 ease-[cubic-bezier(.16,1,.3,1)] hover:shadow-[0_10px_22px_-12px_rgb(74_21_75/0.7)] hover:brightness-125 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pmc-accent motion-safe:hover:-translate-y-0.5"
                         >
-                            Open Discord
+                            <FaSlack className="size-4" aria-hidden />
+                            Open Slack
                         </a>
                     )}
                 </div>
