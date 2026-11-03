@@ -29,9 +29,12 @@ describe('login', () => {
         renderComponent();
 
         expect(
-            screen.getByRole('heading', { name: 'Product Management Club' })
+            screen.getByRole('heading', { name: 'Welcome to the PMC Membership Portal' })
         ).toBeInTheDocument();
-        expect(screen.getByText('Membership Portal')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Instagram' })).toHaveAttribute(
+            'href',
+            'https://www.instagram.com/ubcpmc'
+        );
         expect(screen.getByTestId('logo')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Log in / sign up' }));
     });
