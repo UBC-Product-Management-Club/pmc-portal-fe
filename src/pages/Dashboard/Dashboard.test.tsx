@@ -85,7 +85,19 @@ describe('Dashboard', () => {
 
         const past = screen.getByText('Past Events').closest('section')!;
         expect(within(past).getByText('Old Event')).toBeInTheDocument();
-        expect(within(past).getByRole('button', { name: 'Registration closed' })).toBeDisabled();
+    });
+
+    it('shows one action per card: Register, or View Event once applied or past', async () => {
+        renderPage();
+        const card = async (name: string) =>
+            within((await screen.findByText(name)).closest('article')!);
+        const links = async (name: string) =>
+            (await card(name)).getAllByRole('link').map((link) => link.textContent);
+
+        expect(await links('Later Event')).toEqual(['Register']);
+        expect(await links('Soon Event')).toEqual(['View Event']);
+        expect(await links('Old Event')).toEqual(['View Event']);
+        expect(screen.queryByText('Registration closed')).not.toBeInTheDocument();
     });
 
     it('shows the status badge, with the attendee row winning over a draft', async () => {
