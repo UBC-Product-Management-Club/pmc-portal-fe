@@ -257,6 +257,28 @@
     opacity: 1;
 }
 
+/* Event page cards: lighter glass than the rest so the page colour shows through and the
+   white tiles inside stand out on it; ink still clears AA over the strongest glow */
+.glass-soft {
+    background-color: rgb(255 255 255 / 0.5);
+    border-color: rgb(255 255 255 / 0.7);
+    color: rgb(29 24 56 / 0.88);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+.glass-soft :is(strong, h3) {
+    color: var(--color-pmc-ink);
+}
+/* Grey-purple drops under 4.5:1 on the lighter card, so it darkens as it does on the page */
+.glass-soft .text-pmc-mute:not(.glass-tile .text-pmc-mute) {
+    color: rgb(29 24 56 / 0.78);
+}
+.glass-tile,
+.event-markdown ol > li {
+    background-color: rgb(255 255 255 / 0.85);
+    box-shadow: 0 1px 2px rgb(29 24 56 / 0.05);
+}
+
 /* Event descriptions: numbered lists become step cards, bullets get a check */
 .event-markdown h3 {
     margin: 1.25rem 0 0.625rem;
@@ -285,13 +307,13 @@
 }
 .event-markdown ol > li {
     counter-increment: step;
+    border-radius: 10px;
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
-    border-radius: 10px;
-    background-color: rgb(255 255 255 / 0.6);
     padding: 0.875rem;
     font-size: 0.875rem;
+    line-height: 1.5;
 }
 .event-markdown ol > li::before {
     content: counter(step);

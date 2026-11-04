@@ -76,14 +76,17 @@ function CollapsibleSection({ title, children }: { title: string; children: Reac
 function Announcements({ items }: { items: Announcement[] }) {
     return (
         <CollapsibleSection title="Announcements">
-            <div className="glass flex flex-col gap-4 p-4">
+            <div className="glass glass-soft flex flex-col gap-4 p-4">
                 {items.length === 0 ? (
                     <p>No announcements right now.</p>
                 ) : (
                     items.map((item) => (
-                        <article key={item.announcementId} className="rounded-[10px] bg-pmc-bg p-4">
+                        <article
+                            key={item.announcementId}
+                            className="glass-tile rounded-[10px] p-4"
+                        >
                             <h3 className="mb-2 text-2xl leading-8 font-medium">{item.title}</h3>
-                            <p className="text-base">{item.body}</p>
+                            <p>{item.body}</p>
                         </article>
                     ))
                 )}
@@ -94,7 +97,7 @@ function Announcements({ items }: { items: Announcement[] }) {
 
 function Chip({ icon: Icon, children }: { icon: IconType; children: ReactNode }) {
     return (
-        <li className="inline-flex items-center gap-1.5 rounded-full bg-pmc-bg px-3 py-1.5 text-sm font-medium">
+        <li className="inline-flex items-center gap-1.5 glass-tile rounded-full px-3 py-1.5 text-sm font-medium text-pmc-ink">
             <Icon className="size-4 shrink-0" aria-hidden />
             {children}
         </li>
@@ -117,7 +120,7 @@ function HomeEventCard({
     const link = `/events/${event.eventId}`;
 
     return (
-        <article className="glass flex flex-col gap-5 p-4 md:flex-row md:gap-6">
+        <article className="glass glass-soft flex flex-col gap-5 p-4 md:flex-row md:gap-6">
             <div className="order-first aspect-[205/256] w-full max-w-[200px] shrink-0 self-center overflow-hidden rounded-[10px] bg-[#919191] shadow-md md:order-last md:max-w-[180px] md:self-start">
                 {event.thumbnail && (
                     <img
@@ -132,7 +135,7 @@ function HomeEventCard({
                     <h3 className="text-3xl leading-tight font-medium">{event.name}</h3>
                     {badge && <Badge tone={badge.tone}>{badge.label}</Badge>}
                 </div>
-                <p className="text-lg leading-snug text-pmc-ink">{event.blurb}</p>
+                <p className="text-lg leading-snug">{event.blurb}</p>
                 <ul className="flex flex-wrap gap-2">
                     <Chip icon={MdOutlineCalendarToday}>
                         {sameDay(event.startTime, event.endTime)
@@ -189,7 +192,7 @@ function EventList({
     const list =
         events.length === 0 ? (
             past ? (
-                <div className="glass p-4">{empty}</div>
+                <div className="glass glass-soft p-4">{empty}</div>
             ) : (
                 <NoUpcomingEvents />
             )
@@ -261,7 +264,9 @@ export default function Dashboard() {
                 )}
             />
             {error ? (
-                <div className="glass p-4">Couldn't load events. Refresh to try again.</div>
+                <div className="glass glass-soft p-4">
+                    Couldn't load events. Refresh to try again.
+                </div>
             ) : !events ? (
                 <p>Loading events…</p>
             ) : (
