@@ -73,19 +73,23 @@ export function ScheduleSection({ schedule }: { schedule: Schedule }) {
     );
 }
 
-type LinkCardProps = { title: string; description: string; href: string; locked: boolean };
+type LinkCardProps = {
+    title: string;
+    description: string;
+    href: string;
+    locked: boolean;
+    lockedNote: string;
+};
 
 // Jumps to the section further down the page once registered
-function LinkCard({ title, description, href, locked }: LinkCardProps) {
+function LinkCard({ title, description, href, locked, lockedNote }: LinkCardProps) {
     const body = (
         <>
             <h3 className="flex items-center gap-2 text-2xl leading-8 font-medium">
                 {locked && <MdLockOutline className="size-5" aria-hidden />}
                 {title}
             </h3>
-            <p className="text-base text-pmc-mute">
-                {locked ? "Available once you're registered" : description}
-            </p>
+            <p className="text-base text-pmc-mute">{locked ? lockedNote : description}</p>
         </>
     );
 
@@ -101,7 +105,20 @@ function LinkCard({ title, description, href, locked }: LinkCardProps) {
     );
 }
 
-export function EventLinkCards({ registered, ended }: { registered: boolean; ended: boolean }) {
+export function EventLinkCards({
+    registered,
+    ended,
+    needsReview,
+}: {
+    registered: boolean;
+    ended: boolean;
+    needsReview: boolean;
+}) {
+    // Reviewed events register a student only after they're accepted and have paid
+    const lockedNote = needsReview
+        ? "Available once you're accepted and paid"
+        : "Available once you're registered";
+
     return (
         <div className="flex flex-col gap-4 md:flex-row">
             <LinkCard
@@ -109,6 +126,7 @@ export function EventLinkCards({ registered, ended }: { registered: boolean; end
                 description="Mentors, what to prepare and answers to common questions"
                 href="#getting-ready"
                 locked={!registered}
+                lockedNote={lockedNote}
             />
             <LinkCard
                 title={ended ? 'Your Team' : 'Team Formation'}
@@ -119,6 +137,7 @@ export function EventLinkCards({ registered, ended }: { registered: boolean; end
                 }
                 href="#team-formation"
                 locked={!registered}
+                lockedNote={lockedNote}
             />
         </div>
     );
