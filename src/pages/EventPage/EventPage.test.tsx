@@ -82,6 +82,24 @@ describe('EventPage', () => {
         (useUserData as Mock).mockReturnValue({ user: { userId: 'u1' }, isMember: false });
     });
 
+    it('says reviewed events unlock the cards once accepted and paid', async () => {
+        renderAt('/events/e1');
+
+        expect(await screen.findAllByText("Available once you're accepted and paid")).toHaveLength(
+            2
+        );
+    });
+
+    it('keeps the registered wording for events without review', async () => {
+        (useEvents as Mock).mockReturnValue({
+            getById: vi.fn().mockResolvedValue({ ...event, needsReview: false }),
+            loadDraft: vi.fn().mockResolvedValue(null),
+        });
+        renderAt('/events/e1');
+
+        expect(await screen.findAllByText("Available once you're registered")).toHaveLength(2);
+    });
+
     it('sends the Stripe session id when back from checkout', async () => {
         renderAt('/events/e1?success=true&session_id=cs_test_1');
 

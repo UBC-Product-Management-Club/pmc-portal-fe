@@ -261,7 +261,11 @@ export default function EventPage() {
             )}
             <AboutSection description={event.description} />
             {event.schedule && <ScheduleSection schedule={event.schedule} />}
-            <EventLinkCards registered={status === 'REGISTERED'} ended={timing === 'ended'} />
+            <EventLinkCards
+                registered={status === 'REGISTERED'}
+                ended={timing === 'ended'}
+                needsReview={event.needsReview}
+            />
             {status === 'REGISTERED' && (
                 <>
                     <GettingReady eventId={eventId} content={content?.pageContent ?? null} />
