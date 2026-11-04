@@ -33,7 +33,7 @@ const markdownComponents = {
 export function AboutSection({ description }: { description: string }) {
     return (
         <Section title="About">
-            <div className="glass event-markdown p-4 text-base">
+            <div className="glass glass-soft event-markdown p-4">
                 <Markdown components={markdownComponents}>{description}</Markdown>
             </div>
         </Section>

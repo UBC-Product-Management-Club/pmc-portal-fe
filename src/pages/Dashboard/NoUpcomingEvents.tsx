@@ -36,31 +36,36 @@ function Rocket() {
     );
 }
 
-// Shown in Upcoming Events when nothing is scheduled. The illustration fades into the
-// card at its right edge, so it sits flush against the card's left side
+// Shown in Upcoming Events when nothing is scheduled. The layout follows the card's own
+// width (the sidebar narrows it), so the text never squeezes beside the illustration.
+// Side by side, the illustration sits flush against the card's bottom-left corner and
+// fades into the card at its right edge (baked in) and top edge (when the text column
+// is taller); stacked, it fades out on every edge
 export function NoUpcomingEvents() {
     return (
-        <div className="glass flex flex-col overflow-hidden md:flex-row">
-            <img
-                src={Stargazer}
-                alt=""
-                className="w-full max-w-[440px] self-center md:w-[42%] md:self-end"
-            />
-            <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 pb-8 text-center md:py-10">
-                <span className="pmc-deep flex size-14 items-center justify-center rounded-full text-white shadow-sm">
-                    <MdOutlineEventNote className="size-7" aria-hidden />
-                </span>
-                <h3 className="text-2xl font-semibold">No upcoming events yet</h3>
-                <p className="text-pmc-mute">We're planning the next one now. Stay tuned!</p>
-                <div className="mt-2 flex items-center gap-3 border-t border-slate-200/80 pt-4 text-left text-sm text-pmc-mute">
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-[10px] bg-pmc-bg text-pmc-accent">
-                        <MdOutlineMarkEmailUnread className="size-5" aria-hidden />
+        <div className="glass glass-soft @container overflow-hidden">
+            <div className="flex flex-col @3xl:flex-row">
+                <img
+                    src={Stargazer}
+                    alt=""
+                    className="w-full max-w-[440px] self-center [mask-image:radial-gradient(closest-side,#000_70%,transparent)] @3xl:w-[42%] @3xl:self-end @3xl:[mask-image:linear-gradient(to_bottom,transparent,#000_22%)]"
+                />
+                <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 pb-8 text-center @3xl:py-10">
+                    <span className="pmc-deep flex size-14 items-center justify-center rounded-full text-white shadow-sm">
+                        <MdOutlineEventNote className="size-7" aria-hidden />
                     </span>
-                    We'll announce new events by email, so keep an eye on your inbox.
+                    <h3 className="text-2xl font-semibold">No upcoming events yet</h3>
+                    <p className="text-pmc-mute">We're planning the next one now. Stay tuned!</p>
+                    <div className="mt-2 flex items-center gap-3 border-t border-slate-200/80 pt-4 text-left text-sm text-pmc-mute">
+                        <span className="flex size-10 shrink-0 items-center justify-center glass-tile rounded-[10px] text-pmc-accent">
+                            <MdOutlineMarkEmailUnread className="size-5" aria-hidden />
+                        </span>
+                        We'll announce new events by email, so keep an eye on your inbox.
+                    </div>
                 </div>
-            </div>
-            <div className="hidden w-28 shrink-0 self-center pr-6 md:block">
-                <Rocket />
+                <div className="hidden w-28 shrink-0 self-center pr-6 @3xl:block">
+                    <Rocket />
+                </div>
             </div>
         </div>
     );

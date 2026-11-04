@@ -26,9 +26,9 @@ export function EventHeader({ event, status, message, priceLine, action }: Event
                     <h1 className="text-4xl leading-none font-medium md:text-5xl">{event.name}</h1>
                     {badge && <Badge tone={badge.tone}>{badge.label}</Badge>}
                 </div>
-                <div className="glass flex flex-col gap-4 p-4 md:flex-1">
-                    <p className="text-base">{message ?? event.blurb}</p>
-                    <div className="flex flex-col gap-2 rounded-[10px] bg-pmc-bg p-4 font-medium md:flex-1 md:justify-center">
+                <div className="glass glass-soft flex flex-col gap-4 p-4 md:flex-1">
+                    <p>{message ?? event.blurb}</p>
+                    <div className="glass-tile flex flex-col gap-2 rounded-[10px] p-4 font-medium text-pmc-ink md:flex-1 md:justify-center">
                         <p className="flex items-center gap-2">
                             <MdOutlineCalendarToday className="size-6 shrink-0" aria-hidden />
                             {renderDate(event.startTime, event.endTime)}
