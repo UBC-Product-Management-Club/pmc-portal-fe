@@ -13,7 +13,7 @@ import { EventCard } from '../../types/Event';
 import { Announcement, EventStatusRow } from '../../types/Home';
 import { renderDate, renderTime } from '../../utils';
 import { Badge } from '../../components/Portal/Badge';
-import { Button, ButtonLink } from '../../components/Portal/Button';
+import { ButtonLink } from '../../components/Portal/Button';
 import {
     displayBadge,
     eventTiming,
@@ -147,28 +147,19 @@ function HomeEventCard({
                         {formatPrice(isMember ? event.memberPrice : event.nonMemberPrice)}
                     </Chip>
                 </ul>
-                <div className="mt-auto flex flex-col gap-3 md:flex-row">
-                    <ButtonLink to={link} className="w-full md:flex-1">
-                        View Event
-                    </ButtonLink>
-                    {past ? (
-                        <Button className="w-full md:flex-1" disabled>
-                            Registration closed
-                        </Button>
-                    ) : status === 'DRAFT' ? (
-                        <ButtonLink
-                            to={`${link}/apply`}
-                            variant="primary"
-                            className="w-full md:flex-1"
-                        >
+                <div className="mt-auto">
+                    {!past && status === 'DRAFT' ? (
+                        <ButtonLink to={`${link}/apply`} variant="primary" className="w-full">
                             Continue application
                         </ButtonLink>
+                    ) : !past && !status ? (
+                        <ButtonLink to={link} variant="primary" className="w-full">
+                            Register
+                        </ButtonLink>
                     ) : (
-                        !status && (
-                            <ButtonLink to={link} variant="primary" className="w-full md:flex-1">
-                                Register
-                            </ButtonLink>
-                        )
+                        <ButtonLink to={link} className="w-full">
+                            View Event
+                        </ButtonLink>
                     )}
                 </div>
             </div>
