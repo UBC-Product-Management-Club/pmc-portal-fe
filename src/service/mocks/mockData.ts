@@ -136,7 +136,7 @@ export const mockEvent = () => ({
     needs_review: true,
     external_page: null,
     waitlist_form: null,
-    thumbnail: '/mock/product-jackpot.png',
+    thumbnail: '/mock/product-jackpot.webp',
     icon: '/mock/product-jackpot-icon.png',
     schedule: {
         days: [

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { MdOutlineDashboard, MdOutlineEvent, MdLogout } from 'react-icons/md';
-import PMCLogo from '../../assets/pmclogo-ahover.png';
+import PMCLogo from '../../assets/pmclogo-gradient.png';
 import Geary from '../../assets/geary normal.png';
 import { useEvents } from '../../hooks/useEvents';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
@@ -109,9 +109,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                 }}
             />
             <div className={`flex items-center gap-2 p-4 ${tintClass}`}>
-                <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-pmc-dark-blue">
-                    <img src={PMCLogo} alt="UBC PMC" className="size-7 object-contain" />
-                </div>
+                <img src={PMCLogo} alt="UBC PMC" className="h-9 w-auto shrink-0" />
                 <div className="flex flex-col gap-0.5 text-pmc-ink">
                     <p className="text-sm leading-5 font-semibold">UBC PMC</p>
                     <p className="text-xs leading-4">Member</p>
