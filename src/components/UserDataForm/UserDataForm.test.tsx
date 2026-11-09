@@ -40,11 +40,11 @@ describe('UserDataForm', () => {
     it('renders the form initial state', async () => {
         await renderComponent(true);
 
-        expect(screen.getByPlaceholderText('First name')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Last name')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Pronouns')).toBeInTheDocument();
+        expect(screen.getByLabelText(/^First name/)).toBeInTheDocument();
+        expect(screen.getByLabelText(/^Last name/)).toBeInTheDocument();
+        expect(screen.getByLabelText(/^Pronouns/)).toBeRequired();
         expect(screen.getByTestId('university-dropdown')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Why Product Management?')).toBeInTheDocument();
+        expect(screen.getByLabelText(/^Why Product Management/)).toBeInTheDocument();
         expect(screen.queryByTestId('mobile-form')).not.toBeInTheDocument();
     });
 
@@ -56,9 +56,9 @@ describe('UserDataForm', () => {
                 target: { value: 'University of British Columbia' },
             });
 
-            expect(screen.getByPlaceholderText('Student ID')).toBeInTheDocument();
-            expect(screen.getByPlaceholderText('Faculty')).toBeInTheDocument();
-            expect(screen.getByPlaceholderText('Major')).toBeInTheDocument();
+            expect(screen.getByLabelText(/^Student ID/)).toBeInTheDocument();
+            expect(screen.getByLabelText(/^Faculty/)).toBeInTheDocument();
+            expect(screen.getByLabelText(/^Major/)).toBeInTheDocument();
             expect(screen.getByTestId('year-dropdown')).toBeInTheDocument();
         });
 
@@ -69,9 +69,9 @@ describe('UserDataForm', () => {
                 target: { value: 'Other' },
             });
 
-            expect(screen.queryByPlaceholderText('Student ID')).not.toBeInTheDocument();
-            expect(screen.getByPlaceholderText('Faculty')).toBeInTheDocument();
-            expect(screen.getByPlaceholderText('Major')).toBeInTheDocument();
+            expect(screen.queryByLabelText(/^Student ID/)).not.toBeInTheDocument();
+            expect(screen.getByLabelText(/^Faculty/)).toBeInTheDocument();
+            expect(screen.getByLabelText(/^Major/)).toBeInTheDocument();
             expect(screen.getByTestId('year-dropdown')).toBeInTheDocument();
         });
 
@@ -82,9 +82,9 @@ describe('UserDataForm', () => {
                 target: { value: "I'm not a university student" },
             });
 
-            expect(screen.queryByPlaceholderText('Student ID')).not.toBeInTheDocument();
-            expect(screen.queryByPlaceholderText('Faculty')).not.toBeInTheDocument();
-            expect(screen.queryByPlaceholderText('Major')).not.toBeInTheDocument();
+            expect(screen.queryByLabelText(/^Student ID/)).not.toBeInTheDocument();
+            expect(screen.queryByLabelText(/^Faculty/)).not.toBeInTheDocument();
+            expect(screen.queryByLabelText(/^Major/)).not.toBeInTheDocument();
             expect(screen.queryByTestId('year-dropdown')).not.toBeInTheDocument();
         });
     });

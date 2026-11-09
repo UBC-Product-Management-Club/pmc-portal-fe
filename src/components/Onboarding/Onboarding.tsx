@@ -99,7 +99,11 @@ export default function Onboarding() {
                     <img className={logoClass} src={PMCLogo} alt="UBC PMC" />
                     {currPage === Pages.USER_INFO && (
                         <>
-                            <h1 className={contentHeaderClass}>Let's get you signed up!</h1>
+                            <h1 className="mt-6 mb-2 text-2xl">Let's get you signed up!</h1>
+                            <p className="mb-6 text-pmc-mute">
+                                Tell us a bit about yourself so we can personalize your PMC
+                                experience.
+                            </p>
                             <UserDataForm
                                 responses={responses}
                                 onSubmit={(data: UserDataFromUser) => {

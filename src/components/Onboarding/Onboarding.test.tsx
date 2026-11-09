@@ -30,6 +30,10 @@ vi.mock('../Payment/Payment', () => ({
     },
 }));
 
+// Filling the whole form types every field key by key, which can take a few seconds
+// when the full suite runs in parallel
+const FILL_TIMEOUT = 15000;
+
 describe('Onboarding Component', () => {
     let mockUpdateUser: Mock;
     let mockCreateUser: Mock;
@@ -102,9 +106,9 @@ describe('Onboarding Component', () => {
     }
 
     async function fillOnboarding(user: UserEvent, ubc: boolean) {
-        const firstNameInput = screen.getByPlaceholderText('First name');
-        const lastNameInput = screen.getByPlaceholderText('Last name');
-        const pronounsInput = screen.getByPlaceholderText('Pronouns');
+        const firstNameInput = screen.getByLabelText(/^First name/);
+        const lastNameInput = screen.getByLabelText(/^Last name/);
+        const pronounsInput = screen.getByLabelText(/^Pronouns/);
         const universityInput = screen.getByTestId('university-dropdown');
 
         await user.type(firstNameInput, 'geary');
@@ -114,9 +118,9 @@ describe('Onboarding Component', () => {
         if (ubc) {
             fireEvent.change(universityInput, { target: { value: Universities[0] } });
 
-            const studentIdInput = screen.getByPlaceholderText('Student ID');
-            const facultyInput = screen.getByPlaceholderText('Faculty');
-            const majorInput = screen.getByPlaceholderText('Major');
+            const studentIdInput = screen.getByLabelText(/^Student ID/);
+            const facultyInput = screen.getByLabelText(/^Faculty/);
+            const majorInput = screen.getByLabelText(/^Major/);
             const yearInput = screen.getByTestId('year-dropdown');
 
             await user.type(studentIdInput, '12345667');
@@ -130,7 +134,7 @@ describe('Onboarding Component', () => {
             fireEvent.change(universityInput, { target: { value: Universities[4] } });
         }
 
-        const whyPmInput = screen.getByPlaceholderText('Why Product Management?');
+        const whyPmInput = screen.getByLabelText(/^Why Product Management/);
         await user.type(whyPmInput, 'products go brr');
 
         const submitButton = screen.getByRole('button', { name: 'Continue' });
@@ -154,63 +158,71 @@ describe('Onboarding Component', () => {
         expect(screen.getByText('please refresh the page')).toBeInTheDocument();
     });
 
-    it('for ubc students', async () => {
-        mockCreateUser.mockResolvedValueOnce(undefined);
-        const user = userEvent.setup();
-        await renderComponent();
+    it(
+        'for ubc students',
+        async () => {
+            mockCreateUser.mockResolvedValueOnce(undefined);
+            const user = userEvent.setup();
+            await renderComponent();
 
-        await fillOnboarding(user, true);
+            await fillOnboarding(user, true);
 
-        expect(mockUpdateUser).toHaveBeenCalledWith({
-            type: ActionTypes.UPDATE,
-            payload: {
-                firstName: 'geary',
-                lastName: 'pmc',
-                pronouns: 'he/him',
-                university: 'University of British Columbia',
-                studentId: '12345667',
-                year: '5+',
-                faculty: 'sauder',
-                major: 'product management',
-                whyPm: 'products go brr',
-            },
-        });
-        await user.click(screen.getByRole('button', { name: 'Yes, continue to payments' }));
-        expect(screen.getByTestId('mock-payment')).toBeInTheDocument();
+            expect(mockUpdateUser).toHaveBeenCalledWith({
+                type: ActionTypes.UPDATE,
+                payload: {
+                    firstName: 'geary',
+                    lastName: 'pmc',
+                    pronouns: 'he/him',
+                    university: 'University of British Columbia',
+                    studentId: '12345667',
+                    year: '5+',
+                    faculty: 'sauder',
+                    major: 'product management',
+                    whyPm: 'products go brr',
+                },
+            });
+            await user.click(screen.getByRole('button', { name: 'Yes, continue to payments' }));
+            expect(screen.getByTestId('mock-payment')).toBeInTheDocument();
 
-        await user.click(screen.getByRole('button', { name: 'Mock Pay' }));
+            await user.click(screen.getByRole('button', { name: 'Mock Pay' }));
 
-        expect(mockCreateUser).toHaveBeenCalled();
-        expect(screen.getByText(/Welcome to PMC/)).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Continue to dashboard' })).toBeInTheDocument();
-    });
+            expect(mockCreateUser).toHaveBeenCalled();
+            expect(screen.getByText(/Welcome to PMC/)).toBeInTheDocument();
+            expect(screen.getByRole('link', { name: 'Continue to dashboard' })).toBeInTheDocument();
+        },
+        FILL_TIMEOUT
+    );
 
-    it('for non students', async () => {
-        mockCreateUser.mockResolvedValueOnce(undefined);
-        const user = userEvent.setup();
-        await renderComponent();
+    it(
+        'for non students',
+        async () => {
+            mockCreateUser.mockResolvedValueOnce(undefined);
+            const user = userEvent.setup();
+            await renderComponent();
 
-        await fillOnboarding(user, false);
+            await fillOnboarding(user, false);
 
-        expect(mockUpdateUser).toHaveBeenCalledWith({
-            type: ActionTypes.UPDATE,
-            payload: {
-                firstName: 'geary',
-                lastName: 'pmc',
-                pronouns: 'he/him',
-                university: "I'm not a university student",
-                whyPm: 'products go brr',
-            },
-        });
-        await user.click(screen.getByRole('button', { name: 'Yes, continue to payments' }));
-        expect(screen.getByTestId('mock-payment')).toBeInTheDocument();
+            expect(mockUpdateUser).toHaveBeenCalledWith({
+                type: ActionTypes.UPDATE,
+                payload: {
+                    firstName: 'geary',
+                    lastName: 'pmc',
+                    pronouns: 'he/him',
+                    university: "I'm not a university student",
+                    whyPm: 'products go brr',
+                },
+            });
+            await user.click(screen.getByRole('button', { name: 'Yes, continue to payments' }));
+            expect(screen.getByTestId('mock-payment')).toBeInTheDocument();
 
-        await user.click(screen.getByRole('button', { name: 'Mock Pay' }));
+            await user.click(screen.getByRole('button', { name: 'Mock Pay' }));
 
-        expect(mockCreateUser).toHaveBeenCalled();
-        expect(screen.getByText(/Welcome to PMC/)).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Continue to dashboard' })).toBeInTheDocument();
-    });
+            expect(mockCreateUser).toHaveBeenCalled();
+            expect(screen.getByText(/Welcome to PMC/)).toBeInTheDocument();
+            expect(screen.getByRole('link', { name: 'Continue to dashboard' })).toBeInTheDocument();
+        },
+        FILL_TIMEOUT
+    );
 
     it('navigates back correctly from onboarding', async () => {
         const user = userEvent.setup();
@@ -224,18 +236,22 @@ describe('Onboarding Component', () => {
         expect(mockLogout).toHaveBeenCalled();
     });
 
-    it('navigates back correctly from payment', async () => {
-        mockCreateUser.mockResolvedValueOnce(undefined);
-        const user = userEvent.setup();
-        await renderComponent();
-        const backBtn = screen.getByRole('button', { name: 'Back' });
+    it(
+        'navigates back correctly from payment',
+        async () => {
+            mockCreateUser.mockResolvedValueOnce(undefined);
+            const user = userEvent.setup();
+            await renderComponent();
+            const backBtn = screen.getByRole('button', { name: 'Back' });
 
-        await fillOnboarding(user, true);
+            await fillOnboarding(user, true);
 
-        expect(backBtn).toBeInTheDocument();
+            expect(backBtn).toBeInTheDocument();
 
-        await user.click(backBtn);
+            await user.click(backBtn);
 
-        expect(mockLogout).not.toBeCalled();
-    });
+            expect(mockLogout).not.toBeCalled();
+        },
+        FILL_TIMEOUT
+    );
 });
