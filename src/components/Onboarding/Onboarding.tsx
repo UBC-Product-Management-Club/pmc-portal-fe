@@ -90,7 +90,8 @@ export default function Onboarding() {
         return (
             <div className={containerClass} data-testid="onboarding">
                 <div className={contentClass}>
-                    {currPage !== Pages.PAYMENT_SUCCESS && (
+                    {/* The sign-up step has its Back next to Continue instead */}
+                    {currPage !== Pages.PAYMENT_SUCCESS && currPage !== Pages.USER_INFO && (
                         <button className={returnButtonClass} onClick={computePreviousPage}>
                             <IoArrowBack aria-hidden />
                             Back
@@ -99,9 +100,14 @@ export default function Onboarding() {
                     <img className={logoClass} src={PMCLogo} alt="UBC PMC" />
                     {currPage === Pages.USER_INFO && (
                         <>
-                            <h1 className={contentHeaderClass}>Let's get you signed up!</h1>
+                            <h1 className="mt-6 mb-2 text-2xl">Let's get you signed up!</h1>
+                            <p className="mb-6 text-pmc-mute">
+                                Tell us a bit about yourself so we can personalize your PMC
+                                experience.
+                            </p>
                             <UserDataForm
                                 responses={responses}
+                                onBack={computePreviousPage}
                                 onSubmit={(data: UserDataFromUser) => {
                                     try {
                                         const responses = UserDataFromUserSchema.parse(data);
