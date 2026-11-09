@@ -242,11 +242,10 @@ describe('Onboarding Component', () => {
             mockCreateUser.mockResolvedValueOnce(undefined);
             const user = userEvent.setup();
             await renderComponent();
+            const backBtn = screen.getByRole('button', { name: 'Back' });
 
             await fillOnboarding(user, true);
 
-            // The sign-up step's Back sits in its form; the next step has its own at the top
-            const backBtn = await screen.findByRole('button', { name: 'Back' });
             expect(backBtn).toBeInTheDocument();
 
             await user.click(backBtn);

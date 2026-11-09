@@ -90,8 +90,7 @@ export default function Onboarding() {
         return (
             <div className={containerClass} data-testid="onboarding">
                 <div className={contentClass}>
-                    {/* The sign-up step has its Back next to Continue instead */}
-                    {currPage !== Pages.PAYMENT_SUCCESS && currPage !== Pages.USER_INFO && (
+                    {currPage !== Pages.PAYMENT_SUCCESS && (
                         <button className={returnButtonClass} onClick={computePreviousPage}>
                             <IoArrowBack aria-hidden />
                             Back
@@ -107,7 +106,6 @@ export default function Onboarding() {
                             </p>
                             <UserDataForm
                                 responses={responses}
-                                onBack={computePreviousPage}
                                 onSubmit={(data: UserDataFromUser) => {
                                     try {
                                         const responses = UserDataFromUserSchema.parse(data);

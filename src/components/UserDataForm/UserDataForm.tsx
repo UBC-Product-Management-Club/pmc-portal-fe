@@ -1,7 +1,6 @@
 import { Control, FieldValues, Path, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ReactNode, useEffect } from 'react';
-import { IoArrowBack } from 'react-icons/io5';
 import { MdArrowForward, MdOutlineVerifiedUser } from 'react-icons/md';
 import { Universities, UserDataFromUser, UserDataFromUserSchema, years } from '../../types/User';
 import { showToast, useInAppBrowser } from '../../utils';
@@ -11,8 +10,6 @@ type UserDataFormProps = {
     onSubmit: (data: UserDataFromUser) => void;
     hasWaiver?: boolean;
     buttonText?: string;
-    // Shown next to the main button when given (the sign-up step's Back)
-    onBack?: () => void;
 };
 
 const WHY_PM_MAX = 300;
@@ -47,7 +44,6 @@ export function UserDataForm({
     onSubmit,
     hasWaiver,
     buttonText = 'Continue',
-    onBack,
 }: UserDataFormProps) {
     const form = useForm({
         resolver: zodResolver(UserDataFromUserSchema),
@@ -62,7 +58,6 @@ export function UserDataForm({
     const pillClass =
         'inline-flex min-h-12 cursor-pointer items-center gap-2 rounded-full px-7 font-medium focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pmc-accent';
     const submitClass = `${pillClass} pmc-btn-gradient ml-auto text-white`;
-    const backClass = `${pillClass} border border-portal-stroke bg-white px-6 text-pmc-ink transition-[background-color,border-color] duration-200 ease-out hover:border-pmc-accent/30 hover:bg-portal-badge active:bg-[#e4ddf5]`;
     const waiverLinkClass = 'font-medium text-pmc-accent underline underline-offset-2';
     const errorTextClass = 'mt-1 text-sm text-red-700';
     const widthClassMap: Record<number, string> = {
@@ -311,13 +306,7 @@ export function UserDataForm({
         </div>
     );
     const actions = (
-        <div className="mt-1 flex items-center gap-3">
-            {onBack && (
-                <button type="button" className={backClass} onClick={onBack}>
-                    <IoArrowBack aria-hidden />
-                    Back
-                </button>
-            )}
+        <div className="mt-1 flex items-center">
             <button className={submitClass} type="submit">
                 {buttonText}
                 <MdArrowForward aria-hidden />
