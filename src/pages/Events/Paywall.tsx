@@ -6,6 +6,7 @@ import { Event } from '../../types/Event';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { IoArrowBack } from 'react-icons/io5';
 import { useInAppBrowser } from '../../utils';
+import { Blurb } from '../../components/Event/Blurb';
 
 export default function Paywall() {
     const { user } = useUserData();
@@ -94,7 +95,9 @@ export default function Paywall() {
                         Hi {user?.firstName ?? 'there'} 👋 — finalize your registration below to
                         confirm your spot.
                     </p>
-                    {!isMobile && event.blurb && <p className={blurbClass}>{event.blurb}</p>}
+                    {!isMobile && event.blurb && (
+                        <Blurb text={event.blurb} className={blurbClass} />
+                    )}
                     <button className={buttonClass} onClick={checkout} disabled={loadingCheckout}>
                         {loadingCheckout ? 'Loading...' : 'Secure Your Spot'}
                     </button>
