@@ -13,6 +13,7 @@ import { EventCard } from '../../types/Event';
 import { Announcement, EventStatusRow } from '../../types/Home';
 import { renderDate, renderTime } from '../../utils';
 import { Badge } from '../../components/Portal/Badge';
+import { Blurb } from '../../components/Event/Blurb';
 import { ButtonLink } from '../../components/Portal/Button';
 import {
     displayBadge,
@@ -135,7 +136,7 @@ function HomeEventCard({
                     <h3 className="text-3xl leading-tight font-medium">{event.name}</h3>
                     {badge && <Badge tone={badge.tone}>{badge.label}</Badge>}
                 </div>
-                <p className="text-lg leading-snug">{event.blurb}</p>
+                <Blurb text={event.blurb} className="text-lg leading-snug" />
                 <ul className="flex flex-wrap gap-2">
                     <Chip icon={MdOutlineCalendarToday}>
                         {sameDay(event.startTime, event.endTime)

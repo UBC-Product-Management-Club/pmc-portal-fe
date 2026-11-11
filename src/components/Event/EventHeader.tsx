@@ -3,6 +3,7 @@ import { MdOutlineCalendarToday, MdOutlineLocationOn, MdOutlineSell } from 'reac
 import { Event } from '../../types/Event';
 import { renderDate } from '../../utils';
 import { Badge } from '../Portal/Badge';
+import { Blurb } from './Blurb';
 import { displayBadge, EventStatus, eventTiming } from './eventStatus';
 
 type EventHeaderProps = {
@@ -27,7 +28,7 @@ export function EventHeader({ event, status, message, priceLine, action }: Event
                     {badge && <Badge tone={badge.tone}>{badge.label}</Badge>}
                 </div>
                 <div className="glass glass-soft flex flex-col gap-4 p-4 md:flex-1">
-                    <p>{message ?? event.blurb}</p>
+                    {message ? <p>{message}</p> : <Blurb text={event.blurb} />}
                     <div className="glass-tile flex flex-col gap-2 rounded-[10px] p-4 font-medium text-pmc-ink md:flex-1 md:justify-center">
                         <p className="flex items-center gap-2">
                             <MdOutlineCalendarToday className="size-6 shrink-0" aria-hidden />
