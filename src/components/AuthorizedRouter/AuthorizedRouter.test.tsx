@@ -102,6 +102,6 @@ describe('AuthorizedRouter', () => {
 
         await act(() => renderComponent());
 
-        expect(screen.getByText('loading...')).toBeInTheDocument();
+        expect(screen.getByRole('img', { name: 'Loading' })).toBeInTheDocument();
     });
 });
