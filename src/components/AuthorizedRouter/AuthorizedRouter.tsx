@@ -5,6 +5,7 @@ import { UserFromDatabase } from '../../types/User';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { resetMemberBar } from '../Layout/memberBar';
+import gearLoader from '../../assets/loading/pmc-gear-loader.svg';
 
 export default function AuthorizedRouter() {
     const navigateTo = useNavigate();
@@ -41,6 +42,13 @@ export default function AuthorizedRouter() {
         }
     }, [auth0User]);
 
-    // TODO: Design a loading page
-    return <h1 className="text-black">loading...</h1>;
+    // Shown while signing in
+    return (
+        <div
+            role="status"
+            className="flex min-h-dvh w-full items-center justify-center bg-white px-4"
+        >
+            <img src={gearLoader} alt="Loading" className="w-[min(440px,80vw)]" />
+        </div>
+    );
 }
