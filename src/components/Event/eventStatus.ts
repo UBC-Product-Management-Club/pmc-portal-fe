@@ -54,7 +54,8 @@ export const STATUS_BADGES: Partial<Record<EventStatus, { label: string; tone: B
     DRAFT: { label: 'Draft', tone: 'neutral' },
     UNDER_REVIEW: { label: 'Under review', tone: 'warn' },
     PAYMENT_WINDOW_OPEN: { label: 'Accepted', tone: 'info' },
-    PAYMENT_WINDOW_PASSED: { label: 'Payment window passed', tone: 'bad' },
+    // Covers both paying and, for free events, the RSVP
+    PAYMENT_WINDOW_PASSED: { label: 'Deadline passed', tone: 'bad' },
     PAYMENT_PROCESSING: { label: 'Payment processing', tone: 'info' },
     REGISTERED: { label: 'Registered', tone: 'good' },
     NOT_SELECTED: { label: 'Not selected', tone: 'bad' },

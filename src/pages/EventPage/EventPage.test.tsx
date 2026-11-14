@@ -100,6 +100,25 @@ describe('EventPage', () => {
         expect(await screen.findAllByText("Available once you're registered")).toHaveLength(2);
     });
 
+    it('lets an accepted student RSVP to a free reviewed event without paying', async () => {
+        (useEvents as Mock).mockReturnValue({
+            getById: vi.fn().mockResolvedValue({ ...event, memberPrice: 0, nonMemberPrice: 0 }),
+            loadDraft: vi.fn().mockResolvedValue(null),
+        });
+        getAttendee.mockResolvedValue({ ...accepted, amountDue: 0 });
+        eventCheckout.mockResolvedValue({ url: '#back-to-event' });
+        renderAt('/events/e1');
+
+        expect(await screen.findByText('Your price: Free')).toBeInTheDocument();
+        expect(screen.getByText("You're in! RSVP to confirm your spot.")).toBeInTheDocument();
+        expect(screen.getAllByText("Available once you're accepted and have RSVP'd")).toHaveLength(
+            2
+        );
+        expect(screen.queryByRole('button', { name: /^Pay/ })).not.toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', { name: /^RSVP by/ }));
+        await waitFor(() => expect(eventCheckout).toHaveBeenCalledWith('e1'));
+    });
+
     it('sends the Stripe session id when back from checkout', async () => {
         renderAt('/events/e1?success=true&session_id=cs_test_1');
 
