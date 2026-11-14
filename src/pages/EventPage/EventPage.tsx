@@ -118,6 +118,8 @@ export default function EventPage() {
     const timing = eventTiming(event);
     const yourPrice = isMember ? event.memberPrice : event.nonMemberPrice;
     const amountDue = attendee?.amountDue ?? yourPrice;
+    // Free: accepted students RSVP instead of paying
+    const free = amountDue === 0;
 
     const pay = async () => {
         setPaying(true);
@@ -178,9 +180,12 @@ export default function EventPage() {
                 </p>
             </div>
         ),
+        // Free: an RSVP. The same call registers them and comes straight back here
         PAYMENT_WINDOW_OPEN: attendee?.paymentDueAt && (
             <Button variant="primary" className={wide} onClick={pay} disabled={paying}>
-                Pay {formatPrice(amountDue)} by {formatPacific(attendee.paymentDueAt)}
+                {free
+                    ? `RSVP by ${formatPacific(attendee.paymentDueAt)}`
+                    : `Pay ${formatPrice(amountDue)} by ${formatPacific(attendee.paymentDueAt)}`}
             </Button>
         ),
         PAYMENT_PROCESSING: (
@@ -196,9 +201,12 @@ export default function EventPage() {
     };
 
     const messages: Partial<Record<EventStatus, string>> = {
-        PAYMENT_WINDOW_OPEN: "You're in! Pay to confirm your spot.",
-        PAYMENT_WINDOW_PASSED:
-            "Contact the organizers if you still want to attend. If you paid before the deadline and this page hasn't updated, don't pay again: refresh shortly or contact us.",
+        PAYMENT_WINDOW_OPEN: free
+            ? "You're in! RSVP to confirm your spot."
+            : "You're in! Pay to confirm your spot.",
+        PAYMENT_WINDOW_PASSED: free
+            ? 'Your RSVP deadline has passed. Contact the organizers if you still want to attend.'
+            : "Contact the organizers if you still want to attend. If you paid before the deadline and this page hasn't updated, don't pay again: refresh shortly or contact us.",
         PAYMENT_PROCESSING:
             "We're confirming your payment with Stripe. This page updates on its own.",
         REGISTERED: {
@@ -265,6 +273,7 @@ export default function EventPage() {
                 registered={status === 'REGISTERED'}
                 ended={timing === 'ended'}
                 needsReview={event.needsReview}
+                free={yourPrice === 0}
             />
             {status === 'REGISTERED' && (
                 <>

@@ -109,15 +109,19 @@ export function EventLinkCards({
     registered,
     ended,
     needsReview,
+    free,
 }: {
     registered: boolean;
     ended: boolean;
     needsReview: boolean;
+    free: boolean;
 }) {
-    // Reviewed events register a student only after they're accepted and have paid
-    const lockedNote = needsReview
-        ? "Available once you're accepted and paid"
-        : "Available once you're registered";
+    // Reviewed events register a student once they're accepted and have RSVP'd, or paid if it isn't free
+    const lockedNote = !needsReview
+        ? "Available once you're registered"
+        : free
+          ? "Available once you're accepted and have RSVP'd"
+          : "Available once you're accepted and paid";
 
     return (
         <div className="flex flex-col gap-4 md:flex-row">
