@@ -1,6 +1,6 @@
 // RestClient.test.ts
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
-import { RestClient } from './RestClient';
+import { RestClient, setTokenSource } from './RestClient';
 
 // Global fetch mock
 const fetchMock = vi.fn();
@@ -184,6 +184,40 @@ describe('RestClient', () => {
             });
             expect(localStorage.getItem).toHaveBeenCalledWith('id_token');
             expect(response).toEqual({ data: 'test' });
+        });
+    });
+
+    describe('with an Auth0 token source', () => {
+        const ok = {
+            ok: true,
+            status: 200,
+            statusText: 'OK',
+            headers: { get: () => 'application/json' },
+            json: async () => ({}),
+        };
+        afterEach(() => setTokenSource(null));
+
+        it('sends a fresh token and saves it, so an expired saved one is never used', async () => {
+            (localStorage.getItem as Mock).mockReturnValue('expired');
+            setTokenSource(async () => 'fresh');
+            fetchMock.mockResolvedValueOnce(ok);
+
+            await client.get('/test');
+
+            expect(fetchMock.mock.calls[0][1].headers.Authorization).toBe('Bearer fresh');
+            expect(localStorage.setItem).toHaveBeenCalledWith('id_token', 'fresh');
+        });
+
+        it("falls back to the saved token when Auth0 can't give one", async () => {
+            (localStorage.getItem as Mock).mockReturnValue('saved');
+            setTokenSource(async () => {
+                throw new Error('login_required');
+            });
+            fetchMock.mockResolvedValueOnce(ok);
+
+            await client.get('/test');
+
+            expect(fetchMock.mock.calls[0][1].headers.Authorization).toBe('Bearer saved');
         });
     });
 });
