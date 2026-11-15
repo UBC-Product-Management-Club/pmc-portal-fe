@@ -115,8 +115,15 @@ describe('EventPage', () => {
             2
         );
         expect(screen.queryByRole('button', { name: /^Pay/ })).not.toBeInTheDocument();
+        const loads = getAttendee.mock.calls.length;
         fireEvent.click(screen.getByRole('button', { name: /^RSVP by/ }));
         await waitFor(() => expect(eventCheckout).toHaveBeenCalledWith('e1'));
+        // Stays on the page and refreshes the status instead of reloading
+        await waitFor(() =>
+            expect(showToast).toHaveBeenCalledWith('success', "You're registered. See you there!")
+        );
+        expect(getAttendee.mock.calls.length).toBeGreaterThan(loads);
+        expect(window.location.href).not.toContain('#back-to-event');
     });
 
     it('sends the Stripe session id when back from checkout', async () => {

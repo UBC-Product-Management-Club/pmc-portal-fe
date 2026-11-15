@@ -125,6 +125,13 @@ export default function EventPage() {
         setPaying(true);
         try {
             const { url } = await paymentService.getOrCreateEventCheckoutSession(eventId);
+            if (free) {
+                // The RSVP has registered them; refresh here rather than reloading the page
+                showToast('success', "You're registered. See you there!");
+                await fetchAttendee();
+                setPaying(false);
+                return;
+            }
             window.location.href = url;
         } catch (error) {
             showToast('error', paymentErrorMessage(error));

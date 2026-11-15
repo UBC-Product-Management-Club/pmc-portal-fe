@@ -12,6 +12,28 @@ export class ApiError extends Error {
     }
 }
 
+// Auth0's getAccessTokenSilently once the app has mounted (see main.tsx). It returns a
+// fresh token, renewing it with the refresh token when the saved one has expired, so a
+// reload never sends a stale one and gets the student logged out.
+let tokenSource: (() => Promise<string>) | null = null;
+export const setTokenSource = (source: (() => Promise<string>) | null) => {
+    tokenSource = source;
+};
+
+// The fresh token when Auth0 can give one, else the one saved at sign-in
+async function currentToken() {
+    if (tokenSource) {
+        try {
+            const token = await tokenSource();
+            localStorage.setItem('id_token', token);
+            return token;
+        } catch {
+            // Not signed in, or Auth0 couldn't renew it: fall back to the saved token
+        }
+    }
+    return localStorage.getItem('id_token');
+}
+
 export class RestClient {
     public constructor(private readonly baseUrl: string) {}
 
@@ -114,7 +136,7 @@ export class RestClient {
     }
 
     private async buildHeaders(body?: unknown): Promise<HeadersInit> {
-        const token = localStorage.getItem('id_token');
+        const token = await currentToken();
         const headers: HeadersInit = {};
         headers.Authorization = token ? `Bearer ${token}` : '';
 

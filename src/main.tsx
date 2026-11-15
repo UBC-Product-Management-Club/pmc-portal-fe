@@ -19,6 +19,7 @@ import ApplicationPage from './pages/EventPage/ApplicationPage.tsx';
 import RegisterRedirect from './pages/EventPage/RegisterRedirect.tsx';
 import TeamPage from './pages/EventPage/TeamPage.tsx';
 import SubmitPage from './pages/EventPage/SubmitPage.tsx';
+import { AuthTokenSource } from './components/AuthTokenSource.tsx';
 
 Modal.setAppElement('#root');
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -34,6 +35,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 useRefreshTokens={true}
                 cacheLocation="localstorage"
             >
+                <AuthTokenSource />
                 <UserDataProvider>
                     <Routes>
                         <Route path={'/'} element={<Login />} />
