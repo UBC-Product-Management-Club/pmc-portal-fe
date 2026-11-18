@@ -245,13 +245,17 @@ export default function Dashboard() {
     const past = visible
         .filter((event) => new Date(event.endTime) <= now)
         .sort((a, b) => b.startTime.localeCompare(a.startTime));
+    // The check-in code only matters with a seat at an event that hasn't ended yet
+    const hasSeatAtUpcoming = upcoming.some(
+        (event) => rows.find((row) => row.eventId === event.eventId)?.status === 'REGISTERED'
+    );
 
     return (
         <div className="flex flex-col gap-12">
             <h1 className="text-4xl leading-none font-medium md:text-5xl">
                 {user?.firstName ? `Hey, ${user.firstName}!` : 'Hey there!'}
             </h1>
-            {user?.userId && <CheckInCode userId={user.userId} />}
+            {user?.userId && hasSeatAtUpcoming && <CheckInCode userId={user.userId} />}
             <Announcements
                 items={announcements.filter(
                     (a) => a.audience === 'everyone' || (a.audience === 'members') === !!isMember

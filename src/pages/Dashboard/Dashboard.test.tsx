@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { useEvents } from '../../hooks/useEvents';
@@ -69,19 +69,46 @@ describe('Dashboard', () => {
             </MemoryRouter>
         );
 
-    it('shows a check-in QR code that encodes the user id', async () => {
-        (useUserData as Mock).mockReturnValue({
-            user: { firstName: 'Simoon', userId: 'google-oauth2|1234' },
-        });
-        renderPage();
-        const section = (await screen.findByText('Your check-in code')).closest('section')!;
-        expect(within(section).getByTitle('Your check-in QR code')).toBeInTheDocument();
-    });
+    describe('check-in code', () => {
+        const withRows = (rows: { eventId: string; status: string }[]) => {
+            (useUserData as Mock).mockReturnValue({
+                user: { firstName: 'Simoon', userId: 'google-oauth2|1234' },
+            });
+            getStatuses.mockResolvedValue(
+                rows.map((row) => ({ ...row, hasDraft: false, paymentDueAt: null }))
+            );
+        };
 
-    it('hides the check-in code until the user has loaded', async () => {
-        renderPage();
-        await screen.findByText('Hey, Simoon!');
-        expect(screen.queryByText('Your check-in code')).not.toBeInTheDocument();
+        it('shows when registered for an upcoming event', async () => {
+            withRows([{ eventId: 'a', status: 'REGISTERED' }]);
+            renderPage();
+            const section = (await screen.findByText('Your check-in code')).closest('section')!;
+            expect(within(section).getByTitle('Your check-in QR code')).toBeInTheDocument();
+        });
+
+        it.each([
+            [
+                'only applied or accepted',
+                [
+                    { eventId: 'a', status: 'APPLIED' },
+                    { eventId: 'b', status: 'ACCEPTED' },
+                ],
+            ],
+            ['registered only for a past event', [{ eventId: 'c', status: 'REGISTERED' }]],
+            ['registered only for a disabled event', [{ eventId: 'd', status: 'REGISTERED' }]],
+        ])('hides when %s', async (_, rows) => {
+            withRows(rows);
+            renderPage();
+            await screen.findByText('Upcoming Events');
+            await waitFor(() => expect(getStatuses).toHaveBeenCalled());
+            expect(screen.queryByText('Your check-in code')).not.toBeInTheDocument();
+        });
+
+        it('hides until the user has loaded', async () => {
+            renderPage();
+            await screen.findByText('Upcoming Events');
+            expect(screen.queryByText('Your check-in code')).not.toBeInTheDocument();
+        });
     });
 
     it('greets the student by first name', async () => {
