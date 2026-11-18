@@ -69,6 +69,21 @@ describe('Dashboard', () => {
             </MemoryRouter>
         );
 
+    it('shows a check-in QR code that encodes the user id', async () => {
+        (useUserData as Mock).mockReturnValue({
+            user: { firstName: 'Simoon', userId: 'google-oauth2|1234' },
+        });
+        renderPage();
+        const section = (await screen.findByText('Your check-in code')).closest('section')!;
+        expect(within(section).getByTitle('Your check-in QR code')).toBeInTheDocument();
+    });
+
+    it('hides the check-in code until the user has loaded', async () => {
+        renderPage();
+        await screen.findByText('Hey, Simoon!');
+        expect(screen.queryByText('Your check-in code')).not.toBeInTheDocument();
+    });
+
     it('greets the student by first name', async () => {
         renderPage();
         expect(await screen.findByText('Hey, Simoon!')).toBeInTheDocument();
