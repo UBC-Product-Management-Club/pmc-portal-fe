@@ -15,6 +15,7 @@ import { renderDate, renderTime } from '../../utils';
 import { Badge } from '../../components/Portal/Badge';
 import { Blurb } from '../../components/Event/Blurb';
 import { ButtonLink } from '../../components/Portal/Button';
+import { CheckInCode } from '../../components/Portal/CheckInCode';
 import {
     displayBadge,
     eventTiming,
@@ -250,6 +251,7 @@ export default function Dashboard() {
             <h1 className="text-4xl leading-none font-medium md:text-5xl">
                 {user?.firstName ? `Hey, ${user.firstName}!` : 'Hey there!'}
             </h1>
+            {user?.userId && <CheckInCode userId={user.userId} />}
             <Announcements
                 items={announcements.filter(
                     (a) => a.audience === 'everyone' || (a.audience === 'members') === !!isMember
