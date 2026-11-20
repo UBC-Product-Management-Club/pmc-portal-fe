@@ -15,7 +15,7 @@ import { renderDate, renderTime } from '../../utils';
 import { Badge } from '../../components/Portal/Badge';
 import { Blurb } from '../../components/Event/Blurb';
 import { ButtonLink } from '../../components/Portal/Button';
-import { CheckInCode } from '../../components/Portal/CheckInCode';
+import { CheckInCode, HangingCheckInBadge } from '../../components/Portal/CheckInCode';
 import {
     displayBadge,
     eventTiming,
@@ -250,48 +250,53 @@ export default function Dashboard() {
         (event) => rows.find((row) => row.eventId === event.eventId)?.status === 'REGISTERED'
     );
 
+    const badge = user?.userId &&
+        nextSeat && {
+            userId: user.userId,
+            name: `${user.firstName} ${user.lastName ?? ''}`.trim(),
+            pronouns: user.pronouns,
+            event: nextSeat,
+        };
+
     return (
-        <div className="flex flex-col gap-12">
-            <h1 className="text-4xl leading-none font-medium md:text-5xl">
-                {user?.firstName ? `Hey, ${user.firstName}!` : 'Hey there!'}
-            </h1>
-            {user?.userId && nextSeat && (
-                <CheckInCode
-                    userId={user.userId}
-                    name={`${user.firstName} ${user.lastName ?? ''}`.trim()}
-                    pronouns={user.pronouns}
-                    event={nextSeat}
+        <div className="flex gap-12">
+            <div className="flex min-w-0 flex-1 flex-col gap-12">
+                <h1 className="text-4xl leading-none font-medium md:text-5xl">
+                    {user?.firstName ? `Hey, ${user.firstName}!` : 'Hey there!'}
+                </h1>
+                {badge && <CheckInCode {...badge} />}
+                <Announcements
+                    items={announcements.filter(
+                        (a) =>
+                            a.audience === 'everyone' || (a.audience === 'members') === !!isMember
+                    )}
                 />
-            )}
-            <Announcements
-                items={announcements.filter(
-                    (a) => a.audience === 'everyone' || (a.audience === 'members') === !!isMember
+                {error ? (
+                    <div className="glass glass-soft p-4">
+                        Couldn't load events. Refresh to try again.
+                    </div>
+                ) : !events ? (
+                    <p>Loading events…</p>
+                ) : (
+                    <>
+                        <EventList
+                            title="Upcoming Events"
+                            events={upcoming}
+                            rows={rows}
+                            past={false}
+                            empty="No upcoming events yet"
+                        />
+                        <EventList
+                            title="Past Events"
+                            events={past}
+                            rows={rows}
+                            past
+                            empty="No past events"
+                        />
+                    </>
                 )}
-            />
-            {error ? (
-                <div className="glass glass-soft p-4">
-                    Couldn't load events. Refresh to try again.
-                </div>
-            ) : !events ? (
-                <p>Loading events…</p>
-            ) : (
-                <>
-                    <EventList
-                        title="Upcoming Events"
-                        events={upcoming}
-                        rows={rows}
-                        past={false}
-                        empty="No upcoming events yet"
-                    />
-                    <EventList
-                        title="Past Events"
-                        events={past}
-                        rows={rows}
-                        past
-                        empty="No past events"
-                    />
-                </>
-            )}
+            </div>
+            {badge && <HangingCheckInBadge {...badge} />}
         </div>
     );
 }
