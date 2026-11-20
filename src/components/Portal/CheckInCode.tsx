@@ -4,6 +4,7 @@ import { MdCloseFullscreen, MdOpenInFull } from 'react-icons/md';
 import { QRCodeSVG } from 'qrcode.react';
 import { EventCard } from '../../types/Event';
 import { renderDate } from '../../utils';
+import { Button } from './Button';
 
 type BadgeProps = {
     userId: string;
@@ -78,22 +79,23 @@ function LanyardBadge({
     );
 }
 
-// Two straps hanging into the badge's slot, cropped at the top like the Figma frame
-function Lanyard() {
+// Two straps hanging into the badge's slot, cropped at the top like the Figma frame. The
+// svg is 531 wide to match the badge, and `height` tall
+function Lanyard({ height }: { height: number }) {
     return (
         <svg
-            viewBox="0 0 531 300"
+            viewBox={`0 0 531 ${height}`}
             className="pointer-events-none absolute top-0 left-0 w-full"
             aria-hidden
         >
             <path
-                d="M120 -10 C 60 120, 200 170, 265 300"
+                d={`M70 -10 C 20 ${height * 0.4}, 220 ${height * 0.62}, 265 ${height}`}
                 fill="none"
                 stroke="#445088"
                 strokeWidth="64"
             />
             <path
-                d="M420 -10 C 470 120, 330 170, 265 300"
+                d={`M460 -10 C 520 ${height * 0.4}, 310 ${height * 0.62}, 265 ${height}`}
                 fill="none"
                 stroke="#313B69"
                 strokeWidth="64"
@@ -102,11 +104,8 @@ function Lanyard() {
     );
 }
 
-// The member's code for checking in at any PMC event, worn as a lanyard badge for the
-// next event they have a seat at. It encodes User.user_id, which the check-in app
-// (qr-check-in) looks up against the event's attendee list, so the same code works for
-// every event the member is registered for.
-export function CheckInCode(props: BadgeProps) {
+// The badge as big as the screen allows, for holding up to the scanner
+function useFullscreenBadge(props: BadgeProps) {
     const [expanded, setExpanded] = useState(false);
 
     useEffect(() => {
@@ -116,39 +115,87 @@ export function CheckInCode(props: BadgeProps) {
         return () => window.removeEventListener('keydown', close);
     }, [expanded]);
 
-    return (
-        <section className="flex flex-col gap-2">
-            <h2 className="text-xl leading-7 font-medium">Your check-in code</h2>
-            <div className="glass glass-soft flex flex-col items-center gap-6 p-4 sm:flex-row sm:items-end">
-                {/* At 240px wide the straps are 136px tall and end 19px into the badge, at its slot */}
-                <div className="relative w-[240px] shrink-0 pt-[117px] pb-3">
-                    <LanyardBadge {...props} expanded={false} onToggle={() => setExpanded(true)} />
-                    <Lanyard />
+    const overlay =
+        expanded &&
+        createPortal(
+            <div
+                className="fixed inset-0 z-50 grid place-items-center bg-pmc-ink/80 p-6 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Your check-in badge"
+                onClick={() => setExpanded(false)}
+            >
+                {/* As big as fits: 531x858 plus the sleeve, inside the padded viewport */}
+                <div
+                    className="w-[min(100%,calc((100dvh-4rem)*531/898))]"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <LanyardBadge {...props} expanded onToggle={() => setExpanded(false)} />
                 </div>
-                <p className="text-center text-lg leading-snug sm:pb-4 sm:text-left">
-                    Show this at check-in for any PMC event you're registered for. Tap the corner
-                    button to make it full screen.
-                </p>
+            </div>,
+            document.body
+        );
+
+    return { open: () => setExpanded(true), overlay };
+}
+
+// The member's code for checking in at any PMC event, worn as a lanyard badge for the
+// next event they have a seat at. It encodes User.user_id, which the check-in app
+// (qr-check-in) looks up against the event's attendee list, so the same code works for
+// every event the member is registered for.
+//
+// From lg it hangs in the dashboard's side column, straps running off the top of the
+// page; it pulls up by main's md:py-12 so they meet the top bar
+export function HangingCheckInBadge(props: BadgeProps) {
+    const { open, overlay } = useFullscreenBadge(props);
+
+    return (
+        <aside
+            aria-label="Your check-in badge"
+            className="hidden w-[260px] shrink-0 lg:block lg:-mt-12"
+        >
+            {/* At 260px wide the 420-tall straps are 206px and end 21px into the badge, at its slot */}
+            <div className="relative pt-[185px]">
+                <LanyardBadge {...props} expanded={false} onToggle={open} />
+                <Lanyard height={420} />
             </div>
-            {expanded &&
-                createPortal(
-                    <div
-                        className="fixed inset-0 z-50 grid place-items-center bg-pmc-ink/80 p-6 backdrop-blur-sm"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label="Your check-in badge"
-                        onClick={() => setExpanded(false)}
-                    >
-                        {/* As big as fits: 531x858 plus the sleeve, inside the padded viewport */}
-                        <div
-                            className="w-[min(100%,calc((100dvh-4rem)*531/898))]"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <LanyardBadge {...props} expanded onToggle={() => setExpanded(false)} />
-                        </div>
-                    </div>,
-                    document.body
-                )}
+            <p className="mt-6 text-center text-sm leading-snug text-pmc-mute">
+                Show this at check-in. The corner button makes it full screen.
+            </p>
+            {overlay}
+        </aside>
+    );
+}
+
+// Below lg there's no room for the badge beside the page, so a slim row opens it full screen
+export function CheckInCode(props: BadgeProps) {
+    const { open, overlay } = useFullscreenBadge(props);
+
+    return (
+        <section className="flex flex-col gap-2 lg:hidden">
+            <h2 className="text-xl leading-7 font-medium">Your check-in code</h2>
+            <div className="glass glass-soft flex flex-wrap items-center gap-4 p-4">
+                <div className="shrink-0 rounded-[8px] bg-white p-1.5">
+                    <QRCodeSVG
+                        value={props.userId}
+                        size={64}
+                        marginSize={0}
+                        level="M"
+                        title="Your check-in QR code"
+                    />
+                </div>
+                <div className="min-w-0 flex-1">
+                    <p className="font-semibold">{props.event.name}</p>
+                    <p className="text-sm text-pmc-mute">
+                        {renderDate(props.event.startTime, props.event.endTime)} · show it at
+                        check-in
+                    </p>
+                </div>
+                <Button variant="primary" onClick={open} className="w-full sm:w-auto">
+                    Show badge
+                </Button>
+            </div>
+            {overlay}
         </section>
     );
 }

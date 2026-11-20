@@ -96,6 +96,15 @@ describe('Dashboard', () => {
             expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
         });
 
+        it('hangs the badge beside the page and opens it from the phone row too', async () => {
+            withRows([{ eventId: 'a', status: 'REGISTERED' }]);
+            renderPage();
+            const aside = await screen.findByRole('complementary', { name: 'Your check-in badge' });
+            expect(within(aside).getByTitle('Your check-in QR code')).toBeInTheDocument();
+            fireEvent.click(screen.getByRole('button', { name: 'Show badge' }));
+            expect(screen.getByRole('dialog', { name: 'Your check-in badge' })).toBeInTheDocument();
+        });
+
         it.each([
             [
                 'only applied or accepted',
