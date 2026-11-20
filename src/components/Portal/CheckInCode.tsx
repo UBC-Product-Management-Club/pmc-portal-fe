@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { MdCloseFullscreen, MdOpenInFull } from 'react-icons/md';
 import { QRCodeSVG } from 'qrcode.react';
@@ -10,11 +10,107 @@ type BadgeProps = {
     userId: string;
     name: string;
     pronouns?: string;
-    event: Pick<EventCard, 'name' | 'startTime' | 'endTime' | 'icon'>;
+    event: Pick<EventCard, 'name' | 'startTime' | 'endTime'>;
 };
 
-// Figma "QR BADGE" frame is 531x858, so every size below is its px / 531 in cqw and the
-// badge scales with whatever width it's given
+// Figma "QR BADGE" frame: the card is 531x858, so every size below is its px / 531 in cqw and
+// the badge scales with whatever width it's given. The clear sleeve (556x898) sits 12px left
+// and 20px above the card, white at 10% with the lanyard slot cut out, and the shine is three stripes
+// clipped to the sleeve. Text, QR and sticker stay above the sleeve so they read crisply
+const SLEEVE =
+    'M524.357 0C541.698 0 555.755 14.0576 555.755 31.3986V866.601C555.755 883.942 541.698 898 524.357 898H31.3986C14.0576 898 0 883.942 0 866.601V31.3986C1.61841e-06 14.0576 14.0576 3.16076e-08 31.3986 0H524.357ZM236.99 46.589C229.54 46.589 223.5 53.6206 223.5 62.2945C223.5 70.9684 229.54 78 236.99 78H319.01C326.46 78 332.5 70.9684 332.5 62.2945C332.5 53.6206 326.46 46.589 319.01 46.589H236.99Z';
+const SHINE = [
+    { x: 766.235, y: 609.537, width: 34.2711 },
+    { x: 748.01, y: 584, width: 14.4057 },
+    { x: 761.952, y: 676.361, width: 14.4057 },
+];
+
+function Sleeve() {
+    const id = useId();
+
+    return (
+        <svg
+            viewBox="0 0 556 898"
+            className="pointer-events-none absolute top-[-3.77cqw] left-[-2.26cqw] h-[169.11cqw] w-[104.66cqw] drop-shadow-[0_4px_12px_rgb(49_59_105/0.18)]"
+            aria-hidden
+        >
+            <defs>
+                <mask
+                    id={`${id}-sleeve`}
+                    maskUnits="userSpaceOnUse"
+                    x="0"
+                    y="0"
+                    width="556"
+                    height="898"
+                >
+                    <path d={SLEEVE} fillRule="evenodd" fill="white" fillOpacity="0.4" />
+                </mask>
+                <linearGradient id={`${id}-stripe`} x1="0" y1="0" x2="0" y2="1">
+                    <stop stopColor="white" stopOpacity="0" />
+                    <stop offset="0.5" stopColor="white" />
+                    <stop offset="1" stopColor="white" stopOpacity="0" />
+                </linearGradient>
+            </defs>
+            <path d={SLEEVE} fillRule="evenodd" fill="white" fillOpacity="0.1" />
+            <g mask={`url(#${id}-sleeve)`}>
+                {SHINE.map(({ x, y, width }) => (
+                    <rect
+                        key={y}
+                        x={x}
+                        y={y}
+                        width={width}
+                        height="759.715"
+                        transform={`rotate(60.315 ${x} ${y})`}
+                        fill={`url(#${id}-stripe)`}
+                        fillOpacity="0.4"
+                    />
+                ))}
+            </g>
+        </svg>
+    );
+}
+
+// A gear with `teeth` flat-topped teeth, centred on 60,60: tooth tips at `tip`, gaps at `root`
+function gearPath(teeth: number, tip: number, root: number) {
+    const point = (deg: number, r: number) => {
+        const rad = ((deg - 90) * Math.PI) / 180;
+        return `${(60 + r * Math.cos(rad)).toFixed(2)} ${(60 + r * Math.sin(rad)).toFixed(2)}`;
+    };
+    const step = 360 / teeth;
+    const parts = Array.from({ length: teeth }, (_, i) => {
+        const a = i * step;
+        return [
+            `${i === 0 ? 'M' : 'L'}${point(a - step * 0.36, root)}`,
+            `L${point(a - step * 0.26, tip)}`,
+            `A${tip} ${tip} 0 0 1 ${point(a + step * 0.26, tip)}`,
+            `L${point(a + step * 0.36, root)}`,
+            `A${root} ${root} 0 0 1 ${point(a + step * 0.64, root)}`,
+        ].join(' ');
+    });
+    return `${parts.join(' ')} Z`;
+}
+
+// The tips run past the chip's edge and get clipped round, like Figma's mask group
+const OUTER_GEAR = gearPath(8, 66, 48.5);
+const INNER_GEAR = gearPath(8, 29, 23.5);
+
+// Figma "chip-2d-ver1" at 120x120: a #D50000 gear masked to the circle, a white ring 83px
+// across, and a 58px #A30000 gear in the middle
+function GearSticker() {
+    const id = useId();
+
+    return (
+        <svg viewBox="0 0 120 120" className="size-full" aria-hidden>
+            <clipPath id={`${id}-chip`}>
+                <circle cx="60" cy="60" r="60" />
+            </clipPath>
+            <path d={OUTER_GEAR} fill="#D50000" clipPath={`url(#${id}-chip)`} />
+            <circle cx="60" cy="60" r="41" fill="none" stroke="white" strokeWidth="1.4" />
+            <path d={INNER_GEAR} fill="#A30000" />
+        </svg>
+    );
+}
+
 function LanyardBadge({
     userId,
     name,
@@ -26,79 +122,77 @@ function LanyardBadge({
     const Icon = expanded ? MdCloseFullscreen : MdOpenInFull;
 
     return (
-        <div className="@container relative aspect-[531/858] w-full">
-            {/* Clear plastic sleeve, 12-20px proud of the card, with the shine across its corner */}
-            <div className="absolute -top-[3.77cqw] -right-[2.4cqw] -bottom-[3.77cqw] -left-[2.26cqw] overflow-hidden rounded-[6cqw] border border-white/60 bg-white/30 shadow-lg backdrop-blur-[2px]">
-                <div className="absolute inset-0 bg-[linear-gradient(121deg,transparent_80%,rgb(255_255_255/0.35)_80%_82%,transparent_82%_85%,rgb(255_255_255/0.25)_85%_89%,transparent_89%)]" />
+        <div className="@container relative aspect-[531/858] w-full [font-family:Geist,var(--font-pmc)] text-black">
+            <div className="absolute inset-0 rounded-[4.7cqw] bg-[linear-gradient(158.97deg,#FFFFFF_0.14%,#E33148_99.86%)]" />
+            {/* Figma "event sticker": the chip on a 131px white disc, under the sleeve so the shine crosses it */}
+            <div className="absolute top-[133.15cqw] left-[70.24cqw] size-[24.67cqw] rounded-full bg-white p-[1cqw] drop-shadow-[2px_2px_10px_rgb(0_0_0/0.25)]">
+                <GearSticker />
             </div>
-            <div className="absolute inset-0 overflow-hidden rounded-[4.1cqw] bg-[linear-gradient(158.97deg,#FFFFFF_0.14%,#E33148_99.86%)] text-pmc-ink">
-                {/* Slot the lanyard clips through */}
-                <div className="absolute top-[4.9cqw] left-1/2 h-[6.2cqw] w-[20.7cqw] -translate-x-1/2 rounded-full bg-[#313B69]/80 ring-1 ring-white/50" />
-                <button
-                    type="button"
-                    onClick={onToggle}
-                    aria-label={expanded ? 'Close full screen badge' : 'Show badge full screen'}
-                    className="absolute top-[4.9cqw] left-[84cqw] grid size-[11.49cqw] place-items-center rounded-[2cqw] text-pmc-ink/50 transition-colors hover:bg-white/40 hover:text-pmc-ink"
-                >
-                    <Icon className="size-[7cqw]" aria-hidden />
-                </button>
-                <div className="absolute top-[24.29cqw] left-[7.34cqw] flex max-w-[70cqw] flex-col gap-[1.5cqw]">
-                    <p className="truncate text-[8.3cqw] leading-none font-semibold">{name}</p>
-                    {pronouns && <p className="text-[4.9cqw] leading-none">{pronouns}</p>}
-                </div>
-                {/* Dark on white with a quiet zone, so scanners read it at any size */}
-                <div className="absolute top-[43.88cqw] left-[7.34cqw] size-[85.31cqw] bg-white p-[3cqw]">
-                    <QRCodeSVG
-                        value={userId}
-                        size={256}
-                        marginSize={0}
-                        level="M"
-                        title="Your check-in QR code"
-                        className="size-full"
-                    />
-                </div>
-                <div className="absolute top-[134.84cqw] left-[7.34cqw] flex max-w-[60cqw] flex-col gap-[1.5cqw]">
-                    <p className="truncate text-[5.3cqw] leading-none font-semibold">
-                        {event.name}
-                    </p>
-                    <p className="text-[4.5cqw] leading-none">
-                        {renderDate(event.startTime, event.endTime)}
-                    </p>
-                </div>
-                <div className="absolute top-[133.15cqw] left-[70.24cqw] grid size-[24.67cqw] place-items-center overflow-hidden rounded-full bg-white drop-shadow-[2px_2px_10px_rgb(0_0_0/0.25)]">
-                    {event.icon ? (
-                        <img src={event.icon} alt="" className="size-full object-cover" />
-                    ) : (
-                        <span className="text-[10cqw] font-semibold text-[#E33148]">
-                            {event.name.charAt(0)}
-                        </span>
-                    )}
-                </div>
+            <Sleeve />
+            <button
+                type="button"
+                onClick={onToggle}
+                aria-label={expanded ? 'Close full screen badge' : 'Show badge full screen'}
+                className="absolute top-[4.9cqw] left-[84cqw] grid size-[11.49cqw] place-items-center rounded-[2cqw] text-[#919191] transition-colors hover:bg-white/40 hover:text-pmc-ink"
+            >
+                <Icon className="size-full" aria-hidden />
+            </button>
+            <div className="absolute top-[24.29cqw] left-[7.34cqw] flex max-w-[70cqw] flex-col gap-[1.5cqw]">
+                <p className="truncate text-[9.04cqw] leading-none font-semibold">{name}</p>
+                {pronouns && (
+                    <p className="text-[5.65cqw] leading-[5.27cqw] font-medium">{pronouns}</p>
+                )}
+            </div>
+            {/* Dark on white with a quiet zone, so scanners read it at any size */}
+            <div className="absolute top-[43.88cqw] left-[7.34cqw] size-[85.31cqw] bg-white p-[3cqw]">
+                <QRCodeSVG
+                    value={userId}
+                    size={256}
+                    marginSize={0}
+                    level="M"
+                    title="Your check-in QR code"
+                    className="size-full"
+                />
+            </div>
+            <div className="absolute top-[134.84cqw] left-[7.34cqw] flex max-w-[60cqw] flex-col gap-[1.5cqw]">
+                <p className="truncate text-[5.65cqw] leading-[5.27cqw] font-semibold">
+                    {event.name}
+                </p>
+                <p className="text-[4.9cqw] leading-[5.27cqw] font-medium">
+                    {renderDate(event.startTime, event.endTime)}
+                </p>
             </div>
         </div>
     );
 }
 
-// Two straps hanging into the badge's slot, cropped at the top like the Figma frame. The
-// svg is 531 wide to match the badge, and `height` tall
-function Lanyard({ height }: { height: number }) {
+// The straps, in the badge's 531-wide units and `height` tall down to the slot's centre.
+// The right one tucks behind the card's top edge; the left one comes in front and ends in
+// the slot, so the back strap renders before the badge and the front one after it
+function Strap({ height, side }: { height: number; side: 'back' | 'front' }) {
+    const id = useId();
+    const d =
+        side === 'front'
+            ? `M35 -60 C -45 ${height * 0.45}, 235 ${height * 0.6}, 268 ${height + 4}`
+            : `M482 -60 C 600 ${height * 0.45}, 300 ${height * 0.66}, 296 ${height + 40}`;
+
     return (
         <svg
             viewBox={`0 0 531 ${height}`}
-            className="pointer-events-none absolute top-0 left-0 w-full"
+            className="pointer-events-none absolute top-0 left-0 w-full overflow-visible"
             aria-hidden
         >
+            {/* Cut off at the top so the straps run off the page instead of ending in a cap */}
+            <clipPath id={`${id}-top`}>
+                <rect x="-200" y="0" width="931" height={height + 200} />
+            </clipPath>
             <path
-                d={`M70 -10 C 20 ${height * 0.4}, 220 ${height * 0.62}, 265 ${height}`}
+                d={d}
+                clipPath={`url(#${id}-top)`}
                 fill="none"
-                stroke="#445088"
-                strokeWidth="64"
-            />
-            <path
-                d={`M460 -10 C 520 ${height * 0.4}, 310 ${height * 0.62}, 265 ${height}`}
-                fill="none"
-                stroke="#313B69"
-                strokeWidth="64"
+                stroke={side === 'front' ? '#445088' : '#313B69'}
+                strokeWidth="76"
+                strokeLinecap="round"
             />
         </svg>
     );
@@ -156,11 +250,12 @@ export function HangingCheckInBadge(props: BadgeProps) {
         >
             {/* At 260px wide the 420-tall straps are 206px and end 21px into the badge, at its slot */}
             <div className="relative pt-[185px]">
+                <Strap height={420} side="back" />
                 <LanyardBadge {...props} expanded={false} onToggle={open} />
-                <Lanyard height={420} />
+                <Strap height={420} side="front" />
             </div>
             <p className="mt-6 text-center text-sm leading-snug text-pmc-mute">
-                Show this at check-in. The corner button makes it full screen.
+                Show your badge to a UBC PMC organizer to check into {props.event.name}
             </p>
             {overlay}
         </aside>
@@ -185,10 +280,11 @@ export function CheckInCode(props: BadgeProps) {
                     />
                 </div>
                 <div className="min-w-0 flex-1">
-                    <p className="font-semibold">{props.event.name}</p>
+                    <p className="font-semibold">
+                        Show your badge to a UBC PMC organizer to check into {props.event.name}
+                    </p>
                     <p className="text-sm text-pmc-mute">
-                        {renderDate(props.event.startTime, props.event.endTime)} · show it at
-                        check-in
+                        {renderDate(props.event.startTime, props.event.endTime)}
                     </p>
                 </div>
                 <Button variant="primary" onClick={open} className="w-full sm:w-auto">
