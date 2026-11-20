@@ -2,6 +2,8 @@ import { z } from 'zod/v4';
 
 // Response shapes for the event-day endpoints
 
+const LinkSchema = z.object({ label: z.string().min(1), url: z.url({ protocol: /^https$/ }) });
+
 const PageContentSchema = z.object({
     mentors: z.array(
         z.object({
@@ -13,6 +15,17 @@ const PageContentSchema = z.object({
     ),
     prep: z.array(z.string()),
     faq: z.array(z.object({ q: z.string(), a: z.string() })),
+    // Optional buttons at the top of Getting Ready (a participant guide, say).
+    // One with a bad url is dropped rather than hiding the whole section
+    links: z
+        .array(z.unknown())
+        .optional()
+        .transform((items) =>
+            (items ?? []).flatMap((item) => {
+                const link = LinkSchema.safeParse(item);
+                return link.success ? [link.data] : [];
+            })
+        ),
 });
 
 // GET /v2/events/:id/registered-content
