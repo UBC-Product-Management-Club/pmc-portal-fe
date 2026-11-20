@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { useUserData } from '../../providers/UserData/UserDataProvider';
 import { useEvents } from '../../hooks/useEvents';
@@ -84,6 +84,16 @@ describe('Dashboard', () => {
             renderPage();
             const section = (await screen.findByText('Your check-in code')).closest('section')!;
             expect(within(section).getByTitle('Your check-in QR code')).toBeInTheDocument();
+        });
+
+        it('goes full screen from the corner button and closes on Escape', async () => {
+            withRows([{ eventId: 'a', status: 'REGISTERED' }]);
+            renderPage();
+            fireEvent.click(await screen.findByLabelText('Show badge full screen'));
+            const dialog = screen.getByRole('dialog', { name: 'Your check-in badge' });
+            expect(within(dialog).getByTitle('Your check-in QR code')).toBeInTheDocument();
+            fireEvent.keyDown(window, { key: 'Escape' });
+            expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
         });
 
         it.each([
