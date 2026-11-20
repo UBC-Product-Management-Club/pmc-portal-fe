@@ -40,7 +40,7 @@ export function TeamFormation({
 
     return (
         <Section title="Team Formation" id="team-formation">
-            <div className="glass grid items-start gap-3.5 p-3.5 md:grid-cols-2">
+            <div className="glass grid gap-3.5 p-3.5 md:grid-cols-2">
                 <div className={cardClass}>
                     <h3 className="text-sm font-semibold">Before the event</h3>
                     <p className="mb-1.5 text-sm text-pmc-mute">
