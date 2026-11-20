@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MdAdd, MdRemove } from 'react-icons/md';
+import { MdAdd, MdOpenInNew, MdRemove } from 'react-icons/md';
 import { PageContent } from '../../types/EventDay';
 import { Section } from './EventSections';
 
@@ -88,23 +88,48 @@ export function GettingReady({
                     </div>
                 )}
                 <div className="grid items-start gap-3.5 md:grid-cols-2">
-                    <div className="rounded-[10px] bg-pmc-bg p-3.5">
-                        <h3 className={labelClass}>What to prepare</h3>
-                        <ul className="flex flex-col">
-                            {content.prep.map((item, index) => (
-                                <li key={item}>
-                                    <label className="flex min-h-11 cursor-pointer items-center gap-2.5 text-sm transition-colors duration-200 hover:text-pmc-accent">
-                                        <input
-                                            type="checkbox"
-                                            className="size-4 shrink-0 accent-pmc-accent"
-                                            checked={ticks.includes(index)}
-                                            onChange={() => toggle(index)}
-                                        />
-                                        {item}
-                                    </label>
-                                </li>
-                            ))}
-                        </ul>
+                    <div className="flex flex-col gap-3.5">
+                        <div className="rounded-[10px] bg-pmc-bg p-3.5">
+                            <h3 className={labelClass}>What to prepare</h3>
+                            <ul className="flex flex-col">
+                                {content.prep.map((item, index) => (
+                                    <li key={item}>
+                                        <label className="flex min-h-11 cursor-pointer items-center gap-2.5 text-sm transition-colors duration-200 hover:text-pmc-accent">
+                                            <input
+                                                type="checkbox"
+                                                className="size-4 shrink-0 accent-pmc-accent"
+                                                checked={ticks.includes(index)}
+                                                onChange={() => toggle(index)}
+                                            />
+                                            {item}
+                                        </label>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        {content.links.length > 0 && (
+                            <div className="rounded-[10px] bg-pmc-bg p-3.5">
+                                <h3 className={labelClass}>Resources</h3>
+                                <ul className="flex flex-col divide-y divide-slate-200/90">
+                                    {content.links.map(({ label, url }) => (
+                                        <li key={url}>
+                                            <a
+                                                href={url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="flex min-h-11 items-center justify-between gap-3 text-sm no-underline transition-colors duration-200 hover:text-pmc-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pmc-accent"
+                                            >
+                                                {label}
+                                                <MdOpenInNew
+                                                    className="size-4 shrink-0 text-pmc-mute"
+                                                    aria-hidden
+                                                />
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </div>
                     <div className="rounded-[10px] bg-pmc-bg p-3.5">
                         <h3 className={labelClass}>Q&amp;A</h3>

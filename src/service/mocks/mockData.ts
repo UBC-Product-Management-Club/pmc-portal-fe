@@ -176,6 +176,7 @@ export const mockRegisteredContent = () => ({
             { name: 'Mentor name', role: 'Senior PM, Company' },
             { name: 'Mentor name', role: 'Product Designer, Company' },
         ],
+        links: [{ label: 'Product Jackpot handbook', url: 'https://www.notion.so/' }],
         prep: [
             'Join the Product Jackpot Slack channel',
             'Bring your laptop, charger and student ID',
