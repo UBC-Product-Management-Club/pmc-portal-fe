@@ -202,11 +202,20 @@ function Strap({ height, side }: { height: number; side: 'back' | 'front' }) {
 function useFullscreenBadge(props: BadgeProps) {
     const [expanded, setExpanded] = useState(false);
 
+    // While it's up: Escape closes it, the page behind doesn't scroll under a swipe, and the
+    // screen stays awake so the phone doesn't dim in the check-in line (where supported)
     useEffect(() => {
         if (!expanded) return;
         const close = (e: KeyboardEvent) => e.key === 'Escape' && setExpanded(false);
         window.addEventListener('keydown', close);
-        return () => window.removeEventListener('keydown', close);
+        const overflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        const wakeLock = navigator.wakeLock?.request('screen').catch(() => undefined);
+        return () => {
+            window.removeEventListener('keydown', close);
+            document.body.style.overflow = overflow;
+            wakeLock?.then((lock) => lock?.release());
+        };
     }, [expanded]);
 
     const overlay =
