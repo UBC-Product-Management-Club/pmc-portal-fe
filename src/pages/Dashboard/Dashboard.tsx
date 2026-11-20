@@ -245,13 +245,24 @@ export default function Dashboard() {
     const past = visible
         .filter((event) => new Date(event.endTime) <= now)
         .sort((a, b) => b.startTime.localeCompare(a.startTime));
+    // The check-in badge only matters with a seat at an event that hasn't ended yet, and wears the soonest one
+    const nextSeat = upcoming.find(
+        (event) => rows.find((row) => row.eventId === event.eventId)?.status === 'REGISTERED'
+    );
 
     return (
         <div className="flex flex-col gap-12">
             <h1 className="text-4xl leading-none font-medium md:text-5xl">
                 {user?.firstName ? `Hey, ${user.firstName}!` : 'Hey there!'}
             </h1>
-            {user?.userId && <CheckInCode userId={user.userId} />}
+            {user?.userId && nextSeat && (
+                <CheckInCode
+                    userId={user.userId}
+                    name={`${user.firstName} ${user.lastName ?? ''}`.trim()}
+                    pronouns={user.pronouns}
+                    event={nextSeat}
+                />
+            )}
             <Announcements
                 items={announcements.filter(
                     (a) => a.audience === 'everyone' || (a.audience === 'members') === !!isMember
