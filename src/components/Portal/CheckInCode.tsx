@@ -129,6 +129,9 @@ function LanyardBadge({
                 <GearSticker />
             </div>
             <Sleeve />
+            {/* The lanyard hole, where the sleeve's slot is cut (109x31 at 211,27): dark like the
+                strap looping behind it, so the front strap reads as threaded through */}
+            <div className="absolute top-[5cqw] left-[39.83cqw] h-[5.91cqw] w-[20.53cqw] rounded-full bg-[#2B3361] shadow-[inset_0_0.6cqw_1cqw_rgb(0_0_0/0.45)] ring-1 ring-white/50" />
             <button
                 type="button"
                 onClick={onToggle}
@@ -182,9 +185,15 @@ function Strap({ height, side }: { height: number; side: 'back' | 'front' }) {
             className="pointer-events-none absolute top-0 left-0 w-full overflow-visible"
             aria-hidden
         >
-            {/* Cut off at the top so the straps run off the page instead of ending in a cap */}
+            {/* Cut off at the top so the straps run off the page instead of ending in a cap, and
+                the front one at the hole's centre so it disappears into the slot */}
             <clipPath id={`${id}-top`}>
-                <rect x="-200" y="0" width="931" height={height + 200} />
+                <rect
+                    x="-200"
+                    y="0"
+                    width="931"
+                    height={side === 'front' ? height : height + 200}
+                />
             </clipPath>
             <path
                 d={d}
